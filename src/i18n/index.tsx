@@ -112,8 +112,8 @@ const fr: Dict = {
   "cta.theme": "Mode sombre",
   "cta.language": "Langue",
 
-  "hero.title": "L'avenir de l'impression",
-  "hero.titleAccent": "commence ici.",
+  "hero.title": "Plus que de l'impression",
+  "hero.titleAccent": "Des idées qui prennent forme.",
   "hero.sub": "Concevez, imprimez et faites livrer — depuis une seule plateforme intelligente.",
   "hero.f1": "Comparez les options",
   "hero.f2": "Prix transparents",
