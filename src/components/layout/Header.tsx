@@ -37,14 +37,11 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-4 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-[1390px] rounded-full border transition-all duration-500 sm:inset-x-6 sm:w-[calc(100%-3rem)] lg:inset-x-auto lg:top-[30px] lg:w-[calc(100%-160px)]",
-        scrolled
-          ? "border-white/25 bg-ink/40 shadow-lift backdrop-blur-3xl backdrop-saturate-150"
-          : "border-white/20 bg-ink/25 shadow-lift backdrop-blur-3xl backdrop-saturate-150",
+        "fixed inset-x-4 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-[1390px] rounded-full border border-white/[0.18] shadow-[0_10px_40px_rgba(0,0,0,0.10)] backdrop-blur-[22px] backdrop-saturate-[1.2] transition-colors duration-500 sm:inset-x-6 sm:w-[calc(100%-3rem)] lg:inset-x-auto lg:top-[30px] lg:w-[calc(100%-160px)]",
+        scrolled ? "bg-[rgba(45,42,52,0.45)]" : "bg-[rgba(45,42,52,0.30)]",
       )}
       onMouseLeave={() => setMegaOpen(false)}
     >
-      <div className="pointer-events-none absolute inset-x-7 top-px h-px bg-linear-to-r from-transparent via-white/60 to-transparent" />
       <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:h-24 lg:px-10">
         <div className="flex min-w-0 items-center gap-7 xl:gap-9">
           <Logo invert className="h-5 shrink-0 md:h-6 lg:w-[120px]" />
