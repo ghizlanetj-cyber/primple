@@ -29,12 +29,12 @@ const steps = [
 export function HowItWorks() {
   const { tr } = useI18n();
   return (
-    <section className="bg-secondary/55 py-24 md:py-32">
+    <section className="bg-secondary/55 py-24 text-white md:py-32">
       <div className="section-shell">
         <Reveal className="max-w-2xl">
-          <p className="eyebrow text-primary">{tr("How it works")}</p>
-          <h2 className="display-xl mt-4 text-4xl md:text-6xl">{tr("Printing shouldn't take 15 emails.")}</h2>
-          <p className="mt-5 text-lg text-muted-foreground">
+          <p className="eyebrow text-white/90">{tr("How it works")}</p>
+          <h2 className="display-xl mt-4 text-4xl text-white md:text-6xl">{tr("Printing shouldn't take 15 emails.")}</h2>
+          <p className="mt-5 text-lg text-white/80">
             {tr("Choose what you need, upload your artwork, choose your printer and let Primpel handle the rest.")}
           </p>
         </Reveal>
@@ -42,11 +42,11 @@ export function HowItWorks() {
         <div className="relative mt-14">
           <div
             aria-hidden
-            className="absolute left-0 right-0 top-6 hidden h-px bg-border lg:block"
+            className="absolute left-0 right-0 top-6 hidden h-px bg-white/20 lg:block"
           />
           <motion.div
             aria-hidden
-            className="absolute left-0 top-6 hidden h-px bg-primary lg:block"
+            className="absolute left-0 top-6 hidden h-px bg-white lg:block"
             initial={{ width: 0 }}
             whileInView={{ width: "100%" }}
             viewport={{ once: true, margin: "-100px" }}
@@ -56,11 +56,11 @@ export function HowItWorks() {
             {steps.map((s, i) => (
               <Reveal key={s.n} delay={i * 0.1}>
                 <div className="relative">
-                   <span className="relative z-10 flex size-12 items-center justify-center rounded-full border border-border bg-card font-display text-sm font-bold shadow-soft">
+                   <span className="relative z-10 flex size-12 items-center justify-center rounded-full border border-white/30 bg-white/10 font-display text-sm font-bold text-white shadow-soft">
                     {s.n}
                   </span>
-                   <h3 className="mt-5 text-lg">{tr(s.title)}</h3>
-                   <p className="mt-2 text-sm text-muted-foreground">{tr(s.copy)}</p>
+                   <h3 className="mt-5 text-lg text-white">{tr(s.title)}</h3>
+                    <p className="mt-2 text-sm text-white/75">{tr(s.copy)}</p>
                 </div>
               </Reveal>
             ))}
