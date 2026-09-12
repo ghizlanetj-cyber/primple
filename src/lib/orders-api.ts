@@ -110,7 +110,7 @@ export async function createOrder(input: {
     total: input.totals.total,
     deposit_amount: deposit,
     balance_amount: balance,
-    deposit_paid: true,
+    deposit_paid: false,
     payment_method: "deposit_50_cod_50",
     contact_name: input.details.name,
     company: input.details.company ?? null,

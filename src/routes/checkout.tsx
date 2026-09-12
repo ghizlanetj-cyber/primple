@@ -121,7 +121,7 @@ function CheckoutPage() {
     <SiteShell>
       <section className="section-shell py-14 md:py-20">
         <h1 className="text-4xl md:text-5xl">
-          {tr(step === 3 ? "Your print job is officially underway." : "Review & pay")}
+          {tr(step === 3 ? "Your order is pending confirmation." : "Review & pay")}
         </h1>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -400,7 +400,7 @@ function CheckoutPage() {
                 <dd>{mad(totals.total)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-muted-foreground">{tr("Advance now (50%)")}</dt>
+                <dt className="text-muted-foreground">{tr("Advance to arrange (50%)")}</dt>
                 <dd>{mad(split.deposit)}</dd>
               </div>
               <div className="flex justify-between">
