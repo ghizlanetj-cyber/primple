@@ -22,8 +22,9 @@ import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { SocialAuthButtons } from "@/components/auth/SocialAuthButtons";
 
-const title = "Review & pay | Primple";
-const description = "Confirm your printing order, delivery details and payment. Secure checkout with no surprise fees.";
+const title = "Vérifier et payer votre commande | Primple";
+const description =
+  "Confirmez votre commande d'impression, vos informations de livraison et votre paiement : 50 % d'acompte, 50 % à la livraison, sans frais surprise.";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -32,6 +33,8 @@ export const Route = createFileRoute("/checkout")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "/checkout" },
       { name: "robots", content: "noindex" },
     ],
