@@ -37,21 +37,21 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-4 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-[1390px] rounded-full border border-white/[0.18] shadow-[0_10px_40px_rgba(0,0,0,0.10)] backdrop-blur-[22px] backdrop-saturate-[1.2] transition-colors duration-500 sm:inset-x-6 sm:w-[calc(100%-3rem)] lg:inset-x-auto lg:top-[30px] lg:w-[calc(100%-160px)]",
-        scrolled ? "bg-[rgba(45,42,52,0.45)]" : "bg-[rgba(45,42,52,0.30)]",
+        "fixed inset-x-4 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-[1390px] rounded-full border border-white/[0.16] shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur-[24px] backdrop-saturate-[1.2] transition-colors duration-500 sm:inset-x-6 sm:w-[calc(100%-3rem)] lg:inset-x-auto lg:top-6 lg:w-[calc(100%-96px)]",
+        scrolled ? "bg-[rgba(35,33,42,0.52)]" : "bg-[rgba(35,33,42,0.38)]",
       )}
       onMouseLeave={() => setMegaOpen(false)}
     >
-      <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:h-24 lg:px-10">
-        <div className="flex min-w-0 items-center gap-7 xl:gap-9">
-          <Logo invert className="h-5 shrink-0 md:h-6 lg:w-[120px]" />
-          <nav className="hidden items-center gap-x-7 lg:flex xl:gap-x-9">
+      <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:h-[84px] lg:px-8">
+        <div className="flex min-w-0 items-center gap-6 xl:gap-8">
+          <Logo invert className="h-5 shrink-0 md:h-6 lg:w-[118px]" />
+          <nav className="hidden items-center gap-x-7 xl:flex xl:gap-x-8">
             <NavLink to="/services">Solutions</NavLink>
             <button
               type="button"
               onMouseEnter={() => setMegaOpen(true)}
               onClick={() => setMegaOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full py-2 text-[16px] font-medium text-white/85 transition-colors hover:text-white xl:text-[17px]"
+              className="flex items-center gap-1 rounded-full py-2 text-[15px] font-medium text-white/85 transition-colors hover:text-white xl:text-[16px]"
               aria-expanded={megaOpen}
             >
               Produits
@@ -147,14 +147,14 @@ export function Header() {
             </>
           ) : null}
 
-           <Button asChild className="hidden rounded-full px-7 md:inline-flex lg:h-14 lg:px-8 lg:text-[16px]">
+           <Button asChild className="hidden rounded-full px-7 md:inline-flex lg:h-13 lg:px-7 lg:text-[15px]">
              <Link to="/products">{t("cta.start")} <ArrowRight className="size-4 rtl:rotate-180" /></Link>
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
-             className="text-ink-foreground lg:hidden"
+             className="text-ink-foreground xl:hidden"
             aria-label={t("cta.menu")}
             onClick={() => setMobileOpen(true)}
           >
@@ -170,7 +170,7 @@ export function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden overflow-hidden rounded-b-3xl border-t border-white/15 bg-ink/60 text-ink-foreground backdrop-blur-3xl lg:block"
+            className="hidden overflow-hidden rounded-b-3xl border-t border-white/15 bg-ink/60 text-ink-foreground backdrop-blur-3xl xl:block"
           >
              <div className="grid grid-cols-4 gap-2 px-8 py-7">
               {products.map((p) => (
@@ -283,7 +283,7 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className="rounded-full py-2 text-[16px] font-medium text-white/85 transition-colors hover:text-white xl:text-[17px]"
+      className="rounded-full py-2 text-[15px] font-medium text-white/85 transition-colors hover:text-white xl:text-[16px]"
       activeProps={{ className: "text-white" }}
     >
       {children}
