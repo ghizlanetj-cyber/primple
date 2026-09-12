@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { printers } from "@/data/printers";
 import { useI18n } from "@/i18n";
 
 const title = "Devenir imprimeur partenaire de Primple";
@@ -159,39 +158,6 @@ function PartnersPage() {
               </Button>
             </form>
           </Reveal>
-        </div>
-      </section>
-
-      <section className="band-sand border-y border-border">
-        <div className="section-shell py-20 md:py-24">
-          <Reveal>
-            <p className="eyebrow text-primary">{tr("Already on Primple")}</p>
-            <h2 className="mt-4 max-w-2xl text-3xl md:text-4xl">
-              {tr("Printers our customers keep coming back to.")}
-            </h2>
-          </Reveal>
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {printers.map((p, i) => (
-              <Reveal key={p.id} delay={i * 0.06}>
-                <div className="h-full rounded-2xl border border-border bg-background p-6">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-lg">{p.name}</h3>
-                      <p className="text-sm text-muted-foreground">{p.city}</p>
-                    </div>
-                    <span className="inline-flex items-center gap-1 text-sm">
-                      <Star className="size-3.5 fill-primary text-primary" />
-                      {p.rating}
-                    </span>
-                  </div>
-                  <p className="mt-4 text-sm text-muted-foreground">{tr(p.note)}</p>
-                  <p className="mt-4 text-sm">
-                    <span className="font-semibold">{tr("Turnaround")}:</span> {tr(p.turnaround)}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 

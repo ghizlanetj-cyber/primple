@@ -320,6 +320,10 @@ export const phrases: Record<string, TranslationPair> = {
   "Billing name": { fr: "Nom de facturation", ar: "الاسم للفوترة" },
   Summary: { fr: "Récapitulatif", ar: "الملخص" },
   Items: { fr: "Articles", ar: "العناصر" },
+  "Artwork checked · Tracked delivery": {
+    fr: "Fichiers vérifiés · Livraison suivie",
+    ar: "ملفات مُتحقق منها · تسليم متتبع",
+  },
   "Verified printers · Artwork checked · Tracked delivery": {
     fr: "Imprimeurs vérifiés · Fichier contrôlé · Livraison suivie",
     ar: "مطابع موثوقة · ملف مراجع · تسليم متتبع",
