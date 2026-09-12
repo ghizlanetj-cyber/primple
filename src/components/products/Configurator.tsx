@@ -202,28 +202,39 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Chip({
+/** Chip styled as before, but with native radio semantics and keyboard support. */
+function ChipRadio({
   children,
-  active,
-  onClick,
+  name,
+  value,
+  checked,
+  onSelect,
 }: {
   children: React.ReactNode;
-  active: boolean;
-  onClick: () => void;
+  name: string;
+  value: string;
+  checked: boolean;
+  onSelect: () => void;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
+    <label
       className={cn(
-        "rounded-full border px-4 py-2 text-sm font-medium transition-all",
-        active
+        "cursor-pointer select-none rounded-full border px-4 py-2 text-sm font-medium transition-all",
+        "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2",
+        checked
           ? "border-primary bg-primary text-primary-foreground shadow-soft"
           : "border-border bg-background text-foreground/80 hover:border-primary/50",
       )}
     >
+      <input
+        type="radio"
+        name={name}
+        value={value}
+        checked={checked}
+        onChange={onSelect}
+        className="sr-only"
+      />
       {children}
-    </button>
+    </label>
   );
 }
