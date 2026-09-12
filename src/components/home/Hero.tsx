@@ -85,7 +85,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-10 grid max-w-[520px] grid-cols-3 gap-x-7 text-[15px] leading-[1.35] text-ink-foreground/85 lg:gap-x-8"
+            className="mt-9 grid max-w-[520px] grid-cols-3 gap-x-7 text-[15px] leading-[1.35] text-ink-foreground/85 lg:gap-x-8"
           >
             {benefits.map(({ icon: Icon, key }) => (
               <li key={key} className="flex flex-col items-start gap-3">
