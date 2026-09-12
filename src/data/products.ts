@@ -241,8 +241,14 @@ export const products: Product[] = [
       deliveryGroup,
     ],
     faqs: [
-      { q: "Is the stand included?", a: "Yes — cassette, pole and carry bag come with every banner." },
-      { q: "Can I reprint just the graphic later?", a: "Yes. Reorder the graphic only from your dashboard." },
+      {
+        q: "Is the stand included?",
+        a: "Yes — cassette, pole and carry bag come with every banner.",
+      },
+      {
+        q: "Can I reprint just the graphic later?",
+        a: "Yes. Reorder the graphic only from your dashboard.",
+      },
     ],
   },
   {
@@ -252,7 +258,8 @@ export const products: Product[] = [
     benefit: "Label every batch on time.",
     heroHeadline: "Labels that stay on the product.",
     heroCopy: "Choose shape, material and quantity — pricing and production time update as you go.",
-    description: "Roll or sheet labels on paper, transparent or waterproof material, die-cut to shape.",
+    description:
+      "Roll or sheet labels on paper, transparent or waterproof material, die-cut to shape.",
     fromPrice: 280,
     unitPrice: 0.28,
     quantities: [500, 1000, 2500, 5000, 10000],
@@ -276,7 +283,10 @@ export const products: Product[] = [
     ],
     faqs: [
       { q: "Rolls or sheets?", a: "Both. Choose rolls if you apply labels with a machine." },
-      { q: "Are they fridge and freezer safe?", a: "Choose waterproof material for cold and humid storage." },
+      {
+        q: "Are they fridge and freezer safe?",
+        a: "Choose waterproof material for cold and humid storage.",
+      },
     ],
   },
   {
@@ -286,7 +296,8 @@ export const products: Product[] = [
     benefit: "Explain your offer properly.",
     heroHeadline: "Brochures that hold their shape and their story.",
     heroCopy: "Pick pages, fold and paper. Price and production time update instantly.",
-    description: "Folded leaflets and stitched brochures from 4 to 32 pages, printed and trimmed to size.",
+    description:
+      "Folded leaflets and stitched brochures from 4 to 32 pages, printed and trimmed to size.",
     fromPrice: 540,
     unitPrice: 2.7,
     quantities: [200, 500, 1000, 2500],
@@ -309,8 +320,14 @@ export const products: Product[] = [
       deliveryGroup,
     ],
     faqs: [
-      { q: "Do you print page numbers?", a: "Only what's in your artwork — we print exactly what you upload." },
-      { q: "Can I get a digital proof?", a: "Yes, a PDF proof is sent for approval before production." },
+      {
+        q: "Do you print page numbers?",
+        a: "Only what's in your artwork — we print exactly what you upload.",
+      },
+      {
+        q: "Can I get a digital proof?",
+        a: "Yes, a PDF proof is sent for approval before production.",
+      },
     ],
   },
   {
@@ -320,7 +337,8 @@ export const products: Product[] = [
     benefit: "Change your prices without a reprint headache.",
     heroHeadline: "Menus built for daily service.",
     heroCopy: "Choose size, material and laminate. See the price before you print.",
-    description: "Wipe-clean laminated menus, folded card menus and daily inserts for restaurants and cafés.",
+    description:
+      "Wipe-clean laminated menus, folded card menus and daily inserts for restaurants and cafés.",
     fromPrice: 220,
     unitPrice: 8.8,
     quantities: [25, 50, 100, 250],
@@ -344,7 +362,10 @@ export const products: Product[] = [
     ],
     faqs: [
       { q: "Can I order a small run?", a: "Yes — from 25 menus." },
-      { q: "Can I reorder with new prices?", a: "Reorder from your dashboard and upload the updated file." },
+      {
+        q: "Can I reorder with new prices?",
+        a: "Reorder from your dashboard and upload the updated file.",
+      },
     ],
   },
   {
@@ -377,7 +398,10 @@ export const products: Product[] = [
       deliveryGroup,
     ],
     faqs: [
-      { q: "Will they survive outdoors?", a: "Choose vinyl — it's rated for two to three years outdoors." },
+      {
+        q: "Will they survive outdoors?",
+        a: "Choose vinyl — it's rated for two to three years outdoors.",
+      },
       { q: "Minimum order?", a: "250 stickers." },
     ],
   },
@@ -407,7 +431,10 @@ export const products: Product[] = [
       deliveryGroup,
     ],
     faqs: [
-      { q: "Flat or rolled?", a: "Rolled in a tube as standard; flat delivery is available on request." },
+      {
+        q: "Flat or rolled?",
+        a: "Rolled in a tube as standard; flat delivery is available on request.",
+      },
       { q: "Can I mix sizes?", a: "Yes — add each size as its own cart item." },
     ],
   },
@@ -451,7 +478,8 @@ export const products: Product[] = [
     category: "Large Format",
     benefit: "Own the storefront and the stand.",
     heroHeadline: "Large format printing sized for the space you have.",
-    heroCopy: "Enter your dimensions, choose material and finishing, and see the price immediately.",
+    heroCopy:
+      "Enter your dimensions, choose material and finishing, and see the price immediately.",
     description: "PVC banners, mesh, forex boards, window vinyl and exhibition graphics.",
     fromPrice: 240,
     unitPrice: 240,
@@ -475,7 +503,10 @@ export const products: Product[] = [
       deliveryGroup,
     ],
     faqs: [
-      { q: "Can you install it?", a: "Some partners offer installation — it appears in their offer when available." },
+      {
+        q: "Can you install it?",
+        a: "Some partners offer installation — it appears in their offer when available.",
+      },
       { q: "Is it weatherproof?", a: "Yes, all outdoor materials are UV and rain rated." },
     ],
   },
