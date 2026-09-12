@@ -371,6 +371,7 @@ function DashboardPage() {
                 files={files}
                 isLoading={filesLoading}
                 isError={filesError}
+                heading={false}
                 showOrder
                 {...(user ? { folder: `${user.id}/` } : {})}
               />

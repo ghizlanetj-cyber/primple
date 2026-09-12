@@ -16,6 +16,7 @@ export function ClientFiles({
   isError,
   folder,
   showOrder = false,
+  heading = true,
 }: {
   files: ClientFile[];
   isLoading: boolean;
@@ -23,6 +24,7 @@ export function ClientFiles({
   /** Storage folder the files live in, shown so the client knows where they are. */
   folder?: string;
   showOrder?: boolean;
+  heading?: boolean;
 }) {
   const { tr, lang } = useI18n();
 
@@ -36,11 +38,13 @@ export function ClientFiles({
   };
 
   return (
-    <section className="mt-7 border-t border-border pt-6">
-      <h3 className="flex items-center gap-2 font-display text-base font-bold">
-        <FolderOpen className="size-4 text-primary" />
-        {tr("Client files")}
-      </h3>
+    <section className={heading ? "mt-7 border-t border-border pt-6" : "mt-2"}>
+      {heading && (
+        <h3 className="flex items-center gap-2 font-display text-base font-bold">
+          <FolderOpen className="size-4 text-primary" />
+          {tr("Client files")}
+        </h3>
+      )}
 
       {isLoading && <p className="mt-3 text-sm text-muted-foreground">{tr("Loading files…")}</p>}
 
