@@ -148,11 +148,7 @@ export function Header() {
                 <LogOut className="size-4 rtl:rotate-180" />
               </Button>
             </>
-          ) : (
-             <Button variant="ghost" asChild className="hidden text-ink-muted hover:text-ink-foreground xl:inline-flex">
-              <Link to="/login">{t("nav.login")}</Link>
-            </Button>
-          )}
+          ) : null}
 
            <Button asChild className="hidden md:inline-flex">
              <Link to="/products">{t("cta.start")} <ArrowRight className="size-4 rtl:rotate-180" /></Link>
