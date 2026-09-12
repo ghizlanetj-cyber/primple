@@ -10,6 +10,7 @@ import {
 import { phrases, authPhrases } from "./translations";
 import { productPhrases } from "./product-translations";
 import { commercialPhrases } from "./commercial-translations";
+import { copyPhrases } from "./copy-translations";
 
 export const languages = ["en", "fr", "ar"] as const;
 export type Lang = (typeof languages)[number];
@@ -302,7 +303,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       tr: (text: string) =>
         lang === "en"
           ? text
-          : phrases[text]?.[lang] ?? authPhrases[text]?.[lang] ?? productPhrases[text]?.[lang] ?? commercialPhrases[text]?.[lang] ?? text,
+          : phrases[text]?.[lang] ?? authPhrases[text]?.[lang] ?? productPhrases[text]?.[lang] ?? commercialPhrases[text]?.[lang] ?? copyPhrases[text]?.[lang] ?? text,
       number: (value: number) => value.toLocaleString(lang === "fr" ? "fr-FR" : lang === "ar" ? "ar-MA" : "en-US"),
     }),
     [lang, setLang],
