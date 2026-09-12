@@ -45,18 +45,18 @@ export function Header() {
       <div className="relative grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-16 lg:h-[68px] lg:px-8">
         <div className="flex min-w-0 items-center gap-5 xl:gap-7">
           <Logo invert className="h-5 shrink-0 md:h-[22px] lg:w-[102px]" />
-          <nav className="hidden items-center gap-x-7 xl:flex xl:gap-x-8">
+          <nav className="hidden items-center gap-x-6 xl:flex xl:gap-x-7">
             <NavLink to="/services">Solutions</NavLink>
             <button
               type="button"
               onMouseEnter={() => setMegaOpen(true)}
               onClick={() => setMegaOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full py-2 text-[15px] font-medium text-white/85 transition-colors hover:text-white xl:text-[16px]"
+              className="flex items-center gap-1 rounded-full py-1.5 text-[14px] font-medium text-white/85 transition-colors hover:text-white xl:text-[15px]"
               aria-expanded={megaOpen}
             >
               Produits
               <ChevronDown
-                className={cn("size-4 transition-transform", megaOpen && "rotate-180")}
+                className={cn("size-3.5 transition-transform", megaOpen && "rotate-180")}
               />
             </button>
             <NavLink to="/about">Pourquoi Primple</NavLink>
