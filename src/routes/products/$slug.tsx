@@ -11,6 +11,7 @@ import { productImages } from "@/data/productImages";
 import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
 import { productPhrases } from "@/i18n/product-translations";
+import { phrases } from "@/i18n/translations";
 
 export const Route = createFileRoute("/products/$slug")({
   loader: ({ params }) => {
