@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Languages } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { products } from "@/data/products";
 import { toast } from "sonner";
-import { useI18n } from "@/i18n";
+import { languageLabels, languages, useI18n, type Lang } from "@/i18n";
 import { contact } from "@/config/contact";
 
 const columns: { titleKey: string; links: { label: string; to: string }[] }[] = [
@@ -45,7 +45,7 @@ const legalLinks = [
 ];
 
 export function Footer() {
-  const { t, tr } = useI18n();
+  const { t, tr, lang, setLang } = useI18n();
 
   return (
     <footer className="bg-ink text-ink-foreground">
@@ -124,6 +124,24 @@ export function Footer() {
               </Link>
             ))}
           </nav>
+          <div className="flex items-center gap-2">
+            <Languages aria-hidden className="size-4 text-ink-muted" />
+            <label htmlFor="footer-language" className="text-xs text-ink-muted">
+              {t("cta.language")}
+            </label>
+            <select
+              id="footer-language"
+              value={lang}
+              onChange={(event) => setLang(event.target.value as Lang)}
+              className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-ink-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              {languages.map((l) => (
+                <option key={l} value={l} className="text-foreground">
+                  {languageLabels[l]}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
     </footer>
