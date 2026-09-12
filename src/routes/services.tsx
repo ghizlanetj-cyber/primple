@@ -5,9 +5,9 @@ import { PageHero, ContentSection } from "@/components/shared/PageHero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Printing services | Primple";
+const title = "Services d'impression pour marques et entreprises | Primple";
 const description =
-  "Artwork checks, printer matching, production management and tracked delivery — every service behind a Primple print job.";
+  "Vérification des fichiers, choix des options, suivi de production et livraison : tout ce que Primple prend en charge autour de votre impression.";
 
 export const Route = createFileRoute("/services")({
   head: () => ({

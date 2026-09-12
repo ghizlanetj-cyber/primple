@@ -13,9 +13,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { printers } from "@/data/printers";
 import { useI18n } from "@/i18n";
 
-const title = "Become a Primple print partner | Primple";
+const title = "Devenir imprimeur partenaire de Primple";
 const description =
-  "Fill your presses with qualified print jobs. No sales chasing, artwork checked before it reaches you, paid on time.";
+  "Recevez des commandes d'impression qualifiées, des fichiers vérifiés avant production et des paiements à échéance claire.";
 
 export const Route = createFileRoute("/partners")({
   head: () => ({
