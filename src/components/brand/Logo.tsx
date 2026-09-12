@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/primpel-logo.png.asset.json";
+import logo from "@/assets/primple-logo-dark-purple.png.asset.json";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 
@@ -10,7 +10,7 @@ export function Logo({ className, invert = false }: { className?: string; invert
       <img
         src={logo.url}
         alt="Primpel"
-        className={cn("h-6 w-auto md:h-7", invert && "brightness-0 invert", className)}
+        className={cn("h-7 w-auto md:h-8", invert && "brightness-0 invert", className)}
       />
     </Link>
   );
