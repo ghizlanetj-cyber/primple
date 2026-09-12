@@ -10,6 +10,7 @@ import {
   type DeliveryDetails,
   type OrderRecord,
 } from "@/lib/orders-api";
+import { buildWhatsAppOrderMessage, whatsAppOrderUrl } from "@/lib/whatsapp-order";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,7 @@ export const Route = createFileRoute("/checkout")({
 const steps = ["Order", "Delivery", "Payment", "Confirmation"];
 
 function CheckoutPage() {
-  const { tr, number } = useI18n();
+  const { tr, number, lang } = useI18n();
   const navigate = useNavigate();
   const { items, clear } = useCart();
   const { user } = useAuth();
@@ -55,19 +56,46 @@ function CheckoutPage() {
   const [details, setDetails] = useState<DeliveryDetails | null>(null);
   const [placing, setPlacing] = useState(false);
   const [placedOrder, setPlacedOrder] = useState<OrderRecord | null>(null);
+  const [whatsAppLink, setWhatsAppLink] = useState<string>("");
   const split = splitPayment(placedOrder?.total ?? totals.total);
   const orderId = placedOrder?.reference ?? "";
 
   const handlePlaceOrder = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!user || !details) return;
+    if (!user) {
+      toast.error(
+        tr(
+          "Please sign in above so we can save this order to your dashboard before continuing on WhatsApp.",
+        ),
+      );
+      return;
+    }
+    if (!details) {
+      toast.error(tr("Please complete your delivery details before continuing on WhatsApp."));
+      setStep(1);
+      return;
+    }
     setPlacing(true);
+    const snapshotItems = items;
+    const snapshotTotals = totals;
     try {
       const order = await createOrder({ userId: user.id, items, totals, details });
+      const url = whatsAppOrderUrl(
+        buildWhatsAppOrderMessage({
+          lang,
+          items: snapshotItems,
+          totals: snapshotTotals,
+          split: splitPayment(order.total),
+          reference: order.reference,
+          details,
+        }),
+      );
       setPlacedOrder(order);
+      setWhatsAppLink(url);
       setStep(3);
       clear();
-      toast.success(tr("Order confirmed. 50% advance received."));
+      window.open(url, "_blank", "noopener,noreferrer");
+      toast.success(tr("Order recorded. Continue on WhatsApp to confirm it."));
     } catch (error) {
       toast.error(error instanceof Error ? error.message : tr("We couldn't place your order."));
     } finally {
@@ -93,7 +121,7 @@ function CheckoutPage() {
     <SiteShell>
       <section className="section-shell py-14 md:py-20">
         <h1 className="text-4xl md:text-5xl">
-          {tr(step === 3 ? "Your print job is officially underway." : "Review & pay")}
+          {tr(step === 3 ? "Your order is pending confirmation." : "Review & pay")}
         </h1>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -228,13 +256,13 @@ function CheckoutPage() {
                     <div className="rounded-2xl border border-primary bg-primary/10 p-5">
                       <p className="flex items-center gap-2 text-sm font-semibold">
                         <Lock className="size-4 text-primary" />
-                        {tr("Advance now (50%)")}
+                        {tr("Advance to arrange (50%)")}
                       </p>
                       <p className="mt-2 font-display text-2xl font-extrabold">
                         {mad(split.deposit)}
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {tr("Confirms your order and releases it to the printer.")}
+                        {tr("Arranged with our team on WhatsApp before production.")}
                       </p>
                     </div>
                     <div className="rounded-2xl border border-border bg-secondary/50 p-5">
@@ -251,24 +279,17 @@ function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                    <div className="sm:col-span-2">
-                      <Field
-                        label="Card number for the 50% advance"
-                        name="card"
-                        placeholder="4242 4242 4242 4242"
-                      />
-                    </div>
-                    <Field label="Expiry" name="expiry" placeholder="09 / 29" />
-                    <Field label="Security code" name="cvc" placeholder="123" />
-                    <div className="sm:col-span-2">
-                      <Field label="Billing name" name="billing" />
-                    </div>
-                  </div>
+                  <p className="mt-6 rounded-2xl border border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
+                    {tr(
+                      "We use WhatsApp to confirm your order and arrange the 50% advance payment manually. Your order stays pending until Primple confirms it. No payment is taken on this website.",
+                    )}
+                  </p>
 
                   {!user && (
                     <p className="mt-4 text-sm text-destructive">
-                      {tr("Please sign in above so we can save this order to your dashboard.")}
+                      {tr(
+                        "Please sign in above so we can save this order to your dashboard before continuing on WhatsApp.",
+                      )}
                     </p>
                   )}
 
@@ -277,26 +298,31 @@ function CheckoutPage() {
                     size="lg"
                     className="mt-6 rounded-full"
                     disabled={placing || !user}
+                    aria-describedby="whatsapp-checkout-hint"
                   >
                     {placing
-                      ? tr("Placing your order…")
-                      : `${tr("Pay 50% advance")} · ${mad(split.deposit)}`}
+                      ? tr("Preparing your order…")
+                      : `${tr("Finalise via WhatsApp")} · ${mad(totals.total)}`}
                     <ArrowRight className="size-4 rtl:rotate-180" />
                   </Button>
+                  <p id="whatsapp-checkout-hint" className="mt-2 text-xs text-muted-foreground">
+                    {tr("Opens WhatsApp with a prefilled summary of your order")}
+                  </p>
                 </form>
               )}
 
               {step === 3 && (
                 <div>
-                  <span className="flex size-12 items-center justify-center rounded-full bg-success/15">
-                    <CheckCircle2 className="size-6 text-success" />
+                  <span className="flex size-12 items-center justify-center rounded-full bg-primary/15">
+                    <Clock className="size-6 text-primary" />
                   </span>
                   <h2 className="mt-5 text-xl">
-                    {tr("Order")} {orderId} {tr("confirmed")}
+                    {tr("Order")} {orderId} · {tr("Pending")}
                   </h2>
                   <p className="mt-2 text-muted-foreground">
+                    {tr("Your order is pending confirmation.")}{" "}
                     {tr(
-                      "Your printer has the job and your artwork. We'll tell you the moment production starts.",
+                      "We received your order details. Confirm it on WhatsApp with our team; production starts once Primple confirms the order and the 50% advance.",
                     )}
                   </p>
 
@@ -318,7 +344,7 @@ function CheckoutPage() {
                     />
                     <Summary
                       icon={Lock}
-                      label={tr("Advance paid (50%)")}
+                      label={tr("Advance to arrange (50%)")}
                       value={mad(split.deposit)}
                     />
                     <Summary
@@ -329,15 +355,23 @@ function CheckoutPage() {
                   </dl>
 
                   <div className="mt-8 flex flex-wrap gap-3">
+                    {whatsAppLink && (
+                      <Button asChild size="lg" className="rounded-full">
+                        <a href={whatsAppLink} target="_blank" rel="noopener noreferrer">
+                          {tr("Reopen WhatsApp")}
+                          <ArrowRight className="size-4 rtl:rotate-180" />
+                        </a>
+                      </Button>
+                    )}
                     <Button
                       size="lg"
+                      variant="outline"
                       className="rounded-full"
                       onClick={() => navigate({ to: "/dashboard" })}
                     >
                       {tr("Track my order")}
-                      <ArrowRight className="size-4 rtl:rotate-180" />
                     </Button>
-                    <Button asChild size="lg" variant="outline" className="rounded-full">
+                    <Button asChild size="lg" variant="ghost" className="rounded-full">
                       <Link to="/products">{tr("Continue shopping")}</Link>
                     </Button>
                   </div>
@@ -366,7 +400,7 @@ function CheckoutPage() {
                 <dd>{mad(totals.total)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-muted-foreground">{tr("Advance now (50%)")}</dt>
+                <dt className="text-muted-foreground">{tr("Advance to arrange (50%)")}</dt>
                 <dd>{mad(split.deposit)}</dd>
               </div>
               <div className="flex justify-between">

@@ -20,7 +20,7 @@ export function Hero() {
     <section className="relative isolate flex min-h-[640px] flex-col overflow-hidden bg-ink text-ink-foreground lg:h-[100svh] lg:min-h-[720px]">
       <img
         src={heroStudioAsset.url}
-        alt="Collection de supports imprimés PRIMPLE dans un studio lumineux"
+        alt={t("hero.alt")}
         className="absolute inset-0 -z-10 size-full object-cover object-[64%_center] sm:object-[60%_center] lg:object-[58%_center] 2xl:object-[54%_center]"
         fetchPriority="high"
       />
@@ -110,26 +110,26 @@ export function Hero() {
           className="pointer-events-none hidden self-start justify-self-end text-[0.65rem] uppercase leading-[1.9] tracking-[0.3em] text-ink-foreground/70 lg:block"
         >
           <span className="mb-3 block h-px w-6 bg-ink-foreground/50" />
-          Idées
+          {t("hero.w1")}
           <br />
-          Personnes
+          {t("hero.w2")}
           <br />
-          Marques
+          {t("hero.w3")}
           <br />
-          Imprimées
+          {t("hero.w4")}
         </div>
       </div>
 
       <div className="pointer-events-none mx-auto hidden w-full max-w-[1440px] items-center justify-between px-12 pb-8 pt-6 text-[0.65rem] uppercase tracking-[0.3em] text-ink-foreground/70 xl:flex xl:px-16">
         <span className="mx-auto flex items-center gap-4">
-          Impression <span className="h-px w-8 bg-ink-foreground/40" /> Humain{" "}
-          <span className="h-px w-8 bg-ink-foreground/40" /> Possibilités
+          {t("hero.b1")} <span className="h-px w-8 bg-ink-foreground/40" /> {t("hero.b2")}{" "}
+          <span className="h-px w-8 bg-ink-foreground/40" /> {t("hero.b3")}
         </span>
         <span className="text-end leading-[1.8]">
           Primple
           <br />
           <span className="text-[0.6rem] tracking-[0.22em] text-ink-foreground/60">
-            Imprimer un avenir plus lumineux
+            {t("hero.sign")}
           </span>
         </span>
       </div>
