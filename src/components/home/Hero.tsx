@@ -11,24 +11,24 @@ export function Hero() {
   const { t } = useI18n();
 
   return (
-    <section className="relative min-h-[clamp(560px,92svh,900px)] overflow-hidden bg-ink text-ink-foreground">
+    <section className="relative min-h-[clamp(620px,100svh,900px)] overflow-hidden bg-ink text-ink-foreground lg:min-h-[max(760px,min(100svh,900px))]">
       <img
         src={heroStudioAsset.url}
         alt="Collection de supports imprimés PRIMPLE dans un studio lumineux"
-        className="absolute inset-0 size-full object-cover object-center"
+        className="absolute inset-0 size-full object-cover object-[68%_center] sm:object-[60%_center] lg:object-center"
         fetchPriority="high"
       />
-      <div className="absolute inset-0 bg-linear-to-r from-ink/55 via-ink/10 to-transparent" />
-      <div className="absolute inset-0 bg-linear-to-t from-ink/30 via-transparent to-ink/15" />
+      <div className="absolute inset-0 bg-linear-to-r from-ink/65 via-ink/25 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-t from-ink/25 via-transparent to-ink/10" />
 
-      <div className="section-shell relative flex min-h-[clamp(560px,92svh,900px)] items-center pb-[clamp(4rem,10vh,6rem)] pt-[clamp(6rem,14vh,9rem)]">
-        <div className="relative z-10 w-full max-w-[min(42rem,90%)]">
+      <div className="relative flex min-h-[clamp(620px,100svh,900px)] items-start px-5 pb-16 pt-[24vh] sm:px-8 lg:min-h-[max(760px,min(100svh,900px))] lg:px-[max(48px,8vw)] lg:pt-[18vh]">
+        <div className="relative z-10 w-full max-w-[calc(100%-0px)] lg:max-w-[540px]">
 
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-[0.65rem] font-medium uppercase leading-relaxed tracking-[0.26em] text-ink-foreground/75"
+            className="text-[13px] font-medium uppercase leading-[1.5] tracking-[0.2em] text-ink-foreground/75 lg:text-[14px]"
           >
             {t("hero.eyebrow")}
           </motion.p>
@@ -37,7 +37,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="mt-3 max-w-[16ch] whitespace-pre-line text-[clamp(1.6rem,3.4vw,2.75rem)] font-light leading-[1.15] tracking-tight text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]"
+            className="mt-5 whitespace-pre-line text-[clamp(42px,11vw,58px)] font-bold leading-[0.98] tracking-[-0.045em] text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] md:text-[clamp(48px,5vw,76px)]"
           >
             {t("hero.title")}{"\n"}
             <span className="text-primary">{t("hero.titleAccent")}</span>
@@ -47,7 +47,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12 }}
-            className="mt-4 max-w-[34rem] text-[clamp(0.875rem,1.1vw,1rem)] leading-relaxed text-ink-foreground/85"
+            className="mt-7 max-w-[500px] text-[17px] leading-[1.5] text-ink-foreground/85 lg:text-[18px]"
           >
             {t("hero.sub")}
           </motion.p>
@@ -56,9 +56,9 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.18 }}
-            className="mt-6 flex flex-wrap items-center gap-3"
+            className="mt-8 flex flex-wrap items-center gap-4"
           >
-            <Button asChild size="default" className="rounded-full px-6">
+            <Button asChild size="default" className="h-14 rounded-full px-8 text-[16px]">
               <Link to="/products">
                 {t("cta.start")}
                 <ArrowRight className="size-4 -rotate-45 rtl:rotate-180" />
@@ -68,7 +68,7 @@ export function Hero() {
               asChild
               size="default"
               variant="outline"
-              className="rounded-full border-white/35 bg-white/5 px-6 text-ink-foreground hover:bg-white/12 hover:text-ink-foreground"
+              className="h-14 rounded-full border-white/35 bg-white/5 px-8 text-[16px] text-ink-foreground hover:bg-white/12 hover:text-ink-foreground"
             >
               <Link to="/partners">{t("cta.partner")}</Link>
             </Button>
@@ -78,18 +78,18 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-[clamp(1.75rem,4vh,2.5rem)] flex max-w-md flex-nowrap gap-x-[clamp(1rem,2vw,1.5rem)] text-left text-[clamp(0.8rem,1vw,0.875rem)] leading-snug text-ink-foreground/85"
+            className="mt-10 flex max-w-[520px] flex-nowrap gap-x-8 text-left text-[15px] leading-snug text-ink-foreground/85 lg:gap-x-12"
           >
-            <span className="flex max-w-[7rem] flex-col items-start gap-3">
-              <Gem className="size-7 shrink-0 stroke-[1.25] text-ink-foreground" />
+            <span className="flex max-w-[8rem] flex-col items-start gap-3">
+              <Gem className="size-8 shrink-0 stroke-[1.25] text-ink-foreground" />
               {t("hero.f1")}
             </span>
-            <span className="flex max-w-[7rem] flex-col items-start gap-3">
-              <Truck className="size-7 shrink-0 stroke-[1.25] text-ink-foreground" />
+            <span className="flex max-w-[8rem] flex-col items-start gap-3">
+              <Truck className="size-8 shrink-0 stroke-[1.25] text-ink-foreground" />
               {t("hero.f2")}
             </span>
-            <span className="flex max-w-[7rem] flex-col items-start gap-3">
-              <Leaf className="size-7 shrink-0 stroke-[1.25] text-ink-foreground" />
+            <span className="flex max-w-[8rem] flex-col items-start gap-3">
+              <Leaf className="size-8 shrink-0 stroke-[1.25] text-ink-foreground" />
               {t("hero.f3")}
             </span>
           </motion.div>
