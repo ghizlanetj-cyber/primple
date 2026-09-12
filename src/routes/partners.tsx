@@ -94,9 +94,9 @@ function PartnersPage() {
             <div className="mt-10 grid gap-6 sm:grid-cols-3">
               <Stat value={340} suffix="+" label="Jobs routed monthly" />
               <Stat value={97} suffix="%" label="Files print-ready on arrival" />
-              <Stat value={14} suffix=" days" label="Average payment cycle" />
+              <Stat value={14} suffix=" jours" label="Average payment cycle" />
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">Données indicatives à confirmer avant publication.</p>
+            <p className="mt-3 text-xs text-muted-foreground">Statistiques et évaluations indicatives à confirmer avant publication.</p>
 
             <div className="mt-12 grid gap-5 sm:grid-cols-2">
               {benefits.map((b, i) => (

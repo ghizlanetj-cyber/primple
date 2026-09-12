@@ -44,7 +44,7 @@ export const Route = createFileRoute("/products/$slug")({
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: productPhrases[product.name]?.fr ?? product.name,
+            name,
             description,
             aggregateRating: {
               "@type": "AggregateRating",
