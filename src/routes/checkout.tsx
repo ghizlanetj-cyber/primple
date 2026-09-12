@@ -256,13 +256,13 @@ function CheckoutPage() {
                     <div className="rounded-2xl border border-primary bg-primary/10 p-5">
                       <p className="flex items-center gap-2 text-sm font-semibold">
                         <Lock className="size-4 text-primary" />
-                        {tr("Advance now (50%)")}
+                        {tr("Advance to arrange (50%)")}
                       </p>
                       <p className="mt-2 font-display text-2xl font-extrabold">
                         {mad(split.deposit)}
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {tr("Confirms your order and releases it to the printer.")}
+                        {tr("Arranged with our team on WhatsApp before production.")}
                       </p>
                     </div>
                     <div className="rounded-2xl border border-border bg-secondary/50 p-5">
@@ -279,24 +279,17 @@ function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                    <div className="sm:col-span-2">
-                      <Field
-                        label="Card number for the 50% advance"
-                        name="card"
-                        placeholder="4242 4242 4242 4242"
-                      />
-                    </div>
-                    <Field label="Expiry" name="expiry" placeholder="09 / 29" />
-                    <Field label="Security code" name="cvc" placeholder="123" />
-                    <div className="sm:col-span-2">
-                      <Field label="Billing name" name="billing" />
-                    </div>
-                  </div>
+                  <p className="mt-6 rounded-2xl border border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
+                    {tr(
+                      "We use WhatsApp to confirm your order and arrange the 50% advance payment manually. Your order stays pending until Primple confirms it. No payment is taken on this website.",
+                    )}
+                  </p>
 
                   {!user && (
                     <p className="mt-4 text-sm text-destructive">
-                      {tr("Please sign in above so we can save this order to your dashboard.")}
+                      {tr(
+                        "Please sign in above so we can save this order to your dashboard before continuing on WhatsApp.",
+                      )}
                     </p>
                   )}
 
@@ -305,12 +298,16 @@ function CheckoutPage() {
                     size="lg"
                     className="mt-6 rounded-full"
                     disabled={placing || !user}
+                    aria-describedby="whatsapp-checkout-hint"
                   >
                     {placing
-                      ? tr("Placing your order…")
-                      : `${tr("Pay 50% advance")} · ${mad(split.deposit)}`}
+                      ? tr("Preparing your order…")
+                      : `${tr("Finalise via WhatsApp")} · ${mad(totals.total)}`}
                     <ArrowRight className="size-4 rtl:rotate-180" />
                   </Button>
+                  <p id="whatsapp-checkout-hint" className="mt-2 text-xs text-muted-foreground">
+                    {tr("Opens WhatsApp with a prefilled summary of your order")}
+                  </p>
                 </form>
               )}
 
