@@ -3,22 +3,39 @@ import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight, CheckCircle2, Star, Truck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { productImages } from "@/data/productImages";
 import { useI18n } from "@/i18n";
+import heroStudioAsset from "@/assets/primple-studio-hero.png.asset.json";
 
 export function Hero() {
   const reduce = useReducedMotion();
   const { t } = useI18n();
 
   return (
-    <section className="relative min-h-[min(900px,100svh)] overflow-hidden bg-ink text-ink-foreground">
-      <div className="section-shell relative grid min-h-[min(900px,100svh)] items-center gap-14 pb-20 pt-32 md:pt-40 lg:grid-cols-[0.86fr_1.14fr] lg:gap-16">
-        <div className="relative z-10 max-w-2xl">
+    <section className="relative min-h-[780px] overflow-hidden bg-ink text-ink-foreground md:min-h-[min(920px,100svh)]">
+      <img
+        src={heroStudioAsset.url}
+        alt="Collection de supports imprimés PRIMPLE dans un studio lumineux"
+        className="absolute inset-0 size-full object-cover object-[62%_center] md:object-center"
+        fetchPriority="high"
+      />
+      <div className="absolute inset-0 bg-linear-to-r from-ink from-0% via-ink/78 via-34% to-ink/5 to-72% md:via-ink/62 md:via-38%" />
+      <div className="absolute inset-0 bg-linear-to-t from-ink/35 via-transparent to-ink/20" />
+
+      <div className="section-shell relative flex min-h-[780px] items-center pb-14 pt-28 md:min-h-[min(920px,100svh)] md:pb-12 md:pt-32">
+        <div className="relative z-10 max-w-[35rem] md:max-w-[38rem] lg:max-w-[40rem]">
+          <motion.p
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55 }}
+            className="eyebrow mb-7 max-w-64 leading-relaxed text-ink-foreground/85"
+          >
+            {t("hero.sub")}
+          </motion.p>
           <motion.h1
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="display-xl text-6xl sm:text-7xl lg:text-[5.4rem]"
+            className="display-xl max-w-[11ch] text-5xl sm:text-7xl lg:text-[5.25rem]"
           >
             {t("hero.title")} <span className="display-accent">{t("hero.titleAccent")}</span>
           </motion.h1>
@@ -27,7 +44,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12 }}
-            className="mt-7 max-w-xl text-lg leading-relaxed text-ink-muted md:text-xl"
+            className="mt-7 max-w-md text-base leading-relaxed text-ink-foreground/80 md:text-lg"
           >
             {t("hero.sub")}
           </motion.p>
@@ -53,7 +70,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-9 grid gap-3 border-t border-white/10 pt-7 text-sm text-ink-muted sm:grid-cols-3"
+            className="mt-9 grid max-w-xl gap-3 border-t border-white/20 pt-7 text-xs text-ink-foreground/80 sm:grid-cols-3"
           >
             <span className="inline-flex items-center gap-1.5">
                <CheckCircle2 className="size-4 shrink-0 text-primary" />
@@ -69,39 +86,6 @@ export function Hero() {
             </span>
           </motion.p>
         </div>
-
-        <motion.div
-          initial={reduce ? false : { opacity: 0, x: 24, scale: 1.03 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-          className="relative min-h-[430px] lg:min-h-[610px]"
-        >
-          <div className="absolute inset-0 overflow-hidden rounded-2xl border border-white/10 bg-card/5 shadow-lift">
-            <img
-              src={productImages["packaging"]}
-              alt=""
-              className="premium-image size-full object-cover opacity-95"
-            />
-            <div className="absolute inset-0 bg-linear-to-r from-ink/25 via-transparent to-transparent" />
-          </div>
-          <div className="absolute -bottom-5 -left-5 w-[48%] overflow-hidden rounded-xl border border-white/15 bg-card p-2 shadow-lift sm:-left-8">
-            <img
-              src={productImages["business-cards"]}
-              alt=""
-              className="premium-image aspect-[4/3] w-full rounded-lg object-cover"
-            />
-          </div>
-          <div className="absolute -right-3 -top-4 w-[34%] overflow-hidden rounded-xl border border-white/15 bg-card p-2 shadow-lift sm:-right-7">
-            <img
-              src={productImages["brochures"]}
-              alt=""
-              className="premium-image aspect-[4/3] w-full rounded-lg object-cover"
-            />
-          </div>
-          <div className="glass-panel absolute bottom-5 right-5 rounded-full px-5 py-3 text-xs font-semibold text-ink-foreground">
-            {t("hero.f2")}
-          </div>
-        </motion.div>
       </div>
     </section>
   );
