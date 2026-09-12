@@ -14,9 +14,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { authErrorPhrase } from "@/lib/auth-messages";
 
-const title = "Create your Primpel account | Primpel";
+const title = "Create your Primple account | Primple";
 const description =
-  "Open a free Primpel account to order printing, track production and manage invoices — for businesses, printers and designers.";
+  "Open a free Primple account to order printing, track production and manage invoices — for businesses, printers and designers.";
 
 const roles = [
   { id: "business", label: "I buy printing", copy: "Order, track and reorder for your business." },
@@ -79,7 +79,7 @@ function SignupPage() {
       });
       if (error) throw error;
       if (data.session) {
-        toast.success(tr("Welcome to Primpel."));
+        toast.success(tr("Welcome to Primple."));
         navigate({ to: destination });
       } else {
         toast.success(tr("Check your inbox to confirm your email address."));

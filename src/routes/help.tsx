@@ -6,9 +6,9 @@ import { FaqSection } from "@/components/shared/FaqSection";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Help Center | Primpel";
+const title = "Help Center | Primple";
 const description =
-  "Answers on file setup, payment terms, delivery times and order tracking for Primpel printing orders.";
+  "Answers on file setup, payment terms, delivery times and order tracking for Primple printing orders.";
 
 export const Route = createFileRoute("/help")({
   head: () => ({

@@ -25,7 +25,7 @@ const cards = [
   {
     icon: Plug,
     title: "Enterprise & API",
-    copy: "Connect Primpel to your existing systems and automate printing workflows at scale.",
+    copy: "Connect Primple to your existing systems and automate printing workflows at scale.",
   },
 ];
 

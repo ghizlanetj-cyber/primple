@@ -6,7 +6,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Printing insights & guides | Primpel Blog";
+const title = "Printing insights & guides | Primple Blog";
 const description =
   "Practical guides on paper stocks, finishes, artwork setup and print budgets for Moroccan businesses.";
 

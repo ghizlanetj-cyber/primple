@@ -16,7 +16,7 @@ import { FinalCta } from "@/components/shared/FinalCta";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Printing management platform for teams | Primpel";
+const title = "Printing management platform for teams | Primple";
 const description =
   "Run every print job from one place: approvals, saved brand setups, live production tracking, spend and reorders.";
 
@@ -82,7 +82,7 @@ const faqs = [
   },
   {
     q: "Can we keep our current printer?",
-    a: "Yes. We can onboard a printer you already trust so they receive jobs through Primpel alongside our verified partners.",
+    a: "Yes. We can onboard a printer you already trust so they receive jobs through Primple alongside our verified partners.",
   },
   {
     q: "How do approvals work with multiple brands or locations?",
@@ -90,7 +90,7 @@ const faqs = [
   },
   {
     q: "What does it cost?",
-    a: "The platform is included when you order through Primpel. Larger teams can add enterprise features — see pricing.",
+    a: "The platform is included when you order through Primple. Larger teams can add enterprise features — see pricing.",
   },
 ];
 
@@ -107,7 +107,7 @@ function PlatformPage() {
                <span className="display-accent">{tr("It becomes a process.")}</span>
             </h1>
             <p className="mt-6 text-lg text-muted-foreground md:text-xl">
-               {tr("Primpel is where your team requests, approves, tracks and reorders printing — with the production side already handled.")}
+               {tr("Primple is where your team requests, approves, tracks and reorders printing — with the production side already handled.")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="rounded-full px-7">

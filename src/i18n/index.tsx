@@ -24,13 +24,17 @@ type Dict = Record<string, string>;
 
 const en: Dict = {
   "nav.products": "Products",
+  "nav.solutions": "Solutions",
+  "nav.why": "Why Primple",
+  "nav.work": "Our work",
+  "nav.contact": "Contact",
   "nav.platform": "Platform",
   "nav.pricing": "Pricing",
   "nav.partners": "Become a Print Partner",
   "nav.dashboard": "Dashboard",
   "nav.login": "Login",
   "cta.start": "Start Printing",
-  "cta.partner": "Become a Print Partner",
+  "cta.partner": "Explore products",
   "cta.getQuote": "Get a quote",
   "cta.cart": "Cart",
   "cta.menu": "Open menu",
@@ -99,12 +103,16 @@ const en: Dict = {
 
 const fr: Dict = {
   "nav.products": "Produits",
+  "nav.solutions": "Solutions",
+  "nav.why": "Pourquoi Primple",
+  "nav.work": "Nos réalisations",
+  "nav.contact": "Contact",
   "nav.platform": "Plateforme",
   "nav.pricing": "Tarifs",
   "nav.partners": "Devenir imprimeur partenaire",
   "nav.dashboard": "Tableau de bord",
   "nav.login": "Connexion",
-  "cta.start": "Connexion",
+  "cta.start": "Commander une impression",
   "cta.partner": "Découvrir nos produits",
   "cta.getQuote": "Obtenir un devis",
   "cta.cart": "Panier",
@@ -174,13 +182,17 @@ const fr: Dict = {
 
 const ar: Dict = {
   "nav.products": "المنتجات",
+  "nav.solutions": "الحلول",
+  "nav.why": "لماذا Primple",
+  "nav.work": "أعمالنا",
+  "nav.contact": "اتصل بنا",
   "nav.platform": "المنصة",
   "nav.pricing": "الأسعار",
   "nav.partners": "كن مطبعة شريكة",
   "nav.dashboard": "لوحة التحكم",
   "nav.login": "تسجيل الدخول",
   "cta.start": "ابدأ الطباعة",
-  "cta.partner": "كن مطبعة شريكة",
+  "cta.partner": "استكشف المنتجات",
   "cta.getQuote": "احصل على عرض سعر",
   "cta.cart": "السلة",
   "cta.menu": "فتح القائمة",
@@ -263,7 +275,7 @@ const I18nContext = createContext<I18nValue | null>(null);
 const STORAGE_KEY = "primpel-lang";
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
+  const [lang, setLangState] = useState<Lang>("fr");
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY) as Lang | null;

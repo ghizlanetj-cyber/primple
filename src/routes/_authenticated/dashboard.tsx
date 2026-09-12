@@ -29,7 +29,7 @@ import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 
-const title = "Your printing dashboard | Primpel";
+const title = "Your printing dashboard | Primple";
 const description =
   "Track every print job, compare quotes, reorder past jobs and download invoices in one place.";
 
@@ -98,7 +98,7 @@ function DashboardPage() {
               <p className="mt-4 text-lg text-muted-foreground">
                 {displayName
                   ? `${tr("Welcome back")}, ${displayName}.`
-                  : tr("Welcome back to Primpel.")}
+                  : tr("Welcome back to Primple.")}
               </p>
               {user?.email && (
                 <p className="mt-1 text-sm text-muted-foreground" dir="ltr">
@@ -463,7 +463,7 @@ function toViewOrder(record: OrderRecord): Order {
     config: record.items.map((i) => i.config).filter(Boolean).join(" · ") || "Custom configuration",
     quantity: record.items.reduce((sum, i) => sum + i.quantity, 0),
     total: record.total,
-    printer: record.printer ?? "Primpel partner network",
+    printer: record.printer ?? "Primple partner network",
     city: record.city ?? "—",
     placed: new Date(record.createdAt).toLocaleDateString(),
     expected: record.expectedAt ?? "—",

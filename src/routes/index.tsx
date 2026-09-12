@@ -14,7 +14,7 @@ import { FaqSection } from "@/components/shared/FaqSection";
 import { FinalCta } from "@/components/shared/FinalCta";
 import { useI18n } from "@/i18n";
 
-const title = "Primpel — Order professional printing without the back-and-forth";
+const title = "Primple — Order professional printing without the back-and-forth";
 const description =
   "Configure printing, get an instant price, choose a verified printer and track production to delivery. Business cards, packaging, flyers, labels and more.";
 
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Primpel",
+          name: "Primple",
           description,
           url: "/",
         }),
@@ -46,7 +46,7 @@ export const Route = createFileRoute("/")({
 
 const faqs = [
   {
-    q: "How does Primpel work?",
+    q: "How does Primple work?",
     a: "Choose your product, configure it, upload your artwork, choose a printer and place your order. You see the price, production time and delivery date before you pay.",
   },
   {
@@ -76,7 +76,7 @@ function Home() {
   return (
     <SiteShell>
       <p className="sr-only">
-         {tr("Primpel — the online printing marketplace and printing management platform")}
+         {tr("Primple — the online printing marketplace and printing management platform")}
       </p>
       <Hero />
       

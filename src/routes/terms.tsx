@@ -4,9 +4,9 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { PageHero } from "@/components/shared/PageHero";
 import { LegalBody } from "@/components/shared/LegalBody";
 
-const title = "Terms of Service | Primpel";
+const title = "Terms of Service | Primple";
 const description =
-  "The terms that apply when you order printing through Primpel: orders, 50/50 payment, delivery, reprints and liability.";
+  "The terms that apply when you order printing through Primple: orders, 50/50 payment, delivery, reprints and liability.";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -29,7 +29,7 @@ function TermsPage() {
       <PageHero
         eyebrow="Legal"
         title="Terms of Service"
-        subtitle="These terms apply to every order placed through Primpel."
+        subtitle="These terms apply to every order placed through Primple."
       />
       <LegalBody
         sections={[
@@ -39,7 +39,7 @@ function TermsPage() {
           },
           {
             title: "2. Payment",
-            body: "Primpel's standard terms are 50% of the order total paid in advance and the remaining 50% paid in cash to the courier on delivery. Production starts only after the advance is received. Orders refused on delivery remain payable for the advance already paid.",
+            body: "Primple's standard terms are 50% of the order total paid in advance and the remaining 50% paid in cash to the courier on delivery. Production starts only after the advance is received. Orders refused on delivery remain payable for the advance already paid.",
           },
           {
             title: "3. Prices",

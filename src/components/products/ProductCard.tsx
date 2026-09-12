@@ -17,7 +17,7 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="aspect-[4/3] overflow-hidden bg-secondary/60 p-2">
         <img
           src={productImages[product.slug]}
-          alt={`${tr(product.name)} — Primpel`}
+          alt={`${tr(product.name)} — Primple`}
           width={800}
           height={600}
           loading="lazy"

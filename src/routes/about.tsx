@@ -5,9 +5,9 @@ import { PageHero, ContentSection } from "@/components/shared/PageHero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "About Primpel | Printing without the back-and-forth";
+const title = "About Primple | Printing without the back-and-forth";
 const description =
-  "Primpel connects Moroccan businesses with verified print partners: transparent prices, checked artwork and tracked delivery.";
+  "Primple connects Moroccan businesses with verified print partners: transparent prices, checked artwork and tracked delivery.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -31,7 +31,7 @@ function AboutPage() {
       <PageHero
         eyebrow="About us"
         title="We made printing as simple as ordering anything else."
-        subtitle="Primpel is a printing marketplace built in Casablanca. We compare verified printers, show the real price up front and follow every job to your door."
+        subtitle="Primple is a printing marketplace built in Casablanca. We compare verified printers, show the real price up front and follow every job to your door."
       >
         <Button asChild size="lg" className="rounded-full px-7">
           <Link to="/products">{tr("Start Printing")}</Link>
@@ -61,7 +61,7 @@ function AboutPage() {
       />
 
       <ContentSection
-        title="How Primpel works"
+        title="How Primple works"
         items={[
           { title: "1. Configure", body: "Pick your product, paper, finish and quantity and see the price move live." },
           { title: "2. Upload artwork", body: "We check bleed, resolution and colour before anything reaches a press." },

@@ -21,7 +21,7 @@ export function PartnerTeaser() {
           <p className="eyebrow text-primary">{tr("For print partners")}</p>
            <h2 className="display-xl mt-4 text-4xl md:text-6xl">{tr("More customers. Less time chasing them.")}</h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            {tr("Join the Primpel network and receive qualified printing orders from businesses looking for reliable production partners.")}
+            {tr("Join the Primple network and receive qualified printing orders from businesses looking for reliable production partners.")}
           </p>
           <Button asChild size="lg" className="mt-8 rounded-full px-7">
             <Link to="/partners">

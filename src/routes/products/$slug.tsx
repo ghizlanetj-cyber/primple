@@ -19,10 +19,10 @@ export const Route = createFileRoute("/products/$slug")({
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Product not found — Primpel" }, { name: "robots", content: "noindex" }] };
+      return { meta: [{ title: "Product not found — Primple" }, { name: "robots", content: "noindex" }] };
     }
     const { product } = loaderData;
-    const title = `${product.name} printing from ${mad(product.fromPrice)} | Primpel`;
+    const title = `${product.name} printing from ${mad(product.fromPrice)} | Primple`;
     const description = `${product.heroCopy} Compare verified printers, see production time and track delivery.`;
     return {
       meta: [
@@ -105,7 +105,7 @@ function ProductPage() {
           <Reveal delay={0.1}>
             <img
               src={productImages[product.slug]}
-               alt={`${tr(product.name)} — Primpel`}
+               alt={`${tr(product.name)} — Primple`}
               width={800}
               height={600}
               className="w-full rounded-3xl border border-border object-cover shadow-lift"
@@ -121,7 +121,7 @@ function ProductPage() {
       <section className="border-y border-border bg-card/50">
         <div className="section-shell grid gap-10 py-16 lg:grid-cols-[1fr_1.2fr]">
           <Reveal>
-             <h2 className="text-3xl">{tr("Why businesses print this with Primpel")}</h2>
+             <h2 className="text-3xl">{tr("Why businesses print this with Primple")}</h2>
           </Reveal>
           <Reveal delay={0.1}>
              <p className="text-lg leading-relaxed text-muted-foreground">{tr(product.description)}</p>
