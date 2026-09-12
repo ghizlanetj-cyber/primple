@@ -18,19 +18,30 @@ const columns: { titleKey: string; links: { label: string; to: string }[] }[] = 
     titleKey: "nav.platform",
     links: [
       { label: "Platform overview", to: "/platform" },
+      { label: "Services", to: "/services" },
       { label: "Pricing", to: "/pricing" },
+      { label: "Enterprise", to: "/enterprise" },
+      { label: "Help Center", to: "/help" },
       { label: "Client dashboard", to: "/dashboard" },
-      { label: "Cart", to: "/cart" },
     ],
   },
   {
     titleKey: "footer.company",
     links: [
+      { label: "About us", to: "/about" },
+      { label: "Blog", to: "/blog" },
+      { label: "Contact", to: "/contact" },
       { label: "Become a Print Partner", to: "/partners" },
-      { label: "All products", to: "/products" },
-      { label: "Login", to: "/login" },
+      { label: "Become a Designer", to: "/designers" },
+      { label: "Create an account", to: "/signup" },
     ],
   },
+];
+
+const legalLinks = [
+  { label: "Terms of Service", to: "/terms" },
+  { label: "Privacy Policy", to: "/privacy" },
+  { label: "Security", to: "/security" },
 ];
 
 export function Footer() {
