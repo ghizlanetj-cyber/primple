@@ -45,7 +45,7 @@ export function Header() {
       <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:h-[84px] lg:px-8">
         <div className="flex min-w-0 items-center gap-6 xl:gap-8">
           <Logo invert className="h-5 shrink-0 md:h-6 lg:w-[118px]" />
-          <nav className="hidden items-center gap-x-7 lg:flex xl:gap-x-8">
+          <nav className="hidden items-center gap-x-7 xl:flex xl:gap-x-8">
             <NavLink to="/services">Solutions</NavLink>
             <button
               type="button"
@@ -154,7 +154,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-             className="text-ink-foreground lg:hidden"
+             className="text-ink-foreground xl:hidden"
             aria-label={t("cta.menu")}
             onClick={() => setMobileOpen(true)}
           >
@@ -170,7 +170,7 @@ export function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden overflow-hidden rounded-b-3xl border-t border-white/15 bg-ink/60 text-ink-foreground backdrop-blur-3xl lg:block"
+            className="hidden overflow-hidden rounded-b-3xl border-t border-white/15 bg-ink/60 text-ink-foreground backdrop-blur-3xl xl:block"
           >
              <div className="grid grid-cols-4 gap-2 px-8 py-7">
               {products.map((p) => (
