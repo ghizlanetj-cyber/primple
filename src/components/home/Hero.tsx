@@ -43,7 +43,8 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="mt-6 whitespace-pre-line text-[clamp(2.625rem,11vw,3.5rem)] font-bold leading-[0.98] tracking-[-0.045em] text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] lg:text-[min(clamp(3.375rem,4.6vw,4.625rem),7vh)]"
+            style={{ fontSize: "var(--hero-h1)" }}
+            className="mt-6 whitespace-pre-line [--hero-h1:clamp(2.625rem,11vw,3.5rem)] font-bold leading-[0.98] tracking-[-0.045em] text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] lg:[--hero-h1:min(max(3.25rem,4.6vw),7.2vh,4.625rem)]"
           >
             {t("hero.title")}
             {"\n"}
