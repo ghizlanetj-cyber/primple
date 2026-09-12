@@ -28,8 +28,8 @@ export function Hero() {
       <div className="absolute inset-0 -z-10 bg-linear-to-r from-ink/85 via-ink/45 to-transparent lg:from-ink/78 lg:via-ink/28 lg:via-55%" />
       <div className="absolute inset-0 -z-10 bg-linear-to-t from-ink/30 via-transparent to-ink/15" />
 
-      <div className="mx-auto grid w-full max-w-[1440px] flex-1 grid-cols-1 gap-8 px-5 pb-24 pt-[clamp(120px,20vh,200px)] sm:px-8 lg:grid-cols-[minmax(420px,0.85fr)_minmax(0,1.15fr)] lg:gap-12 lg:px-12 xl:px-16">
-        <div className="relative w-full max-w-[560px] self-start">
+      <div className="mx-auto grid w-full max-w-[1440px] flex-1 grid-cols-1 gap-8 px-5 pb-20 pt-[clamp(112px,18vh,180px)] sm:px-8 lg:grid-cols-[minmax(420px,0.85fr)_minmax(0,1.15fr)] lg:gap-12 lg:px-12 xl:px-16">
+        <div className="relative w-full max-w-[600px] self-start">
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -43,7 +43,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="mt-6 whitespace-pre-line text-[clamp(2.625rem,11vw,3.5rem)] font-bold leading-[0.98] tracking-[-0.045em] text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] lg:text-[min(clamp(3.375rem,4.8vw,4.625rem),8.6vh)]"
+            className="mt-6 whitespace-pre-line text-[clamp(2.625rem,11vw,3.5rem)] font-bold leading-[0.98] tracking-[-0.045em] text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] lg:text-[min(clamp(3.375rem,4.6vw,4.625rem),7vh)]"
           >
             {t("hero.title")}
             {"\n"}
