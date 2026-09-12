@@ -49,23 +49,22 @@ export function Header() {
         <div className="flex min-w-0 items-center gap-7 xl:gap-9">
           <Logo invert className="h-5 shrink-0 md:h-6" />
           <nav className="hidden items-center gap-1 lg:flex">
+            <NavLink to="/services">Solutions</NavLink>
             <button
               type="button"
               onMouseEnter={() => setMegaOpen(true)}
               onClick={() => setMegaOpen((v) => !v)}
-               className="flex items-center gap-1 rounded-full px-2 py-2 text-xs font-medium text-ink-muted transition-colors hover:text-ink-foreground xl:px-3 xl:text-sm"
+              className="flex items-center gap-1 rounded-full px-2 py-2 text-xs font-medium text-white/80 transition-colors hover:text-white xl:px-3 xl:text-sm"
               aria-expanded={megaOpen}
             >
-              {t("nav.products")}
+              Produits
               <ChevronDown
                 className={cn("size-4 transition-transform", megaOpen && "rotate-180")}
               />
             </button>
-            <NavLink to="/services">{tr("Services")}</NavLink>
-            <NavLink to="/platform">{t("nav.platform")}</NavLink>
-            <NavLink to="/pricing">{t("nav.pricing")}</NavLink>
-            <NavLink to="/partners">{t("nav.partners")}</NavLink>
-            <NavLink to="/contact">{tr("Contact")}</NavLink>
+            <NavLink to="/about">Pourquoi Primple</NavLink>
+            <NavLink to="/platform">Nos réalisation</NavLink>
+            <NavLink to="/contact">Contact</NavLink>
           </nav>
         </div>
 
@@ -236,14 +235,11 @@ export function Header() {
                 ))}
               </div>
               {[
-                { to: "/products", label: t("nav.products") },
-                { to: "/services", label: tr("Services") },
-                { to: "/platform", label: t("nav.platform") },
-                { to: "/pricing", label: t("nav.pricing") },
-                { to: "/partners", label: t("nav.partners") },
-                { to: "/designers", label: tr("For designers") },
-                { to: "/about", label: tr("About") },
-                { to: "/contact", label: tr("Contact") },
+                { to: "/services", label: "Solutions" },
+                { to: "/products", label: "Produits" },
+                { to: "/about", label: "Pourquoi Primple" },
+                { to: "/platform", label: "Nos réalisation" },
+                { to: "/contact", label: "Contact" },
                 { to: "/dashboard", label: t("nav.dashboard") },
                 ...(user ? [] : [{ to: "/login", label: t("nav.login") }]),
               ].map((link, i) => (
@@ -294,8 +290,8 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className="rounded-full px-2 py-2 text-xs font-medium text-ink-muted transition-colors hover:text-ink-foreground xl:px-3 xl:text-sm"
-      activeProps={{ className: "text-ink-foreground" }}
+      className="rounded-full px-2 py-2 text-xs font-medium text-white/80 transition-colors hover:text-white xl:px-3 xl:text-sm"
+      activeProps={{ className: "text-white" }}
     >
       {children}
     </Link>
