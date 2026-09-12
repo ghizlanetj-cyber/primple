@@ -82,14 +82,16 @@ function Home() {
   return (
     <SiteShell>
       <p className="sr-only">
-         {tr("Primple — professional and custom printing for brands, businesses and creatives in Morocco")}
+        {tr(
+          "Primple — professional and custom printing for brands, businesses and creatives in Morocco",
+        )}
       </p>
       <Hero />
-      
+
       <Stats />
       <HowItWorks />
       <Categories />
-      
+
       <PlatformBridge />
       <PartnerTeaser />
       <Testimonials />

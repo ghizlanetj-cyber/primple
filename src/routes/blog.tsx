@@ -30,13 +30,15 @@ const posts = [
   {
     tag: "Guides",
     title: "Choosing the right paper weight for business cards",
-    excerpt: "300g, 400g or 600g? What each weight feels like in the hand and when the upgrade is worth it.",
+    excerpt:
+      "300g, 400g or 600g? What each weight feels like in the hand and when the upgrade is worth it.",
     read: "5 min read",
   },
   {
     tag: "Artwork",
     title: "Export a print-ready PDF in five minutes",
-    excerpt: "Bleed, trim marks, colour profile and image resolution — the settings that prevent reprints.",
+    excerpt:
+      "Bleed, trim marks, colour profile and image resolution — the settings that prevent reprints.",
     read: "4 min read",
   },
   {
@@ -48,7 +50,8 @@ const posts = [
   {
     tag: "Budgets",
     title: "How to plan a yearly print budget",
-    excerpt: "Batch sizes, reorder cycles and the quantity breaks where the price per unit really drops.",
+    excerpt:
+      "Batch sizes, reorder cycles and the quantity breaks where the price per unit really drops.",
     read: "7 min read",
   },
   {
@@ -91,7 +94,9 @@ function BlogPage() {
 
         <div className="surface-card mt-12 p-8 text-center">
           <h2 className="text-2xl">{tr("Want a guide on something specific?")}</h2>
-          <p className="mt-3 text-muted-foreground">{tr("Tell us the topic and our production team will write it.")}</p>
+          <p className="mt-3 text-muted-foreground">
+            {tr("Tell us the topic and our production team will write it.")}
+          </p>
           <Button asChild size="lg" className="mt-6 rounded-full px-7">
             <Link to="/contact">{tr("Suggest a topic")}</Link>
           </Button>

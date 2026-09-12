@@ -105,12 +105,15 @@ function PricingPage() {
     <SiteShell>
       <section className="section-shell py-16 md:py-24">
         <Reveal className="max-w-3xl">
-           <p className="eyebrow text-primary">{tr("Pricing")}</p>
+          <p className="eyebrow text-primary">{tr("Pricing")}</p>
           <h1 className="display-xl mt-4 text-4xl md:text-6xl">
-             {tr("Pay for printing.")} <span className="display-accent">{tr("The rest is included.")}</span>
+            {tr("Pay for printing.")}{" "}
+            <span className="display-accent">{tr("The rest is included.")}</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground md:text-xl">
-             {tr("No subscriptions, no setup fees, no surprises at checkout. The price you configure is the price you pay.")}
+            {tr(
+              "No subscriptions, no setup fees, no surprises at checkout. The price you configure is the price you pay.",
+            )}
           </p>
         </Reveal>
 
@@ -127,20 +130,20 @@ function PricingPage() {
               >
                 {plan.featured && (
                   <span className="mb-4 w-fit rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-                     {tr("Most teams choose this")}
+                    {tr("Most teams choose this")}
                   </span>
                 )}
-                 <h2 className="text-xl">{tr(plan.name)}</h2>
+                <h2 className="text-xl">{tr(plan.name)}</h2>
                 <p className="mt-4 font-display text-4xl font-extrabold tracking-tight">
-                   {tr(plan.price)}
+                  {tr(plan.price)}
                 </p>
-                 <p className="mt-2 text-sm text-muted-foreground">{tr(plan.note)}</p>
-                 <p className="mt-5 text-sm font-semibold">{tr(plan.for)}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{tr(plan.note)}</p>
+                <p className="mt-5 text-sm font-semibold">{tr(plan.for)}</p>
                 <ul className="mt-5 flex-1 space-y-2.5 text-sm">
                   {plan.features.map((f) => (
                     <li key={f} className="flex gap-2.5">
                       <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                       {tr(f)}
+                      {tr(f)}
                     </li>
                   ))}
                 </ul>
@@ -151,8 +154,8 @@ function PricingPage() {
                   className="mt-7 w-full rounded-full"
                 >
                   <Link to={plan.to}>
-                     {tr(plan.cta)}
-                     <ArrowRight className="size-4 rtl:rotate-180" />
+                    {tr(plan.cta)}
+                    <ArrowRight className="size-4 rtl:rotate-180" />
                   </Link>
                 </Button>
               </div>

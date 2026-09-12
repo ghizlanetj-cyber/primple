@@ -88,12 +88,15 @@ function ProductsPage() {
     <SiteShell>
       <section className="section-shell pb-10 pt-14 md:pt-20">
         <Reveal className="max-w-3xl">
-           <p className="eyebrow text-primary">{tr("Products")}</p>
+          <p className="eyebrow text-primary">{tr("Products")}</p>
           <h1 className="display-xl mt-4 text-4xl md:text-6xl">
-             {tr("Everything you print,")} <span className="display-accent">{tr("in one place.")}</span>
+            {tr("Everything you print,")}{" "}
+            <span className="display-accent">{tr("in one place.")}</span>
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
-             {tr("Pick a product, configure it and see the price, production time and delivery date before you commit.")}
+            {tr(
+              "Pick a product, configure it and see the price, production time and delivery date before you commit.",
+            )}
           </p>
         </Reveal>
 
@@ -104,9 +107,9 @@ function ProductsPage() {
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                 placeholder={tr("Search products")}
-                 aria-label={tr("Search products")}
-                 className="rounded-full ps-10 pe-10"
+                placeholder={tr("Search products")}
+                aria-label={tr("Search products")}
+                className="rounded-full ps-10 pe-10"
               />
               {query !== "" && (
                 <button
@@ -132,7 +135,7 @@ function ProductsPage() {
                       : "border-border bg-card text-muted-foreground hover:text-foreground",
                   )}
                 >
-                   {tr(c)}
+                  {tr(c)}
                 </button>
               ))}
             </div>

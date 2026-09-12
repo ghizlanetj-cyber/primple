@@ -39,7 +39,11 @@ export const Route = createFileRoute("/login")({
 
 const roles = [
   { id: "business", label: "I buy printing", copy: "Order, track and reorder for your business." },
-  { id: "printer", label: "I'm a printer", copy: "Receive jobs and fill your production capacity." },
+  {
+    id: "printer",
+    label: "I'm a printer",
+    copy: "Receive jobs and fill your production capacity.",
+  },
   { id: "designer", label: "I'm a designer", copy: "Print client work and earn on every order." },
 ];
 
@@ -106,7 +110,9 @@ function LoginPage() {
               {tr(mode === "login" ? "Welcome back." : "Print like a bigger company.")}
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              {tr("One account for ordering, tracking, quotes and invoices — plus every printer we've verified.")}
+              {tr(
+                "One account for ordering, tracking, quotes and invoices — plus every printer we've verified.",
+              )}
             </p>
             <ul className="mt-8 space-y-3 text-sm">
               {[

@@ -28,7 +28,9 @@ export function SectionHeading({
     <Reveal
       className={cn(
         "flex flex-col",
-        align === "center" ? "mx-auto max-w-3xl items-center text-center" : "items-start text-start",
+        align === "center"
+          ? "mx-auto max-w-3xl items-center text-center"
+          : "items-start text-start",
         className,
       )}
     >
@@ -42,9 +44,7 @@ export function SectionHeading({
           </>
         )}
       </h2>
-      {description && (
-        <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{description}</p>
-      )}
+      {description && <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{description}</p>}
       {children}
     </Reveal>
   );

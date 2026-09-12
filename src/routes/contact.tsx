@@ -93,7 +93,12 @@ function ContactPage() {
               </div>
               <div>
                 <Label htmlFor="topic">{tr("What is it about?")}</Label>
-                <Input id="topic" name="topic" placeholder={tr("Quote, order, partnership…")} className="mt-1.5" />
+                <Input
+                  id="topic"
+                  name="topic"
+                  placeholder={tr("Quote, order, partnership…")}
+                  className="mt-1.5"
+                />
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="message">{tr("Message")}</Label>
@@ -111,11 +116,15 @@ function ContactPage() {
           <ul className="mt-6 space-y-4 text-sm">
             <li className="flex items-start gap-3">
               <Mail className="mt-0.5 size-4 text-primary" />
-              <a href={contact.mailto} className="hover:underline">{contact.email}</a>
+              <a href={contact.mailto} className="hover:underline">
+                {contact.email}
+              </a>
             </li>
             <li className="flex items-start gap-3">
               <Phone className="mt-0.5 size-4 text-primary" />
-              <a href={contact.tel} dir="ltr" className="hover:underline">{contact.phone}</a>
+              <a href={contact.tel} dir="ltr" className="hover:underline">
+                {contact.phone}
+              </a>
             </li>
             <li className="flex items-start gap-3">
               <MapPin className="mt-0.5 size-4 text-primary" />

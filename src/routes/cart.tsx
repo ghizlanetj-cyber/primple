@@ -10,7 +10,8 @@ import { productImages } from "@/data/productImages";
 import { useI18n } from "@/i18n";
 
 const title = "Votre panier d’impression | Primple";
-const description = "Vérifiez vos produits, configurations, délais de production et livraison avant de finaliser votre commande.";
+const description =
+  "Vérifiez vos produits, configurations, délais de production et livraison avant de finaliser votre commande.";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -88,7 +89,7 @@ function CartPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                           aria-label={`${tr("Remove")} ${tr(item.name)}`}
+                        aria-label={`${tr("Remove")} ${tr(item.name)}`}
                         onClick={() => remove(item.id)}
                       >
                         <Trash2 className="size-4" />
@@ -98,11 +99,12 @@ function CartPage() {
                     <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
                       <span className="inline-flex items-center gap-1.5">
                         <Clock className="size-4" />
-                         {tr("Production")} {item.productionDays} {tr(item.productionDays === 1 ? "day" : "days")}
+                        {tr("Production")} {item.productionDays}{" "}
+                        {tr(item.productionDays === 1 ? "day" : "days")}
                       </span>
                       <span className="inline-flex items-center gap-1.5">
                         <Truck className="size-4" />
-                         {tr("Delivery")} {item.deliveryMin}–{item.deliveryMax} {tr("days")}
+                        {tr("Delivery")} {item.deliveryMin}–{item.deliveryMax} {tr("days")}
                       </span>
                       {item.artwork && (
                         <span className="inline-flex items-center gap-1.5">
@@ -114,7 +116,7 @@ function CartPage() {
 
                     <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
                       <label className="flex items-center gap-2 text-sm">
-                         {tr("Quantity")}
+                        {tr("Quantity")}
                         <input
                           type="number"
                           min={1}
@@ -125,9 +127,9 @@ function CartPage() {
                           className="h-9 w-24 rounded-full border border-input bg-background px-3 text-center text-sm"
                         />
                       </label>
-                       <div className="text-end">
+                      <div className="text-end">
                         <p className="text-xs text-muted-foreground">
-                           {madUnit(item.unitPrice)} {tr("per unit")}
+                          {madUnit(item.unitPrice)} {tr("per unit")}
                         </p>
                         <p className="font-display text-lg font-extrabold">{mad(item.subtotal)}</p>
                       </div>
@@ -138,7 +140,7 @@ function CartPage() {
                       params={{ slug: item.slug }}
                       className="mt-3 inline-flex text-sm font-semibold hover:text-primary"
                     >
-                       {tr("Edit configuration")}
+                      {tr("Edit configuration")}
                     </Link>
                   </div>
                 </motion.article>
@@ -163,12 +165,12 @@ function CartPage() {
               </dl>
               <Button asChild size="lg" className="mt-6 w-full rounded-full">
                 <Link to="/checkout">
-                   {tr("Review & pay")}
-                   <ArrowRight className="size-4 rtl:rotate-180" />
+                  {tr("Review & pay")}
+                  <ArrowRight className="size-4 rtl:rotate-180" />
                 </Link>
               </Button>
               <p className="mt-3 text-center text-xs text-muted-foreground">
-                 {tr("Secure payment · Artwork checked before production")}
+                {tr("Secure payment · Artwork checked before production")}
               </p>
             </aside>
           </div>

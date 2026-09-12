@@ -20,7 +20,11 @@ const description =
 
 const roles = [
   { id: "business", label: "I buy printing", copy: "Order, track and reorder for your business." },
-  { id: "printer", label: "I'm a printer", copy: "Receive jobs and fill your production capacity." },
+  {
+    id: "printer",
+    label: "I'm a printer",
+    copy: "Receive jobs and fill your production capacity.",
+  },
   { id: "designer", label: "I'm a designer", copy: "Print client work and earn on every order." },
 ];
 
@@ -101,7 +105,9 @@ function SignupPage() {
             {tr("Your printing account, in a minute.")}
           </h1>
           <p className="mt-5 max-w-lg text-lg text-muted-foreground">
-            {tr("Track every job, keep your invoices in one place and reorder past prints in one click.")}
+            {tr(
+              "Track every job, keep your invoices in one place and reorder past prints in one click.",
+            )}
           </p>
 
           <div className="mt-8 grid gap-3">
@@ -173,8 +179,14 @@ function SignupPage() {
           </p>
           <p className="mt-3 text-xs text-muted-foreground">
             {tr("By creating an account you agree to our")}{" "}
-            <Link to="/terms" className="underline">{tr("Terms")}</Link>{" "}
-            {tr("and")} <Link to="/privacy" className="underline">{tr("Privacy Policy")}</Link>.
+            <Link to="/terms" className="underline">
+              {tr("Terms")}
+            </Link>{" "}
+            {tr("and")}{" "}
+            <Link to="/privacy" className="underline">
+              {tr("Privacy Policy")}
+            </Link>
+            .
           </p>
         </div>
       </section>

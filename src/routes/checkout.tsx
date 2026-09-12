@@ -79,10 +79,10 @@ function CheckoutPage() {
     return (
       <SiteShell>
         <div className="section-shell py-32 text-center">
-           <h1 className="text-4xl">{tr("Nothing to pay for yet.")}</h1>
-           <p className="mt-4 text-muted-foreground">{tr("Add a print job and come back here.")}</p>
+          <h1 className="text-4xl">{tr("Nothing to pay for yet.")}</h1>
+          <p className="mt-4 text-muted-foreground">{tr("Add a print job and come back here.")}</p>
           <Button asChild size="lg" className="mt-8 rounded-full px-7">
-             <Link to="/products">{tr("Start Printing")}</Link>
+            <Link to="/products">{tr("Start Printing")}</Link>
           </Button>
         </div>
       </SiteShell>
@@ -93,7 +93,7 @@ function CheckoutPage() {
     <SiteShell>
       <section className="section-shell py-14 md:py-20">
         <h1 className="text-4xl md:text-5xl">
-           {tr(step === 3 ? "Your print job is officially underway." : "Review & pay")}
+          {tr(step === 3 ? "Your print job is officially underway." : "Review & pay")}
         </h1>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -108,7 +108,7 @@ function CheckoutPage() {
                 )}
               >
                 {i < step ? <CheckCircle2 className="size-4 text-success" /> : <span>{i + 1}</span>}
-                 {tr(s)}
+                {tr(s)}
               </span>
               {i < steps.length - 1 && <span className="h-px w-6 bg-border" />}
             </div>
@@ -120,10 +120,14 @@ function CheckoutPage() {
             <h2 className="text-lg">{tr("Sign in to finish your order")}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               {tr("An account is required to confirm and pay for your order.")}{" "}
-              {tr("You can review your items now, but you'll need to log in or create an account before the payment step.")}
+              {tr(
+                "You can review your items now, but you'll need to log in or create an account before the payment step.",
+              )}
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              {tr("Your cart, configuration and prices are saved while you log in or create your account.")}
+              {tr(
+                "Your cart, configuration and prices are saved while you log in or create your account.",
+              )}
             </p>
             <div className="mt-4 grid gap-3 sm:max-w-md">
               <SocialAuthButtons redirectTo="/checkout" />
@@ -148,19 +152,19 @@ function CheckoutPage() {
             >
               {step === 0 && (
                 <div>
-                   <h2 className="text-xl">{tr("Your print jobs")}</h2>
+                  <h2 className="text-xl">{tr("Your print jobs")}</h2>
                   <ul className="mt-5 divide-y divide-border">
                     {items.map((i) => (
                       <li key={i.id} className="flex items-start justify-between gap-4 py-4">
                         <div>
                           <p className="font-semibold">
-                             {number(i.quantity)} × {tr(i.name)}
+                            {number(i.quantity)} × {tr(i.name)}
                           </p>
                           <p className="mt-1 text-sm text-muted-foreground">
-                             {i.labels.map((l) => tr(l.value)).join(" · ")}
+                            {i.labels.map((l) => tr(l.value)).join(" · ")}
                           </p>
                           <p className="mt-1 text-sm text-muted-foreground">
-                             {i.printer} · {tr("Production")} {i.productionDays} {tr("days")}
+                            {i.printer} · {tr("Production")} {i.productionDays} {tr("days")}
                           </p>
                         </div>
                         <p className="whitespace-nowrap font-semibold">{mad(i.subtotal)}</p>
@@ -168,8 +172,8 @@ function CheckoutPage() {
                     ))}
                   </ul>
                   <Button size="lg" className="mt-6 rounded-full" onClick={() => setStep(1)}>
-                     {tr("Continue to delivery")}
-                     <ArrowRight className="size-4 rtl:rotate-180" />
+                    {tr("Continue to delivery")}
+                    <ArrowRight className="size-4 rtl:rotate-180" />
                   </Button>
                 </div>
               )}
@@ -191,7 +195,7 @@ function CheckoutPage() {
                     setStep(2);
                   }}
                 >
-                   <h2 className="text-xl">{tr("Where should we deliver?")}</h2>
+                  <h2 className="text-xl">{tr("Where should we deliver?")}</h2>
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
                     <Field label="Full name" name="name" />
                     <Field label="Company" name="company" required={false} />
@@ -204,18 +208,20 @@ function CheckoutPage() {
                     <Field label="Postcode" name="postcode" />
                   </div>
                   <Button type="submit" size="lg" className="mt-6 rounded-full">
-                     {tr("Continue to payment")}
-                     <ArrowRight className="size-4 rtl:rotate-180" />
+                    {tr("Continue to payment")}
+                    <ArrowRight className="size-4 rtl:rotate-180" />
                   </Button>
                 </form>
               )}
 
               {step === 2 && (
                 <form onSubmit={handlePlaceOrder}>
-                   <h2 className="text-xl">{tr("Payment")}</h2>
+                  <h2 className="text-xl">{tr("Payment")}</h2>
                   <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                     <Lock className="size-4" />
-                     {tr("Pay 50% now to start production. The remaining 50% is paid in cash on delivery.")}
+                    {tr(
+                      "Pay 50% now to start production. The remaining 50% is paid in cash on delivery.",
+                    )}
                   </p>
 
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -224,7 +230,9 @@ function CheckoutPage() {
                         <Lock className="size-4 text-primary" />
                         {tr("Advance now (50%)")}
                       </p>
-                      <p className="mt-2 font-display text-2xl font-extrabold">{mad(split.deposit)}</p>
+                      <p className="mt-2 font-display text-2xl font-extrabold">
+                        {mad(split.deposit)}
+                      </p>
                       <p className="mt-1 text-xs text-muted-foreground">
                         {tr("Confirms your order and releases it to the printer.")}
                       </p>
@@ -234,7 +242,9 @@ function CheckoutPage() {
                         <Banknote className="size-4 text-primary" />
                         {tr("Cash on delivery (50%)")}
                       </p>
-                      <p className="mt-2 font-display text-2xl font-extrabold">{mad(split.balance)}</p>
+                      <p className="mt-2 font-display text-2xl font-extrabold">
+                        {mad(split.balance)}
+                      </p>
                       <p className="mt-1 text-xs text-muted-foreground">
                         {tr("Paid to the courier when your order arrives.")}
                       </p>
@@ -243,7 +253,11 @@ function CheckoutPage() {
 
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
                     <div className="sm:col-span-2">
-                      <Field label="Card number for the 50% advance" name="card" placeholder="4242 4242 4242 4242" />
+                      <Field
+                        label="Card number for the 50% advance"
+                        name="card"
+                        placeholder="4242 4242 4242 4242"
+                      />
                     </div>
                     <Field label="Expiry" name="expiry" placeholder="09 / 29" />
                     <Field label="Security code" name="cvc" placeholder="123" />
@@ -264,8 +278,10 @@ function CheckoutPage() {
                     className="mt-6 rounded-full"
                     disabled={placing || !user}
                   >
-                     {placing ? tr("Placing your order…") : `${tr("Pay 50% advance")} · ${mad(split.deposit)}`}
-                     <ArrowRight className="size-4 rtl:rotate-180" />
+                    {placing
+                      ? tr("Placing your order…")
+                      : `${tr("Pay 50% advance")} · ${mad(split.deposit)}`}
+                    <ArrowRight className="size-4 rtl:rotate-180" />
                   </Button>
                 </form>
               )}
@@ -275,29 +291,41 @@ function CheckoutPage() {
                   <span className="flex size-12 items-center justify-center rounded-full bg-success/15">
                     <CheckCircle2 className="size-6 text-success" />
                   </span>
-                   <h2 className="mt-5 text-xl">{tr("Order")} {orderId} {tr("confirmed")}</h2>
+                  <h2 className="mt-5 text-xl">
+                    {tr("Order")} {orderId} {tr("confirmed")}
+                  </h2>
                   <p className="mt-2 text-muted-foreground">
-                     {tr("Your printer has the job and your artwork. We'll tell you the moment production starts.")}
+                    {tr(
+                      "Your printer has the job and your artwork. We'll tell you the moment production starts.",
+                    )}
                   </p>
 
                   <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-                     <Summary icon={Package} label={tr("Printer")} value={placedOrder?.printer ?? tr("Primple partner network")} />
-                     <Summary icon={Clock} label={tr("Estimated production")} value={`2–3 ${tr("working days")}`} />
-                     <Summary
-                       icon={Truck}
-                       label={tr("Estimated delivery")}
-                       value={placedOrder?.expectedAt ?? tr("Within 5 working days")}
-                     />
-                     <Summary
-                       icon={Lock}
-                       label={tr("Advance paid (50%)")}
-                       value={mad(split.deposit)}
-                     />
-                     <Summary
-                       icon={Banknote}
-                       label={tr("Cash on delivery (50%)")}
-                       value={mad(split.balance)}
-                     />
+                    <Summary
+                      icon={Package}
+                      label={tr("Printer")}
+                      value={placedOrder?.printer ?? tr("Primple partner network")}
+                    />
+                    <Summary
+                      icon={Clock}
+                      label={tr("Estimated production")}
+                      value={`2–3 ${tr("working days")}`}
+                    />
+                    <Summary
+                      icon={Truck}
+                      label={tr("Estimated delivery")}
+                      value={placedOrder?.expectedAt ?? tr("Within 5 working days")}
+                    />
+                    <Summary
+                      icon={Lock}
+                      label={tr("Advance paid (50%)")}
+                      value={mad(split.deposit)}
+                    />
+                    <Summary
+                      icon={Banknote}
+                      label={tr("Cash on delivery (50%)")}
+                      value={mad(split.balance)}
+                    />
                   </dl>
 
                   <div className="mt-8 flex flex-wrap gap-3">
@@ -306,11 +334,11 @@ function CheckoutPage() {
                       className="rounded-full"
                       onClick={() => navigate({ to: "/dashboard" })}
                     >
-                       {tr("Track my order")}
-                       <ArrowRight className="size-4 rtl:rotate-180" />
+                      {tr("Track my order")}
+                      <ArrowRight className="size-4 rtl:rotate-180" />
                     </Button>
                     <Button asChild size="lg" variant="outline" className="rounded-full">
-                       <Link to="/products">{tr("Continue shopping")}</Link>
+                      <Link to="/products">{tr("Continue shopping")}</Link>
                     </Button>
                   </div>
                 </div>
@@ -319,35 +347,35 @@ function CheckoutPage() {
           </AnimatePresence>
 
           <aside className="rounded-2xl border border-border bg-secondary/40 p-6 lg:sticky lg:top-28">
-             <h2 className="text-lg">{tr("Summary")}</h2>
+            <h2 className="text-lg">{tr("Summary")}</h2>
             <dl className="mt-4 space-y-2.5 text-sm">
               <div className="flex justify-between">
-                 <dt className="text-muted-foreground">{tr("Items")}</dt>
+                <dt className="text-muted-foreground">{tr("Items")}</dt>
                 <dd>{items.length || "—"}</dd>
               </div>
               <div className="flex justify-between">
-                 <dt className="text-muted-foreground">{tr("Subtotal")}</dt>
+                <dt className="text-muted-foreground">{tr("Subtotal")}</dt>
                 <dd>{mad(totals.subtotal)}</dd>
               </div>
               <div className="flex justify-between">
-                 <dt className="text-muted-foreground">{tr("Delivery")}</dt>
-                 <dd>{totals.delivery === 0 ? tr("Included") : mad(totals.delivery)}</dd>
+                <dt className="text-muted-foreground">{tr("Delivery")}</dt>
+                <dd>{totals.delivery === 0 ? tr("Included") : mad(totals.delivery)}</dd>
               </div>
               <div className="flex justify-between border-t border-border pt-3 font-semibold">
-                 <dt>{tr("Total")}</dt>
+                <dt>{tr("Total")}</dt>
                 <dd>{mad(totals.total)}</dd>
               </div>
               <div className="flex justify-between">
-                 <dt className="text-muted-foreground">{tr("Advance now (50%)")}</dt>
+                <dt className="text-muted-foreground">{tr("Advance now (50%)")}</dt>
                 <dd>{mad(split.deposit)}</dd>
               </div>
               <div className="flex justify-between">
-                 <dt className="text-muted-foreground">{tr("Cash on delivery (50%)")}</dt>
+                <dt className="text-muted-foreground">{tr("Cash on delivery (50%)")}</dt>
                 <dd>{mad(split.balance)}</dd>
               </div>
             </dl>
             <p className="mt-5 text-xs text-muted-foreground">
-               {tr("Verified printers · Artwork checked · Tracked delivery")}
+              {tr("Verified printers · Artwork checked · Tracked delivery")}
             </p>
           </aside>
         </div>
@@ -373,7 +401,7 @@ function Field({
   return (
     <div>
       <Label htmlFor={name} className="text-sm">
-         {tr(label)}
+        {tr(label)}
       </Label>
       <Input
         id={name}

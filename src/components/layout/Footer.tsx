@@ -49,17 +49,27 @@ export function Footer() {
 
   return (
     <footer className="bg-ink text-ink-foreground">
-       <div className="section-shell py-20 md:py-28">
-         <div className="grid gap-16 lg:grid-cols-[1.15fr_2fr]">
+      <div className="section-shell py-20 md:py-28">
+        <div className="grid gap-16 lg:grid-cols-[1.15fr_2fr]">
           <div>
             <Logo invert />
             <p className="mt-5 max-w-sm text-sm text-ink-muted">
-              {tr("Custom printing for brands, businesses and creatives in Morocco: options explained, price shown before you order, production followed to delivery.")}
+              {tr(
+                "Custom printing for brands, businesses and creatives in Morocco: options explained, price shown before you order, production followed to delivery.",
+              )}
             </p>
             <address className="mt-5 space-y-1 text-sm not-italic text-ink-muted">
               <p>{contact.address}</p>
-              <p><a href={contact.mailto} className="hover:text-ink-foreground">{contact.email}</a></p>
-              <p><a href={contact.tel} className="hover:text-ink-foreground" dir="ltr">{contact.phone}</a></p>
+              <p>
+                <a href={contact.mailto} className="hover:text-ink-foreground">
+                  {contact.email}
+                </a>
+              </p>
+              <p>
+                <a href={contact.tel} className="hover:text-ink-foreground" dir="ltr">
+                  {contact.phone}
+                </a>
+              </p>
             </address>
             <form
               className="mt-8 flex max-w-sm gap-2"

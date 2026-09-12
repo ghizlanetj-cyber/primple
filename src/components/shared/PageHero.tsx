@@ -20,7 +20,7 @@ export function PageHero({
       <div className="section-shell py-16 md:py-24">
         <Reveal>
           <p className="eyebrow text-primary">{tr(eyebrow)}</p>
-           <h1 className="display-xl mt-5 max-w-4xl text-5xl sm:text-6xl md:text-7xl">
+          <h1 className="display-xl mt-5 max-w-4xl text-5xl sm:text-6xl md:text-7xl">
             {tr(title)}
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{tr(subtitle)}</p>

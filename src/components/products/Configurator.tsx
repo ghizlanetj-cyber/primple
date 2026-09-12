@@ -29,7 +29,10 @@ export function Configurator({ product }: { product: Product }) {
   const [selection, setSelection] = useState<Selection>(() => defaultSelection(product));
   const [artwork, setArtwork] = useState<ArtworkState | null>(null);
 
-  const quote = useMemo(() => priceQuote(product, quantity, selection), [product, quantity, selection]);
+  const quote = useMemo(
+    () => priceQuote(product, quantity, selection),
+    [product, quantity, selection],
+  );
   const total = quote.total;
 
   const addToCart = () => {
@@ -112,7 +115,9 @@ export function Configurator({ product }: { product: Product }) {
                   >
                     {tr(choice.label)}
                     {choice.note && (
-                       <span className="ms-1.5 text-xs font-normal opacity-70">{tr(choice.note)}</span>
+                      <span className="ms-1.5 text-xs font-normal opacity-70">
+                        {tr(choice.note)}
+                      </span>
                     )}
                   </ChipRadio>
                 ))}
@@ -131,10 +136,11 @@ export function Configurator({ product }: { product: Product }) {
           </div>
           <p className="mt-4 flex items-start gap-2 rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
             <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
-            {tr("No file yet? Get help preparing your artwork or turning an idea into something you can print — add it later without losing this configuration.")}
+            {tr(
+              "No file yet? Get help preparing your artwork or turning an idea into something you can print — add it later without losing this configuration.",
+            )}
           </p>
         </section>
-
       </div>
 
       <aside className="lg:sticky lg:top-28">
@@ -171,11 +177,12 @@ export function Configurator({ product }: { product: Product }) {
           <div className="mt-5 space-y-2 rounded-xl bg-secondary/60 p-4 text-sm">
             <p className="flex items-center gap-2">
               <Clock className="size-4 text-muted-foreground" />
-               {tr("Production")}: {quote.productionDays} {tr(quote.productionDays === 1 ? "day" : "days")}
+              {tr("Production")}: {quote.productionDays}{" "}
+              {tr(quote.productionDays === 1 ? "day" : "days")}
             </p>
             <p className="flex items-center gap-2">
               <Truck className="size-4 text-muted-foreground" />
-               {tr("Delivery")}: {quote.deliveryMin}–{quote.deliveryMax} {tr("days")}
+              {tr("Delivery")}: {quote.deliveryMin}–{quote.deliveryMax} {tr("days")}
             </p>
           </div>
 
@@ -187,7 +194,6 @@ export function Configurator({ product }: { product: Product }) {
             {tr("No surprise fees at checkout. Pay when you're happy with the setup.")}
           </p>
         </div>
-
       </aside>
     </div>
   );

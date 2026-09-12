@@ -90,7 +90,6 @@ export function Hero() {
             {t("hero.note")}
           </motion.p>
 
-
           <motion.ul
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -129,7 +128,9 @@ export function Hero() {
         <span className="text-end leading-[1.8]">
           Primple
           <br />
-          <span className="text-[0.6rem] tracking-[0.22em] text-ink-foreground/60">Imprimer un avenir plus lumineux</span>
+          <span className="text-[0.6rem] tracking-[0.22em] text-ink-foreground/60">
+            Imprimer un avenir plus lumineux
+          </span>
         </span>
       </div>
     </section>

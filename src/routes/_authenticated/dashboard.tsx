@@ -202,7 +202,9 @@ function DashboardPage() {
               {!isLoading && (
                 <>
                   <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                    {tr("Once you place a print job it appears here with live production tracking.")}
+                    {tr(
+                      "Once you place a print job it appears here with live production tracking.",
+                    )}
                   </p>
                   <Button asChild className="mt-6 rounded-full">
                     <Link to="/products">{tr("Start a print job")}</Link>
@@ -230,9 +232,9 @@ function DashboardPage() {
                       <div>
                         <p className="text-xs text-muted-foreground">{order.id}</p>
                         <p className="mt-1 font-display font-bold">
-                           {number(order.quantity)} × {tr(order.product)}
+                          {number(order.quantity)} × {tr(order.product)}
                         </p>
-                         <p className="mt-1 text-sm text-muted-foreground">{tr(order.config)}</p>
+                        <p className="mt-1 text-sm text-muted-foreground">{tr(order.config)}</p>
                       </div>
                       <span
                         className={cn(
@@ -242,7 +244,7 @@ function DashboardPage() {
                             : "bg-primary/20 text-foreground",
                         )}
                       >
-                         {tr(order.stage)}
+                        {tr(order.stage)}
                       </span>
                     </div>
                     <Progress value={order.progress} className="mt-4 h-1.5" />
@@ -260,8 +262,8 @@ function DashboardPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs text-muted-foreground">{active.id}</p>
-                     <h2 className="mt-1 text-xl">{tr(active.product)}</h2>
-                     <p className="mt-1 text-sm text-muted-foreground">{tr(active.config)}</p>
+                    <h2 className="mt-1 text-xl">{tr(active.product)}</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">{tr(active.config)}</p>
                   </div>
                   <p className="font-display text-lg font-extrabold">{mad(active.total)}</p>
                 </div>
@@ -289,7 +291,7 @@ function DashboardPage() {
                               !done && !current && "text-muted-foreground",
                             )}
                           >
-                             {tr(stage)}
+                            {tr(stage)}
                           </p>
                           {current && (
                             <p className="text-sm text-muted-foreground">
@@ -305,8 +307,8 @@ function DashboardPage() {
                 <dl className="mt-7 grid gap-3 border-t border-border pt-6 sm:grid-cols-2">
                   <Detail icon={Package} label={t("dash.printer")} value={active.printer} />
                   <Detail icon={MapPin} label={t("dash.city")} value={active.city} />
-                   <Detail icon={Truck} label={t("dash.expected")} value={tr(active.expected)} />
-                   <Detail icon={FileText} label={t("dash.artwork")} value={tr(active.artwork)} />
+                  <Detail icon={Truck} label={t("dash.expected")} value={tr(active.expected)} />
+                  <Detail icon={FileText} label={t("dash.artwork")} value={tr(active.artwork)} />
                 </dl>
 
                 <div className="mt-6 flex flex-wrap gap-3">
@@ -340,13 +342,13 @@ function DashboardPage() {
                       {q.rating}
                     </span>
                   </div>
-                   <p className="mt-4 text-sm">{tr(q.product)}</p>
+                  <p className="mt-4 text-sm">{tr(q.product)}</p>
                   <p className="text-sm text-muted-foreground">
-                     {number(q.quantity)} {t("dash.units")} · {t("dash.production")}{" "}
-                     {tr(q.production)} · {t("dash.delivery")} {tr(q.delivery)}
+                    {number(q.quantity)} {t("dash.units")} · {t("dash.production")}{" "}
+                    {tr(q.production)} · {t("dash.delivery")} {tr(q.delivery)}
                   </p>
                   <p className="mt-4 font-display text-2xl font-extrabold">{mad(q.price)}</p>
-                   <p className="mt-2 text-sm text-muted-foreground">{tr(q.notes)}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{tr(q.notes)}</p>
                   <div className="mt-5 flex flex-wrap gap-2">
                     <Button size="sm" className="rounded-full">
                       {t("dash.accept")}
@@ -377,7 +379,7 @@ function DashboardPage() {
                     <tr key={inv.id} className="border-t border-border">
                       <td className="p-4 font-medium">{inv.id}</td>
                       <td className="p-4 text-muted-foreground">{inv.order}</td>
-                       <td className="p-4 text-muted-foreground">{tr(inv.date)}</td>
+                      <td className="p-4 text-muted-foreground">{tr(inv.date)}</td>
                       <td className="p-4">{mad(inv.amount)}</td>
                       <td className="p-4">
                         <span
@@ -388,7 +390,7 @@ function DashboardPage() {
                               : "bg-primary/20 text-foreground",
                           )}
                         >
-                           {tr(inv.status)}
+                          {tr(inv.status)}
                         </span>
                       </td>
                     </tr>
@@ -457,12 +459,18 @@ const stageProgress: Record<string, number> = {
 
 function toViewOrder(record: OrderRecord): Order {
   const first = record.items[0];
-  const stage = (orderStages.includes(record.status) ? record.status : "Order placed") as Order["stage"];
+  const stage = (
+    orderStages.includes(record.status) ? record.status : "Order placed"
+  ) as Order["stage"];
   return {
     id: record.reference,
     product: first?.name ?? "Print job",
     productSlug: first?.slug ?? "business-cards",
-    config: record.items.map((i) => i.config).filter(Boolean).join(" · ") || "Custom configuration",
+    config:
+      record.items
+        .map((i) => i.config)
+        .filter(Boolean)
+        .join(" · ") || "Custom configuration",
     quantity: record.items.reduce((sum, i) => sum + i.quantity, 0),
     total: record.total,
     printer: record.printer ?? "Primple partner network",
