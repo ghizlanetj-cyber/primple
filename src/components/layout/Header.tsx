@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Check, ChevronDown, Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { ArrowRight, Check,  Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
-import { products } from "@/data/products";
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { languageLabels, languages, useI18n } from "@/i18n";
@@ -13,7 +12,6 @@ import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [dark, setDark] = useState(false);
@@ -40,7 +38,6 @@ export function Header() {
         "fixed left-1/2 top-3 z-50 w-[calc(100%-2rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/[0.16] shadow-[0_10px_32px_rgba(0,0,0,0.10)] backdrop-blur-[20px] backdrop-saturate-[1.15] transition-colors duration-500 sm:w-[calc(100%-3rem)] lg:top-4 lg:w-[calc(100%-96px)]",
         scrolled ? "bg-[rgba(35,33,42,0.52)]" : "bg-[rgba(35,33,42,0.38)]",
       )}
-      onMouseLeave={() => setMegaOpen(false)}
     >
       <div className="relative grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-16 lg:h-[68px] lg:px-8">
         <div className="flex min-w-0 items-center gap-5 xl:gap-7">
