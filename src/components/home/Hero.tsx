@@ -11,7 +11,7 @@ export function Hero() {
   const { t } = useI18n();
 
   return (
-    <section className="relative min-h-[780px] overflow-hidden bg-ink text-ink-foreground md:min-h-[min(920px,100svh)]">
+    <section className="relative min-h-[clamp(560px,92svh,900px)] overflow-hidden bg-ink text-ink-foreground">
       <img
         src={heroStudioAsset.url}
         alt="Collection de supports imprimés PRIMPLE dans un studio lumineux"
