@@ -80,7 +80,7 @@ function CartPage() {
                       <div>
                         <h2 className="text-lg">{tr(item.name)}</h2>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          {item.labels.map((l) => l.value).join(" · ")}
+                          {item.labels.map((l) => tr(l.value)).join(" · ")}
                         </p>
                       </div>
                       <Button
