@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Check,  Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { ArrowRight, Check, Globe2, LogOut, Menu, ShoppingBag, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,6 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
-  const [dark, setDark] = useState(false);
   const { lang, setLang, t, tr } = useI18n();
   const items = useCart((s) => s.items);
   const { user, signOut } = useAuth();
@@ -26,11 +25,6 @@ export function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
-
 
   return (
     <header
@@ -91,16 +85,6 @@ export function Header() {
               )}
             </AnimatePresence>
           </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={t("cta.theme")}
-            onClick={() => setDark((v) => !v)}
-             className="hidden size-8 text-ink-muted hover:text-ink-foreground md:inline-flex"
-          >
-            {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
-          </Button>
 
            <Button variant="ghost" size="icon" asChild className="relative size-8 text-ink-muted hover:text-ink-foreground">
             <Link to="/cart" aria-label={t("cta.cart")}>
