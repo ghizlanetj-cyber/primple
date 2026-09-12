@@ -235,14 +235,11 @@ export function Header() {
                 ))}
               </div>
               {[
-                { to: "/products", label: t("nav.products") },
-                { to: "/services", label: tr("Services") },
-                { to: "/platform", label: t("nav.platform") },
-                { to: "/pricing", label: t("nav.pricing") },
-                { to: "/partners", label: t("nav.partners") },
-                { to: "/designers", label: tr("For designers") },
-                { to: "/about", label: tr("About") },
-                { to: "/contact", label: tr("Contact") },
+                { to: "/services", label: "Solutions" },
+                { to: "/products", label: "Produits" },
+                { to: "/about", label: "Pourquoi Primple" },
+                { to: "/platform", label: "Nos réalisation" },
+                { to: "/contact", label: "Contact" },
                 { to: "/dashboard", label: t("nav.dashboard") },
                 ...(user ? [] : [{ to: "/login", label: t("nav.login") }]),
               ].map((link, i) => (
