@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BadgeCheck, Clock, Star, TrendingUp, Wallet } from "lucide-react";
+import { ArrowRight, BadgeCheck, Clock, TrendingUp, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Reveal } from "@/components/motion/Reveal";
-import { Counter } from "@/components/motion/Counter";
 import { FaqSection } from "@/components/shared/FaqSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -174,18 +173,6 @@ function PartnersPage() {
   );
 }
 
-function Stat({ value, suffix, label }: { value: number; suffix: string; label: string }) {
-  const { tr } = useI18n();
-  return (
-    <div>
-      <p className="font-display text-3xl font-extrabold tracking-tight">
-        <Counter to={value} />
-        {suffix}
-      </p>
-      <p className="mt-1 text-sm text-muted-foreground">{tr(label)}</p>
-    </div>
-  );
-}
 
 function Field({ label, name, type = "text" }: { label: string; name: string; type?: string }) {
   const { tr } = useI18n();
