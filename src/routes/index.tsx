@@ -75,9 +75,9 @@ function Home() {
   const { tr } = useI18n();
   return (
     <SiteShell>
-      <h1 className="sr-only">
+      <p className="sr-only">
          {tr("Primpel — the online printing marketplace and printing management platform")}
-      </h1>
+      </p>
       <Hero />
       
       <Stats />
