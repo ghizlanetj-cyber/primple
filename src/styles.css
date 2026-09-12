@@ -195,6 +195,35 @@
     font-weight: 800;
     letter-spacing: 0;
   }
+
+  /* The header is fixed: keep anchored targets and focused controls clear of it. */
+  html {
+    scroll-padding-top: 6.5rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  section,
+  [id],
+  :focus-visible {
+    scroll-margin-top: 6.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    html {
+      scroll-padding-top: 7.5rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    section,
+    [id],
+    :focus-visible {
+      scroll-margin-top: 7.5rem;
+    }
+  }
 }
 
 @utility display-xl {
