@@ -37,26 +37,26 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/[0.16] shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur-[24px] backdrop-saturate-[1.2] transition-colors duration-500 sm:w-[calc(100%-3rem)] lg:top-6 lg:w-[calc(100%-96px)]",
+        "fixed left-1/2 top-3 z-50 w-[calc(100%-2rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/[0.16] shadow-[0_10px_32px_rgba(0,0,0,0.10)] backdrop-blur-[20px] backdrop-saturate-[1.15] transition-colors duration-500 sm:w-[calc(100%-3rem)] lg:top-4 lg:w-[calc(100%-96px)]",
         scrolled ? "bg-[rgba(35,33,42,0.52)]" : "bg-[rgba(35,33,42,0.38)]",
       )}
       onMouseLeave={() => setMegaOpen(false)}
     >
-      <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:h-[84px] lg:px-8">
-        <div className="flex min-w-0 items-center gap-6 xl:gap-8">
-          <Logo invert className="h-5 shrink-0 md:h-6 lg:w-[118px]" />
-          <nav className="hidden items-center gap-x-7 xl:flex xl:gap-x-8">
+      <div className="relative grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-16 lg:h-[68px] lg:px-8">
+        <div className="flex min-w-0 items-center gap-5 xl:gap-7">
+          <Logo invert className="h-5 shrink-0 md:h-[22px] lg:w-[102px]" />
+          <nav className="hidden items-center gap-x-6 xl:flex xl:gap-x-7">
             <NavLink to="/services">Solutions</NavLink>
             <button
               type="button"
               onMouseEnter={() => setMegaOpen(true)}
               onClick={() => setMegaOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full py-2 text-[15px] font-medium text-white/85 transition-colors hover:text-white xl:text-[16px]"
+              className="flex items-center gap-1 rounded-full py-1.5 text-[14px] font-medium text-white/85 transition-colors hover:text-white xl:text-[15px]"
               aria-expanded={megaOpen}
             >
               Produits
               <ChevronDown
-                className={cn("size-4 transition-transform", megaOpen && "rotate-180")}
+                className={cn("size-3.5 transition-transform", megaOpen && "rotate-180")}
               />
             </button>
             <NavLink to="/about">Pourquoi Primple</NavLink>
@@ -84,7 +84,7 @@ export function Header() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 top-12 min-w-40 overflow-hidden rounded-xl border border-white/20 bg-ink/55 p-1.5 shadow-lift backdrop-blur-3xl"
+                  className="absolute right-0 top-10 min-w-40 overflow-hidden rounded-xl border border-white/20 bg-ink/55 p-1.5 shadow-lift backdrop-blur-3xl"
                 >
                   {languages.map((l) => (
                     <button
@@ -110,12 +110,12 @@ export function Header() {
             size="icon"
             aria-label={t("cta.theme")}
             onClick={() => setDark((v) => !v)}
-             className="hidden text-ink-muted hover:text-ink-foreground md:inline-flex"
+             className="hidden size-8 text-ink-muted hover:text-ink-foreground md:inline-flex"
           >
             {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
           </Button>
 
-           <Button variant="ghost" size="icon" asChild className="relative text-ink-muted hover:text-ink-foreground">
+           <Button variant="ghost" size="icon" asChild className="relative size-8 text-ink-muted hover:text-ink-foreground">
             <Link to="/cart" aria-label={t("cta.cart")}>
               <ShoppingBag className="size-4" />
               {items.length > 0 && (
@@ -136,7 +136,7 @@ export function Header() {
                 size="icon"
                 aria-label={tr("Log out")}
                 title={tr("Log out")}
-                className="hidden rounded-full md:inline-flex"
+                className="hidden size-8 rounded-full md:inline-flex"
                 onClick={async () => {
                   await signOut();
                   navigate({ to: "/" });
@@ -147,8 +147,8 @@ export function Header() {
             </>
           ) : null}
 
-           <Button asChild className="hidden rounded-full px-7 md:inline-flex lg:h-13 lg:px-7 lg:text-[15px]">
-             <Link to="/products">{t("cta.start")} <ArrowRight className="size-4 rtl:rotate-180" /></Link>
+           <Button asChild className="hidden h-9 rounded-full px-5 text-sm md:inline-flex lg:px-6 lg:text-[14px]">
+             <Link to="/products">{t("cta.start")} <ArrowRight className="size-3.5 rtl:rotate-180" /></Link>
           </Button>
 
           <Button
@@ -198,8 +198,8 @@ export function Header() {
             exit={{ opacity: 0 }}
             className="absolute -left-3 -top-3 z-50 h-svh w-screen overflow-y-auto bg-ink text-ink-foreground sm:-left-5 lg:hidden"
           >
-            <div className="flex h-20 items-center justify-between border-b border-white/10 px-6">
-              <Logo invert className="h-6" />
+            <div className="flex h-16 items-center justify-between border-b border-white/10 px-6">
+              <Logo invert className="h-5" />
               <Button
                 variant="ghost"
                 size="icon"
@@ -283,7 +283,7 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className="rounded-full py-2 text-[15px] font-medium text-white/85 transition-colors hover:text-white xl:text-[16px]"
+      className="rounded-full py-1.5 text-[14px] font-medium text-white/85 transition-colors hover:text-white xl:text-[15px]"
       activeProps={{ className: "text-white" }}
     >
       {children}
