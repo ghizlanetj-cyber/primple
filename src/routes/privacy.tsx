@@ -4,9 +4,9 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { PageHero } from "@/components/shared/PageHero";
 import { LegalBody } from "@/components/shared/LegalBody";
 
-const title = "Privacy Policy | Primpel";
+const title = "Privacy Policy | Primple";
 const description =
-  "What personal data Primpel collects, why we collect it, who we share it with and how you can have it deleted.";
+  "What personal data Primple collects, why we collect it, who we share it with and how you can have it deleted.";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({

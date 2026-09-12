@@ -35,7 +35,7 @@ export function HowItWorks() {
           <p className="eyebrow text-primary">{tr("How it works")}</p>
           <h2 className="display-xl mt-4 text-4xl md:text-6xl">{tr("Printing shouldn't take 15 emails.")}</h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            {tr("Choose what you need, upload your artwork, choose your printer and let Primpel handle the rest.")}
+            {tr("Choose what you need, upload your artwork, choose your printer and let Primple handle the rest.")}
           </p>
         </Reveal>
 

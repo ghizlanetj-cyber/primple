@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 
-const title = "Pricing — pay for printing, not for software | Primpel";
+const title = "Pricing — pay for printing, not for software | Primple";
 const description =
   "Transparent printing prices with no hidden fees. Free to order, with advanced features for teams and enterprises.";
 

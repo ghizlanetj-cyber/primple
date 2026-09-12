@@ -3,7 +3,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { useI18n } from "@/i18n";
 
 const stats = [
-  { to: 300, suffix: "+", label: "Businesses printing with Primpel" },
+  { to: 300, suffix: "+", label: "Businesses printing with Primple" },
   { to: 15, suffix: "+", label: "Verified print partners" },
   { to: 3000, suffix: "+", label: "Orders produced and delivered" },
   { to: 98, suffix: "%", label: "Customer satisfaction" },

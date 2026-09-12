@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { printers } from "@/data/printers";
 import { useI18n } from "@/i18n";
 
-const title = "Become a Primpel print partner | Primpel";
+const title = "Become a Primple print partner | Primple";
 const description =
   "Fill your presses with qualified print jobs. No sales chasing, artwork checked before it reaches you, paid on time.";
 
@@ -51,7 +51,7 @@ const benefits = [
   {
     icon: Wallet,
     title: "Paid on schedule",
-    copy: "Customers pay upfront through Primpel. You produce and get settled predictably.",
+    copy: "Customers pay upfront through Primple. You produce and get settled predictably.",
   },
 ];
 
@@ -66,7 +66,7 @@ const faqs = [
   },
   {
     q: "Can we keep our own direct customers?",
-    a: "Absolutely. Primpel is extra capacity utilisation, not an exclusivity agreement.",
+    a: "Absolutely. Primple is extra capacity utilisation, not an exclusivity agreement.",
   },
   {
     q: "What does it cost to join?",
@@ -87,7 +87,7 @@ function PartnersPage() {
                <span className="display-accent">{tr("Your sales team relieved.")}</span>
             </h1>
             <p className="mt-6 text-lg text-muted-foreground md:text-xl">
-               {tr("Primpel sends you print-ready jobs from businesses that already paid. You do what you do best — produce beautifully, on time.")}
+               {tr("Primple sends you print-ready jobs from businesses that already paid. You do what you do best — produce beautifully, on time.")}
             </p>
 
             <div className="mt-10 grid gap-6 sm:grid-cols-3">
@@ -153,7 +153,7 @@ function PartnersPage() {
       <section className="band-sand border-y border-border">
         <div className="section-shell py-20 md:py-24">
           <Reveal>
-             <p className="eyebrow text-primary">{tr("Already on Primpel")}</p>
+             <p className="eyebrow text-primary">{tr("Already on Primple")}</p>
             <h2 className="mt-4 max-w-2xl text-3xl md:text-4xl">
                {tr("Printers our customers keep coming back to.")}
             </h2>

@@ -105,7 +105,7 @@ export function Footer() {
 
         <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-ink-muted">
-            © {new Date().getFullYear()} Primpel. {t("footer.rights")}
+            © {new Date().getFullYear()} Primple. {t("footer.rights")}
           </p>
           <nav className="flex flex-wrap items-center gap-4 text-xs text-ink-muted">
             {legalLinks.map((link) => (
@@ -115,10 +115,10 @@ export function Footer() {
             ))}
           </nav>
           <div className="flex items-center gap-4 text-ink-muted">
-            <a href="#" aria-label={tr("Primpel on LinkedIn")} className="hover:text-ink-foreground">
+            <a href="#" aria-label={tr("Primple on LinkedIn")} className="hover:text-ink-foreground">
               <Linkedin className="size-4" />
             </a>
-            <a href="#" aria-label={tr("Primpel on Instagram")} className="hover:text-ink-foreground">
+            <a href="#" aria-label={tr("Primple on Instagram")} className="hover:text-ink-foreground">
               <Instagram className="size-4" />
             </a>
           </div>

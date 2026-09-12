@@ -9,7 +9,7 @@ import { cartTotals, useCart } from "@/store/cart";
 import { productImages } from "@/data/productImages";
 import { useI18n } from "@/i18n";
 
-const title = "Your printing cart | Primpel";
+const title = "Your printing cart | Primple";
 const description = "Review your printing jobs, configurations, production times and delivery before checkout.";
 
 export const Route = createFileRoute("/cart")({

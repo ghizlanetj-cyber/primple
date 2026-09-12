@@ -22,7 +22,7 @@ import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { SocialAuthButtons } from "@/components/auth/SocialAuthButtons";
 
-const title = "Review & pay | Primpel";
+const title = "Review & pay | Primple";
 const description = "Confirm your printing order, delivery details and payment. Secure checkout with no surprise fees.";
 
 export const Route = createFileRoute("/checkout")({
@@ -274,7 +274,7 @@ function CheckoutPage() {
                   </p>
 
                   <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-                     <Summary icon={Package} label={tr("Printer")} value={placedOrder?.printer ?? tr("Primpel partner network")} />
+                     <Summary icon={Package} label={tr("Printer")} value={placedOrder?.printer ?? tr("Primple partner network")} />
                      <Summary icon={Clock} label={tr("Estimated production")} value={`2–3 ${tr("working days")}`} />
                      <Summary
                        icon={Truck}

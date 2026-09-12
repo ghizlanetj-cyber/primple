@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { authErrorPhrase } from "@/lib/auth-messages";
 
-const title = "Log in or create your Primpel account | Primpel";
+const title = "Log in or create your Primple account | Primple";
 const description =
   "Access your printing dashboard, track orders and manage quotes. For businesses, printers and designers.";
 
@@ -68,7 +68,7 @@ function LoginPage() {
       if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast.success(tr("Welcome back to Primpel."));
+        toast.success(tr("Welcome back to Primple."));
         navigate({ to: destination });
       } else {
         const { data, error } = await supabase.auth.signUp({

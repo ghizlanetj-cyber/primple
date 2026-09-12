@@ -5,7 +5,7 @@ import { PageHero, ContentSection } from "@/components/shared/PageHero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Enterprise printing | Primpel";
+const title = "Enterprise printing | Primple";
 const description =
   "Centralised print ordering for multi-site teams: brand templates, approval flows, consolidated invoicing and a named account manager.";
 
@@ -55,7 +55,7 @@ function EnterprisePage() {
 
       <ContentSection
         title="Payment terms"
-        intro="The standard Primpel terms are 50% advance and 50% cash on delivery. Enterprise accounts can request monthly invoicing after a review."
+        intro="The standard Primple terms are 50% advance and 50% cash on delivery. Enterprise accounts can request monthly invoicing after a review."
         items={[
           { title: "Standard", body: "50% advance to release production, 50% cash on delivery." },
           { title: "Enterprise", body: "Monthly consolidated invoicing, subject to approval." },

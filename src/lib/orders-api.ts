@@ -40,7 +40,7 @@ export type DeliveryDetails = {
   postcode: string;
 };
 
-/** Primpel payment terms: 50% advance now, 50% cash on delivery. */
+/** Primple payment terms: 50% advance now, 50% cash on delivery. */
 export const DEPOSIT_RATE = 0.5;
 
 export function splitPayment(total: number) {
@@ -102,7 +102,7 @@ export async function createOrder(input: {
       config: itemConfigLabel(i),
       unitPrice: i.unitPrice,
       subtotal: i.subtotal,
-      printer: i.printer ?? "Primpel partner network",
+      printer: i.printer ?? "Primple partner network",
       productionDays: i.productionDays,
     })),
     subtotal: input.totals.subtotal,
@@ -119,7 +119,7 @@ export async function createOrder(input: {
     address: input.details.address,
     city: input.details.city,
     postcode: input.details.postcode,
-    printer: input.items[0]?.printer ?? "Primpel partner network",
+    printer: input.items[0]?.printer ?? "Primple partner network",
     expected_at: expected.toISOString().slice(0, 10),
   };
 

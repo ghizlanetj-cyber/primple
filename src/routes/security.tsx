@@ -5,9 +5,9 @@ import { PageHero, ContentSection } from "@/components/shared/PageHero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Security & data protection | Primpel";
+const title = "Security & data protection | Primple";
 const description =
-  "How Primpel protects your artwork, account data and payments — encryption, access control and printer confidentiality.";
+  "How Primple protects your artwork, account data and payments — encryption, access control and printer confidentiality.";
 
 export const Route = createFileRoute("/security")({
   head: () => ({
