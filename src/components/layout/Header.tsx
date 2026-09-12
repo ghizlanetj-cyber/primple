@@ -135,7 +135,7 @@ export function Header() {
           ) : null}
 
            <Button asChild className="hidden h-9 rounded-full px-5 text-sm md:inline-flex lg:px-6 lg:text-[14px]">
-             <Link to="/products">{t("cta.start")} <ArrowRight className="size-3.5 rtl:rotate-180" /></Link>
+             <Link to="/login">{t("nav.login")} <ArrowRight className="size-3.5 rtl:rotate-180" /></Link>
           </Button>
 
           <Button
