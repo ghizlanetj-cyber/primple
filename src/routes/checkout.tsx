@@ -11,6 +11,7 @@ import {
   type OrderRecord,
 } from "@/lib/orders-api";
 import { buildWhatsAppOrderMessage, whatsAppOrderUrl } from "@/lib/whatsapp-order";
+import { attachFilesToOrder } from "@/lib/files-api";
 import { invoiceLabels } from "@/lib/invoice";
 
 import { SiteShell } from "@/components/layout/SiteShell";
@@ -81,6 +82,14 @@ function CheckoutPage() {
     const snapshotTotals = totals;
     try {
       const order = await createOrder({ userId: user.id, items, totals, details });
+      const artworkPaths = snapshotItems
+        .map((i) => i.artworkPath)
+        .filter((p): p is string => Boolean(p));
+      try {
+        await attachFilesToOrder(artworkPaths, order.id, order.reference);
+      } catch {
+        // The order is placed; file linking is retried by staff if it fails.
+      }
       const url = whatsAppOrderUrl(
         buildWhatsAppOrderMessage({
           lang,

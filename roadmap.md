@@ -9,4 +9,8 @@
 - [x] Real invoice generated from the authenticated order (print/download, FR/EN/AR, RTL)
 - [x] Remove printer selection UI (DB column kept for a future update)
 - [x] Mobile responsiveness pass (no horizontal overflow on key routes)
+- [x] Verified dashboard orders are real customer rows (RLS-scoped), no demo fixtures left
+- [x] Private client-artwork storage + order_files table with owner-only RLS and signed URLs
+- [x] Client files section per order and "My files" view (FR/EN/AR, RTL, mobile)
+- [x] Internal storage documentation (docs/client-files.md)
 - [ ] Google consent screen branding: requires own Google OAuth client ID/secret in Cloud auth settings

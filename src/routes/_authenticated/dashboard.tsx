@@ -10,6 +10,7 @@ import {
   LogOut,
   MapPin,
   Package,
+  FolderOpen,
   Receipt,
   Repeat,
   Truck,
@@ -20,6 +21,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { orderStages, type OrderStage } from "@/data/orders";
 import { listMyOrders, type OrderRecord } from "@/lib/orders-api";
+import { artworkFolder, listMyFiles } from "@/lib/files-api";
+import { ClientFiles } from "@/components/dashboard/ClientFiles";
 import { invoiceLabels, invoiceNumber } from "@/lib/invoice";
 import { mad } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -48,7 +51,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 
-type View = "orders" | "invoices";
+type View = "orders" | "files" | "invoices";
 
 type ViewOrder = {
   id: string;
@@ -77,6 +80,16 @@ function DashboardPage() {
     enabled: Boolean(user),
   });
 
+  const {
+    data: files = [],
+    isLoading: filesLoading,
+    isError: filesError,
+  } = useQuery({
+    queryKey: ["order-files", user?.id],
+    queryFn: listMyFiles,
+    enabled: Boolean(user),
+  });
+
   const orders = records.map(toViewOrder);
   const activeId = selectedId ?? orders[0]?.id ?? null;
   const active = orders.find((o) => o.id === activeId) ?? null;
@@ -88,6 +101,7 @@ function DashboardPage() {
 
   const nav: { key: View; label: string; icon: React.ElementType }[] = [
     { key: "orders", label: t("dash.nav.orders"), icon: Package },
+    { key: "files", label: tr("My files"), icon: FolderOpen },
     { key: "invoices", label: t("dash.nav.invoices"), icon: Receipt },
   ];
 
@@ -191,13 +205,13 @@ function DashboardPage() {
         </aside>
 
         <div className="min-w-0">
-          {isLoading && (
+          {isLoading && view !== "files" && (
             <div className="surface-card p-10 text-center text-muted-foreground">
               {tr("Loading your orders…")}
             </div>
           )}
 
-          {!isLoading && orders.length === 0 && (
+          {!isLoading && orders.length === 0 && view !== "files" && (
             <div className="surface-card p-8 text-center md:p-10">
               <Package className="mx-auto size-8 text-primary" />
               <h2 className="mt-4 text-xl">{tr("No orders yet")}</h2>
@@ -310,6 +324,19 @@ function DashboardPage() {
                   />
                 </dl>
 
+                {activeRecord && (
+                  <ClientFiles
+                    files={files.filter(
+                      (f) =>
+                        f.orderId === activeRecord.id ||
+                        f.orderReference === activeRecord.reference,
+                    )}
+                    isLoading={filesLoading}
+                    isError={filesError}
+                    {...(user ? { folder: artworkFolder(user.id, activeRecord.reference) } : {})}
+                  />
+                )}
+
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Button asChild className="rounded-full">
                     <Link to="/products/$slug" params={{ slug: active.productSlug }}>
@@ -331,6 +358,23 @@ function DashboardPage() {
                   )}
                 </div>
               </motion.div>
+            </div>
+          )}
+
+          {view === "files" && (
+            <div className="surface-card p-5 sm:p-6">
+              <h2 className="text-xl">{tr("My files")}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {tr("Every file you uploaded, newest first, with the order it belongs to.")}
+              </p>
+              <ClientFiles
+                files={files}
+                isLoading={filesLoading}
+                isError={filesError}
+                heading={false}
+                showOrder
+                {...(user ? { folder: `${user.id}/` } : {})}
+              />
             </div>
           )}
 

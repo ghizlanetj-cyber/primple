@@ -4,6 +4,66 @@ const p = (fr: string, ar: string): TranslationPair => ({ fr, ar });
 
 /** Copy rewritten for conversion + SEO (French-first site). */
 export const copyPhrases: Record<string, TranslationPair> = {
+  // Client files (private artwork storage)
+  "Client files": p("Fichiers du client", "ملفات العميل"),
+  "My files": p("Mes fichiers", "ملفاتي"),
+  "Loading files…": p("Chargement des fichiers…", "جارٍ تحميل الملفات…"),
+  "We couldn't load your files. Please refresh the page.": p(
+    "Impossible de charger vos fichiers. Actualisez la page.",
+    "تعذر تحميل ملفاتك. يرجى تحديث الصفحة.",
+  ),
+  "No file uploaded for this order yet.": p(
+    "Aucun fichier importé pour cette commande.",
+    "لا يوجد أي ملف مرفوع لهذا الطلب بعد.",
+  ),
+  "Every file you uploaded, newest first, with the order it belongs to.": p(
+    "Tous vos fichiers importés, du plus récent au plus ancien, avec la commande liée.",
+    "جميع الملفات التي رفعتها، من الأحدث إلى الأقدم، مع الطلب المرتبط بها.",
+  ),
+  Preview: p("Aperçu", "معاينة"),
+  Download: p("Télécharger", "تحميل"),
+  "Stored privately in your Primple account at:": p(
+    "Conservé en privé dans votre compte Primple à :",
+    "محفوظ بشكل خاص في حسابك لدى Primple في:",
+  ),
+  "Only you and the Primple team can open these files. Links expire after a few minutes.": p(
+    "Vous seul et l'équipe Primple pouvez ouvrir ces fichiers. Les liens expirent après quelques minutes.",
+    "أنت وفريق Primple فقط يمكنكم فتح هذه الملفات. تنتهي صلاحية الروابط بعد دقائق.",
+  ),
+  "We couldn't open this file. Please try again.": p(
+    "Impossible d'ouvrir ce fichier. Réessayez.",
+    "تعذر فتح هذا الملف. حاول مرة أخرى.",
+  ),
+  "Log in to upload your file.": p(
+    "Connectez-vous pour importer votre fichier.",
+    "سجّل الدخول لرفع ملفك.",
+  ),
+  "Accepted formats: PDF, PNG, JPG or SVG.": p(
+    "Formats acceptés : PDF, PNG, JPG ou SVG.",
+    "الصيغ المقبولة: PDF أو PNG أو JPG أو SVG.",
+  ),
+  "Your file is larger than 50 MB. Send it to us by WhatsApp instead.": p(
+    "Votre fichier dépasse 50 Mo. Envoyez-le nous par WhatsApp.",
+    "حجم ملفك يتجاوز 50 ميغابايت. أرسله إلينا عبر واتساب.",
+  ),
+  "Up to 50 MB per file.": p("Jusqu'à 50 Mo par fichier.", "حتى 50 ميغابايت لكل ملف."),
+  "File uploaded to your account.": p(
+    "Fichier importé dans votre compte.",
+    "تم رفع الملف إلى حسابك.",
+  ),
+  "We couldn't upload your file. Please try again.": p(
+    "Impossible d'importer votre fichier. Réessayez.",
+    "تعذر رفع ملفك. حاول مرة أخرى.",
+  ),
+  "We couldn't remove this file. Please try again.": p(
+    "Impossible de supprimer ce fichier. Réessayez.",
+    "تعذر حذف هذا الملف. حاول مرة أخرى.",
+  ),
+  "Saved to your account. You'll find it on your order in your dashboard.": p(
+    "Enregistré dans votre compte. Vous le retrouverez sur votre commande dans votre espace.",
+    "تم الحفظ في حسابك. ستجده مع طلبك في لوحة التحكم.",
+  ),
+
   // Hero microcopy
   "Clear answer. No commitment.": p(
     "Réponse claire. Sans engagement.",
