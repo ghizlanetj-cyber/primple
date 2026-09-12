@@ -11,6 +11,7 @@ import { phrases, authPhrases } from "./translations";
 import { productPhrases } from "./product-translations";
 import { commercialPhrases } from "./commercial-translations";
 import { copyPhrases } from "./copy-translations";
+import { frenchPagePhrases } from "./fr-page-translations";
 
 export const languages = ["en", "fr", "ar"] as const;
 export type Lang = (typeof languages)[number];
@@ -309,7 +310,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       tr: (text: string) =>
         lang === "en"
           ? text
-          : phrases[text]?.[lang] ?? authPhrases[text]?.[lang] ?? productPhrases[text]?.[lang] ?? commercialPhrases[text]?.[lang] ?? copyPhrases[text]?.[lang] ?? text,
+          : lang === "fr"
+            ? frenchPagePhrases[text] ?? phrases[text]?.fr ?? authPhrases[text]?.fr ?? productPhrases[text]?.fr ?? commercialPhrases[text]?.fr ?? copyPhrases[text]?.fr ?? text
+            : phrases[text]?.ar ?? authPhrases[text]?.ar ?? productPhrases[text]?.ar ?? commercialPhrases[text]?.ar ?? copyPhrases[text]?.ar ?? text,
       number: (value: number) => value.toLocaleString(lang === "fr" ? "fr-FR" : lang === "ar" ? "ar-MA" : "en-US"),
     }),
     [lang, setLang],

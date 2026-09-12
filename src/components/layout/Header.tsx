@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, Check, Globe2, LogOut, Menu, ShoppingBag, X } from "lucide-react";
@@ -14,6 +14,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
+  const mobileCloseRef = useRef<HTMLButtonElement>(null);
   const { lang, setLang, t, tr } = useI18n();
   const items = useCart((s) => s.items);
   const { user, signOut } = useAuth();
@@ -25,6 +26,16 @@ export function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    mobileCloseRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
 
   return (
     <header
@@ -144,10 +155,14 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="absolute -left-3 -top-3 z-50 h-svh w-screen overflow-y-auto bg-ink text-ink-foreground sm:-left-5 lg:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("cta.menu")}
           >
             <div className="flex h-16 items-center justify-between border-b border-white/10 px-6">
               <Logo invert className="h-5" />
               <Button
+                ref={mobileCloseRef}
                 variant="ghost"
                 size="icon"
                 aria-label={t("cta.close")}
@@ -175,11 +190,11 @@ export function Header() {
                 ))}
               </div>
               {[
-                { to: "/services", label: "Solutions" },
-                { to: "/products", label: "Produits" },
-                { to: "/about", label: "Pourquoi Primple" },
-                { to: "/platform", label: "Nos réalisation" },
-                { to: "/contact", label: "Contact" },
+                { to: "/services", label: t("nav.solutions") },
+                { to: "/products", label: t("nav.products") },
+                { to: "/about", label: t("nav.why") },
+                { to: "/platform", label: t("nav.work") },
+                { to: "/contact", label: t("nav.contact") },
                 { to: "/dashboard", label: t("nav.dashboard") },
                 ...(user ? [] : [{ to: "/login", label: t("nav.login") }]),
               ].map((link, i) => (
