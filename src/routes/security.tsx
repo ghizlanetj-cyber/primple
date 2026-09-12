@@ -5,9 +5,9 @@ import { PageHero, ContentSection } from "@/components/shared/PageHero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Security & data protection | Primple";
+const title = "Sécurité et protection des données | Primple";
 const description =
-  "How Primple protects your artwork, account data and payments — encryption, access control and printer confidentiality.";
+  "Comment Primple protège vos fichiers, vos données de compte et vos paiements : chiffrement, contrôle d’accès et confidentialité des imprimeurs.";
 
 export const Route = createFileRoute("/security")({
   head: () => ({
@@ -17,9 +17,10 @@ export const Route = createFileRoute("/security")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/security" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/security" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/security" }],
   }),
   component: SecurityPage,
 });
@@ -29,9 +30,9 @@ function SecurityPage() {
   return (
     <SiteShell>
       <PageHero
-        eyebrow="Security"
-        title="Your files and your data stay yours."
-        subtitle="Artwork is shared only with the printer producing your job, and only for as long as the job runs."
+        eyebrow="Sécurité"
+        title="Vos fichiers et vos données restent les vôtres."
+        subtitle="Vos fichiers sont partagés uniquement avec l’imprimeur chargé de votre travail, et seulement pendant sa réalisation."
       >
         <Button asChild size="lg" variant="outline" className="rounded-full px-7">
           <Link to="/contact">{tr("Ask a security question")}</Link>
@@ -39,14 +40,14 @@ function SecurityPage() {
       </PageHero>
 
       <ContentSection
-        title="How we protect your work"
+        title="Comment nous protégeons votre travail"
         items={[
-          { title: "Encrypted in transit", body: "Every upload and page load runs over HTTPS." },
-          { title: "Access control", body: "Your orders and files are readable only by your account." },
-          { title: "Printer confidentiality", body: "Partners see only the job they produce, under a confidentiality agreement." },
-          { title: "Payment safety", body: "Card details for the 50% advance are handled by our payment processor, never stored by us." },
-          { title: "Backups", body: "Order records are backed up so your history and invoices survive incidents." },
-          { title: "Deletion on request", body: "Ask us and we remove your artwork and account data." },
+          { title: "Chiffrement des échanges", body: "Chaque importation et chaque chargement de page utilisent HTTPS." },
+          { title: "Contrôle d’accès", body: "Vos commandes et vos fichiers sont accessibles uniquement depuis votre compte." },
+          { title: "Confidentialité des imprimeurs", body: "Les partenaires voient uniquement le travail qu’ils produisent, dans le cadre d’un accord de confidentialité." },
+          { title: "Sécurité des paiements", body: "Les informations de carte utilisées pour l’acompte de 50 % sont traitées par notre prestataire de paiement et ne sont jamais stockées par nos soins." },
+          { title: "Sauvegardes", body: "Les dossiers de commande sont sauvegardés afin de préserver votre historique et vos factures en cas d’incident." },
+          { title: "Suppression sur demande", body: "Demandez-nous de supprimer vos fichiers et les données de votre compte." },
         ]}
       />
     </SiteShell>
