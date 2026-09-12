@@ -27,7 +27,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-[0.7rem] font-medium uppercase leading-relaxed tracking-[0.28em] text-ink-foreground/75"
+            className="text-[0.65rem] font-medium uppercase leading-relaxed tracking-[0.26em] text-ink-foreground/75"
           >
             {t("hero.eyebrow")}
           </motion.p>
@@ -36,7 +36,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="display-xl mt-6 max-w-[12ch] text-5xl leading-[0.92] tracking-tight sm:text-7xl lg:text-[5.5rem]"
+            className="display-xl mt-4 max-w-[14ch] text-4xl leading-[0.95] tracking-tight sm:text-5xl lg:text-[4.25rem]"
           >
             {t("hero.title")} <span className="display-accent">{t("hero.titleAccent")}</span>
           </motion.h1>
@@ -45,7 +45,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12 }}
-            className="mt-7 max-w-md text-base leading-relaxed text-ink-foreground/85 md:text-lg"
+            className="mt-4 max-w-md text-sm leading-relaxed text-ink-foreground/85 md:text-base"
           >
             {t("hero.sub")}
           </motion.p>
@@ -54,9 +54,9 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.18 }}
-            className="mt-9 flex flex-wrap items-center gap-3"
+            className="mt-6 flex flex-wrap items-center gap-3"
           >
-            <Button asChild size="lg" className="rounded-full px-8">
+            <Button asChild size="default" className="rounded-full px-6">
               <Link to="/products">
                 {t("cta.start")}
                 <ArrowRight className="size-4 -rotate-45 rtl:rotate-180" />
@@ -64,9 +64,9 @@ export function Hero() {
             </Button>
             <Button
               asChild
-              size="lg"
+              size="default"
               variant="outline"
-              className="rounded-full border-white/35 bg-white/5 px-8 text-ink-foreground hover:bg-white/12 hover:text-ink-foreground"
+              className="rounded-full border-white/35 bg-white/5 px-6 text-ink-foreground hover:bg-white/12 hover:text-ink-foreground"
             >
               <Link to="/partners">{t("cta.partner")}</Link>
             </Button>
@@ -76,18 +76,18 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-12 flex max-w-xl flex-wrap gap-x-10 gap-y-6 text-xs leading-snug text-ink-foreground/85"
+            className="mt-8 flex max-w-xl flex-wrap gap-x-8 gap-y-5 text-[0.7rem] leading-snug text-ink-foreground/85"
           >
-            <span className="flex max-w-[7.5rem] flex-col gap-3">
-              <Gem className="size-6 shrink-0 stroke-[1.25] text-ink-foreground" />
+            <span className="flex max-w-[7rem] flex-col gap-2">
+              <Gem className="size-5 shrink-0 stroke-[1.25] text-ink-foreground" />
               {t("hero.f1")}
             </span>
-            <span className="flex max-w-[7.5rem] flex-col gap-3">
-              <Truck className="size-6 shrink-0 stroke-[1.25] text-ink-foreground" />
+            <span className="flex max-w-[7rem] flex-col gap-2">
+              <Truck className="size-5 shrink-0 stroke-[1.25] text-ink-foreground" />
               {t("hero.f2")}
             </span>
-            <span className="flex max-w-[7.5rem] flex-col gap-3">
-              <Leaf className="size-6 shrink-0 stroke-[1.25] text-ink-foreground" />
+            <span className="flex max-w-[7rem] flex-col gap-2">
+              <Leaf className="size-5 shrink-0 stroke-[1.25] text-ink-foreground" />
               {t("hero.f3")}
             </span>
           </motion.div>
