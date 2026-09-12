@@ -71,7 +71,7 @@ function DashboardPage() {
     order: r.reference,
     date: new Date(r.createdAt).toLocaleDateString(),
     amount: r.total,
-    status: r.balanceAmount > 0 ? "50% paid · balance on delivery" : "Paid",
+    status: r.balanceAmount > 0 ? "50 % payés · solde à la livraison" : "Payé",
   }));
 
   const activeId = selectedId ?? orders[0]?.id ?? null;
