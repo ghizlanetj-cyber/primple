@@ -38,6 +38,7 @@ const en: Dict = {
   "cta.theme": "Toggle dark mode",
   "cta.language": "Language",
 
+  "hero.eyebrow": "Turning ideas into tangible impact",
   "hero.title": "Print. Simple. Speed.   PRIMPLE   ",
   "hero.titleAccent": " ",
   "hero.sub": "Design, print and deliver — all from one intelligent platform.",
@@ -112,6 +113,7 @@ const fr: Dict = {
   "cta.theme": "Mode sombre",
   "cta.language": "Langue",
 
+  "hero.eyebrow": "Des idées transformées en impact réel",
   "hero.title": "Plus que de l'impression",
   "hero.titleAccent": "Des idées qui prennent forme.",
   "hero.sub": "Concevez, imprimez et faites livrer — depuis une seule plateforme intelligente.",
@@ -186,6 +188,7 @@ const ar: Dict = {
   "cta.theme": "الوضع الليلي",
   "cta.language": "اللغة",
 
+  "hero.eyebrow": "أفكار تتحول إلى أثر ملموس",
   "hero.title": "مستقبل الطباعة",
   "hero.titleAccent": "يبدأ من هنا.",
   "hero.sub": "صمّم، اطبع، واستلم — من منصة واحدة ذكية.",
