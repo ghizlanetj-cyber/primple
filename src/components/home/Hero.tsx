@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle2, Star, Truck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
-import heroStudioAsset from "@/assets/primple-studio-hero.png.asset.json";
+import heroStudioAsset from "@/assets/primple-studio-hero-wide.png.asset.json";
 
 export function Hero() {
   const reduce = useReducedMotion();
