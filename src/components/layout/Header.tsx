@@ -283,7 +283,7 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className="rounded-full py-2 text-[15px] font-medium text-white/85 transition-colors hover:text-white xl:text-[16px]"
+      className="rounded-full py-1.5 text-[14px] font-medium text-white/85 transition-colors hover:text-white xl:text-[15px]"
       activeProps={{ className: "text-white" }}
     >
       {children}
