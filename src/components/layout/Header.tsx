@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Check, ChevronDown, Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { ArrowRight, Check, Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
-import { products } from "@/data/products";
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { languageLabels, languages, useI18n } from "@/i18n";
@@ -13,7 +12,6 @@ import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [dark, setDark] = useState(false);
@@ -42,7 +40,6 @@ export function Header() {
           ? "border-white/25 bg-ink/35 shadow-lift backdrop-blur-3xl"
           : "border-white/20 bg-ink/15 shadow-lift backdrop-blur-3xl",
       )}
-      onMouseLeave={() => setMegaOpen(false)}
     >
       <div className="pointer-events-none absolute inset-x-7 top-px h-px bg-linear-to-r from-transparent via-white/60 to-transparent" />
       <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:px-8">
@@ -50,18 +47,7 @@ export function Header() {
           <Logo invert className="h-5 shrink-0 md:h-6" />
           <nav className="hidden items-center gap-1 lg:flex">
             <NavLink to="/services">Solutions</NavLink>
-            <button
-              type="button"
-              onMouseEnter={() => setMegaOpen(true)}
-              onClick={() => setMegaOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full px-2 py-2 text-xs font-medium text-white/80 transition-colors hover:text-white xl:px-3 xl:text-sm"
-              aria-expanded={megaOpen}
-            >
-              Produits
-              <ChevronDown
-                className={cn("size-4 transition-transform", megaOpen && "rotate-180")}
-              />
-            </button>
+            <NavLink to="/products">Produits</NavLink>
             <NavLink to="/about">Pourquoi Primple</NavLink>
             <NavLink to="/platform">Nos réalisation</NavLink>
             <NavLink to="/contact">Contact</NavLink>
@@ -165,33 +151,6 @@ export function Header() {
           </Button>
         </div>
       </div>
-
-      <AnimatePresence>
-        {megaOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden overflow-hidden rounded-b-3xl border-t border-white/15 bg-ink/60 text-ink-foreground backdrop-blur-3xl lg:block"
-          >
-             <div className="grid grid-cols-4 gap-2 px-8 py-7">
-              {products.map((p) => (
-                <Link
-                  key={p.slug}
-                  to="/products/$slug"
-                  params={{ slug: p.slug }}
-                  onClick={() => setMegaOpen(false)}
-                   className="group rounded-lg px-3 py-2.5 transition-colors hover:bg-white/8"
-                >
-                   <p className="text-sm font-semibold">{tr(p.name)}</p>
-                    <p className="text-xs text-ink-muted">{tr(p.benefit)}</p>
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {mobileOpen && (
