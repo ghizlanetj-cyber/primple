@@ -37,14 +37,14 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/[0.16] shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur-[24px] backdrop-saturate-[1.2] transition-colors duration-500 sm:w-[calc(100%-3rem)] lg:top-6 lg:w-[calc(100%-96px)]",
+        "fixed left-1/2 top-3 z-50 w-[calc(100%-2rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/[0.16] shadow-[0_10px_32px_rgba(0,0,0,0.10)] backdrop-blur-[20px] backdrop-saturate-[1.15] transition-colors duration-500 sm:w-[calc(100%-3rem)] lg:top-4 lg:w-[calc(100%-96px)]",
         scrolled ? "bg-[rgba(35,33,42,0.52)]" : "bg-[rgba(35,33,42,0.38)]",
       )}
       onMouseLeave={() => setMegaOpen(false)}
     >
-      <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:h-[84px] lg:px-8">
-        <div className="flex min-w-0 items-center gap-6 xl:gap-8">
-          <Logo invert className="h-5 shrink-0 md:h-6 lg:w-[118px]" />
+      <div className="relative grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-16 lg:h-[68px] lg:px-8">
+        <div className="flex min-w-0 items-center gap-5 xl:gap-7">
+          <Logo invert className="h-5 shrink-0 md:h-[22px] lg:w-[102px]" />
           <nav className="hidden items-center gap-x-7 xl:flex xl:gap-x-8">
             <NavLink to="/services">Solutions</NavLink>
             <button
