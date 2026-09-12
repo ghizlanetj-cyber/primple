@@ -45,7 +45,7 @@ export const Route = createFileRoute("/products/$slug")({
             "@context": "https://schema.org",
             "@type": "Product",
             name: productPhrases[product.name]?.fr ?? product.name,
-            description: product.description,
+            description,
             aggregateRating: {
               "@type": "AggregateRating",
               ratingValue: product.rating,
@@ -177,15 +177,15 @@ function ProductNotFound() {
   return (
     <SiteShell>
       <div className="section-shell py-32 text-center">
-        <h1 className="text-4xl">We don't print that one — yet.</h1>
+        <h1 className="text-4xl">Nous n’imprimons pas encore ce produit.</h1>
         <p className="mt-4 text-muted-foreground">
-          Browse everything we do print, or request a custom quote.
+          Découvrez tous nos produits ou demandez un devis personnalisé.
         </p>
         <Link
           to="/products"
           className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
         >
-          See all products
+          Voir tous les produits
           <ArrowRight className="size-4" />
         </Link>
       </div>

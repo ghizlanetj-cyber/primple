@@ -4,9 +4,9 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { PageHero } from "@/components/shared/PageHero";
 import { LegalBody } from "@/components/shared/LegalBody";
 
-const title = "Privacy Policy | Primple";
+const title = "Politique de confidentialité | Primple";
 const description =
-  "What personal data Primple collects, why we collect it, who we share it with and how you can have it deleted.";
+  "Les données personnelles collectées par Primple, leur utilisation, leur partage et la procédure pour demander leur suppression.";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -16,9 +16,10 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/privacy" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/privacy" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/privacy" }],
   }),
   component: PrivacyPage,
 });
@@ -27,35 +28,35 @@ function PrivacyPage() {
   return (
     <SiteShell>
       <PageHero
-        eyebrow="Legal"
-        title="Privacy Policy"
-        subtitle="What we collect, why we collect it, and how to have it removed."
+        eyebrow="Mentions légales"
+        title="Politique de confidentialité"
+        subtitle="Ce que nous collectons, pourquoi nous le collectons et comment demander sa suppression."
       />
       <LegalBody
         sections={[
           {
-            title: "Data we collect",
-            body: "Account details (name, email), order details (products, delivery address, phone) and the artwork you upload. We also keep basic usage data to keep the service reliable.",
+            title: "Données que nous collectons",
+            body: "Les informations du compte (nom, e-mail), les informations de commande (produits, adresse de livraison, téléphone) et les fichiers que vous importez. Nous conservons également des données d’utilisation élémentaires pour assurer la fiabilité du service.",
           },
           {
-            title: "Why we use it",
-            body: "To produce and deliver your orders, to keep your order history and invoices available, and to answer your messages.",
+            title: "Pourquoi nous les utilisons",
+            body: "Pour produire et livrer vos commandes, mettre à votre disposition l’historique de vos commandes et vos factures, et répondre à vos messages.",
           },
           {
-            title: "Who we share it with",
-            body: "The printer producing your job receives only what is needed to print and deliver it. Couriers receive delivery details. Payment processors handle the 50% advance. We never sell your data.",
+            title: "Avec qui nous les partageons",
+            body: "L’imprimeur chargé de votre travail reçoit uniquement les éléments nécessaires à son impression et à sa livraison. Les transporteurs reçoivent les informations de livraison. Les prestataires de paiement traitent l’acompte de 50 %. Nous ne vendons jamais vos données.",
           },
           {
-            title: "How long we keep it",
-            body: "Order records are kept for accounting purposes. Artwork is removed on request once a job is delivered.",
+            title: "Durée de conservation",
+            body: "Les dossiers de commande sont conservés à des fins comptables. Les fichiers sont supprimés sur demande une fois le travail livré.",
           },
           {
-            title: "Your rights",
-            body: "You can ask for a copy of your data, correct it, or ask us to delete your account and files. Write to contact@primpel.com.",
+            title: "Vos droits",
+            body: "Vous pouvez demander une copie de vos données, les corriger ou demander la suppression de votre compte et de vos fichiers. Écrivez à contact@primpel.com.",
           },
           {
             title: "Cookies",
-            body: "We use essential cookies to keep you signed in and to remember your cart and language.",
+            body: "Nous utilisons des cookies essentiels pour maintenir votre connexion et mémoriser votre panier et votre langue.",
           },
         ]}
       />
