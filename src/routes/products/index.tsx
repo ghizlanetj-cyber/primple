@@ -104,8 +104,18 @@ function ProductsPage() {
                 onChange={(e) => setQuery(e.target.value)}
                  placeholder={tr("Search products")}
                  aria-label={tr("Search products")}
-                 className="rounded-full ps-10"
+                 className="rounded-full ps-10 pe-10"
               />
+              {query !== "" && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  aria-label={tr("Clear search")}
+                  className="absolute end-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
             </div>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
