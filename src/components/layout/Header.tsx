@@ -39,13 +39,12 @@ export function Header() {
       className={cn(
         "fixed inset-x-3 top-3 z-50 mx-auto max-w-[86rem] rounded-full border transition-all duration-500 sm:inset-x-5 lg:top-5",
         scrolled
-          ? "border-white/30 bg-ink/45 shadow-lift backdrop-blur-3xl"
-          : "border-white/25 bg-ink/25 shadow-lift backdrop-blur-3xl",
+          ? "border-white/25 bg-ink/35 shadow-lift backdrop-blur-3xl"
+          : "border-white/20 bg-ink/15 shadow-lift backdrop-blur-3xl",
       )}
       onMouseLeave={() => setMegaOpen(false)}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-full bg-linear-to-b from-white/18 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-7 top-px h-px bg-linear-to-r from-transparent via-white/70 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-7 top-px h-px bg-linear-to-r from-transparent via-white/60 to-transparent" />
       <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:px-8">
         <div className="flex min-w-0 items-center gap-7 xl:gap-9">
           <Logo invert className="h-5 shrink-0 md:h-6" />
