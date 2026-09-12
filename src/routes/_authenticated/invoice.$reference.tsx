@@ -31,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/invoice/$reference")({
 
 function InvoicePage() {
   const { reference } = Route.useParams();
-  const { lang, dir, number } = useI18n();
+  const { lang, dir, number, tr } = useI18n();
   const { user } = useAuth();
   const L = invoiceLabels[lang];
 
@@ -146,7 +146,7 @@ function InvoicePage() {
               <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {L.orderStatus}
               </h2>
-              <p className="mt-2 text-sm">{order.status}</p>
+              <p className="mt-2 text-sm">{tr(order.status)}</p>
               <h2 className="mt-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {L.paymentStatus}
               </h2>
