@@ -25,9 +25,16 @@ export type OrderRecord = {
   balanceAmount: number;
   depositPaid: boolean;
   city: string | null;
+  /** Kept for backend compatibility with a future printer-selection update. */
   printer: string | null;
   expectedAt: string | null;
   createdAt: string;
+  customerName: string | null;
+  company: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  postcode: string | null;
 };
 
 export type DeliveryDetails = {
@@ -68,6 +75,12 @@ function toRecord(row: Record<string, unknown>): OrderRecord {
     printer: (row["printer"] as string) ?? null,
     expectedAt: (row["expected_at"] as string) ?? null,
     createdAt: String(row["created_at"]),
+    customerName: (row["contact_name"] as string) ?? null,
+    company: (row["company"] as string) ?? null,
+    email: (row["email"] as string) ?? null,
+    phone: (row["phone"] as string) ?? null,
+    address: (row["address"] as string) ?? null,
+    postcode: (row["postcode"] as string) ?? null,
   };
 }
 
