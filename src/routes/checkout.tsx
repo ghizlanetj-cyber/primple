@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Banknote, CheckCircle2, Clock, Lock, Package, Truck } from "lucide-react";
+import { ArrowRight, Banknote, CheckCircle2, Clock, Lock, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -192,7 +192,7 @@ function CheckoutPage() {
                             {i.labels.map((l) => tr(l.value)).join(" · ")}
                           </p>
                           <p className="mt-1 text-sm text-muted-foreground">
-                            {i.printer} · {tr("Production")} {i.productionDays} {tr("days")}
+                            {tr("Production")} {i.productionDays} {tr("days")}
                           </p>
                         </div>
                         <p className="whitespace-nowrap font-semibold">{mad(i.subtotal)}</p>
@@ -328,11 +328,6 @@ function CheckoutPage() {
 
                   <dl className="mt-6 grid gap-4 sm:grid-cols-2">
                     <Summary
-                      icon={Package}
-                      label={tr("Printer")}
-                      value={placedOrder?.printer ?? tr("Primple partner network")}
-                    />
-                    <Summary
                       icon={Clock}
                       label={tr("Estimated production")}
                       value={`2–3 ${tr("working days")}`}
@@ -409,7 +404,7 @@ function CheckoutPage() {
               </div>
             </dl>
             <p className="mt-5 text-xs text-muted-foreground">
-              {tr("Verified printers · Artwork checked · Tracked delivery")}
+              {tr("Artwork checked · Tracked delivery")}
             </p>
           </aside>
         </div>

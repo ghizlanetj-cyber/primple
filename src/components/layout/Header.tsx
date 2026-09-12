@@ -3,6 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, LogOut, Menu, ShoppingBag, X } from "lucide-react";
 
+import { LanguageSelect } from "@/components/layout/LanguageSelect";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/store/cart";
@@ -56,7 +57,8 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <LanguageSelect variant="header" id="header-language" className="hidden sm:flex" />
           <Button
             variant="ghost"
             size="icon"
@@ -167,7 +169,8 @@ export function Header() {
                   </Link>
                 </motion.div>
               ))}
-              <Button asChild size="lg" className="mt-6 rounded-full">
+              <LanguageSelect variant="mobile" id="mobile-language" className="mt-6" />
+              <Button asChild size="lg" className="mt-4 rounded-full">
                 <Link to="/products" onClick={() => setMobileOpen(false)}>
                   {t("cta.start")}
                 </Link>

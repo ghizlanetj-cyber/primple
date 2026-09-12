@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { products } from "@/data/products";
 import { toast } from "sonner";
-import { languageLabels, languages, useI18n, type Lang } from "@/i18n";
+import { useI18n } from "@/i18n";
 import { contact } from "@/config/contact";
 
 const columns: { titleKey: string; links: { label: string; to: string }[] }[] = [
@@ -46,7 +46,7 @@ const legalLinks = [
 ];
 
 export function Footer() {
-  const { t, tr, lang, setLang } = useI18n();
+  const { t, tr } = useI18n();
 
   return (
     <footer className="bg-ink text-ink-foreground">
