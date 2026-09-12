@@ -1,15 +1,26 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { ProductCard } from "@/components/products/ProductCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { FinalCta } from "@/components/shared/FinalCta";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { products } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
+
+/** lowercase, strip accents/diacritics and punctuation so "cartes" matches "Cartes de visite". */
+function normalize(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f\u064b-\u0652]/g, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
 
 const title = "Produits d'impression : cartes de visite, flyers, packaging | Primple";
 const description =
