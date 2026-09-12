@@ -27,17 +27,17 @@ const testimonials = [
 export function Testimonials() {
   const { tr } = useI18n();
   return (
-    <section className="bg-secondary/40 py-20 md:py-28">
+    <section className="bg-secondary/55 py-24 md:py-32">
       <div className="section-shell">
         <Reveal className="max-w-2xl">
           <p className="eyebrow text-primary">{tr("Customers")}</p>
-          <h2 className="mt-4 text-4xl md:text-5xl">{tr("Less back-and-forth. Fewer surprises.")}</h2>
+           <h2 className="display-xl mt-4 text-4xl md:text-6xl">{tr("Less back-and-forth. Fewer surprises.")}</h2>
         </Reveal>
 
         <div className="mt-12 grid gap-5 lg:grid-cols-3">
           {testimonials.map((t, i) => (
             <Reveal key={t.name} delay={i * 0.08}>
-              <figure className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 shadow-soft">
+               <figure className="flex h-full flex-col rounded-xl border border-border/70 bg-card p-7 shadow-soft">
                 <div className="flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, s) => (
                     <Star key={s} className="size-3.5 fill-primary text-primary" />
