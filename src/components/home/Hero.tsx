@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle2, Star, Truck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
-import heroStudioAsset from "@/assets/primple-studio-hero.png.asset.json";
+import heroStudioAsset from "@/assets/primple-studio-hero-wide.png.asset.json";
 
 export function Hero() {
   const reduce = useReducedMotion();
@@ -15,7 +15,7 @@ export function Hero() {
       <img
         src={heroStudioAsset.url}
         alt="Collection de supports imprimés PRIMPLE dans un studio lumineux"
-        className="absolute inset-0 size-full object-cover object-[62%_center] md:object-center"
+        className="absolute inset-0 size-full object-cover object-center"
         fetchPriority="high"
       />
       <div className="absolute inset-0 bg-linear-to-t from-ink/35 via-transparent to-ink/20" />
