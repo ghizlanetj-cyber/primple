@@ -29,7 +29,7 @@ const steps = [
 export function HowItWorks() {
   const { tr } = useI18n();
   return (
-    <section className="bg-secondary/55 py-24 md:py-32">
+    <section className="bg-white py-24 md:py-32">
       <div className="section-shell">
         <Reveal className="max-w-2xl">
           <p className="eyebrow text-primary">{tr("How it works")}</p>
