@@ -29,12 +29,12 @@ const steps = [
 export function HowItWorks() {
   const { tr } = useI18n();
   return (
-    <section className="bg-secondary/55 py-24 md:py-32">
+    <section className="bg-secondary/55 py-24 text-white md:py-32">
       <div className="section-shell">
         <Reveal className="max-w-2xl">
-          <p className="eyebrow text-primary">{tr("How it works")}</p>
-          <h2 className="display-xl mt-4 text-4xl md:text-6xl">{tr("Printing shouldn't take 15 emails.")}</h2>
-          <p className="mt-5 text-lg text-muted-foreground">
+          <p className="eyebrow text-white/90">{tr("How it works")}</p>
+          <h2 className="display-xl mt-4 text-4xl text-white md:text-6xl">{tr("Printing shouldn't take 15 emails.")}</h2>
+          <p className="mt-5 text-lg text-white/80">
             {tr("Choose what you need, upload your artwork, choose your printer and let Primpel handle the rest.")}
           </p>
         </Reveal>
