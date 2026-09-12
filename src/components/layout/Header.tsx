@@ -37,7 +37,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-4 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-[1390px] rounded-full border border-white/[0.16] shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur-[24px] backdrop-saturate-[1.2] transition-colors duration-500 sm:inset-x-6 sm:w-[calc(100%-3rem)] lg:inset-x-auto lg:top-6 lg:w-[calc(100%-96px)]",
+        "fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/[0.16] shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur-[24px] backdrop-saturate-[1.2] transition-colors duration-500 sm:w-[calc(100%-3rem)] lg:top-6 lg:w-[calc(100%-96px)]",
         scrolled ? "bg-[rgba(35,33,42,0.52)]" : "bg-[rgba(35,33,42,0.38)]",
       )}
       onMouseLeave={() => setMegaOpen(false)}
