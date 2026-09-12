@@ -78,7 +78,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-10 flex max-w-md flex-nowrap gap-x-6 text-left text-sm leading-snug text-ink-foreground/85"
+            className="mt-[clamp(1.75rem,4vh,2.5rem)] flex max-w-md flex-nowrap gap-x-[clamp(1rem,2vw,1.5rem)] text-left text-[clamp(0.8rem,1vw,0.875rem)] leading-snug text-ink-foreground/85"
           >
             <span className="flex max-w-[7rem] flex-col items-start gap-3">
               <Gem className="size-7 shrink-0 stroke-[1.25] text-ink-foreground" />
