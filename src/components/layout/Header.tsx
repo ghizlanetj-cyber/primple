@@ -51,7 +51,7 @@ export function Header() {
               type="button"
               onMouseEnter={() => setMegaOpen(true)}
               onClick={() => setMegaOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full py-2 text-[16px] font-medium text-white/85 transition-colors hover:text-white xl:text-[17px]"
+              className="flex items-center gap-1 rounded-full py-2 text-[15px] font-medium text-white/85 transition-colors hover:text-white xl:text-[16px]"
               aria-expanded={megaOpen}
             >
               Produits
@@ -147,7 +147,7 @@ export function Header() {
             </>
           ) : null}
 
-           <Button asChild className="hidden rounded-full px-7 md:inline-flex lg:h-14 lg:px-8 lg:text-[16px]">
+           <Button asChild className="hidden rounded-full px-7 md:inline-flex lg:h-13 lg:px-7 lg:text-[15px]">
              <Link to="/products">{t("cta.start")} <ArrowRight className="size-4 rtl:rotate-180" /></Link>
           </Button>
 
@@ -283,7 +283,7 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className="rounded-full py-2 text-[16px] font-medium text-white/85 transition-colors hover:text-white xl:text-[17px]"
+      className="rounded-full py-2 text-[15px] font-medium text-white/85 transition-colors hover:text-white xl:text-[16px]"
       activeProps={{ className: "text-white" }}
     >
       {children}
