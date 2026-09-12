@@ -77,17 +77,17 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-10 flex max-w-md flex-wrap justify-center gap-x-10 gap-y-6 text-center text-sm leading-snug text-ink-foreground/85"
+            className="mt-10 flex max-w-md flex-nowrap gap-x-6 text-left text-sm leading-snug text-ink-foreground/85"
           >
-            <span className="flex max-w-[9rem] flex-col items-center gap-3">
+            <span className="flex max-w-[7rem] flex-col items-start gap-3">
               <Gem className="size-7 shrink-0 stroke-[1.25] text-ink-foreground" />
               {t("hero.f1")}
             </span>
-            <span className="flex max-w-[9rem] flex-col items-center gap-3">
+            <span className="flex max-w-[7rem] flex-col items-start gap-3">
               <Truck className="size-7 shrink-0 stroke-[1.25] text-ink-foreground" />
               {t("hero.f2")}
             </span>
-            <span className="flex max-w-[9rem] flex-col items-center gap-3">
+            <span className="flex max-w-[7rem] flex-col items-start gap-3">
               <Leaf className="size-7 shrink-0 stroke-[1.25] text-ink-foreground" />
               {t("hero.f3")}
             </span>
