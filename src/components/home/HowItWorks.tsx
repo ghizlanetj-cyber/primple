@@ -42,11 +42,11 @@ export function HowItWorks() {
         <div className="relative mt-14">
           <div
             aria-hidden
-            className="absolute left-0 right-0 top-6 hidden h-px bg-border lg:block"
+            className="absolute left-0 right-0 top-6 hidden h-px bg-white/20 lg:block"
           />
           <motion.div
             aria-hidden
-            className="absolute left-0 top-6 hidden h-px bg-primary lg:block"
+            className="absolute left-0 top-6 hidden h-px bg-white lg:block"
             initial={{ width: 0 }}
             whileInView={{ width: "100%" }}
             viewport={{ once: true, margin: "-100px" }}
