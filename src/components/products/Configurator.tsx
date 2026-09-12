@@ -180,7 +180,7 @@ export function Configurator({ product }: { product: Product }) {
           </div>
 
           <Button size="lg" className="mt-6 w-full rounded-full" onClick={addToCart}>
-            {tr(artwork ? "Start this print" : "Continue to artwork")}
+            {tr("Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">
