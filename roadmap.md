@@ -23,6 +23,5 @@
 - [x] Titres/meta uniques (pages principales) par page, H1 unique, maillage interne, alt d'images
 - [ ] Microcopy détaillée : formulaires, erreurs, checkout, compte (restant)
 - [x] Méga-menu produits retiré du bandeau
-<!-- - [ ] Microcopy : formulaires, erreurs, panier, commande, compte
 - [x] Aucune donnée inventée, aucune modification de logique
 
