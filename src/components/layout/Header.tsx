@@ -89,7 +89,7 @@ export function Header() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.2 }}
-                  className="glass-panel absolute right-0 top-12 min-w-40 overflow-hidden rounded-xl p-1.5 shadow-lift"
+                  className="absolute right-0 top-12 min-w-40 overflow-hidden rounded-xl border border-white/20 bg-ink/55 p-1.5 shadow-lift backdrop-blur-3xl"
                 >
                   {languages.map((l) => (
                     <button
