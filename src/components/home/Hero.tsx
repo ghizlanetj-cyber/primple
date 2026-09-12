@@ -17,7 +17,7 @@ export function Hero() {
   const { t } = useI18n();
 
   return (
-    <section className="relative isolate flex min-h-[640px] flex-col overflow-hidden bg-ink text-ink-foreground lg:h-[100svh] lg:max-h-[960px] lg:min-h-[720px]">
+    <section className="relative isolate flex min-h-[640px] flex-col overflow-hidden bg-ink text-ink-foreground lg:h-[100svh] lg:min-h-[720px]">
       <img
         src={heroStudioAsset.url}
         alt="Collection de supports imprimés PRIMPLE dans un studio lumineux"
@@ -28,8 +28,8 @@ export function Hero() {
       <div className="absolute inset-0 -z-10 bg-linear-to-r from-ink/85 via-ink/45 to-transparent lg:from-ink/78 lg:via-ink/28 lg:via-55%" />
       <div className="absolute inset-0 -z-10 bg-linear-to-t from-ink/30 via-transparent to-ink/15" />
 
-      <div className="mx-auto grid w-full max-w-[1440px] flex-1 grid-cols-1 gap-8 px-5 pb-20 pt-[clamp(112px,18vh,180px)] sm:px-8 lg:grid-cols-[minmax(420px,0.85fr)_minmax(0,1.15fr)] lg:gap-12 lg:px-12 xl:px-16">
-        <div className="relative w-full max-w-[600px] self-start">
+      <div className="mx-auto grid w-full max-w-[1440px] flex-1 grid-cols-1 gap-8 px-5 pb-4 pt-[clamp(112px,18vh,180px)] sm:px-8 lg:grid-cols-[minmax(420px,0.85fr)_minmax(0,1.15fr)] lg:gap-12 lg:px-12 xl:px-16">
+        <div className="relative w-full max-w-[600px] self-start xl:max-w-[660px]">
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
