@@ -37,15 +37,15 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-4 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-[1390px] rounded-full border border-white/[0.18] shadow-[0_10px_40px_rgba(0,0,0,0.10)] backdrop-blur-[22px] backdrop-saturate-[1.2] transition-colors duration-500 sm:inset-x-6 sm:w-[calc(100%-3rem)] lg:inset-x-auto lg:top-[30px] lg:w-[calc(100%-160px)]",
-        scrolled ? "bg-[rgba(45,42,52,0.45)]" : "bg-[rgba(45,42,52,0.30)]",
+        "fixed inset-x-4 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-[1390px] rounded-full border border-white/[0.16] shadow-[0_12px_40px_rgba(0,0,0,0.12)] backdrop-blur-[24px] backdrop-saturate-[1.2] transition-colors duration-500 sm:inset-x-6 sm:w-[calc(100%-3rem)] lg:inset-x-auto lg:top-6 lg:w-[calc(100%-96px)]",
+        scrolled ? "bg-[rgba(35,33,42,0.52)]" : "bg-[rgba(35,33,42,0.38)]",
       )}
       onMouseLeave={() => setMegaOpen(false)}
     >
-      <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:h-24 lg:px-10">
-        <div className="flex min-w-0 items-center gap-7 xl:gap-9">
-          <Logo invert className="h-5 shrink-0 md:h-6 lg:w-[120px]" />
-          <nav className="hidden items-center gap-x-7 lg:flex xl:gap-x-9">
+      <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:h-[84px] lg:px-8">
+        <div className="flex min-w-0 items-center gap-6 xl:gap-8">
+          <Logo invert className="h-5 shrink-0 md:h-6 lg:w-[118px]" />
+          <nav className="hidden items-center gap-x-7 lg:flex xl:gap-x-8">
             <NavLink to="/services">Solutions</NavLink>
             <button
               type="button"
