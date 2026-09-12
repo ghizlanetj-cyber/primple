@@ -21,11 +21,13 @@ import {
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { invoices, orders, orderStages, quotes } from "@/data/orders";
+import { orderStages, quotes, type Order } from "@/data/orders";
+import { listMyOrders, type OrderRecord } from "@/lib/orders-api";
 import { mad } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
 
 const title = "Your printing dashboard | Primpel";
 const description =
@@ -53,9 +55,27 @@ function DashboardPage() {
   const { user, displayName, signOut } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState<View>("orders");
-  const [activeId, setActiveId] = useState(orders[0]!.id);
-  const active = orders.find((o) => o.id === activeId)!;
-  const activeStageIndex = orderStages.indexOf(active.stage);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const { data: records = [], isLoading } = useQuery({
+    queryKey: ["orders", user?.id],
+    queryFn: listMyOrders,
+    enabled: Boolean(user),
+  });
+
+  const orders = records.map(toViewOrder);
+  const invoices = records.map((r) => ({
+    id: `INV-${r.reference.replace("PRM-", "")}`,
+    order: r.reference,
+    date: new Date(r.createdAt).toLocaleDateString(),
+    amount: r.total,
+    status: r.balanceAmount > 0 ? "50% paid · balance on delivery" : "Paid",
+  }));
+
+  const activeId = selectedId ?? orders[0]?.id ?? null;
+  const active = orders.find((o) => o.id === activeId) ?? null;
+  const setActiveId = setSelectedId;
+  const activeStageIndex = active ? orderStages.indexOf(active.stage) : 0;
   const inProduction = orders.filter((o) => o.stage !== "Delivered").length;
   const spend = orders.reduce((s, o) => s + o.total, 0);
 
@@ -171,7 +191,26 @@ function DashboardPage() {
         </aside>
 
         <div>
-          {view === "orders" && (
+          {view === "orders" && !active && (
+            <div className="surface-card p-10 text-center">
+              <Package className="mx-auto size-8 text-primary" />
+              <h2 className="mt-4 text-xl">
+                {isLoading ? tr("Loading your orders…") : tr("No orders yet")}
+              </h2>
+              {!isLoading && (
+                <>
+                  <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+                    {tr("Once you place a print job it appears here with live production tracking.")}
+                  </p>
+                  <Button asChild className="mt-6 rounded-full">
+                    <Link to="/products">{tr("Start a print job")}</Link>
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
+
+          {view === "orders" && active && (
             <div className="grid gap-6 xl:grid-cols-[1fr_1.1fr] xl:items-start">
               <div className="space-y-3">
                 {orders.map((order) => (
@@ -403,4 +442,33 @@ function Detail({
       <dd className="mt-1 text-sm font-medium">{value}</dd>
     </div>
   );
+}
+
+const stageProgress: Record<string, number> = {
+  "Order placed": 12,
+  "Artwork approved": 30,
+  "In production": 58,
+  "Quality check": 80,
+  Shipped: 92,
+  Delivered: 100,
+};
+
+function toViewOrder(record: OrderRecord): Order {
+  const first = record.items[0];
+  const stage = (orderStages.includes(record.status) ? record.status : "Order placed") as Order["stage"];
+  return {
+    id: record.reference,
+    product: first?.name ?? "Print job",
+    productSlug: first?.slug ?? "business-cards",
+    config: record.items.map((i) => i.config).filter(Boolean).join(" · ") || "Custom configuration",
+    quantity: record.items.reduce((sum, i) => sum + i.quantity, 0),
+    total: record.total,
+    printer: record.printer ?? "Primpel partner network",
+    city: record.city ?? "—",
+    placed: new Date(record.createdAt).toLocaleDateString(),
+    expected: record.expectedAt ?? "—",
+    stage,
+    progress: stageProgress[stage] ?? 12,
+    artwork: `${record.reference}.pdf`,
+  };
 }

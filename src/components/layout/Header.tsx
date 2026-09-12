@@ -59,9 +59,11 @@ export function Header() {
                 className={cn("size-4 transition-transform", megaOpen && "rotate-180")}
               />
             </button>
+            <NavLink to="/services">{tr("Services")}</NavLink>
             <NavLink to="/platform">{t("nav.platform")}</NavLink>
             <NavLink to="/pricing">{t("nav.pricing")}</NavLink>
             <NavLink to="/partners">{t("nav.partners")}</NavLink>
+            <NavLink to="/contact">{tr("Contact")}</NavLink>
           </nav>
         </div>
 
@@ -212,9 +214,13 @@ export function Header() {
               </div>
               {[
                 { to: "/products", label: t("nav.products") },
+                { to: "/services", label: tr("Services") },
                 { to: "/platform", label: t("nav.platform") },
                 { to: "/pricing", label: t("nav.pricing") },
                 { to: "/partners", label: t("nav.partners") },
+                { to: "/designers", label: tr("For designers") },
+                { to: "/about", label: tr("About") },
+                { to: "/contact", label: tr("Contact") },
                 { to: "/dashboard", label: t("nav.dashboard") },
                 ...(user ? [] : [{ to: "/login", label: t("nav.login") }]),
               ].map((link, i) => (

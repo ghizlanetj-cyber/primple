@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, CheckCircle2, Clock, Lock, Package, Truck } from "lucide-react";
+import { ArrowRight, Banknote, CheckCircle2, Clock, Lock, Package, Truck } from "lucide-react";
+import { toast } from "sonner";
+
+import {
+  createOrder,
+  splitPayment,
+  type DeliveryDetails,
+  type OrderRecord,
+} from "@/lib/orders-api";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
@@ -41,7 +49,28 @@ function CheckoutPage() {
   const { user } = useAuth();
   const totals = cartTotals(items);
   const [step, setStep] = useState(0);
-  const [orderId] = useState(() => `PRM-${Math.floor(4900 + Math.random() * 90)}`);
+  const [details, setDetails] = useState<DeliveryDetails | null>(null);
+  const [placing, setPlacing] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState<OrderRecord | null>(null);
+  const split = splitPayment(placedOrder?.total ?? totals.total);
+  const orderId = placedOrder?.reference ?? "";
+
+  const handlePlaceOrder = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!user || !details) return;
+    setPlacing(true);
+    try {
+      const order = await createOrder({ userId: user.id, items, totals, details });
+      setPlacedOrder(order);
+      setStep(3);
+      clear();
+      toast.success(tr("Order confirmed. 50% advance received."));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : tr("We couldn't place your order."));
+    } finally {
+      setPlacing(false);
+    }
+  };
 
   if (items.length === 0 && step < 3) {
     return (
@@ -142,6 +171,16 @@ function CheckoutPage() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
+                    const form = new FormData(e.currentTarget);
+                    setDetails({
+                      name: String(form.get("name") ?? ""),
+                      company: String(form.get("company") ?? ""),
+                      email: String(form.get("email") ?? ""),
+                      phone: String(form.get("phone") ?? ""),
+                      address: String(form.get("address") ?? ""),
+                      city: String(form.get("city") ?? ""),
+                      postcode: String(form.get("postcode") ?? ""),
+                    });
                     setStep(2);
                   }}
                 >
@@ -165,21 +204,39 @@ function CheckoutPage() {
               )}
 
               {step === 2 && (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setStep(3);
-                    clear();
-                  }}
-                >
+                <form onSubmit={handlePlaceOrder}>
                    <h2 className="text-xl">{tr("Payment")}</h2>
                   <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                     <Lock className="size-4" />
-                     {tr("Encrypted payment. Your printer only starts once payment clears.")}
+                     {tr("Pay 50% now to start production. The remaining 50% is paid in cash on delivery.")}
                   </p>
+
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-2xl border border-primary bg-primary/10 p-5">
+                      <p className="flex items-center gap-2 text-sm font-semibold">
+                        <Lock className="size-4 text-primary" />
+                        {tr("Advance now (50%)")}
+                      </p>
+                      <p className="mt-2 font-display text-2xl font-extrabold">{mad(split.deposit)}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {tr("Confirms your order and releases it to the printer.")}
+                      </p>
+                    </div>
+                    <div className="rounded-2xl border border-border bg-secondary/50 p-5">
+                      <p className="flex items-center gap-2 text-sm font-semibold">
+                        <Banknote className="size-4 text-primary" />
+                        {tr("Cash on delivery (50%)")}
+                      </p>
+                      <p className="mt-2 font-display text-2xl font-extrabold">{mad(split.balance)}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {tr("Paid to the courier when your order arrives.")}
+                      </p>
+                    </div>
+                  </div>
+
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
                     <div className="sm:col-span-2">
-                      <Field label="Card number" name="card" placeholder="4242 4242 4242 4242" />
+                      <Field label="Card number for the 50% advance" name="card" placeholder="4242 4242 4242 4242" />
                     </div>
                     <Field label="Expiry" name="expiry" placeholder="09 / 29" />
                     <Field label="Security code" name="cvc" placeholder="123" />
@@ -187,8 +244,20 @@ function CheckoutPage() {
                       <Field label="Billing name" name="billing" />
                     </div>
                   </div>
-                  <Button type="submit" size="lg" className="mt-6 rounded-full">
-                     {tr("Pay")} {mad(totals.total)}
+
+                  {!user && (
+                    <p className="mt-4 text-sm text-destructive">
+                      {tr("Please sign in above so we can save this order to your dashboard.")}
+                    </p>
+                  )}
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="mt-6 rounded-full"
+                    disabled={placing || !user}
+                  >
+                     {placing ? tr("Placing your order…") : `${tr("Pay 50% advance")} · ${mad(split.deposit)}`}
                      <ArrowRight className="size-4 rtl:rotate-180" />
                   </Button>
                 </form>
@@ -205,10 +274,23 @@ function CheckoutPage() {
                   </p>
 
                   <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-                     <Summary icon={Package} label={tr("Printer")} value="Atlas Print Studio, Casablanca" />
+                     <Summary icon={Package} label={tr("Printer")} value={placedOrder?.printer ?? tr("Primpel partner network")} />
                      <Summary icon={Clock} label={tr("Estimated production")} value={`2–3 ${tr("working days")}`} />
-                     <Summary icon={Truck} label={tr("Estimated delivery")} value={tr("18 September")} />
-                     <Summary icon={Lock} label={tr("Payment")} value={`${mad(totals.total)} · ${tr("paid")}`} />
+                     <Summary
+                       icon={Truck}
+                       label={tr("Estimated delivery")}
+                       value={placedOrder?.expectedAt ?? tr("Within 5 working days")}
+                     />
+                     <Summary
+                       icon={Lock}
+                       label={tr("Advance paid (50%)")}
+                       value={mad(split.deposit)}
+                     />
+                     <Summary
+                       icon={Banknote}
+                       label={tr("Cash on delivery (50%)")}
+                       value={mad(split.balance)}
+                     />
                   </dl>
 
                   <div className="mt-8 flex flex-wrap gap-3">
@@ -247,6 +329,14 @@ function CheckoutPage() {
               <div className="flex justify-between border-t border-border pt-3 font-semibold">
                  <dt>{tr("Total")}</dt>
                 <dd>{mad(totals.total)}</dd>
+              </div>
+              <div className="flex justify-between">
+                 <dt className="text-muted-foreground">{tr("Advance now (50%)")}</dt>
+                <dd>{mad(split.deposit)}</dd>
+              </div>
+              <div className="flex justify-between">
+                 <dt className="text-muted-foreground">{tr("Cash on delivery (50%)")}</dt>
+                <dd>{mad(split.balance)}</dd>
               </div>
             </dl>
             <p className="mt-5 text-xs text-muted-foreground">

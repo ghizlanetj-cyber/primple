@@ -18,19 +18,30 @@ const columns: { titleKey: string; links: { label: string; to: string }[] }[] = 
     titleKey: "nav.platform",
     links: [
       { label: "Platform overview", to: "/platform" },
+      { label: "Services", to: "/services" },
       { label: "Pricing", to: "/pricing" },
+      { label: "Enterprise", to: "/enterprise" },
+      { label: "Help Center", to: "/help" },
       { label: "Client dashboard", to: "/dashboard" },
-      { label: "Cart", to: "/cart" },
     ],
   },
   {
     titleKey: "footer.company",
     links: [
+      { label: "About us", to: "/about" },
+      { label: "Blog", to: "/blog" },
+      { label: "Contact", to: "/contact" },
       { label: "Become a Print Partner", to: "/partners" },
-      { label: "All products", to: "/products" },
-      { label: "Login", to: "/login" },
+      { label: "Become a Designer", to: "/designers" },
+      { label: "Create an account", to: "/signup" },
     ],
   },
+];
+
+const legalLinks = [
+  { label: "Terms of Service", to: "/terms" },
+  { label: "Privacy Policy", to: "/privacy" },
+  { label: "Security", to: "/security" },
 ];
 
 export function Footer() {
@@ -96,6 +107,13 @@ export function Footer() {
           <p className="text-xs text-ink-muted">
             © {new Date().getFullYear()} Primpel. {t("footer.rights")}
           </p>
+          <nav className="flex flex-wrap items-center gap-4 text-xs text-ink-muted">
+            {legalLinks.map((link) => (
+              <Link key={link.to} to={link.to} className="hover:text-ink-foreground">
+                {tr(link.label)}
+              </Link>
+            ))}
+          </nav>
           <div className="flex items-center gap-4 text-ink-muted">
             <a href="#" aria-label={tr("Primpel on LinkedIn")} className="hover:text-ink-foreground">
               <Linkedin className="size-4" />
