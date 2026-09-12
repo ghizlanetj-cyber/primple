@@ -106,7 +106,7 @@ const en: Dict = {
 
 const fr: Dict = {
   "nav.products": "Produits",
-  "nav.solutions": "Solutions",
+  "nav.solutions": "Services",
   "nav.why": "Pourquoi Primple",
   "nav.work": "Plateforme",
   "nav.contact": "Contact",
