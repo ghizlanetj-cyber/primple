@@ -233,4 +233,55 @@ export const homePhrases: Record<string, { fr: string; ar: string }> = {
     ar: "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
   },
   "Go home": { fr: "Retour à l'accueil", ar: "العودة إلى الرئيسية" },
+  "Skip to main content": { fr: "Aller au contenu principal", ar: "تخطٍ إلى المحتوى الرئيسي" },
+  "Casablanca, Maroc": { fr: "Casablanca, Maroc", ar: "الدار البيضاء، المغرب" },
+
+  // Checkout — WhatsApp order handoff
+  "Finalise via WhatsApp": { fr: "Finaliser via WhatsApp", ar: "أكمل عبر واتساب" },
+  "Finalise your order via WhatsApp": {
+    fr: "Finaliser votre commande via WhatsApp",
+    ar: "أكمل طلبك عبر واتساب",
+  },
+  "Opens WhatsApp with a prefilled summary of your order": {
+    fr: "Ouvre WhatsApp avec un récapitulatif prérempli de votre commande",
+    ar: "يفتح واتساب برسالة تتضمن ملخص طلبك",
+  },
+  "We use WhatsApp to confirm your order and arrange the 50% advance payment manually. Your order stays pending until Primple confirms it. No payment is taken on this website.":
+    {
+      fr: "Nous utilisons WhatsApp pour confirmer votre commande et organiser manuellement l'acompte de 50 %. Votre commande reste en attente jusqu'à sa confirmation par Primple. Aucun paiement n'est encaissé sur ce site.",
+      ar: "نستخدم واتساب لتأكيد طلبك وترتيب دفع العربون (50%) يدويًا. يبقى طلبك قيد الانتظار حتى يؤكده Primple. لا يتم تحصيل أي دفعة على هذا الموقع.",
+    },
+  "Order recorded. Continue on WhatsApp to confirm it.": {
+    fr: "Commande enregistrée. Poursuivez sur WhatsApp pour la confirmer.",
+    ar: "تم تسجيل الطلب. تابع على واتساب لتأكيده.",
+  },
+  "Your order is pending confirmation.": {
+    fr: "Votre commande est en attente de confirmation.",
+    ar: "طلبك في انتظار التأكيد.",
+  },
+  "We received your order details. Confirm it on WhatsApp with our team; production starts once Primple confirms the order and the 50% advance.":
+    {
+      fr: "Nous avons reçu les détails de votre commande. Confirmez-la sur WhatsApp avec notre équipe ; la production démarre une fois la commande et l'acompte de 50 % confirmés par Primple.",
+      ar: "استلمنا تفاصيل طلبك. أكّده على واتساب مع فريقنا؛ يبدأ الإنتاج بعد تأكيد Primple للطلب وللعربون البالغ 50%.",
+    },
+  "Reopen WhatsApp": { fr: "Rouvrir WhatsApp", ar: "إعادة فتح واتساب" },
+  "Advance to arrange (50%)": {
+    fr: "Acompte à régler (50 %)",
+    ar: "عربون يُرتَّب (50%)",
+  },
+  "Arranged with our team on WhatsApp before production.": {
+    fr: "Organisé avec notre équipe sur WhatsApp avant la production.",
+    ar: "يُرتَّب مع فريقنا على واتساب قبل الإنتاج.",
+  },
+  "Please complete your delivery details before continuing on WhatsApp.": {
+    fr: "Veuillez compléter vos informations de livraison avant de continuer sur WhatsApp.",
+    ar: "يرجى إكمال معلومات التوصيل قبل المتابعة على واتساب.",
+  },
+  "Please sign in above so we can save this order to your dashboard before continuing on WhatsApp.":
+    {
+      fr: "Veuillez vous connecter ci-dessus pour que nous puissions enregistrer cette commande dans votre espace avant de continuer sur WhatsApp.",
+      ar: "يرجى تسجيل الدخول أعلاه لنتمكن من حفظ هذا الطلب في لوحتك قبل المتابعة على واتساب.",
+    },
+  "Preparing your order…": { fr: "Préparation de votre commande…", ar: "جارٍ تحضير طلبك…" },
+  Pending: { fr: "En attente", ar: "قيد الانتظار" },
 };

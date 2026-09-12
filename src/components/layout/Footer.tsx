@@ -59,7 +59,7 @@ export function Footer() {
               )}
             </p>
             <address className="mt-5 space-y-1 text-sm not-italic text-ink-muted">
-              <p>{contact.address}</p>
+              <p>{tr(contact.address)}</p>
               <p>
                 <a href={contact.mailto} className="hover:text-ink-foreground">
                   {contact.email}
