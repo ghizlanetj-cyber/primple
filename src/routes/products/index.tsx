@@ -146,9 +146,21 @@ function ProductsPage() {
         </div>
 
         {visible.length === 0 && (
-          <p className="mt-16 text-center text-muted-foreground">
-             {tr("Nothing matches that search. Try a different product name.")}
-          </p>
+          <div className="mt-16 text-center" role="status" aria-live="polite">
+            <p className="text-muted-foreground">
+              {tr("Nothing matches that search. Try a different product name.")}
+            </p>
+            <Button
+              variant="outline"
+              className="mt-5 rounded-full"
+              onClick={() => {
+                setQuery("");
+                setCategory("All");
+              }}
+            >
+              {tr("Clear search")}
+            </Button>
+          </div>
         )}
       </section>
 
