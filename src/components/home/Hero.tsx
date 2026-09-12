@@ -36,10 +36,10 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="display-xl mt-3 max-w-[14ch] whitespace-pre-line text-3xl font-normal leading-[1.1] tracking-tight drop-shadow-[0_2px_14px_rgba(0,0,0,0.4)] sm:text-4xl lg:text-[3.5rem]"
+            className="mt-3 max-w-[16ch] whitespace-pre-line text-2xl font-light leading-[1.15] tracking-tight text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] sm:text-3xl lg:text-[2.75rem]"
           >
             {t("hero.title")}{"\n"}
-            <span className="display-accent">{t("hero.titleAccent")}</span>
+            <span className="text-primary">{t("hero.titleAccent")}</span>
           </motion.h1>
 
           <motion.p
