@@ -20,10 +20,10 @@ export const Route = createFileRoute("/products/$slug")({
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Product not found — Primple" }, { name: "robots", content: "noindex" }] };
+      return { meta: [{ title: "Produit introuvable — Primple" }, { name: "robots", content: "noindex" }] };
     }
     const { product } = loaderData;
-    const name = productPhrases[product.name]?.fr ?? product.name;
+    const name = productPhrases[product.name]?.fr ?? phrases[product.name]?.fr ?? product.name;
     const title = `Impression ${name.toLowerCase()} sur mesure — à partir de ${mad(product.fromPrice)} | Primple`;
     const description = `${name} sur mesure : formats, papiers, finitions et quantités au choix. Prix et délai affichés avant la commande, production suivie jusqu'à la livraison.`;
     return {
