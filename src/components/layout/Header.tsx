@@ -59,9 +59,11 @@ export function Header() {
                 className={cn("size-4 transition-transform", megaOpen && "rotate-180")}
               />
             </button>
+            <NavLink to="/services">{tr("Services")}</NavLink>
             <NavLink to="/platform">{t("nav.platform")}</NavLink>
             <NavLink to="/pricing">{t("nav.pricing")}</NavLink>
             <NavLink to="/partners">{t("nav.partners")}</NavLink>
+            <NavLink to="/contact">{tr("Contact")}</NavLink>
           </nav>
         </div>
 
