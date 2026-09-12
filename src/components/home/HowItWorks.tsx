@@ -56,11 +56,11 @@ export function HowItWorks() {
             {steps.map((s, i) => (
               <Reveal key={s.n} delay={i * 0.1}>
                 <div className="relative">
-                   <span className="relative z-10 flex size-12 items-center justify-center rounded-full border border-border bg-card font-display text-sm font-bold shadow-soft">
+                   <span className="relative z-10 flex size-12 items-center justify-center rounded-full border border-white/30 bg-white/10 font-display text-sm font-bold text-white shadow-soft">
                     {s.n}
                   </span>
-                   <h3 className="mt-5 text-lg">{tr(s.title)}</h3>
-                   <p className="mt-2 text-sm text-muted-foreground">{tr(s.copy)}</p>
+                   <h3 className="mt-5 text-lg text-white">{tr(s.title)}</h3>
+                    <p className="mt-2 text-sm text-white/75">{tr(s.copy)}</p>
                 </div>
               </Reveal>
             ))}
