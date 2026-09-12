@@ -51,6 +51,7 @@ const en: Dict = {
   "hero.f1": "Options explained before you choose",
   "hero.f2": "Price and lead time shown before you order",
   "hero.f3": "Every stage tracked until delivery",
+  "hero.note": "Clear answer. No commitment.",
 
   "dash.eyebrow": "Your account",
   "dash.title": "Every print job,",
