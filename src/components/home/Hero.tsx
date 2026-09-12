@@ -77,9 +77,19 @@ export function Hero() {
               variant="outline"
               className="h-13 rounded-full border-white/35 bg-white/5 px-8 text-base text-ink-foreground hover:bg-white/12 hover:text-ink-foreground"
             >
-              <Link to="/products">{t("cta.partner")}</Link>
+              <Link to="/contact">{t("cta.talk")}</Link>
             </Button>
           </motion.div>
+
+          <motion.p
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.24 }}
+            className="mt-3 text-[13px] text-ink-foreground/70"
+          >
+            {t("hero.note")}
+          </motion.p>
+
 
           <motion.ul
             initial={reduce ? false : { opacity: 0 }}
