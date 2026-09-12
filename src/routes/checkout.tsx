@@ -313,15 +313,16 @@ function CheckoutPage() {
 
               {step === 3 && (
                 <div>
-                  <span className="flex size-12 items-center justify-center rounded-full bg-success/15">
-                    <CheckCircle2 className="size-6 text-success" />
+                  <span className="flex size-12 items-center justify-center rounded-full bg-primary/15">
+                    <Clock className="size-6 text-primary" />
                   </span>
                   <h2 className="mt-5 text-xl">
-                    {tr("Order")} {orderId} {tr("confirmed")}
+                    {tr("Order")} {orderId} · {tr("Pending")}
                   </h2>
                   <p className="mt-2 text-muted-foreground">
+                    {tr("Your order is pending confirmation.")}{" "}
                     {tr(
-                      "Your printer has the job and your artwork. We'll tell you the moment production starts.",
+                      "We received your order details. Confirm it on WhatsApp with our team; production starts once Primple confirms the order and the 50% advance.",
                     )}
                   </p>
 
@@ -343,7 +344,7 @@ function CheckoutPage() {
                     />
                     <Summary
                       icon={Lock}
-                      label={tr("Advance paid (50%)")}
+                      label={tr("Advance to arrange (50%)")}
                       value={mad(split.deposit)}
                     />
                     <Summary
@@ -354,15 +355,23 @@ function CheckoutPage() {
                   </dl>
 
                   <div className="mt-8 flex flex-wrap gap-3">
+                    {whatsAppLink && (
+                      <Button asChild size="lg" className="rounded-full">
+                        <a href={whatsAppLink} target="_blank" rel="noopener noreferrer">
+                          {tr("Reopen WhatsApp")}
+                          <ArrowRight className="size-4 rtl:rotate-180" />
+                        </a>
+                      </Button>
+                    )}
                     <Button
                       size="lg"
+                      variant="outline"
                       className="rounded-full"
                       onClick={() => navigate({ to: "/dashboard" })}
                     >
                       {tr("Track my order")}
-                      <ArrowRight className="size-4 rtl:rotate-180" />
                     </Button>
-                    <Button asChild size="lg" variant="outline" className="rounded-full">
+                    <Button asChild size="lg" variant="ghost" className="rounded-full">
                       <Link to="/products">{tr("Continue shopping")}</Link>
                     </Button>
                   </div>
