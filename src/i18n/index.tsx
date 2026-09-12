@@ -105,7 +105,7 @@ const fr: Dict = {
   "nav.dashboard": "Tableau de bord",
   "nav.login": "Connexion",
   "cta.start": "Commander une impression",
-  "cta.partner": "Devenir imprimeur partenaire",
+  "cta.partner": "Découvrir nos produits",
   "cta.getQuote": "Obtenir un devis",
   "cta.cart": "Panier",
   "cta.menu": "Ouvrir le menu",
