@@ -196,7 +196,7 @@ export const copyPhrases: Record<string, TranslationPair> = {
     p(
       "Impression personnalisée pour les marques, les entreprises et les créatifs au Maroc : options expliquées, prix affiché avant la commande, production suivie jusqu'à la livraison.",
       "طباعة مخصصة للعلامات والشركات والمبدعين في المغرب: خيارات موضّحة، وسعر يظهر قبل الطلب، وإنتاج متابَع حتى التسليم.",
-    ),,
+    ),
 
   // Checkout + payment terms
   "Advance now (50%)": p("Acompte maintenant (50 %)", "الدفعة المقدمة الآن (50٪)"),
