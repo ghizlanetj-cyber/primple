@@ -29,9 +29,9 @@ import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 
-const title = "Your printing dashboard | Primple";
+const title = "Votre espace d’impression | Primple";
 const description =
-  "Track every print job, compare quotes, reorder past jobs and download invoices in one place.";
+  "Suivez chaque impression, comparez les devis, recommandez vos anciens travaux et téléchargez vos factures au même endroit.";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -40,10 +40,12 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
-      { property: "og:url", content: "/dashboard" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/dashboard" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: "/dashboard" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/dashboard" }],
   }),
   component: DashboardPage,
 });

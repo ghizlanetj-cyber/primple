@@ -35,10 +35,10 @@ export const Route = createFileRoute("/checkout")({
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:url", content: "/checkout" },
+      { property: "og:url", content: "https://primple.lovable.app/checkout" },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: "/checkout" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/checkout" }],
   }),
   component: CheckoutPage,
 });

@@ -25,9 +25,10 @@ export const Route = createFileRoute("/partners")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/partners" },
+      { property: "og:url", content: "https://primple.lovable.app/partners" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/partners" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/partners" }],
   }),
   component: PartnersPage,
 });
@@ -95,6 +96,7 @@ function PartnersPage() {
               <Stat value={97} suffix="%" label="Files print-ready on arrival" />
               <Stat value={14} suffix=" days" label="Average payment cycle" />
             </div>
+            <p className="mt-3 text-xs text-muted-foreground">Données indicatives à confirmer avant publication.</p>
 
             <div className="mt-12 grid gap-5 sm:grid-cols-2">
               {benefits.map((b, i) => (

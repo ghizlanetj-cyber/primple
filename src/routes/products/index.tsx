@@ -33,9 +33,11 @@ export const Route = createFileRoute("/products/")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
-      { property: "og:url", content: "/products" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/products" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/products" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/products" }],
   }),
   component: ProductsPage,
 });

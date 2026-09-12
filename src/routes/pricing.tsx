@@ -21,9 +21,10 @@ export const Route = createFileRoute("/pricing")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/pricing" },
+      { property: "og:url", content: "https://primple.lovable.app/pricing" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/pricing" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/pricing" }],
   }),
   component: PricingPage,
 });

@@ -9,8 +9,8 @@ import { cartTotals, useCart } from "@/store/cart";
 import { productImages } from "@/data/productImages";
 import { useI18n } from "@/i18n";
 
-const title = "Your printing cart | Primple";
-const description = "Review your printing jobs, configurations, production times and delivery before checkout.";
+const title = "Votre panier d’impression | Primple";
+const description = "Vérifiez vos produits, configurations, délais de production et livraison avant de finaliser votre commande.";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -19,10 +19,12 @@ export const Route = createFileRoute("/cart")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
-      { property: "og:url", content: "/cart" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/cart" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: "/cart" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/cart" }],
   }),
   component: CartPage,
 });

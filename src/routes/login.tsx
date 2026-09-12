@@ -15,9 +15,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { authErrorPhrase } from "@/lib/auth-messages";
 
-const title = "Log in or create your Primple account | Primple";
+const title = "Connexion ou création de compte | Primple";
 const description =
-  "Access your printing dashboard, track orders and manage quotes. For businesses, printers and designers.";
+  "Accédez à votre espace d’impression, suivez vos commandes et gérez vos devis, que vous soyez une entreprise, un imprimeur ou un designer.";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>): { redirect?: string } =>
@@ -28,9 +28,11 @@ export const Route = createFileRoute("/login")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
-      { property: "og:url", content: "/login" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/login" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/login" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/login" }],
   }),
   component: LoginPage,
 });

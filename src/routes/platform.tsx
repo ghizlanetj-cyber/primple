@@ -28,9 +28,10 @@ export const Route = createFileRoute("/platform")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/platform" },
+      { property: "og:url", content: "https://primple.lovable.app/platform" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/platform" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/platform" }],
   }),
   component: PlatformPage,
 });
@@ -144,6 +145,7 @@ function PlatformPage() {
               <p className="mt-5 text-xs text-muted-foreground">
                  {tr("A real account looks like this on Monday morning — nothing to ask anyone for.")}
               </p>
+              <p className="mt-2 text-xs text-muted-foreground">Exemple illustratif — données de démonstration.</p>
             </div>
           </Reveal>
         </div>

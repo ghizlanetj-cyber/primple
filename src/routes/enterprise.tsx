@@ -17,9 +17,10 @@ export const Route = createFileRoute("/enterprise")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/enterprise" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/enterprise" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/enterprise" }],
   }),
   component: EnterprisePage,
 });

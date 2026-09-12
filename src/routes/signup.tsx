@@ -14,9 +14,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { authErrorPhrase } from "@/lib/auth-messages";
 
-const title = "Create your Primple account | Primple";
+const title = "Créer votre compte | Primple";
 const description =
-  "Open a free Primple account to order printing, track production and manage invoices — for businesses, printers and designers.";
+  "Créez votre compte Primple pour commander vos impressions, suivre la production et gérer vos factures, comme entreprise, imprimeur ou designer.";
 
 const roles = [
   { id: "business", label: "I buy printing", copy: "Order, track and reorder for your business." },
@@ -36,9 +36,10 @@ export const Route = createFileRoute("/signup")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/signup" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/signup" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/signup" }],
   }),
   component: SignupPage,
 });
