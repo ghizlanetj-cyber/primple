@@ -197,4 +197,166 @@ export const copyPhrases: Record<string, TranslationPair> = {
       "Impression personnalisée pour les marques, les entreprises et les créatifs au Maroc : options expliquées, prix affiché avant la commande, production suivie jusqu'à la livraison.",
       "طباعة مخصصة للعلامات والشركات والمبدعين في المغرب: خيارات موضّحة، وسعر يظهر قبل الطلب، وإنتاج متابَع حتى التسليم.",
     ),
+
+  // Checkout + payment terms
+  "Advance now (50%)": p("Acompte maintenant (50 %)", "الدفعة المقدمة الآن (50٪)"),
+  "Cash on delivery (50%)": p("Paiement à la livraison (50 %)", "الدفع عند الاستلام (50٪)"),
+  "Advance paid (50%)": p("Acompte payé (50 %)", "الدفعة المقدمة المدفوعة (50٪)"),
+  "Paid to the courier when your order arrives.": p(
+    "À régler au livreur à la réception de votre commande.",
+    "يُدفع لمندوب التوصيل عند وصول طلبك.",
+  ),
+  "Confirms your order and releases it to the printer.": p(
+    "Confirme votre commande et la transmet à l'imprimeur.",
+    "يؤكد طلبك ويرسله إلى المطبعة.",
+  ),
+  "Pay 50% advance": p("Payer l'acompte de 50 %", "ادفع مقدمًا 50٪"),
+  "Placing your order…": p("Enregistrement de votre commande…", "جارٍ تسجيل طلبك…"),
+  "Order confirmed. 50% advance received.": p(
+    "Commande confirmée. Acompte de 50 % reçu.",
+    "تم تأكيد الطلب. تم استلام دفعة 50٪.",
+  ),
+  "We couldn't place your order.": p(
+    "Nous n'avons pas pu enregistrer votre commande.",
+    "لم نتمكن من تسجيل طلبك.",
+  ),
+  "Please sign in above so we can save this order to your dashboard.": p(
+    "Connectez-vous ci-dessus pour que nous puissions enregistrer cette commande dans votre espace client.",
+    "سجّل الدخول أعلاه حتى نتمكن من حفظ هذا الطلب في لوحتك.",
+  ),
+  "Pay 50% now to start production. The remaining 50% is paid in cash on delivery.": p(
+    "Payez 50 % maintenant pour lancer la production. Les 50 % restants sont réglés en espèces à la livraison.",
+    "ادفع 50٪ الآن لبدء الإنتاج، وتُدفع الـ50٪ المتبقية نقدًا عند التسليم.",
+  ),
+  "Card number for the 50% advance": p(
+    "Numéro de carte pour l'acompte de 50 %",
+    "رقم البطاقة لدفع 50٪ مقدمًا",
+  ),
+  "Within 5 working days": p("Sous 5 jours ouvrés", "خلال 5 أيام عمل"),
+  "Primple partner network": p("Réseau de partenaires Primple", "شبكة شركاء Primple"),
+
+  // Account gate at checkout
+  "An account is required to confirm and pay for your order.": p(
+    "Un compte est nécessaire pour confirmer et payer votre commande.",
+    "يلزم وجود حساب لتأكيد طلبك ودفعه.",
+  ),
+  "Sign in to continue": p("Se connecter pour continuer", "سجّل الدخول للمتابعة"),
+  "You can review your items now, but you'll need to log in or create an account before the payment step.":
+    p(
+      "Vous pouvez vérifier vos articles maintenant, mais vous devrez vous connecter ou créer un compte avant l'étape de paiement.",
+      "يمكنك مراجعة عناصرك الآن، لكن عليك تسجيل الدخول أو إنشاء حساب قبل خطوة الدفع.",
+    ),
+
+  // Catalog search + configurator
+  "Add to cart": p("Ajouter au panier", "أضف إلى السلة"),
+  "Clear search": p("Effacer la recherche", "مسح البحث"),
+  "Clear the search": p("Effacer la recherche", "مسح البحث"),
+  "Choose a quantity": p("Choisissez une quantité", "اختر الكمية"),
+  "Or enter your own quantity": p("Ou saisissez votre quantité", "أو أدخل كميتك الخاصة"),
+
+  // Account, auth and dashboard
+  "Continue with Google": p("Continuer avec Google", "المتابعة باستخدام Google"),
+  "Continue with Apple": p("Continuer avec Apple", "المتابعة باستخدام Apple"),
+  "Log out": p("Se déconnecter", "تسجيل الخروج"),
+  "Last updated": p("Dernière mise à jour", "آخر تحديث"),
+  "Welcome back": p("Bon retour", "مرحبًا بعودتك"),
+  "Loading your orders…": p("Chargement de vos commandes…", "جارٍ تحميل طلباتك…"),
+  "No orders yet": p("Aucune commande pour l'instant", "لا توجد طلبات بعد"),
+  "Once you place a print job it appears here with live production tracking.": p(
+    "Dès que vous lancez une impression, elle apparaît ici avec le suivi de production en direct.",
+    "بمجرد إطلاق طلب طباعة، سيظهر هنا مع تتبع الإنتاج المباشر.",
+  ),
+  "Start a print job": p("Lancer une impression", "ابدأ طلب طباعة"),
+  "Check your inbox to confirm your email address.": p(
+    "Consultez votre boîte mail pour confirmer votre adresse e-mail.",
+    "تحقق من بريدك الإلكتروني لتأكيد عنوانك.",
+  ),
+  "or use your email": p("ou utilisez votre e-mail", "أو استخدم بريدك الإلكتروني"),
+  "or sign up with email": p("ou inscrivez-vous par e-mail", "أو سجّل عبر البريد الإلكتروني"),
+  "Welcome to Primple.": p("Bienvenue chez Primple.", "مرحبًا بك في Primple."),
+  "Your printing account, in a minute.": p(
+    "Votre compte d'impression, en une minute.",
+    "حسابك للطباعة، في دقيقة واحدة.",
+  ),
+  "Track every job, keep your invoices in one place and reorder past prints in one click.": p(
+    "Suivez chaque commande, gardez vos factures au même endroit et recommandez une impression en un clic.",
+    "تابع كل طلب، واحتفظ بفواتيرك في مكان واحد، وأعد الطلب بنقرة واحدة.",
+  ),
+  "Already have an account?": p("Vous avez déjà un compte ?", "هل لديك حساب بالفعل؟"),
+  "By creating an account you agree to our": p(
+    "En créant un compte, vous acceptez nos",
+    "بإنشاء حساب فإنك توافق على",
+  ),
+  Terms: p("Conditions", "الشروط"),
+  and: p("et", "و"),
+  "Privacy Policy": p("Politique de confidentialité", "سياسة الخصوصية"),
+
+  // Checkout account gate
+  "Sign in to finish your order": p(
+    "Connectez-vous pour finaliser votre commande",
+    "سجّل الدخول لإتمام طلبك",
+  ),
+  "Your cart, configuration and prices are saved while you log in or create your account.": p(
+    "Votre panier, votre configuration et vos prix sont conservés pendant que vous vous connectez ou créez votre compte.",
+    "يتم حفظ سلتك وإعداداتك وأسعارك أثناء تسجيل الدخول أو إنشاء حسابك.",
+  ),
+  "Log in or create an account": p("Se connecter ou créer un compte", "تسجيل الدخول أو إنشاء حساب"),
+
+  // Contact and lead forms
+  "Message sent. We reply within one working day.": p(
+    "Message envoyé. Nous répondons sous un jour ouvré.",
+    "تم إرسال الرسالة. نرد خلال يوم عمل واحد.",
+  ),
+  "We couldn't send your message. Please try again.": p(
+    "Nous n'avons pas pu envoyer votre message. Veuillez réessayer.",
+    "تعذّر إرسال رسالتك. يرجى المحاولة مرة أخرى.",
+  ),
+  "Thanks — your message is in.": p("Merci — votre message est bien reçu.", "شكرًا — وصلتنا رسالتك."),
+  "Our team will get back to you within one working day.": p(
+    "Notre équipe vous répond sous un jour ouvré.",
+    "سيعاود فريقنا التواصل معك خلال يوم عمل واحد.",
+  ),
+  "What is it about?": p("De quoi s'agit-il ?", "ما موضوع طلبك؟"),
+  "Quote, order, partnership…": p("Devis, commande, partenariat…", "عرض سعر، طلب، شراكة…"),
+  Message: p("Message", "الرسالة"),
+  "Sending…": p("Envoi…", "جارٍ الإرسال…"),
+  "Send message": p("Envoyer le message", "إرسال الرسالة"),
+  "Reach us directly": p("Nous joindre directement", "تواصل معنا مباشرة"),
+  "Monday to Friday, 9:00–18:00. Urgent jobs? Message us on WhatsApp.": p(
+    "Du lundi au vendredi, 9h00–18h00. Commande urgente ? Écrivez-nous sur WhatsApp.",
+    "من الاثنين إلى الجمعة، 9:00–18:00. طلب عاجل؟ راسلنا على واتساب.",
+  ),
+  "Contact us on WhatsApp": p("Nous contacter sur WhatsApp", "تواصل معنا عبر واتساب"),
+  "Talk to us": p("Parlons-en", "تحدث إلينا"),
+  "Talk to sales": p("Parler à un conseiller", "تحدث إلى فريق المبيعات"),
+  "Contact support": p("Contacter le support", "اتصل بالدعم"),
+  "Ask a security question": p("Poser une question de sécurité", "اطرح سؤالًا حول الأمان"),
+  "Tell us what you print. We'll come back within two working days.": p(
+    "Dites-nous ce que vous imprimez. Nous revenons vers vous sous deux jours ouvrés.",
+    "أخبرنا بما تطبعه. سنعاود التواصل خلال يومَي عمل.",
+  ),
+  "Let's get your capacity working.": p(
+    "Mettons votre capacité de production au travail.",
+    "لنستثمر طاقتك الإنتاجية.",
+  ),
+
+  // Blog and designers
+  "Want a guide on something specific?": p(
+    "Vous voulez un guide sur un sujet précis ?",
+    "هل تريد دليلًا حول موضوع معيّن؟",
+  ),
+  "Tell us the topic and our production team will write it.": p(
+    "Dites-nous le sujet et notre équipe de production l'écrira.",
+    "أخبرنا بالموضوع وسيكتبه فريق الإنتاج لدينا.",
+  ),
+  "Suggest a topic": p("Proposer un sujet", "اقترح موضوعًا"),
+  "Create a designer account": p("Créer un compte designer", "إنشاء حساب مصمم"),
+  "Start your next client job with Primple.": p(
+    "Lancez votre prochain projet client avec Primple.",
+    "ابدأ مشروع عميلك التالي مع Primple.",
+  ),
+  "Create your designer account in a minute — no subscription, no minimum volume.": p(
+    "Créez votre compte designer en une minute — sans abonnement, sans volume minimum.",
+    "أنشئ حساب المصمم الخاص بك في دقيقة — دون اشتراك ودون حد أدنى للكمية.",
+  ),
 };

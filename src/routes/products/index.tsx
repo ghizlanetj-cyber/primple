@@ -1,15 +1,26 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { ProductCard } from "@/components/products/ProductCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { FinalCta } from "@/components/shared/FinalCta";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { products } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
+
+/** lowercase, strip accents/diacritics and punctuation so "cartes" matches "Cartes de visite". */
+function normalize(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f\u064b-\u0652]/g, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim();
+}
 
 const title = "Produits d'impression : cartes de visite, flyers, packaging | Primple";
 const description =
@@ -39,11 +50,35 @@ function ProductsPage() {
     [],
   );
 
+  // Index the localized (visible) labels plus the English source strings and keywords.
+  const searchIndex = useMemo(
+    () =>
+      new Map(
+        products.map((p) => [
+          p.slug,
+          normalize(
+            [
+              tr(p.name),
+              tr(p.benefit),
+              tr(p.category),
+              p.name,
+              p.benefit,
+              p.category,
+              p.slug.replace(/-/g, " "),
+              p.keywords.join(" "),
+            ].join(" "),
+          ),
+        ]),
+      ),
+    [tr],
+  );
+
+  const terms = normalize(query).split(" ").filter(Boolean);
+
   const visible = products.filter((p) => {
     const matchesCategory = category === "All" || p.category === category;
-    const matchesQuery =
-      query.trim() === "" ||
-      `${p.name} ${p.benefit} ${p.keywords.join(" ")}`.toLowerCase().includes(query.toLowerCase());
+    const haystack = searchIndex.get(p.slug) ?? "";
+    const matchesQuery = terms.every((term) => haystack.includes(term));
     return matchesCategory && matchesQuery;
   });
 
@@ -69,8 +104,18 @@ function ProductsPage() {
                 onChange={(e) => setQuery(e.target.value)}
                  placeholder={tr("Search products")}
                  aria-label={tr("Search products")}
-                 className="rounded-full ps-10"
+                 className="rounded-full ps-10 pe-10"
               />
+              {query !== "" && (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  aria-label={tr("Clear search")}
+                  className="absolute end-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
             </div>
             <div className="flex flex-wrap gap-2">
               {categories.map((c) => (
@@ -101,9 +146,21 @@ function ProductsPage() {
         </div>
 
         {visible.length === 0 && (
-          <p className="mt-16 text-center text-muted-foreground">
-             {tr("Nothing matches that search. Try a different product name.")}
-          </p>
+          <div className="mt-16 text-center" role="status" aria-live="polite">
+            <p className="text-muted-foreground">
+              {tr("Nothing matches that search. Try a different product name.")}
+            </p>
+            <Button
+              variant="outline"
+              className="mt-5 rounded-full"
+              onClick={() => {
+                setQuery("");
+                setCategory("All");
+              }}
+            >
+              {tr("Clear search")}
+            </Button>
+          </div>
         )}
       </section>
 
