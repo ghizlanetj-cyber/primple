@@ -21,8 +21,8 @@ export function Hero() {
       <div className="absolute inset-0 bg-linear-to-r from-ink/65 via-ink/25 to-transparent" />
       <div className="absolute inset-0 bg-linear-to-t from-ink/25 via-transparent to-ink/10" />
 
-      <div className="relative flex min-h-[clamp(620px,100svh,900px)] items-start px-5 pb-16 pt-[24vh] sm:px-8 lg:min-h-[max(760px,min(100svh,900px))] lg:px-[max(48px,8vw)] lg:pt-[18vh]">
-        <div className="relative z-10 w-full max-w-[calc(100%-0px)] lg:max-w-[540px]">
+      <div className="relative flex min-h-[clamp(620px,100svh,900px)] items-start px-5 pb-16 pt-[20vh] sm:px-8 lg:min-h-[max(760px,min(100svh,900px))] lg:px-[max(48px,6vw)] lg:pt-[17vh]">
+        <div className="relative z-10 w-full max-w-[calc(100%-8px)] lg:max-w-[520px]">
 
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 12 }}
@@ -37,7 +37,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="mt-5 whitespace-pre-line text-[clamp(42px,11vw,58px)] font-bold leading-[0.98] tracking-[-0.045em] text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] md:text-[clamp(48px,5vw,76px)]"
+            className="mt-4 whitespace-pre-line text-[clamp(32px,8.5vw,44px)] font-bold leading-[0.98] tracking-[-0.045em] text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] md:mt-5 md:text-[clamp(40px,3.4vw,56px)]"
           >
             {t("hero.title")}{"\n"}
             <span className="text-primary">{t("hero.titleAccent")}</span>
@@ -47,7 +47,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12 }}
-            className="mt-7 max-w-[500px] text-[17px] leading-[1.5] text-ink-foreground/85 lg:text-[18px]"
+            className="mt-6 max-w-[480px] text-[16px] leading-[1.5] text-ink-foreground/85 lg:text-[17px]"
           >
             {t("hero.sub")}
           </motion.p>
@@ -56,7 +56,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.18 }}
-            className="mt-8 flex flex-wrap items-center gap-4"
+            className="mt-7 flex flex-wrap items-center gap-4"
           >
             <Button asChild size="default" className="h-14 rounded-full px-8 text-[16px]">
               <Link to="/products">
@@ -78,7 +78,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-10 flex max-w-[520px] flex-nowrap gap-x-8 text-left text-[15px] leading-snug text-ink-foreground/85 lg:gap-x-12"
+            className="mt-9 flex max-w-[500px] flex-nowrap gap-x-7 text-left text-[15px] leading-snug text-ink-foreground/85 lg:gap-x-11"
           >
             <span className="flex max-w-[8rem] flex-col items-start gap-3">
               <Gem className="size-8 shrink-0 stroke-[1.25] text-ink-foreground" />
