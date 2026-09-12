@@ -191,7 +191,7 @@ export const copyPhrases: Record<string, TranslationPair> = {
   "Businesses printing with Primple": p(
     "Entreprises qui impriment avec Primple",
     "شركات تطبع مع Primple",
-  ),,
+  ),
   "Custom printing for brands, businesses and creatives in Morocco: options explained, price shown before you order, production followed to delivery.":
     p(
       "Impression personnalisée pour les marques, les entreprises et les créatifs au Maroc : options expliquées, prix affiché avant la commande, production suivie jusqu'à la livraison.",
