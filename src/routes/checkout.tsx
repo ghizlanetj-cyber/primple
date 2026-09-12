@@ -119,6 +119,10 @@ function CheckoutPage() {
           <div className="mt-8 rounded-2xl border border-border bg-secondary/40 p-6">
             <h2 className="text-lg">{tr("Sign in to finish your order")}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
+              {tr("An account is required to confirm and pay for your order.")}{" "}
+              {tr("You can review your items now, but you'll need to log in or create an account before the payment step.")}
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
               {tr("Your cart, configuration and prices are saved while you log in or create your account.")}
             </p>
             <div className="mt-4 grid gap-3 sm:max-w-md">
