@@ -84,7 +84,7 @@ export function Header() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 top-12 min-w-40 overflow-hidden rounded-xl border border-white/20 bg-ink/55 p-1.5 shadow-lift backdrop-blur-3xl"
+                  className="absolute right-0 top-10 min-w-40 overflow-hidden rounded-xl border border-white/20 bg-ink/55 p-1.5 shadow-lift backdrop-blur-3xl"
                 >
                   {languages.map((l) => (
                     <button
@@ -110,12 +110,12 @@ export function Header() {
             size="icon"
             aria-label={t("cta.theme")}
             onClick={() => setDark((v) => !v)}
-             className="hidden text-ink-muted hover:text-ink-foreground md:inline-flex"
+             className="hidden size-8 text-ink-muted hover:text-ink-foreground md:inline-flex"
           >
             {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
           </Button>
 
-           <Button variant="ghost" size="icon" asChild className="relative text-ink-muted hover:text-ink-foreground">
+           <Button variant="ghost" size="icon" asChild className="relative size-8 text-ink-muted hover:text-ink-foreground">
             <Link to="/cart" aria-label={t("cta.cart")}>
               <ShoppingBag className="size-4" />
               {items.length > 0 && (
@@ -136,7 +136,7 @@ export function Header() {
                 size="icon"
                 aria-label={tr("Log out")}
                 title={tr("Log out")}
-                className="hidden rounded-full md:inline-flex"
+                className="hidden size-8 rounded-full md:inline-flex"
                 onClick={async () => {
                   await signOut();
                   navigate({ to: "/" });
@@ -147,8 +147,8 @@ export function Header() {
             </>
           ) : null}
 
-           <Button asChild className="hidden rounded-full px-7 md:inline-flex lg:h-13 lg:px-7 lg:text-[15px]">
-             <Link to="/products">{t("cta.start")} <ArrowRight className="size-4 rtl:rotate-180" /></Link>
+           <Button asChild className="hidden h-9 rounded-full px-5 text-sm md:inline-flex lg:px-6 lg:text-[14px]">
+             <Link to="/products">{t("cta.start")} <ArrowRight className="size-3.5 rtl:rotate-180" /></Link>
           </Button>
 
           <Button
