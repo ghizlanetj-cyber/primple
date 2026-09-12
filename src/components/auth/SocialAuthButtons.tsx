@@ -6,6 +6,8 @@ import { lovable } from "@/integrations/lovable/index";
 import { authErrorPhrase } from "@/lib/auth-messages";
 import { useI18n } from "@/i18n";
 
+const AUTH_DESTINATION_KEY = "primple-auth-destination";
+
 function GoogleMark() {
   return (
     <svg viewBox="0 0 18 18" className="size-4" aria-hidden="true">
@@ -44,18 +46,23 @@ export function SocialAuthButtons({ redirectTo }: { redirectTo?: string }) {
   const start = async (provider: "google" | "apple") => {
     setPending(provider);
     try {
-      const target =
-        redirectTo && redirectTo.startsWith("/")
-          ? `${window.location.origin}${redirectTo}`
-          : window.location.origin;
-      const result = await lovable.auth.signInWithOAuth(provider, { redirect_uri: target });
+      const destination =
+        redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")
+          ? redirectTo
+          : "/dashboard";
+      window.sessionStorage.setItem(AUTH_DESTINATION_KEY, destination);
+      const callback = new URL("/auth/callback", window.location.origin);
+      callback.searchParams.set("next", destination);
+      const result = await lovable.auth.signInWithOAuth(provider, {
+        redirect_uri: callback.toString(),
+      });
       if (result.error) {
         toast.error(tr(authErrorPhrase(result.error)));
         setPending(null);
         return;
       }
       if (result.redirected) return;
-      window.location.assign(target);
+      window.location.assign(callback.toString());
     } catch (error) {
       toast.error(tr(authErrorPhrase(error)));
       setPending(null);

@@ -13,4 +13,5 @@
 - [x] Private client-artwork storage + order_files table with owner-only RLS and signed URLs
 - [x] Client files section per order and "My files" view (FR/EN/AR, RTL, mobile)
 - [x] Internal storage documentation (docs/client-files.md)
-- [ ] Google consent screen branding: requires own Google OAuth client ID/secret in Cloud auth settings
+- [x] Branded public OAuth callback and safe post-login destination for Google and Apple
+- [ ] Provider consent branding: add Primple's own Google and Apple credentials in Cloud auth settings

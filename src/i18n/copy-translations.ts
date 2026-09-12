@@ -353,6 +353,23 @@ export const copyPhrases: Record<string, TranslationPair> = {
   Terms: p("Conditions", "الشروط"),
   and: p("et", "و"),
   "Privacy Policy": p("Politique de confidentialité", "سياسة الخصوصية"),
+  "Signing you in to Primple…": p(
+    "Connexion à Primple en cours…",
+    "جارٍ تسجيل دخولك إلى Primple…",
+  ),
+  "Your secure connection is being completed.": p(
+    "Votre connexion sécurisée est en cours de finalisation.",
+    "جارٍ إكمال اتصالك الآمن.",
+  ),
+  "We couldn't finish signing you in.": p(
+    "Nous n'avons pas pu terminer votre connexion.",
+    "تعذر علينا إكمال تسجيل دخولك.",
+  ),
+  "Return to sign in and try again.": p(
+    "Revenez à la connexion et réessayez.",
+    "عُد إلى صفحة تسجيل الدخول وحاول مرة أخرى.",
+  ),
+  "Back to sign in": p("Retour à la connexion", "العودة إلى تسجيل الدخول"),
 
   // Checkout account gate
   "Sign in to finish your order": p(
