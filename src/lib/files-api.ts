@@ -74,7 +74,7 @@ export async function uploadClientFile(
   const path = `${artworkFolder(userId, orderReference)}/${crypto.randomUUID()}-${safeName(file.name)}`;
   const { error: uploadError } = await supabase.storage
     .from(ARTWORK_BUCKET)
-    .upload(path, file, { contentType: file.type || undefined, upsert: false });
+    .upload(path, file, { ...(file.type ? { contentType: file.type } : {}), upsert: false });
   if (uploadError) throw uploadError;
 
   const { data, error } = await supabase
