@@ -269,3 +269,26 @@ html[lang="ar"] .eyebrow {
   font-style: normal;
   letter-spacing: 0;
 }
+
+/* Print-friendly invoice output: only the invoice document is printed. */
+@media print {
+  header,
+  footer,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  table {
+    page-break-inside: avoid;
+  }
+}
