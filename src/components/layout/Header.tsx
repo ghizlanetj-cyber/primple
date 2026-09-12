@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ChevronDown, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { ArrowRight, ChevronDown, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
@@ -36,22 +36,22 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        "fixed inset-x-3 top-3 z-50 mx-auto max-w-[86rem] rounded-full border transition-all duration-500 sm:inset-x-5 lg:top-5",
         scrolled
-          ? "border-b border-border bg-background/80 shadow-soft backdrop-blur-xl"
-          : "bg-transparent",
+          ? "border-white/15 bg-ink/92 shadow-lift backdrop-blur-2xl"
+          : "border-white/12 bg-ink/72 shadow-soft backdrop-blur-xl",
       )}
       onMouseLeave={() => setMegaOpen(false)}
     >
-      <div className="section-shell flex h-16 items-center justify-between gap-6 md:h-20">
-        <div className="flex items-center gap-8">
-          <Logo />
+      <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:px-8">
+        <div className="flex min-w-0 items-center gap-7 xl:gap-9">
+          <Logo invert className="h-5 shrink-0 md:h-6" />
           <nav className="hidden items-center gap-1 lg:flex">
             <button
               type="button"
               onMouseEnter={() => setMegaOpen(true)}
               onClick={() => setMegaOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+               className="flex items-center gap-1 rounded-full px-2 py-2 text-xs font-medium text-ink-muted transition-colors hover:text-ink-foreground xl:px-3 xl:text-sm"
               aria-expanded={megaOpen}
             >
               {t("nav.products")}
@@ -68,7 +68,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="hidden items-center rounded-full border border-border bg-card/60 p-0.5 md:flex">
+           <div className="hidden items-center rounded-full border border-white/10 bg-white/5 p-0.5 xl:flex">
             {languages.map((l) => (
               <button
                 key={l}
@@ -78,7 +78,7 @@ export function Header() {
                   "rounded-full px-2.5 py-1 text-xs font-semibold transition-colors",
                   lang === l
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground",
+                     : "text-ink-muted hover:text-ink-foreground",
                 )}
                 aria-pressed={lang === l}
               >
@@ -92,12 +92,12 @@ export function Header() {
             size="icon"
             aria-label={t("cta.theme")}
             onClick={() => setDark((v) => !v)}
-            className="hidden rounded-full md:inline-flex"
+             className="hidden text-ink-muted hover:text-ink-foreground md:inline-flex"
           >
             {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
           </Button>
 
-          <Button variant="ghost" size="icon" asChild className="relative rounded-full">
+           <Button variant="ghost" size="icon" asChild className="relative text-ink-muted hover:text-ink-foreground">
             <Link to="/cart" aria-label={t("cta.cart")}>
               <ShoppingBag className="size-4" />
               {items.length > 0 && (
@@ -110,7 +110,7 @@ export function Header() {
 
           {user ? (
             <>
-              <Button variant="ghost" asChild className="hidden rounded-full md:inline-flex">
+             <Button variant="ghost" asChild className="hidden text-ink-muted hover:text-ink-foreground xl:inline-flex">
                 <Link to="/dashboard">{t("nav.dashboard")}</Link>
               </Button>
               <Button
@@ -128,19 +128,19 @@ export function Header() {
               </Button>
             </>
           ) : (
-            <Button variant="ghost" asChild className="hidden rounded-full md:inline-flex">
+             <Button variant="ghost" asChild className="hidden text-ink-muted hover:text-ink-foreground xl:inline-flex">
               <Link to="/login">{t("nav.login")}</Link>
             </Button>
           )}
 
-          <Button asChild className="hidden rounded-full md:inline-flex">
-            <Link to="/products">{t("cta.start")}</Link>
+           <Button asChild className="hidden md:inline-flex">
+             <Link to="/products">{t("cta.start")} <ArrowRight className="size-4 rtl:rotate-180" /></Link>
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full lg:hidden"
+             className="text-ink-foreground lg:hidden"
             aria-label={t("cta.menu")}
             onClick={() => setMobileOpen(true)}
           >
@@ -156,19 +156,19 @@ export function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden border-b border-border bg-background/95 backdrop-blur-xl lg:block"
+            className="hidden overflow-hidden rounded-b-3xl border-t border-white/10 bg-ink/95 text-ink-foreground backdrop-blur-2xl lg:block"
           >
-            <div className="section-shell grid grid-cols-4 gap-2 py-8">
+             <div className="grid grid-cols-4 gap-2 px-8 py-7">
               {products.map((p) => (
                 <Link
                   key={p.slug}
                   to="/products/$slug"
                   params={{ slug: p.slug }}
                   onClick={() => setMegaOpen(false)}
-                  className="group rounded-xl px-3 py-2.5 transition-colors hover:bg-secondary"
+                   className="group rounded-lg px-3 py-2.5 transition-colors hover:bg-white/8"
                 >
                    <p className="text-sm font-semibold">{tr(p.name)}</p>
-                   <p className="text-xs text-muted-foreground">{tr(p.benefit)}</p>
+                    <p className="text-xs text-ink-muted">{tr(p.benefit)}</p>
                 </Link>
               ))}
             </div>
@@ -182,10 +182,10 @@ export function Header() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-background lg:hidden"
+            className="absolute -left-3 -top-3 z-50 h-svh w-screen overflow-y-auto bg-ink text-ink-foreground sm:-left-5 lg:hidden"
           >
-            <div className="section-shell flex h-16 items-center justify-between">
-              <Logo />
+            <div className="flex h-20 items-center justify-between border-b border-white/10 px-6">
+              <Logo invert className="h-6" />
               <Button
                 variant="ghost"
                 size="icon"
@@ -196,7 +196,8 @@ export function Header() {
               </Button>
             </div>
             <div className="section-shell flex flex-col gap-1 pb-8 pt-4">
-              <div className="mb-4 flex items-center rounded-full border border-border bg-card/60 p-1">
+              <div
+                className="mb-4 flex items-center rounded-full border border-white/10 bg-white/5 p-1">
                 {languages.map((l) => (
                   <button
                     key={l}
@@ -204,7 +205,7 @@ export function Header() {
                     onClick={() => setLang(l)}
                     className={cn(
                       "flex-1 rounded-full px-3 py-2 text-sm font-semibold transition-colors",
-                      lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                       lang === l ? "bg-primary text-primary-foreground" : "text-ink-muted",
                     )}
                     aria-pressed={lang === l}
                   >
@@ -233,7 +234,7 @@ export function Header() {
                   <Link
                     to={link.to}
                     onClick={() => setMobileOpen(false)}
-                    className="block border-b border-border py-4 font-display text-2xl font-bold"
+                    className="block border-b border-white/10 py-4 font-display text-2xl font-bold text-ink-foreground"
                   >
                     {link.label}
                   </Link>
@@ -245,10 +246,10 @@ export function Header() {
                 </Link>
               </Button>
               {user && (
-                <Button
+                 <Button
                   variant="outline"
                   size="lg"
-                  className="mt-3 rounded-full"
+                   className="mt-3 border-white/20 bg-transparent text-ink-foreground"
                   onClick={async () => {
                     setMobileOpen(false);
                     await signOut();
@@ -271,8 +272,8 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className="rounded-full px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
-      activeProps={{ className: "text-foreground" }}
+      className="rounded-full px-2 py-2 text-xs font-medium text-ink-muted transition-colors hover:text-ink-foreground xl:px-3 xl:text-sm"
+      activeProps={{ className: "text-ink-foreground" }}
     >
       {children}
     </Link>

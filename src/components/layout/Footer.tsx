@@ -49,8 +49,8 @@ export function Footer() {
 
   return (
     <footer className="bg-ink text-ink-foreground">
-      <div className="section-shell py-16 md:py-20">
-        <div className="grid gap-12 lg:grid-cols-[1.3fr_2fr]">
+       <div className="section-shell py-20 md:py-28">
+         <div className="grid gap-16 lg:grid-cols-[1.15fr_2fr]">
           <div>
             <Logo invert />
             <p className="mt-5 max-w-sm text-sm text-ink-muted">

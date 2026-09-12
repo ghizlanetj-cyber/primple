@@ -32,10 +32,10 @@ const cards = [
 export function PlatformBridge() {
   const { tr } = useI18n();
   return (
-    <section className="relative overflow-hidden bg-ink py-24 text-ink-foreground md:py-32">
+    <section className="relative overflow-hidden bg-ink py-24 text-ink-foreground md:py-36">
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 size-[40rem] -translate-x-1/2 rounded-full bg-primary/20 blur-3xl"
+        className="pointer-events-none absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-primary/60 shadow-glow"
       />
       <div className="section-shell relative">
         <Reveal className="max-w-3xl">
@@ -51,10 +51,10 @@ export function PlatformBridge() {
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {cards.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.08}>
-              <motion.div
+             <motion.div
                 whileHover={{ y: -6 }}
                 transition={{ duration: 0.3 }}
-                className="h-full rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm"
+               className="h-full rounded-xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-sm"
               >
                 <span className="flex size-10 items-center justify-center rounded-xl bg-primary/20">
                   <c.icon className="size-5 text-primary" />

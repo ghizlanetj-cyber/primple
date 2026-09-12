@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Shared page/section heading used across the whole platform:
- * small uppercase eyebrow, bold display line, italic serif accent line.
+ * small uppercase eyebrow and bold logo-inspired display typography.
  */
 export function SectionHeading({
   eyebrow,
@@ -33,7 +33,7 @@ export function SectionHeading({
       )}
     >
       {eyebrow && <p className="eyebrow text-muted-foreground">{eyebrow}</p>}
-      <h2 className="display-xl mt-4 text-4xl sm:text-5xl lg:text-[3.4rem]">
+      <h2 className="display-xl mt-4 text-4xl sm:text-5xl lg:text-6xl">
         {title}
         {accent && (
           <>
