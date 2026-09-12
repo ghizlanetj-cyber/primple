@@ -24,7 +24,7 @@ export const Route = createFileRoute("/products/$slug")({
     }
     const { product } = loaderData;
     const name = productPhrases[product.name]?.fr ?? product.name;
-    const title = `Impression ${name.toLowerCase()} personnalisées — à partir de ${mad(product.fromPrice)} | Primple`;
+    const title = `Impression ${name.toLowerCase()} sur mesure — à partir de ${mad(product.fromPrice)} | Primple`;
     const description = `${name} sur mesure : formats, papiers, finitions et quantités au choix. Prix et délai affichés avant la commande, production suivie jusqu'à la livraison.`;
     return {
       meta: [
