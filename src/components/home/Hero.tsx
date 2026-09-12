@@ -15,7 +15,7 @@ export function Hero() {
       <img
         src={heroStudioAsset.url}
         alt="Collection de supports imprimés PRIMPLE dans un studio lumineux"
-        className="absolute inset-0 size-full object-cover object-[62%_center] md:object-center"
+        className="absolute inset-0 size-full object-cover object-center"
         fetchPriority="high"
       />
       <div className="absolute inset-0 bg-linear-to-t from-ink/35 via-transparent to-ink/20" />
