@@ -21,8 +21,9 @@ export function Hero() {
       <div className="absolute inset-0 bg-linear-to-r from-ink/55 via-ink/10 to-transparent" />
       <div className="absolute inset-0 bg-linear-to-t from-ink/30 via-transparent to-ink/15" />
 
-      <div className="section-shell relative flex min-h-[780px] items-center pb-24 pt-28 md:min-h-[min(920px,100svh)] md:pb-24 md:pt-36">
-        <div className="relative z-10 max-w-[35rem] md:max-w-[38rem] lg:max-w-[42rem]">
+      <div className="section-shell relative flex min-h-[clamp(560px,92svh,900px)] items-center pb-[clamp(4rem,10vh,6rem)] pt-[clamp(6rem,14vh,9rem)]">
+        <div className="relative z-10 w-full max-w-[min(42rem,90%)]">
+
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
