@@ -11,7 +11,7 @@ export function Hero() {
   const { t } = useI18n();
 
   return (
-    <section className="relative min-h-[780px] overflow-hidden bg-ink text-ink-foreground md:min-h-[min(920px,100svh)]">
+    <section className="relative min-h-[clamp(560px,92svh,900px)] overflow-hidden bg-ink text-ink-foreground">
       <img
         src={heroStudioAsset.url}
         alt="Collection de supports imprimés PRIMPLE dans un studio lumineux"
@@ -21,8 +21,9 @@ export function Hero() {
       <div className="absolute inset-0 bg-linear-to-r from-ink/55 via-ink/10 to-transparent" />
       <div className="absolute inset-0 bg-linear-to-t from-ink/30 via-transparent to-ink/15" />
 
-      <div className="section-shell relative flex min-h-[780px] items-center pb-24 pt-28 md:min-h-[min(920px,100svh)] md:pb-24 md:pt-36">
-        <div className="relative z-10 max-w-[35rem] md:max-w-[38rem] lg:max-w-[42rem]">
+      <div className="section-shell relative flex min-h-[clamp(560px,92svh,900px)] items-center pb-[clamp(4rem,10vh,6rem)] pt-[clamp(6rem,14vh,9rem)]">
+        <div className="relative z-10 w-full max-w-[min(42rem,90%)]">
+
           <motion.p
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -36,7 +37,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="mt-3 max-w-[16ch] whitespace-pre-line text-2xl font-light leading-[1.15] tracking-tight text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] sm:text-3xl lg:text-[2.75rem]"
+            className="mt-3 max-w-[16ch] whitespace-pre-line text-[clamp(1.6rem,3.4vw,2.75rem)] font-light leading-[1.15] tracking-tight text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]"
           >
             {t("hero.title")}{"\n"}
             <span className="text-primary">{t("hero.titleAccent")}</span>
@@ -46,7 +47,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12 }}
-            className="mt-4 max-w-md text-sm leading-relaxed text-ink-foreground/85 md:text-base"
+            className="mt-4 max-w-[34rem] text-[clamp(0.875rem,1.1vw,1rem)] leading-relaxed text-ink-foreground/85"
           >
             {t("hero.sub")}
           </motion.p>
@@ -77,7 +78,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-10 flex max-w-md flex-nowrap gap-x-6 text-left text-sm leading-snug text-ink-foreground/85"
+            className="mt-[clamp(1.75rem,4vh,2.5rem)] flex max-w-md flex-nowrap gap-x-[clamp(1rem,2vw,1.5rem)] text-left text-[clamp(0.8rem,1vw,0.875rem)] leading-snug text-ink-foreground/85"
           >
             <span className="flex max-w-[7rem] flex-col items-start gap-3">
               <Gem className="size-7 shrink-0 stroke-[1.25] text-ink-foreground" />
