@@ -78,7 +78,7 @@ export function Hero() {
         >
           <div className="absolute inset-0 overflow-hidden rounded-2xl border border-white/10 bg-card/5 shadow-lift">
             <img
-              src={productImages.packaging}
+              src={productImages["packaging"]}
               alt=""
               className="premium-image size-full object-cover opacity-95"
             />
@@ -93,7 +93,7 @@ export function Hero() {
           </div>
           <div className="absolute -right-3 -top-4 w-[34%] overflow-hidden rounded-xl border border-white/15 bg-card p-2 shadow-lift sm:-right-7">
             <img
-              src={productImages.brochures}
+              src={productImages["brochures"]}
               alt=""
               className="premium-image aspect-[4/3] w-full rounded-lg object-cover"
             />

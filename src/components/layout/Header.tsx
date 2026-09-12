@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ChevronDown, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { ArrowRight, ChevronDown, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
