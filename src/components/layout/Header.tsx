@@ -196,6 +196,7 @@ export function Header() {
               </Button>
             </div>
             <div className="section-shell flex flex-col gap-1 pb-8 pt-4">
+              <div
                 className="mb-4 flex items-center rounded-full border border-white/10 bg-white/5 p-1">
                 {languages.map((l) => (
                   <button
