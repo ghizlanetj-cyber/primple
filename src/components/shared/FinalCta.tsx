@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
 export function FinalCta({
-  title = "Your next print job starts here.",
-  copy = "Get a price, choose your options and start printing in minutes.",
-  primary = { label: "Start Printing", to: "/products" },
-  secondary = { label: "Explore Products", to: "/products" },
+  title = "Your next print starts here.",
+  copy = "Tell us what you want to create. We help you choose the right options and turn your idea into a printed piece.",
+  primary = { label: "Get a price", to: "/products" },
+  secondary = { label: "Talk about my project", to: "/contact" },
 }: {
   title?: string;
   copy?: string;

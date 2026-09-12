@@ -10,6 +10,7 @@ import {
 import { phrases, authPhrases } from "./translations";
 import { productPhrases } from "./product-translations";
 import { commercialPhrases } from "./commercial-translations";
+import { copyPhrases } from "./copy-translations";
 
 export const languages = ["en", "fr", "ar"] as const;
 export type Lang = (typeof languages)[number];
@@ -33,7 +34,8 @@ const en: Dict = {
   "nav.partners": "Become a Print Partner",
   "nav.dashboard": "Dashboard",
   "nav.login": "Login",
-  "cta.start": "Start Printing",
+  "cta.start": "Get my price",
+  "cta.talk": "Talk about my project",
   "cta.partner": "Explore products",
   "cta.getQuote": "Get a quote",
   "cta.cart": "Cart",
@@ -45,10 +47,11 @@ const en: Dict = {
   "hero.eyebrow": "Turning ideas into tangible impact",
   "hero.title": "Print. Simple. Speed.   PRIMPLE   ",
   "hero.titleAccent": " ",
-  "hero.sub": "Design, print and deliver — all from one intelligent platform.",
-  "hero.f1": "Compare options",
-  "hero.f2": "Transparent pricing",
-  "hero.f3": "Track every order",
+  "hero.sub": "Professional, custom printing for brands, businesses and creatives in Morocco: choose your options, see the price, we produce and deliver.",
+  "hero.f1": "Options explained before you choose",
+  "hero.f2": "Price and lead time shown before you order",
+  "hero.f3": "Every stage tracked until delivery",
+  "hero.note": "Clear answer. No commitment.",
 
   "dash.eyebrow": "Your account",
   "dash.title": "Every print job,",
@@ -112,7 +115,8 @@ const fr: Dict = {
   "nav.partners": "Devenir imprimeur partenaire",
   "nav.dashboard": "Tableau de bord",
   "nav.login": "Connexion",
-  "cta.start": "Commander une impression",
+  "cta.start": "Obtenir mon prix",
+  "cta.talk": "Parler de mon projet",
   "cta.partner": "Découvrir nos produits",
   "cta.getQuote": "Obtenir un devis",
   "cta.cart": "Panier",
@@ -124,10 +128,11 @@ const fr: Dict = {
   "hero.eyebrow": "Des idées transformées en impact réel",
   "hero.title": "Plus que\nde l'impression.",
   "hero.titleAccent": "Des idées qui\nprennent forme.",
-  "hero.sub": "Des solutions d'impressions pensées pour les marques, les entreprises et les créatifs qui veulent aller plus loin.",
-  "hero.f1": "Comparez les options",
-  "hero.f2": "Prix transparents",
-  "hero.f3": "Suivez chaque commande",
+  "hero.sub": "Impression professionnelle et personnalisée pour les marques, les entreprises et les créatifs au Maroc : vous choisissez vos options, vous voyez le prix, nous produisons et livrons.",
+  "hero.f1": "Options expliquées avant de choisir",
+  "hero.f2": "Prix et délai affichés avant de commander",
+  "hero.f3": "Chaque étape suivie jusqu'à la livraison",
+  "hero.note": "Réponse claire. Sans engagement.",
 
   "dash.eyebrow": "Votre compte",
   "dash.title": "Toutes vos impressions,",
@@ -191,7 +196,8 @@ const ar: Dict = {
   "nav.partners": "كن مطبعة شريكة",
   "nav.dashboard": "لوحة التحكم",
   "nav.login": "تسجيل الدخول",
-  "cta.start": "ابدأ الطباعة",
+  "cta.start": "احصل على سعري",
+  "cta.talk": "تحدث عن مشروعي",
   "cta.partner": "استكشف المنتجات",
   "cta.getQuote": "احصل على عرض سعر",
   "cta.cart": "السلة",
@@ -203,10 +209,11 @@ const ar: Dict = {
   "hero.eyebrow": "أفكار تتحول إلى أثر ملموس",
   "hero.title": "مستقبل الطباعة",
   "hero.titleAccent": "يبدأ من هنا.",
-  "hero.sub": "صمّم، اطبع، واستلم — من منصة واحدة ذكية.",
-  "hero.f1": "قارن الخيارات",
-  "hero.f2": "أسعار واضحة",
-  "hero.f3": "تابع كل طلب",
+  "hero.sub": "طباعة احترافية ومخصصة للعلامات والشركات والمبدعين في المغرب: اختر خياراتك، وشاهد السعر، ونحن ننتج ونسلّم.",
+  "hero.f1": "خيارات موضّحة قبل الاختيار",
+  "hero.f2": "السعر والمدة قبل الطلب",
+  "hero.f3": "متابعة كل مرحلة حتى التسليم",
+  "hero.note": "إجابة واضحة. دون أي التزام.",
 
   "dash.eyebrow": "حسابك",
   "dash.title": "كل أعمال الطباعة",
@@ -302,7 +309,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       tr: (text: string) =>
         lang === "en"
           ? text
-          : phrases[text]?.[lang] ?? authPhrases[text]?.[lang] ?? productPhrases[text]?.[lang] ?? commercialPhrases[text]?.[lang] ?? text,
+          : phrases[text]?.[lang] ?? authPhrases[text]?.[lang] ?? productPhrases[text]?.[lang] ?? commercialPhrases[text]?.[lang] ?? copyPhrases[text]?.[lang] ?? text,
       number: (value: number) => value.toLocaleString(lang === "fr" ? "fr-FR" : lang === "ar" ? "ar-MA" : "en-US"),
     }),
     [lang, setLang],

@@ -10,6 +10,7 @@ import { getProduct, products } from "@/data/products";
 import { productImages } from "@/data/productImages";
 import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
+import { productPhrases } from "@/i18n/product-translations";
 
 export const Route = createFileRoute("/products/$slug")({
   loader: ({ params }) => {
@@ -22,8 +23,9 @@ export const Route = createFileRoute("/products/$slug")({
       return { meta: [{ title: "Product not found — Primple" }, { name: "robots", content: "noindex" }] };
     }
     const { product } = loaderData;
-    const title = `${product.name} printing from ${mad(product.fromPrice)} | Primple`;
-    const description = `${product.heroCopy} Compare verified printers, see production time and track delivery.`;
+    const name = productPhrases[product.name]?.fr ?? product.name;
+    const title = `Impression ${name.toLowerCase()} sur mesure — à partir de ${mad(product.fromPrice)} | Primple`;
+    const description = `${name} sur mesure : formats, papiers, finitions et quantités au choix. Prix et délai affichés avant la commande, production suivie jusqu'à la livraison.`;
     return {
       meta: [
         { title },
@@ -31,16 +33,17 @@ export const Route = createFileRoute("/products/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "product" },
-        { property: "og:url", content: `/products/${params.slug}` },
+        { property: "og:url", content: `https://primple.lovable.app/products/${params.slug}` },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
-      links: [{ rel: "canonical", href: `/products/${params.slug}` }],
+      links: [{ rel: "canonical", href: `https://primple.lovable.app/products/${params.slug}` }],
       scripts: [
         {
           type: "application/ld+json",
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: product.name,
+            name: productPhrases[product.name]?.fr ?? product.name,
             description: product.description,
             aggregateRating: {
               "@type": "AggregateRating",

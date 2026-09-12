@@ -14,9 +14,9 @@ import { FaqSection } from "@/components/shared/FaqSection";
 import { FinalCta } from "@/components/shared/FinalCta";
 import { useI18n } from "@/i18n";
 
-const title = "Primple — Order professional printing without the back-and-forth";
+const title = "Impression professionnelle et personnalisée au Maroc | Primple";
 const description =
-  "Configure printing, get an instant price, choose a verified printer and track production to delivery. Business cards, packaging, flyers, labels and more.";
+  "Cartes de visite, flyers, brochures, packaging, étiquettes : configurez votre impression, voyez le prix et le délai avant de commander, et suivez la production jusqu'à la livraison.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,9 +25,11 @@ export const Route = createFileRoute("/")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://primple.lovable.app/" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -36,7 +38,7 @@ export const Route = createFileRoute("/")({
           "@type": "Organization",
           name: "Primple",
           description,
-          url: "/",
+          url: "https://primple.lovable.app/",
         }),
       },
     ],
@@ -46,28 +48,32 @@ export const Route = createFileRoute("/")({
 
 const faqs = [
   {
-    q: "How does Primple work?",
-    a: "Choose your product, configure it, upload your artwork, choose a printer and place your order. You see the price, production time and delivery date before you pay.",
+    q: "How do I order a print on Primple?",
+    a: "Choose your product, set the format, paper, finish and quantity, upload your file and confirm. The price, production time and delivery date are shown before payment.",
   },
   {
-    q: "Can I choose my printer?",
-    a: "Yes, where multiple verified partners are available you compare their price, production time, rating and location and pick the one you want.",
+    q: "I don't know which paper or finish to choose. Can you help?",
+    a: "Each paper and finish is described where you select it, with its effect on price and production time. If you still hesitate, send us your project and we go through the options with you.",
   },
   {
-    q: "Can I order again?",
-    a: "Yes. Reorder previous products directly from your dashboard with the same configuration and artwork — change the quantity if you need to.",
+    q: "How do I know how much my print will cost?",
+    a: "The price updates as you configure your product, so you see the total for your exact options and quantity before ordering.",
   },
   {
-    q: "Can I request a custom quote?",
-    a: "Yes. Request a quote when your project needs custom specifications, and compare the offers printers send back.",
+    q: "How do I prepare my file for printing?",
+    a: "Send a print-ready PDF with your artwork at final size. If your file needs adjusting, we tell you what to change before production starts.",
   },
   {
-    q: "Can I track my order?",
-    a: "Yes. Follow artwork approval, production, quality check and delivery from your dashboard.",
+    q: "Can I order a custom format or material?",
+    a: "Yes. Request a quote with your specifications and we come back with the options and the price for your project.",
   },
   {
-    q: "What if there is a problem with my order?",
-    a: "Report an issue from the order page. Our team reviews it with your printer within one working day and arranges a reprint or refund where the fault is ours.",
+    q: "Can I follow my order?",
+    a: "Yes. From your account you follow artwork approval, production and delivery for each order.",
+  },
+  {
+    q: "Can I reorder the same print?",
+    a: "Yes. Reorder a previous job with the same configuration and file, and change the quantity if you need to.",
   },
 ];
 
@@ -76,7 +82,7 @@ function Home() {
   return (
     <SiteShell>
       <p className="sr-only">
-         {tr("Primple — the online printing marketplace and printing management platform")}
+         {tr("Primple — professional and custom printing for brands, businesses and creatives in Morocco")}
       </p>
       <Hero />
       
@@ -87,7 +93,7 @@ function Home() {
       <PlatformBridge />
       <PartnerTeaser />
       <Testimonials />
-      <FaqSection items={faqs} />
+      <FaqSection items={faqs} title="Questions before printing" />
       <FinalCta />
     </SiteShell>
   );

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Check, ChevronDown, Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { ArrowRight, Check,  Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
-import { products } from "@/data/products";
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { languageLabels, languages, useI18n } from "@/i18n";
@@ -13,7 +12,6 @@ import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [dark, setDark] = useState(false);
@@ -40,25 +38,14 @@ export function Header() {
         "fixed left-1/2 top-3 z-50 w-[calc(100%-2rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/[0.16] shadow-[0_10px_32px_rgba(0,0,0,0.10)] backdrop-blur-[20px] backdrop-saturate-[1.15] transition-colors duration-500 sm:w-[calc(100%-3rem)] lg:top-4 lg:w-[calc(100%-96px)]",
         scrolled ? "bg-[rgba(35,33,42,0.52)]" : "bg-[rgba(35,33,42,0.38)]",
       )}
-      onMouseLeave={() => setMegaOpen(false)}
     >
       <div className="relative grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-16 lg:h-[68px] lg:px-8">
         <div className="flex min-w-0 items-center gap-5 xl:gap-7">
           <Logo invert className="h-5 shrink-0 md:h-[22px] lg:w-[102px]" />
           <nav className="hidden items-center gap-x-6 xl:flex xl:gap-x-7">
             <NavLink to="/services">{t("nav.solutions")}</NavLink>
-            <button
-              type="button"
-              onMouseEnter={() => setMegaOpen(true)}
-              onClick={() => setMegaOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full py-1.5 text-[14px] font-medium text-white/85 transition-colors hover:text-white xl:text-[15px]"
-              aria-expanded={megaOpen}
-            >
-              {t("nav.products")}
-              <ChevronDown
-                className={cn("size-3.5 transition-transform", megaOpen && "rotate-180")}
-              />
-            </button>
+            <NavLink to="/products">{t("nav.products")}</NavLink>
+
             <NavLink to="/about">{t("nav.why")}</NavLink>
             <NavLink to="/platform">{t("nav.work")}</NavLink>
             <NavLink to="/contact">{t("nav.contact")}</NavLink>
@@ -163,32 +150,8 @@ export function Header() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {megaOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden overflow-hidden rounded-b-3xl border-t border-white/15 bg-ink/60 text-ink-foreground backdrop-blur-3xl xl:block"
-          >
-             <div className="grid grid-cols-4 gap-2 px-8 py-7">
-              {products.map((p) => (
-                <Link
-                  key={p.slug}
-                  to="/products/$slug"
-                  params={{ slug: p.slug }}
-                  onClick={() => setMegaOpen(false)}
-                   className="group rounded-lg px-3 py-2.5 transition-colors hover:bg-white/8"
-                >
-                   <p className="text-sm font-semibold">{tr(p.name)}</p>
-                    <p className="text-xs text-ink-muted">{tr(p.benefit)}</p>
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+
 
       <AnimatePresence>
         {mobileOpen && (

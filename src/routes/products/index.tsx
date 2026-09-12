@@ -11,9 +11,9 @@ import { products } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 
-const title = "Printing products — business cards, packaging, flyers | Primple";
+const title = "Produits d'impression : cartes de visite, flyers, packaging | Primple";
 const description =
-  "Browse every Primple printing product. Configure size, paper and finish, see the price instantly and choose a verified printer near you.";
+  "Tous les produits imprimés par Primple. Choisissez le format, le papier et la finition, voyez le prix immédiatement et lancez votre commande.";
 
 export const Route = createFileRoute("/products/")({
   head: () => ({

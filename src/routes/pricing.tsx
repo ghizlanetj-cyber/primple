@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 
-const title = "Pricing — pay for printing, not for software | Primple";
+const title = "Tarifs d'impression clairs, sans frais cachés | Primple";
 const description =
-  "Transparent printing prices with no hidden fees. Free to order, with advanced features for teams and enterprises.";
+  "Le prix, le délai de production et la livraison affichés avant la commande. Aucun frais caché, des options avancées pour les équipes.";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({

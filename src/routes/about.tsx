@@ -5,9 +5,9 @@ import { PageHero, ContentSection } from "@/components/shared/PageHero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "About Primple | Printing without the back-and-forth";
+const title = "Pourquoi Primple | Un partenaire d'impression, pas un simple fournisseur";
 const description =
-  "Primple connects Moroccan businesses with verified print partners: transparent prices, checked artwork and tracked delivery.";
+  "Primple aide les marques, entreprises et créatifs au Maroc à transformer leurs idées en supports imprimés : options expliquées, prix visibles, production suivie.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({

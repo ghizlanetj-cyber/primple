@@ -5,25 +5,24 @@ import { useI18n } from "@/i18n";
 const steps = [
   {
     n: "01",
-    title: "Choose your product",
-    copy: "Business cards, packaging, flyers, banners, labels and more.",
+    title: "Describe your project",
+    copy: "Tell us what you want to print. We show you the products that fit.",
   },
   {
     n: "02",
-    title: "Configure & upload",
-    copy: "Select size, paper, finish and quantity, then upload your artwork.",
+    title: "Choose your options",
+    copy: "Format, paper, finish, quantity — with the price updated as you go.",
   },
   {
     n: "03",
-    title: "Compare & choose",
-    copy: "See printing options, prices, production times and printer ratings.",
+    title: "Validate your print",
+    copy: "Send your file and confirm. You know the price and the timeline before ordering.",
   },
   {
     n: "04",
-    title: "Production",
-    copy: "Your printer receives the order and keeps you updated.",
+    title: "Receive your order",
+    copy: "Production starts, you follow each stage until delivery.",
   },
-  { n: "05", title: "Delivery", copy: "Track your order until it arrives." },
 ];
 
 export function HowItWorks() {
@@ -32,10 +31,14 @@ export function HowItWorks() {
     <section className="bg-white py-24 md:py-32">
       <div className="section-shell">
         <Reveal className="max-w-2xl">
-          <p className="eyebrow text-primary">{tr("How it works")}</p>
-          <h2 className="display-xl mt-4 text-4xl md:text-6xl">{tr("Printing shouldn't take 15 emails.")}</h2>
+          <p className="eyebrow text-primary">{tr("Four steps to your print")}</p>
+          <h2 className="display-xl mt-4 text-4xl md:text-6xl">
+            {tr("Printing shouldn't become a second project.")}
+          </h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            {tr("Choose what you need, upload your artwork, choose your printer and let Primple handle the rest.")}
+            {tr(
+              "Choosing the right material, understanding finishes, comparing options, preparing files, waiting for the result. Primple makes each step simple.",
+            )}
           </p>
         </Reveal>
 
@@ -52,15 +55,15 @@ export function HowItWorks() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1.6, ease: "easeInOut" }}
           />
-          <div className="grid gap-8 lg:grid-cols-5">
+          <div className="grid gap-8 lg:grid-cols-4">
             {steps.map((s, i) => (
               <Reveal key={s.n} delay={i * 0.1}>
                 <div className="relative">
-                   <span className="relative z-10 flex size-12 items-center justify-center rounded-full border border-border bg-card font-display text-sm font-bold shadow-soft">
+                  <span className="relative z-10 flex size-12 items-center justify-center rounded-full border border-border bg-card font-display text-sm font-bold shadow-soft">
                     {s.n}
                   </span>
-                   <h3 className="mt-5 text-lg">{tr(s.title)}</h3>
-                   <p className="mt-2 text-sm text-muted-foreground">{tr(s.copy)}</p>
+                  <h3 className="mt-5 text-lg">{tr(s.title)}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{tr(s.copy)}</p>
                 </div>
               </Reveal>
             ))}

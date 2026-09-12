@@ -13,9 +13,9 @@ import { contact } from "@/config/contact";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/i18n";
 
-const title = "Contact Primple | Talk to our printing team";
+const title = "Contact | Parlez de votre projet d'impression avec Primple";
 const description =
-  "Questions about a print job, a quote or a partnership? Message the Primple team in Casablanca and get a reply within one working day.";
+  "Une impression à préparer, un devis à obtenir ou un projet sur mesure ? Écrivez à l'équipe Primple à Casablanca, réponse sous un jour ouvré.";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({

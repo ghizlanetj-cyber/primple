@@ -5,9 +5,9 @@ import { PageHero, ContentSection } from "@/components/shared/PageHero";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Enterprise printing | Primple";
+const title = "Impression pour entreprises multi-sites | Primple";
 const description =
-  "Centralised print ordering for multi-site teams: brand templates, approval flows, consolidated invoicing and a named account manager.";
+  "Centralisez les commandes d'impression de vos équipes : modèles de marque, validations, facturation consolidée et un interlocuteur dédié.";
 
 export const Route = createFileRoute("/enterprise")({
   head: () => ({

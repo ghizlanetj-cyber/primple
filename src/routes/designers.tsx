@@ -7,9 +7,9 @@ import { FaqSection } from "@/components/shared/FaqSection";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Become a Designer partner | Primple";
+const title = "Designers : imprimez les projets de vos clients avec Primple";
 const description =
-  "Print your client work through Primple, keep your margin and let us handle production, quality and delivery.";
+  "Faites imprimer les projets de vos clients via Primple : vous gardez votre marge, nous gérons la production, la qualité et la livraison.";
 
 export const Route = createFileRoute("/designers")({
   head: () => ({

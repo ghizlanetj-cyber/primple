@@ -12,7 +12,7 @@ import { contact } from "@/config/contact";
 const columns: { titleKey: string; links: { label: string; to: string }[] }[] = [
   {
     titleKey: "footer.products",
-    links: products.slice(0, 6).map((p) => ({ label: p.name, to: `/products/${p.slug}` })),
+    links: products.slice(0, 8).map((p) => ({ label: p.name, to: `/products/${p.slug}` })),
   },
   {
     titleKey: "nav.platform",
@@ -54,7 +54,7 @@ export function Footer() {
           <div>
             <Logo invert />
             <p className="mt-5 max-w-sm text-sm text-ink-muted">
-              {tr("Order professional printing without the back-and-forth. Compare verified printers, see the price up front and track every job to delivery.")}
+              {tr("Custom printing for brands, businesses and creatives in Morocco: options explained, price shown before you order, production followed to delivery.")}
             </p>
             <address className="mt-5 space-y-1 text-sm not-italic text-ink-muted">
               <p>{contact.address}</p>

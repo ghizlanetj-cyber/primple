@@ -9,23 +9,33 @@ import { useI18n } from "@/i18n";
 const cards = [
   {
     icon: Store,
-    title: "Marketplace",
-    copy: "Find verified printers, receive competitive offers and track production from one workspace.",
+    title: "A simpler process",
+    copy: "Configure, order and follow your print without chasing anyone by phone.",
   },
   {
     icon: LayoutDashboard,
-    title: "Production & Orders",
-    copy: "Manage jobs, quotations and invoices without spreadsheets.",
-  },
-  {
-    icon: Factory,
-    title: "For Printers",
-    copy: "Manage pricing, production, customers and payments from one dashboard.",
+    title: "Prices you can see",
+    copy: "The price, the production time and the delivery date appear before you order.",
   },
   {
     icon: Plug,
-    title: "Enterprise & API",
-    copy: "Connect Primple to your existing systems and automate printing workflows at scale.",
+    title: "Guidance on your options",
+    copy: "Paper, finish, format: each option is explained where you choose it.",
+  },
+  {
+    icon: Factory,
+    title: "Printing that carries your brand",
+    copy: "Reorder the same setup so your materials stay consistent over time.",
+  },
+  {
+    icon: LayoutDashboard,
+    title: "Orders you can follow",
+    copy: "Artwork approval, production, delivery: every stage is visible from your account.",
+  },
+  {
+    icon: Store,
+    title: "Custom projects welcome",
+    copy: "Specific format or material? Send your project and we work out the options with you.",
   },
 ];
 
@@ -39,16 +49,16 @@ export function PlatformBridge() {
       />
       <div className="section-shell relative">
         <Reveal className="max-w-3xl">
-          <p className="eyebrow text-primary">{tr("The platform underneath")}</p>
+          <p className="eyebrow text-primary">{tr("Why Primple")}</p>
           <h2 className="mt-4 text-4xl md:text-5xl lg:text-6xl">
-            {tr("More than ordering. This is how printing gets run.")}
+            {tr("A print partner, not just a supplier.")}
           </h2>
           <p className="mt-6 text-lg text-ink-muted">
-            {tr("Behind every order is a system built for production management, quoting, payments and growth — for businesses and printers alike.")}
+            {tr("Ideas, design, print, physical impact — the same workflow from first question to delivered box.")}
           </p>
         </Reveal>
 
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.08}>
              <motion.div
@@ -68,8 +78,8 @@ export function PlatformBridge() {
 
         <Reveal delay={0.2}>
           <Button asChild size="lg" className="mt-12 rounded-full px-7">
-            <Link to="/platform">
-              {tr("See the full platform")}
+            <Link to="/products">
+              {tr("Get a price")}
               <ArrowRight className="size-4 rtl:rotate-180" />
             </Link>
           </Button>

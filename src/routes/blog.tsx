@@ -6,9 +6,9 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Printing insights & guides | Primple Blog";
+const title = "Guides d'impression : papiers, finitions et fichiers | Primple";
 const description =
-  "Practical guides on paper stocks, finishes, artwork setup and print budgets for Moroccan businesses.";
+  "Comment choisir un papier, une finition ou préparer un fichier : des guides concrets pour réussir vos impressions professionnelles au Maroc.";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({

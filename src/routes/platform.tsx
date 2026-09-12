@@ -16,9 +16,9 @@ import { FinalCta } from "@/components/shared/FinalCta";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
-const title = "Printing management platform for teams | Primple";
+const title = "Gérer toutes vos impressions depuis un seul espace | Primple";
 const description =
-  "Run every print job from one place: approvals, saved brand setups, live production tracking, spend and reorders.";
+  "Validations, configurations enregistrées, suivi de production, dépenses et recommandes : pilotez toutes vos impressions au même endroit.";
 
 export const Route = createFileRoute("/platform")({
   head: () => ({
