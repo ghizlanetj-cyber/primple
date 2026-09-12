@@ -50,11 +50,35 @@ function ProductsPage() {
     [],
   );
 
+  // Index the localized (visible) labels plus the English source strings and keywords.
+  const searchIndex = useMemo(
+    () =>
+      new Map(
+        products.map((p) => [
+          p.slug,
+          normalize(
+            [
+              tr(p.name),
+              tr(p.benefit),
+              tr(p.category),
+              p.name,
+              p.benefit,
+              p.category,
+              p.slug.replace(/-/g, " "),
+              p.keywords.join(" "),
+            ].join(" "),
+          ),
+        ]),
+      ),
+    [tr],
+  );
+
+  const terms = normalize(query).split(" ").filter(Boolean);
+
   const visible = products.filter((p) => {
     const matchesCategory = category === "All" || p.category === category;
-    const matchesQuery =
-      query.trim() === "" ||
-      `${p.name} ${p.benefit} ${p.keywords.join(" ")}`.toLowerCase().includes(query.toLowerCase());
+    const haystack = searchIndex.get(p.slug) ?? "";
+    const matchesQuery = terms.every((term) => haystack.includes(term));
     return matchesCategory && matchesQuery;
   });
 
