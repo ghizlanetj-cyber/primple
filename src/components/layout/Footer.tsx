@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Instagram, Linkedin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
@@ -114,14 +114,6 @@ export function Footer() {
               </Link>
             ))}
           </nav>
-          <div className="flex items-center gap-4 text-ink-muted">
-            <a href="#" aria-label={tr("Primple on LinkedIn")} className="hover:text-ink-foreground">
-              <Linkedin className="size-4" />
-            </a>
-            <a href="#" aria-label={tr("Primple on Instagram")} className="hover:text-ink-foreground">
-              <Instagram className="size-4" />
-            </a>
-          </div>
         </div>
       </div>
     </footer>

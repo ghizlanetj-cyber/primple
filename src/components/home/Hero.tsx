@@ -77,7 +77,7 @@ export function Hero() {
               variant="outline"
               className="h-13 rounded-full border-white/35 bg-white/5 px-8 text-base text-ink-foreground hover:bg-white/12 hover:text-ink-foreground"
             >
-              <Link to="/partners">{t("cta.partner")}</Link>
+              <Link to="/products">{t("cta.partner")}</Link>
             </Button>
           </motion.div>
 

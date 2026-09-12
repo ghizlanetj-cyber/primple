@@ -46,7 +46,7 @@ export function Header() {
         <div className="flex min-w-0 items-center gap-5 xl:gap-7">
           <Logo invert className="h-5 shrink-0 md:h-[22px] lg:w-[102px]" />
           <nav className="hidden items-center gap-x-6 xl:flex xl:gap-x-7">
-            <NavLink to="/services">Solutions</NavLink>
+            <NavLink to="/services">{t("nav.solutions")}</NavLink>
             <button
               type="button"
               onMouseEnter={() => setMegaOpen(true)}
@@ -54,14 +54,14 @@ export function Header() {
               className="flex items-center gap-1 rounded-full py-1.5 text-[14px] font-medium text-white/85 transition-colors hover:text-white xl:text-[15px]"
               aria-expanded={megaOpen}
             >
-              Produits
+              {t("nav.products")}
               <ChevronDown
                 className={cn("size-3.5 transition-transform", megaOpen && "rotate-180")}
               />
             </button>
-            <NavLink to="/about">Pourquoi Primple</NavLink>
-            <NavLink to="/platform">Nos réalisation</NavLink>
-            <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/about">{t("nav.why")}</NavLink>
+            <NavLink to="/platform">{t("nav.work")}</NavLink>
+            <NavLink to="/contact">{t("nav.contact")}</NavLink>
           </nav>
         </div>
 
