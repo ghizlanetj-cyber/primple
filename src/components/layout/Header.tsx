@@ -15,7 +15,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [dark, setDark] = useState(false);
-  const { lang, setLang, t } = useI18n();
+  const { lang, setLang, t, tr } = useI18n();
   const items = useCart((s) => s.items);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
