@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, ChevronDown, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
   const [dark, setDark] = useState(false);
   const { lang, setLang, t, tr } = useI18n();
   const items = useCart((s) => s.items);
@@ -38,12 +39,13 @@ export function Header() {
       className={cn(
         "fixed inset-x-3 top-3 z-50 mx-auto max-w-[86rem] rounded-full border transition-all duration-500 sm:inset-x-5 lg:top-5",
         scrolled
-          ? "border-white/15 bg-ink/92 shadow-lift backdrop-blur-2xl"
-          : "border-white/12 bg-ink/72 shadow-soft backdrop-blur-xl",
+          ? "border-white/25 bg-ink/72 shadow-lift backdrop-blur-2xl"
+          : "border-white/20 bg-ink/48 shadow-lift backdrop-blur-2xl",
       )}
       onMouseLeave={() => setMegaOpen(false)}
     >
-      <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:px-8">
+      <div className="pointer-events-none absolute inset-x-7 top-px h-px bg-linear-to-r from-transparent via-white/55 to-transparent" />
+      <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:px-8">
         <div className="flex min-w-0 items-center gap-7 xl:gap-9">
           <Logo invert className="h-5 shrink-0 md:h-6" />
           <nav className="hidden items-center gap-1 lg:flex">
@@ -68,23 +70,43 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-           <div className="hidden items-center rounded-full border border-white/10 bg-white/5 p-0.5 xl:flex">
-            {languages.map((l) => (
-              <button
-                key={l}
-                type="button"
-                onClick={() => setLang(l)}
-                className={cn(
-                  "rounded-full px-2.5 py-1 text-xs font-semibold transition-colors",
-                  lang === l
-                    ? "bg-primary text-primary-foreground"
-                     : "text-ink-muted hover:text-ink-foreground",
-                )}
-                aria-pressed={lang === l}
-              >
-                {languageLabels[l]}
-              </button>
-            ))}
+          <div className="relative hidden xl:block">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={languageLabels[lang]}
+              aria-expanded={languageOpen}
+              onClick={() => setLanguageOpen((open) => !open)}
+              className="text-ink-muted hover:bg-white/10 hover:text-ink-foreground"
+            >
+              <Globe2 className="size-4" />
+            </Button>
+            <AnimatePresence>
+              {languageOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.2 }}
+                  className="glass-panel absolute right-0 top-12 min-w-40 overflow-hidden rounded-xl p-1.5 shadow-lift"
+                >
+                  {languages.map((l) => (
+                    <button
+                      key={l}
+                      type="button"
+                      onClick={() => {
+                        setLang(l);
+                        setLanguageOpen(false);
+                      }}
+                      className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs font-semibold text-ink-foreground transition-colors hover:bg-white/10"
+                    >
+                      {languageLabels[l]}
+                      {lang === l && <Check className="size-3.5 text-primary" />}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <Button

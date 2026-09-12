@@ -18,7 +18,6 @@ export function Hero() {
         className="absolute inset-0 size-full object-cover object-[62%_center] md:object-center"
         fetchPriority="high"
       />
-      <div className="absolute inset-0 bg-linear-to-r from-ink from-0% via-ink/78 via-34% to-ink/5 to-72% md:via-ink/62 md:via-38%" />
       <div className="absolute inset-0 bg-linear-to-t from-ink/35 via-transparent to-ink/20" />
 
       <div className="section-shell relative flex min-h-[780px] items-center pb-14 pt-28 md:min-h-[min(920px,100svh)] md:pb-12 md:pt-32">
