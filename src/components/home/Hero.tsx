@@ -23,14 +23,6 @@ export function Hero() {
 
       <div className="section-shell relative flex min-h-[780px] items-center pb-14 pt-28 md:min-h-[min(920px,100svh)] md:pb-12 md:pt-32">
         <div className="relative z-10 max-w-[35rem] md:max-w-[38rem] lg:max-w-[40rem]">
-          <motion.p
-            initial={reduce ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55 }}
-            className="eyebrow mb-7 max-w-64 leading-relaxed text-ink-foreground/85"
-          >
-            {t("hero.sub")}
-          </motion.p>
           <motion.h1
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
