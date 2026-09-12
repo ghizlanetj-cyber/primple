@@ -14,6 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_messages: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          topic: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          topic?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          topic?: string | null
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          address: string | null
+          balance_amount: number
+          city: string | null
+          company: string | null
+          contact_name: string | null
+          created_at: string
+          delivery: number
+          deposit_amount: number
+          deposit_paid: boolean
+          email: string | null
+          expected_at: string | null
+          id: string
+          items: Json
+          payment_method: string
+          phone: string | null
+          postcode: string | null
+          printer: string | null
+          reference: string
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          balance_amount?: number
+          city?: string | null
+          company?: string | null
+          contact_name?: string | null
+          created_at?: string
+          delivery?: number
+          deposit_amount?: number
+          deposit_paid?: boolean
+          email?: string | null
+          expected_at?: string | null
+          id?: string
+          items?: Json
+          payment_method?: string
+          phone?: string | null
+          postcode?: string | null
+          printer?: string | null
+          reference: string
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          balance_amount?: number
+          city?: string | null
+          company?: string | null
+          contact_name?: string | null
+          created_at?: string
+          delivery?: number
+          deposit_amount?: number
+          deposit_paid?: boolean
+          email?: string | null
+          expected_at?: string | null
+          id?: string
+          items?: Json
+          payment_method?: string
+          phone?: string | null
+          postcode?: string | null
+          printer?: string | null
+          reference?: string
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
