@@ -47,7 +47,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.12 }}
-            className="mt-4 max-w-md text-sm leading-relaxed text-ink-foreground/85 md:text-base"
+            className="mt-4 max-w-[34rem] text-[clamp(0.875rem,1.1vw,1rem)] leading-relaxed text-ink-foreground/85"
           >
             {t("hero.sub")}
           </motion.p>
