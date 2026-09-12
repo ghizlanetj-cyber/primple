@@ -114,8 +114,8 @@ const fr: Dict = {
   "cta.language": "Langue",
 
   "hero.eyebrow": "Des idées transformées en impact réel",
-  "hero.title": "Plus que de l'impression",
-  "hero.titleAccent": "Des idées qui prennent forme.",
+  "hero.title": "Plus que\nde l'impression.",
+  "hero.titleAccent": "Des idées qui\nprennent forme.",
   "hero.sub": "Des solutions d'impressions pensées pour les marques, les entreprises et les créatifs qui veulent aller plus loin.",
   "hero.f1": "Comparez les options",
   "hero.f2": "Prix transparents",
