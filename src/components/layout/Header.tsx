@@ -182,10 +182,10 @@ export function Header() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-background lg:hidden"
+            className="absolute -left-3 -top-3 z-50 h-svh w-screen overflow-y-auto bg-ink text-ink-foreground sm:-left-5 lg:hidden"
           >
-            <div className="section-shell flex h-16 items-center justify-between">
-              <Logo />
+            <div className="flex h-20 items-center justify-between border-b border-white/10 px-6">
+              <Logo invert className="h-6" />
               <Button
                 variant="ghost"
                 size="icon"
@@ -196,7 +196,7 @@ export function Header() {
               </Button>
             </div>
             <div className="section-shell flex flex-col gap-1 pb-8 pt-4">
-              <div className="mb-4 flex items-center rounded-full border border-border bg-card/60 p-1">
+                className="mb-4 flex items-center rounded-full border border-white/10 bg-white/5 p-1">
                 {languages.map((l) => (
                   <button
                     key={l}
@@ -204,7 +204,7 @@ export function Header() {
                     onClick={() => setLang(l)}
                     className={cn(
                       "flex-1 rounded-full px-3 py-2 text-sm font-semibold transition-colors",
-                      lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                       lang === l ? "bg-primary text-primary-foreground" : "text-ink-muted",
                     )}
                     aria-pressed={lang === l}
                   >
@@ -233,7 +233,7 @@ export function Header() {
                   <Link
                     to={link.to}
                     onClick={() => setMobileOpen(false)}
-                    className="block border-b border-border py-4 font-display text-2xl font-bold"
+                    className="block border-b border-white/10 py-4 font-display text-2xl font-bold text-ink-foreground"
                   >
                     {link.label}
                   </Link>
@@ -245,10 +245,10 @@ export function Header() {
                 </Link>
               </Button>
               {user && (
-                <Button
+                 <Button
                   variant="outline"
                   size="lg"
-                  className="mt-3 rounded-full"
+                   className="mt-3 border-white/20 bg-transparent text-ink-foreground"
                   onClick={async () => {
                     setMobileOpen(false);
                     await signOut();
