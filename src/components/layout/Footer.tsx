@@ -124,24 +124,7 @@ export function Footer() {
               </Link>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
-            <Languages aria-hidden className="size-4 text-ink-muted" />
-            <label htmlFor="footer-language" className="text-xs text-ink-muted">
-              {t("cta.language")}
-            </label>
-            <select
-              id="footer-language"
-              value={lang}
-              onChange={(event) => setLang(event.target.value as Lang)}
-              className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-ink-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              {languages.map((l) => (
-                <option key={l} value={l} className="text-foreground">
-                  {languageLabels[l]}
-                </option>
-              ))}
-            </select>
-          </div>
+          <LanguageSelect variant="footer" id="footer-language" />
         </div>
       </div>
     </footer>

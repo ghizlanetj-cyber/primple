@@ -256,6 +256,9 @@ export const copyPhrases: Record<string, TranslationPair> = {
   "Welcome back": p("Bon retour", "مرحبًا بعودتك"),
   "Loading your orders…": p("Chargement de vos commandes…", "جارٍ تحميل طلباتك…"),
   "No orders yet": p("Aucune commande pour l'instant", "لا توجد طلبات بعد"),
+  "Delivered orders": p("Commandes livrées", "الطلبات المسلَّمة"),
+  "Across your Primple account": p("Sur votre compte Primple", "على حسابك في Primple"),
+  "Not provided": p("Non renseigné", "غير محدد"),
   "Once you place a print job it appears here with live production tracking.": p(
     "Dès que vous lancez une impression, elle apparaît ici avec le suivi de production en direct.",
     "بمجرد إطلاق طلب طباعة، سيظهر هنا مع تتبع الإنتاج المباشر.",
