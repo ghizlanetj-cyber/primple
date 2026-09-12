@@ -60,20 +60,22 @@ export function Configurator({ product }: { product: Product }) {
             {tr("Change anything — the price and dates update as you go.")}
           </p>
 
-          <div className="mt-6">
-            <p className="text-sm font-semibold">{tr("Quantity")}</p>
+          <fieldset className="mt-6 border-0 p-0">
+            <legend className="text-sm font-semibold">{tr("Quantity")}</legend>
             <div className="mt-3 flex flex-wrap gap-2">
               {product.quantities.map((q) => (
-                <Chip
+                <ChipRadio
                   key={q}
-                  active={quantity === q && customQuantity === ""}
-                  onClick={() => {
+                  name="quantity"
+                  value={String(q)}
+                  checked={quantity === q && customQuantity === ""}
+                  onSelect={() => {
                     setQuantity(q);
                     setCustomQuantity("");
                   }}
                 >
                   {number(q)}
-                </Chip>
+                </ChipRadio>
               ))}
               <Input
                 value={customQuantity}
@@ -84,7 +86,7 @@ export function Configurator({ product }: { product: Product }) {
                 }}
                 placeholder={tr("Custom")}
                 inputMode="numeric"
-                aria-label={tr("Custom quantity")}
+                aria-label={tr("Or enter your own quantity")}
                 className="h-9 w-24 rounded-full text-center"
               />
             </div>
@@ -93,27 +95,29 @@ export function Configurator({ product }: { product: Product }) {
                 {tr("You save")} {quote.savingsPercent}% {tr("per unit at this quantity.")}
               </p>
             )}
-          </div>
+          </fieldset>
 
           {product.options.map((group) => (
-            <div key={group.id} className="mt-7">
-              <p className="text-sm font-semibold">{tr(group.label)}</p>
+            <fieldset key={group.id} className="mt-7 border-0 p-0">
+              <legend className="text-sm font-semibold">{tr(group.label)}</legend>
               {group.help && <p className="text-xs text-muted-foreground">{tr(group.help)}</p>}
               <div className="mt-3 flex flex-wrap gap-2">
                 {group.choices.map((choice) => (
-                  <Chip
+                  <ChipRadio
                     key={choice.id}
-                    active={selection[group.id] === choice.id}
-                    onClick={() => setSelection((s) => ({ ...s, [group.id]: choice.id }))}
+                    name={`option-${group.id}`}
+                    value={choice.id}
+                    checked={selection[group.id] === choice.id}
+                    onSelect={() => setSelection((s) => ({ ...s, [group.id]: choice.id }))}
                   >
                     {tr(choice.label)}
                     {choice.note && (
                        <span className="ms-1.5 text-xs font-normal opacity-70">{tr(choice.note)}</span>
                     )}
-                  </Chip>
+                  </ChipRadio>
                 ))}
               </div>
-            </div>
+            </fieldset>
           ))}
         </section>
 
