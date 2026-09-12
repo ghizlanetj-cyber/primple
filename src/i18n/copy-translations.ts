@@ -196,5 +196,61 @@ export const copyPhrases: Record<string, TranslationPair> = {
     p(
       "Impression personnalisée pour les marques, les entreprises et les créatifs au Maroc : options expliquées, prix affiché avant la commande, production suivie jusqu'à la livraison.",
       "طباعة مخصصة للعلامات والشركات والمبدعين في المغرب: خيارات موضّحة، وسعر يظهر قبل الطلب، وإنتاج متابَع حتى التسليم.",
+    ),,
+
+  // Checkout + payment terms
+  "Advance now (50%)": p("Acompte maintenant (50 %)", "الدفعة المقدمة الآن (50٪)"),
+  "Cash on delivery (50%)": p("Paiement à la livraison (50 %)", "الدفع عند الاستلام (50٪)"),
+  "Advance paid (50%)": p("Acompte payé (50 %)", "الدفعة المقدمة المدفوعة (50٪)"),
+  "Paid to the courier when your order arrives.": p(
+    "À régler au livreur à la réception de votre commande.",
+    "يُدفع لمندوب التوصيل عند وصول طلبك.",
+  ),
+  "Confirms your order and releases it to the printer.": p(
+    "Confirme votre commande et la transmet à l'imprimeur.",
+    "يؤكد طلبك ويرسله إلى المطبعة.",
+  ),
+  "Pay 50% advance": p("Payer l'acompte de 50 %", "ادفع مقدمًا 50٪"),
+  "Placing your order…": p("Enregistrement de votre commande…", "جارٍ تسجيل طلبك…"),
+  "Order confirmed. 50% advance received.": p(
+    "Commande confirmée. Acompte de 50 % reçu.",
+    "تم تأكيد الطلب. تم استلام دفعة 50٪.",
+  ),
+  "We couldn't place your order.": p(
+    "Nous n'avons pas pu enregistrer votre commande.",
+    "لم نتمكن من تسجيل طلبك.",
+  ),
+  "Please sign in above so we can save this order to your dashboard.": p(
+    "Connectez-vous ci-dessus pour que nous puissions enregistrer cette commande dans votre espace client.",
+    "سجّل الدخول أعلاه حتى نتمكن من حفظ هذا الطلب في لوحتك.",
+  ),
+  "Pay 50% now to start production. The remaining 50% is paid in cash on delivery.": p(
+    "Payez 50 % maintenant pour lancer la production. Les 50 % restants sont réglés en espèces à la livraison.",
+    "ادفع 50٪ الآن لبدء الإنتاج، وتُدفع الـ50٪ المتبقية نقدًا عند التسليم.",
+  ),
+  "Card number for the 50% advance": p(
+    "Numéro de carte pour l'acompte de 50 %",
+    "رقم البطاقة لدفع 50٪ مقدمًا",
+  ),
+  "Within 5 working days": p("Sous 5 jours ouvrés", "خلال 5 أيام عمل"),
+  "Primple partner network": p("Réseau de partenaires Primple", "شبكة شركاء Primple"),
+
+  // Account gate at checkout
+  "An account is required to confirm and pay for your order.": p(
+    "Un compte est nécessaire pour confirmer et payer votre commande.",
+    "يلزم وجود حساب لتأكيد طلبك ودفعه.",
+  ),
+  "Sign in to continue": p("Se connecter pour continuer", "سجّل الدخول للمتابعة"),
+  "You can review your items now, but you'll need to log in or create an account before the payment step.":
+    p(
+      "Vous pouvez vérifier vos articles maintenant, mais vous devrez vous connecter ou créer un compte avant l'étape de paiement.",
+      "يمكنك مراجعة عناصرك الآن، لكن عليك تسجيل الدخول أو إنشاء حساب قبل خطوة الدفع.",
     ),
+
+  // Catalog search + configurator
+  "Add to cart": p("Ajouter au panier", "أضف إلى السلة"),
+  "Clear search": p("Effacer la recherche", "مسح البحث"),
+  "Clear the search": p("Effacer la recherche", "مسح البحث"),
+  "Choose a quantity": p("Choisissez une quantité", "اختر الكمية"),
+  "Or enter your own quantity": p("Ou saisissez votre quantité", "أو أدخل كميتك الخاصة"),
 };
