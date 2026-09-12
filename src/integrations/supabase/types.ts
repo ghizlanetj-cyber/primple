@@ -44,6 +44,56 @@ export type Database = {
         }
         Relationships: []
       }
+      order_files: {
+        Row: {
+          bucket: string
+          created_at: string
+          file_name: string
+          id: string
+          mime_type: string | null
+          order_id: string | null
+          order_reference: string | null
+          path: string
+          size_bytes: number
+          status: string
+          user_id: string
+        }
+        Insert: {
+          bucket?: string
+          created_at?: string
+          file_name: string
+          id?: string
+          mime_type?: string | null
+          order_id?: string | null
+          order_reference?: string | null
+          path: string
+          size_bytes?: number
+          status?: string
+          user_id: string
+        }
+        Update: {
+          bucket?: string
+          created_at?: string
+          file_name?: string
+          id?: string
+          mime_type?: string | null
+          order_id?: string | null
+          order_reference?: string | null
+          path?: string
+          size_bytes?: number
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_files_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           address: string | null
