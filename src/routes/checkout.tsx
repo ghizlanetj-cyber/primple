@@ -46,7 +46,7 @@ export const Route = createFileRoute("/checkout")({
 const steps = ["Order", "Delivery", "Payment", "Confirmation"];
 
 function CheckoutPage() {
-  const { tr, number } = useI18n();
+  const { tr, number, lang } = useI18n();
   const navigate = useNavigate();
   const { items, clear } = useCart();
   const { user } = useAuth();
@@ -55,19 +55,46 @@ function CheckoutPage() {
   const [details, setDetails] = useState<DeliveryDetails | null>(null);
   const [placing, setPlacing] = useState(false);
   const [placedOrder, setPlacedOrder] = useState<OrderRecord | null>(null);
+  const [whatsAppLink, setWhatsAppLink] = useState<string>("");
   const split = splitPayment(placedOrder?.total ?? totals.total);
   const orderId = placedOrder?.reference ?? "";
 
   const handlePlaceOrder = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!user || !details) return;
+    if (!user) {
+      toast.error(
+        tr(
+          "Please sign in above so we can save this order to your dashboard before continuing on WhatsApp.",
+        ),
+      );
+      return;
+    }
+    if (!details) {
+      toast.error(tr("Please complete your delivery details before continuing on WhatsApp."));
+      setStep(1);
+      return;
+    }
     setPlacing(true);
+    const snapshotItems = items;
+    const snapshotTotals = totals;
     try {
       const order = await createOrder({ userId: user.id, items, totals, details });
+      const url = whatsAppOrderUrl(
+        buildWhatsAppOrderMessage({
+          lang,
+          items: snapshotItems,
+          totals: snapshotTotals,
+          split: splitPayment(order.total),
+          reference: order.reference,
+          details,
+        }),
+      );
       setPlacedOrder(order);
+      setWhatsAppLink(url);
       setStep(3);
       clear();
-      toast.success(tr("Order confirmed. 50% advance received."));
+      window.open(url, "_blank", "noopener,noreferrer");
+      toast.success(tr("Order recorded. Continue on WhatsApp to confirm it."));
     } catch (error) {
       toast.error(error instanceof Error ? error.message : tr("We couldn't place your order."));
     } finally {
