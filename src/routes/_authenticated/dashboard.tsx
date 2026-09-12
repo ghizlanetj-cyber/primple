@@ -4,25 +4,23 @@ import { motion } from "motion/react";
 import {
   ArrowRight,
   CheckCircle2,
-  Download,
   FileText,
   LayoutDashboard,
   LifeBuoy,
   LogOut,
   MapPin,
   Package,
-  PackageSearch,
   Receipt,
   Repeat,
-  Star,
   Truck,
 } from "lucide-react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { orderStages, quotes, type Order } from "@/data/orders";
+import { orderStages, type OrderStage } from "@/data/orders";
 import { listMyOrders, type OrderRecord } from "@/lib/orders-api";
+import { invoiceLabels, invoiceNumber } from "@/lib/invoice";
 import { mad } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
@@ -31,7 +29,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const title = "Votre espace d’impression | Primple";
 const description =
-  "Suivez chaque impression, comparez les devis, recommandez vos anciens travaux et téléchargez vos factures au même endroit.";
+  "Suivez chaque impression, consultez vos commandes et téléchargez vos factures au même endroit.";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -50,14 +48,28 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 
-type View = "orders" | "quotes" | "invoices";
+type View = "orders" | "invoices";
+
+type ViewOrder = {
+  id: string;
+  product: string;
+  productSlug: string;
+  config: string;
+  quantity: number;
+  total: number;
+  city: string | null;
+  expected: string | null;
+  stage: OrderStage;
+  progress: number;
+};
 
 function DashboardPage() {
-  const { t, tr, number } = useI18n();
+  const { t, tr, number, lang } = useI18n();
   const { user, displayName, signOut } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState<View>("orders");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const L = invoiceLabels[lang];
 
   const { data: records = [], isLoading } = useQuery({
     queryKey: ["orders", user?.id],
@@ -66,24 +78,16 @@ function DashboardPage() {
   });
 
   const orders = records.map(toViewOrder);
-  const invoices = records.map((r) => ({
-    id: `INV-${r.reference.replace("PRM-", "")}`,
-    order: r.reference,
-    date: new Date(r.createdAt).toLocaleDateString(),
-    amount: r.total,
-    status: r.balanceAmount > 0 ? "50 % payés · solde à la livraison" : "Payé",
-  }));
-
   const activeId = selectedId ?? orders[0]?.id ?? null;
   const active = orders.find((o) => o.id === activeId) ?? null;
-  const setActiveId = setSelectedId;
+  const activeRecord = records.find((r) => r.reference === activeId) ?? null;
   const activeStageIndex = active ? orderStages.indexOf(active.stage) : 0;
   const inProduction = orders.filter((o) => o.stage !== "Delivered").length;
+  const delivered = orders.filter((o) => o.stage === "Delivered").length;
   const spend = orders.reduce((s, o) => s + o.total, 0);
 
   const nav: { key: View; label: string; icon: React.ElementType }[] = [
     { key: "orders", label: t("dash.nav.orders"), icon: Package },
-    { key: "quotes", label: t("dash.nav.quotes"), icon: PackageSearch },
     { key: "invoices", label: t("dash.nav.invoices"), icon: Receipt },
   ];
 
@@ -92,18 +96,18 @@ function DashboardPage() {
       <div className="band-sand border-b border-border">
         <div className="section-shell py-12 md:py-16">
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <div>
+            <div className="min-w-0">
               <p className="eyebrow text-muted-foreground">{t("dash.eyebrow")}</p>
-              <h1 className="display-xl mt-4 text-4xl sm:text-5xl">
+              <h1 className="display-xl mt-4 text-3xl sm:text-4xl md:text-5xl">
                 {t("dash.title")} <span className="display-accent">{t("dash.titleAccent")}</span>
               </h1>
-              <p className="mt-4 text-lg text-muted-foreground">
+              <p className="mt-4 text-base text-muted-foreground md:text-lg">
                 {displayName
                   ? `${tr("Welcome back")}, ${displayName}.`
                   : tr("Welcome back to Primple.")}
               </p>
               {user?.email && (
-                <p className="mt-1 text-sm text-muted-foreground" dir="ltr">
+                <p className="mt-1 break-all text-sm text-muted-foreground" dir="ltr">
                   {user.email}
                 </p>
               )}
@@ -116,7 +120,7 @@ function DashboardPage() {
             </Button>
           </div>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Kpi
               icon={LayoutDashboard}
               label={t("dash.kpi.progress")}
@@ -124,22 +128,16 @@ function DashboardPage() {
               hint={t("dash.kpi.progressHint")}
             />
             <Kpi
-              icon={PackageSearch}
-              label={t("dash.kpi.quotes")}
-              value={String(quotes.length)}
-              hint={t("dash.kpi.quotesHint")}
+              icon={Truck}
+              label={tr("Delivered orders")}
+              value={String(delivered)}
+              hint={tr("Across your Primple account")}
             />
             <Kpi
               icon={Receipt}
               label={t("dash.kpi.spend")}
               value={mad(spend)}
-              hint={t("dash.kpi.spendHint")}
-            />
-            <Kpi
-              icon={Truck}
-              label={t("dash.kpi.onTime")}
-              value="98%"
-              hint={t("dash.kpi.onTimeHint")}
+              hint={tr("Across your Primple account")}
             />
           </div>
         </div>
@@ -154,7 +152,7 @@ function DashboardPage() {
                 type="button"
                 onClick={() => setView(item.key)}
                 className={cn(
-                  "flex flex-1 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-colors",
+                  "flex min-h-11 flex-1 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-colors",
                   view === item.key
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground",
@@ -174,7 +172,7 @@ function DashboardPage() {
             </p>
             <p className="mt-2 text-xs text-muted-foreground">{t("dash.supportBody")}</p>
             <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
-              <Link to="/platform">{t("dash.supportCta")}</Link>
+              <Link to="/contact">{t("dash.supportCta")}</Link>
             </Button>
           </div>
 
@@ -192,35 +190,33 @@ function DashboardPage() {
           </Button>
         </aside>
 
-        <div>
-          {view === "orders" && !active && (
-            <div className="surface-card p-10 text-center">
-              <Package className="mx-auto size-8 text-primary" />
-              <h2 className="mt-4 text-xl">
-                {isLoading ? tr("Loading your orders…") : tr("No orders yet")}
-              </h2>
-              {!isLoading && (
-                <>
-                  <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                    {tr(
-                      "Once you place a print job it appears here with live production tracking.",
-                    )}
-                  </p>
-                  <Button asChild className="mt-6 rounded-full">
-                    <Link to="/products">{tr("Start a print job")}</Link>
-                  </Button>
-                </>
-              )}
+        <div className="min-w-0">
+          {isLoading && (
+            <div className="surface-card p-10 text-center text-muted-foreground">
+              {tr("Loading your orders…")}
             </div>
           )}
 
-          {view === "orders" && active && (
+          {!isLoading && orders.length === 0 && (
+            <div className="surface-card p-8 text-center md:p-10">
+              <Package className="mx-auto size-8 text-primary" />
+              <h2 className="mt-4 text-xl">{tr("No orders yet")}</h2>
+              <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+                {tr("Once you place a print job it appears here with live production tracking.")}
+              </p>
+              <Button asChild className="mt-6 rounded-full">
+                <Link to="/products">{tr("Start a print job")}</Link>
+              </Button>
+            </div>
+          )}
+
+          {!isLoading && orders.length > 0 && view === "orders" && active && (
             <div className="grid gap-6 xl:grid-cols-[1fr_1.1fr] xl:items-start">
               <div className="space-y-3">
                 {orders.map((order) => (
                   <button
                     key={order.id}
-                    onClick={() => setActiveId(order.id)}
+                    onClick={() => setSelectedId(order.id)}
                     className={cn(
                       "w-full rounded-2xl border p-5 text-start transition-all",
                       order.id === activeId
@@ -229,16 +225,18 @@ function DashboardPage() {
                     )}
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">{order.id}</p>
                         <p className="mt-1 font-display font-bold">
                           {number(order.quantity)} × {tr(order.product)}
                         </p>
-                        <p className="mt-1 text-sm text-muted-foreground">{tr(order.config)}</p>
+                        <p className="mt-1 break-words text-sm text-muted-foreground">
+                          {tr(order.config)}
+                        </p>
                       </div>
                       <span
                         className={cn(
-                          "whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold",
+                          "shrink-0 rounded-full px-3 py-1 text-xs font-semibold",
                           order.stage === "Delivered"
                             ? "bg-success/15 text-success"
                             : "bg-primary/20 text-foreground",
@@ -257,13 +255,15 @@ function DashboardPage() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="surface-card p-6 shadow-lift"
+                className="surface-card p-5 shadow-lift sm:p-6"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">{active.id}</p>
                     <h2 className="mt-1 text-xl">{tr(active.product)}</h2>
-                    <p className="mt-1 text-sm text-muted-foreground">{tr(active.config)}</p>
+                    <p className="mt-1 break-words text-sm text-muted-foreground">
+                      {tr(active.config)}
+                    </p>
                   </div>
                   <p className="font-display text-lg font-extrabold">{mad(active.total)}</p>
                 </div>
@@ -284,31 +284,30 @@ function DashboardPage() {
                         >
                           {done ? <CheckCircle2 className="size-3.5" /> : i + 1}
                         </span>
-                        <div>
-                          <p
-                            className={cn(
-                              "text-sm font-semibold",
-                              !done && !current && "text-muted-foreground",
-                            )}
-                          >
-                            {tr(stage)}
-                          </p>
-                          {current && (
-                            <p className="text-sm text-muted-foreground">
-                              {t("dash.happening")} {active.printer}.
-                            </p>
+                        <p
+                          className={cn(
+                            "text-sm font-semibold",
+                            !done && !current && "text-muted-foreground",
                           )}
-                        </div>
+                        >
+                          {tr(stage)}
+                        </p>
                       </li>
                     );
                   })}
                 </ol>
 
                 <dl className="mt-7 grid gap-3 border-t border-border pt-6 sm:grid-cols-2">
-                  <Detail icon={Package} label={t("dash.printer")} value={active.printer} />
-                  <Detail icon={MapPin} label={t("dash.city")} value={active.city} />
-                  <Detail icon={Truck} label={t("dash.expected")} value={tr(active.expected)} />
-                  <Detail icon={FileText} label={t("dash.artwork")} value={tr(active.artwork)} />
+                  <Detail
+                    icon={MapPin}
+                    label={t("dash.city")}
+                    value={active.city ?? tr("Not provided")}
+                  />
+                  <Detail
+                    icon={Truck}
+                    label={t("dash.expected")}
+                    value={active.expected ?? tr("Not provided")}
+                  />
                 </dl>
 
                 <div className="mt-6 flex flex-wrap gap-3">
@@ -318,53 +317,26 @@ function DashboardPage() {
                       {t("dash.reorder")}
                     </Link>
                   </Button>
-                  <Button variant="outline" className="rounded-full">
-                    <Download className="size-4" />
-                    {t("dash.invoice")}
-                  </Button>
+                  {activeRecord && (
+                    <Button asChild variant="outline" className="rounded-full">
+                      <Link
+                        to="/invoice/$reference"
+                        params={{ reference: activeRecord.reference }}
+                        aria-label={`${L.download} ${invoiceNumber(activeRecord)}`}
+                      >
+                        <FileText className="size-4" />
+                        {t("dash.invoice")}
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               </motion.div>
             </div>
           )}
 
-          {view === "quotes" && (
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {quotes.map((q) => (
-                <div key={q.id} className="surface-card p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs text-muted-foreground">{q.id}</p>
-                      <h3 className="mt-1 text-base">{q.printer}</h3>
-                      <p className="text-sm text-muted-foreground">{q.city}</p>
-                    </div>
-                    <span className="inline-flex items-center gap-1 text-sm">
-                      <Star className="size-3.5 fill-primary text-primary" />
-                      {q.rating}
-                    </span>
-                  </div>
-                  <p className="mt-4 text-sm">{tr(q.product)}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {number(q.quantity)} {t("dash.units")} · {t("dash.production")}{" "}
-                    {tr(q.production)} · {t("dash.delivery")} {tr(q.delivery)}
-                  </p>
-                  <p className="mt-4 font-display text-2xl font-extrabold">{mad(q.price)}</p>
-                  <p className="mt-2 text-sm text-muted-foreground">{tr(q.notes)}</p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    <Button size="sm" className="rounded-full">
-                      {t("dash.accept")}
-                    </Button>
-                    <Button size="sm" variant="outline" className="rounded-full">
-                      {t("dash.message")}
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {view === "invoices" && (
+          {!isLoading && orders.length > 0 && view === "invoices" && (
             <div className="surface-card overflow-x-auto">
-              <table className="w-full min-w-[38rem] text-sm">
+              <table className="w-full min-w-[36rem] text-sm">
                 <thead className="bg-secondary/60 text-start">
                   <tr>
                     <th className="p-4 text-start font-semibold">{t("dash.inv.invoice")}</th>
@@ -372,26 +344,36 @@ function DashboardPage() {
                     <th className="p-4 text-start font-semibold">{t("dash.inv.date")}</th>
                     <th className="p-4 text-start font-semibold">{t("dash.inv.amount")}</th>
                     <th className="p-4 text-start font-semibold">{t("dash.inv.status")}</th>
+                    <th className="p-4 text-start font-semibold">
+                      <span className="sr-only">{L.invoice}</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {invoices.map((inv) => (
-                    <tr key={inv.id} className="border-t border-border">
-                      <td className="p-4 font-medium">{inv.id}</td>
-                      <td className="p-4 text-muted-foreground">{inv.order}</td>
-                      <td className="p-4 text-muted-foreground">{tr(inv.date)}</td>
-                      <td className="p-4">{mad(inv.amount)}</td>
+                  {records.map((record) => (
+                    <tr key={record.id} className="border-t border-border">
+                      <td className="p-4 font-medium">{invoiceNumber(record)}</td>
+                      <td className="p-4 text-muted-foreground">{record.reference}</td>
+                      <td className="p-4 text-muted-foreground">
+                        {new Date(record.createdAt).toLocaleDateString(
+                          lang === "fr" ? "fr-MA" : lang === "ar" ? "ar-MA" : "en-GB",
+                        )}
+                      </td>
+                      <td className="p-4">{mad(record.total)}</td>
                       <td className="p-4">
-                        <span
-                          className={cn(
-                            "rounded-full px-2.5 py-1 text-xs font-semibold",
-                            inv.status === "Paid"
-                              ? "bg-success/15 text-success"
-                              : "bg-primary/20 text-foreground",
-                          )}
-                        >
-                          {tr(inv.status)}
+                        <span className="rounded-full bg-primary/20 px-2.5 py-1 text-xs font-semibold text-foreground">
+                          {record.depositPaid ? L.advancePaid : L.pendingPayment}
                         </span>
+                      </td>
+                      <td className="p-4">
+                        <Link
+                          to="/invoice/$reference"
+                          params={{ reference: record.reference }}
+                          className="font-semibold hover:text-primary"
+                          aria-label={`${L.invoice} ${invoiceNumber(record)}`}
+                        >
+                          {L.print}
+                        </Link>
                       </td>
                     </tr>
                   ))}
@@ -420,9 +402,9 @@ function Kpi({
     <div className="surface-card p-5">
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm text-muted-foreground">{label}</p>
-        <Icon className="size-4 text-primary" />
+        <Icon className="size-4 shrink-0 text-primary" />
       </div>
-      <p className="mt-2 font-display text-3xl font-extrabold tracking-tight">{value}</p>
+      <p className="mt-2 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{value}</p>
       <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
     </div>
   );
@@ -443,7 +425,7 @@ function Detail({
         <Icon className="size-3.5" />
         {label}
       </dt>
-      <dd className="mt-1 text-sm font-medium">{value}</dd>
+      <dd className="mt-1 break-words text-sm font-medium">{value}</dd>
     </div>
   );
 }
@@ -457,11 +439,11 @@ const stageProgress: Record<string, number> = {
   Delivered: 100,
 };
 
-function toViewOrder(record: OrderRecord): Order {
+function toViewOrder(record: OrderRecord): ViewOrder {
   const first = record.items[0];
   const stage = (
     orderStages.includes(record.status) ? record.status : "Order placed"
-  ) as Order["stage"];
+  ) as OrderStage;
   return {
     id: record.reference,
     product: first?.name ?? "Print job",
@@ -473,12 +455,9 @@ function toViewOrder(record: OrderRecord): Order {
         .join(" · ") || "Custom configuration",
     quantity: record.items.reduce((sum, i) => sum + i.quantity, 0),
     total: record.total,
-    printer: record.printer ?? "Primple partner network",
-    city: record.city ?? "—",
-    placed: new Date(record.createdAt).toLocaleDateString(),
-    expected: record.expectedAt ?? "—",
+    city: record.city,
+    expected: record.expectedAt,
     stage,
     progress: stageProgress[stage] ?? 12,
-    artwork: `${record.reference}.pdf`,
   };
 }
