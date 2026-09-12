@@ -37,7 +37,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            className="mt-3 max-w-[16ch] whitespace-pre-line text-2xl font-light leading-[1.15] tracking-tight text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] sm:text-3xl lg:text-[2.75rem]"
+            className="mt-3 max-w-[16ch] whitespace-pre-line text-[clamp(1.6rem,3.4vw,2.75rem)] font-light leading-[1.15] tracking-tight text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]"
           >
             {t("hero.title")}{"\n"}
             <span className="text-primary">{t("hero.titleAccent")}</span>
