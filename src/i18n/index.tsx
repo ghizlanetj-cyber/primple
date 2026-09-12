@@ -12,6 +12,7 @@ import { productPhrases } from "./product-translations";
 import { commercialPhrases } from "./commercial-translations";
 import { copyPhrases } from "./copy-translations";
 import { frenchPagePhrases } from "./fr-page-translations";
+import { homePhrases } from "./home-translations";
 
 export const languages = ["en", "fr", "ar"] as const;
 export type Lang = (typeof languages)[number];
@@ -42,7 +43,6 @@ const en: Dict = {
   "cta.cart": "Cart",
   "cta.menu": "Open menu",
   "cta.close": "Close menu",
-  "cta.theme": "Toggle dark mode",
   "cta.language": "Language",
 
   "hero.eyebrow": "Turning ideas into tangible impact",
@@ -124,7 +124,6 @@ const fr: Dict = {
   "cta.cart": "Panier",
   "cta.menu": "Ouvrir le menu",
   "cta.close": "Fermer le menu",
-  "cta.theme": "Mode sombre",
   "cta.language": "Langue",
 
   "hero.eyebrow": "Des idées transformées en impact réel",
@@ -206,7 +205,6 @@ const ar: Dict = {
   "cta.cart": "السلة",
   "cta.menu": "فتح القائمة",
   "cta.close": "إغلاق القائمة",
-  "cta.theme": "الوضع الليلي",
   "cta.language": "اللغة",
 
   "hero.eyebrow": "أفكار تتحول إلى أثر ملموس",
@@ -314,14 +312,16 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         lang === "en"
           ? text
           : lang === "fr"
-            ? (frenchPagePhrases[text] ??
+            ? (homePhrases[text]?.fr ??
+              frenchPagePhrases[text] ??
               phrases[text]?.fr ??
               authPhrases[text]?.fr ??
               productPhrases[text]?.fr ??
               commercialPhrases[text]?.fr ??
               copyPhrases[text]?.fr ??
               text)
-            : (phrases[text]?.ar ??
+            : (homePhrases[text]?.ar ??
+              phrases[text]?.ar ??
               authPhrases[text]?.ar ??
               productPhrases[text]?.ar ??
               commercialPhrases[text]?.ar ??

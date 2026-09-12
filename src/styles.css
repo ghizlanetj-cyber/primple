@@ -2,7 +2,6 @@
 @source "../src";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
 
 /*
  * Primple premium print studio design system.
@@ -124,54 +123,6 @@
   --sidebar-ring: oklch(0.74 0.13 288);
 }
 
-.dark {
-  --background: oklch(0.22 0.002 90);
-  --foreground: oklch(0.97 0.02 100);
-
-  --card: oklch(0.26 0.003 90);
-  --card-foreground: oklch(0.97 0.02 100);
-  --popover: oklch(0.26 0.003 90);
-  --popover-foreground: oklch(0.97 0.02 100);
-
-  --primary: oklch(0.74 0.13 288);
-  --primary-foreground: oklch(0.22 0.002 90);
-
-  --secondary: oklch(0.31 0.006 95);
-  --secondary-foreground: oklch(0.97 0.02 100);
-
-  --muted: oklch(0.3 0.005 95);
-  --muted-foreground: oklch(0.75 0.008 95);
-
-  --accent: oklch(0.32 0.02 288);
-  --accent-foreground: oklch(0.97 0.02 100);
-
-  --destructive: oklch(0.62 0.2 25);
-  --destructive-foreground: oklch(0.99 0.005 100);
-
-  --success: oklch(0.68 0.14 152);
-  --success-foreground: oklch(0.22 0.002 90);
-
-  --warning: oklch(0.78 0.14 70);
-  --warning-foreground: oklch(0.22 0.002 90);
-
-  --ink: oklch(0.18 0.002 90);
-  --ink-foreground: oklch(0.97 0.02 100);
-  --ink-muted: oklch(0.72 0.006 95);
-  --sand: oklch(0.32 0.02 100);
-
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.74 0.13 288);
-
-  --sidebar: oklch(0.26 0.003 90);
-  --sidebar-foreground: oklch(0.97 0.02 100);
-  --sidebar-primary: oklch(0.74 0.13 288);
-  --sidebar-primary-foreground: oklch(0.22 0.002 90);
-  --sidebar-accent: oklch(0.31 0.006 95);
-  --sidebar-accent-foreground: oklch(0.97 0.02 100);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.74 0.13 288);
-}
 
 @layer base {
   * {
