@@ -111,7 +111,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="pointer-events-none mx-auto hidden w-full max-w-[1440px] items-center justify-between px-12 pb-8 pt-6 text-[0.65rem] uppercase tracking-[0.3em] text-ink-foreground/70 lg:flex xl:px-16">
+      <div className="pointer-events-none mx-auto hidden w-full max-w-[1440px] items-center justify-between px-12 pb-8 pt-6 text-[0.65rem] uppercase tracking-[0.3em] text-ink-foreground/70 xl:flex xl:px-16">
         <span className="mx-auto flex items-center gap-4">
           Print <span className="h-px w-8 bg-ink-foreground/40" /> People{" "}
           <span className="h-px w-8 bg-ink-foreground/40" /> Possibility
