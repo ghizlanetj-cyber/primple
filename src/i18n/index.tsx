@@ -116,7 +116,7 @@ const fr: Dict = {
   "hero.eyebrow": "Des idées transformées en impact réel",
   "hero.title": "Plus que de l'impression",
   "hero.titleAccent": "Des idées qui prennent forme.",
-  "hero.sub": "Concevez, imprimez et faites livrer — depuis une seule plateforme intelligente.",
+  "hero.sub": "Des solutions d'impressions pensées pour les marques, les entreprises et les créatifs qui veulent aller plus loin.",
   "hero.f1": "Comparez les options",
   "hero.f2": "Prix transparents",
   "hero.f3": "Suivez chaque commande",
