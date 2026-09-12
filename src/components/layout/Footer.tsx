@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Languages } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
+import { LanguageSelect } from "@/components/layout/LanguageSelect";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
