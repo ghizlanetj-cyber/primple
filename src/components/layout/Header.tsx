@@ -37,24 +37,24 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-4 top-4 z-50 mx-auto max-w-5xl rounded-full border transition-all duration-500 sm:inset-x-6 lg:top-5",
+        "fixed inset-x-4 top-4 z-50 mx-auto w-[calc(100%-2rem)] max-w-[1390px] rounded-full border transition-all duration-500 sm:inset-x-6 sm:w-[calc(100%-3rem)] lg:inset-x-auto lg:top-[30px] lg:w-[calc(100%-160px)]",
         scrolled
-          ? "border-white/25 bg-ink/35 shadow-lift backdrop-blur-3xl"
-          : "border-white/20 bg-ink/15 shadow-lift backdrop-blur-3xl",
+          ? "border-white/25 bg-ink/40 shadow-lift backdrop-blur-3xl backdrop-saturate-150"
+          : "border-white/20 bg-ink/25 shadow-lift backdrop-blur-3xl backdrop-saturate-150",
       )}
       onMouseLeave={() => setMegaOpen(false)}
     >
       <div className="pointer-events-none absolute inset-x-7 top-px h-px bg-linear-to-r from-transparent via-white/60 to-transparent" />
-      <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:px-8">
+      <div className="relative grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-[4.5rem] lg:h-24 lg:px-10">
         <div className="flex min-w-0 items-center gap-7 xl:gap-9">
-          <Logo invert className="h-5 shrink-0 md:h-6" />
-          <nav className="hidden items-center gap-1 lg:flex">
+          <Logo invert className="h-5 shrink-0 md:h-6 lg:w-[120px]" />
+          <nav className="hidden items-center gap-x-7 lg:flex xl:gap-x-9">
             <NavLink to="/services">Solutions</NavLink>
             <button
               type="button"
               onMouseEnter={() => setMegaOpen(true)}
               onClick={() => setMegaOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full px-2 py-2 text-xs font-medium text-white/80 transition-colors hover:text-white xl:px-3 xl:text-sm"
+              className="flex items-center gap-1 rounded-full py-2 text-[16px] font-medium text-white/85 transition-colors hover:text-white xl:text-[17px]"
               aria-expanded={megaOpen}
             >
               Produits
@@ -150,7 +150,7 @@ export function Header() {
             </>
           ) : null}
 
-           <Button asChild className="hidden md:inline-flex">
+           <Button asChild className="hidden rounded-full px-7 md:inline-flex lg:h-14 lg:px-8 lg:text-[16px]">
              <Link to="/products">{t("cta.start")} <ArrowRight className="size-4 rtl:rotate-180" /></Link>
           </Button>
 
@@ -286,7 +286,7 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className="rounded-full px-2 py-2 text-xs font-medium text-white/80 transition-colors hover:text-white xl:px-3 xl:text-sm"
+      className="rounded-full py-2 text-[16px] font-medium text-white/85 transition-colors hover:text-white xl:text-[17px]"
       activeProps={{ className: "text-white" }}
     >
       {children}
