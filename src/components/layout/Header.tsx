@@ -179,7 +179,7 @@ export function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden overflow-hidden rounded-b-3xl border-t border-white/10 bg-ink/95 text-ink-foreground backdrop-blur-2xl lg:block"
+            className="hidden overflow-hidden rounded-b-3xl border-t border-white/15 bg-ink/60 text-ink-foreground backdrop-blur-3xl lg:block"
           >
              <div className="grid grid-cols-4 gap-2 px-8 py-7">
               {products.map((p) => (
