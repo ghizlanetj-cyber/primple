@@ -107,6 +107,13 @@ export function Footer() {
           <p className="text-xs text-ink-muted">
             © {new Date().getFullYear()} Primpel. {t("footer.rights")}
           </p>
+          <nav className="flex flex-wrap items-center gap-4 text-xs text-ink-muted">
+            {legalLinks.map((link) => (
+              <Link key={link.to} to={link.to} className="hover:text-ink-foreground">
+                {tr(link.label)}
+              </Link>
+            ))}
+          </nav>
           <div className="flex items-center gap-4 text-ink-muted">
             <a href="#" aria-label={tr("Primpel on LinkedIn")} className="hover:text-ink-foreground">
               <Linkedin className="size-4" />
