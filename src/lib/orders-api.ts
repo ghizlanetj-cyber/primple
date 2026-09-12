@@ -50,6 +50,9 @@ export type DeliveryDetails = {
 /** Primple payment terms: 50% advance now, 50% cash on delivery. */
 export const DEPOSIT_RATE = 0.5;
 
+/** Single Primple-managed production path until printer selection ships. */
+export const PRIMPLE_PRODUCTION = "Primple";
+
 export function splitPayment(total: number) {
   const deposit = Math.round(total * DEPOSIT_RATE * 100) / 100;
   return { deposit, balance: Math.round((total - deposit) * 100) / 100 };
@@ -115,7 +118,7 @@ export async function createOrder(input: {
       config: itemConfigLabel(i),
       unitPrice: i.unitPrice,
       subtotal: i.subtotal,
-      printer: i.printer ?? "Primple partner network",
+      printer: PRIMPLE_PRODUCTION,
       productionDays: i.productionDays,
     })),
     subtotal: input.totals.subtotal,
@@ -132,7 +135,7 @@ export async function createOrder(input: {
     address: input.details.address,
     city: input.details.city,
     postcode: input.details.postcode,
-    printer: input.items[0]?.printer ?? "Primple partner network",
+    printer: PRIMPLE_PRODUCTION,
     expected_at: expected.toISOString().slice(0, 10),
   };
 
