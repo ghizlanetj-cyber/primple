@@ -1,8 +1,7 @@
 # Roadmap
 
-- [x] Complete shared French translations across audited routes and product/printer content
-- [x] Translate legal pages faithfully
-- [x] Complete French route metadata and canonical URLs
-- [x] Finish accessibility and navigation consistency checks
-- [x] Run type checks and preview verification
-- [ ] Lint is blocked only by formatting errors in generated Lovable Cloud integration files, which must not be edited
+- [ ] Remove all dark-mode behavior, variants, preferences, and dark token overrides
+- [ ] Add the persistent accessible three-language selector to the global footer
+- [ ] Complete FR/EN/AR shared and route translations, metadata, accessible labels, and RTL behavior
+- [ ] Fix homepage testimonials, CTA truthfulness, accessibility, and mobile overlap issues
+- [ ] Verify the complete public journey, type checks, build, and preview without publishing
