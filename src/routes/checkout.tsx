@@ -10,6 +10,7 @@ import {
   type DeliveryDetails,
   type OrderRecord,
 } from "@/lib/orders-api";
+import { buildWhatsAppOrderMessage, whatsAppOrderUrl } from "@/lib/whatsapp-order";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
