@@ -21,7 +21,9 @@ export const Route = createFileRoute("/products/$slug")({
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Produit introuvable — Primple" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [{ title: "Produit introuvable — Primple" }, { name: "robots", content: "noindex" }],
+      };
     }
     const { product } = loaderData;
     const name = productPhrases[product.name]?.fr ?? phrases[product.name]?.fr ?? product.name;
@@ -44,7 +46,7 @@ export const Route = createFileRoute("/products/$slug")({
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: productPhrases[product.name]?.fr ?? product.name,
+            name,
             description,
             aggregateRating: {
               "@type": "AggregateRating",
@@ -78,30 +80,31 @@ function ProductPage() {
             {tr("Products")}
           </Link>
           <span className="mx-2">/</span>
-           <span className="text-foreground">{tr(product.name)}</span>
+          <span className="text-foreground">{tr(product.name)}</span>
         </nav>
 
         <div className="mt-8 grid items-center gap-10 lg:grid-cols-2">
           <Reveal>
-             <p className="eyebrow text-primary">{tr(product.category)}</p>
-             <h1 className="mt-4 text-4xl md:text-5xl">{tr(product.heroHeadline)}</h1>
-             <p className="mt-5 text-lg text-muted-foreground">{tr(product.heroCopy)}</p>
+            <p className="eyebrow text-primary">{tr(product.category)}</p>
+            <h1 className="mt-4 text-4xl md:text-5xl">{tr(product.heroHeadline)}</h1>
+            <p className="mt-5 text-lg text-muted-foreground">{tr(product.heroCopy)}</p>
 
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
               <span className="font-display text-lg font-extrabold">
-                 {tr("From")} {mad(product.fromPrice)}
+                {tr("From")} {mad(product.fromPrice)}
               </span>
               <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                 <Clock className="size-4" />
-                 {tr("Production from")} {product.baseProductionDays} {tr(product.baseProductionDays === 1 ? "day" : "days")}
+                {tr("Production from")} {product.baseProductionDays}{" "}
+                {tr(product.baseProductionDays === 1 ? "day" : "days")}
               </span>
               <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                 <Truck className="size-4" />
-                 {tr("Delivery")} 1–5 {tr("days")}
+                {tr("Delivery")} 1–5 {tr("days")}
               </span>
               <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                 <Star className="size-4 fill-primary text-primary" />
-                 {product.rating} · {product.reviews} {tr("reviews")}
+                {product.rating} · {product.reviews} {tr("reviews")}
               </span>
             </div>
           </Reveal>
@@ -109,7 +112,7 @@ function ProductPage() {
           <Reveal delay={0.1}>
             <img
               src={productImages[product.slug]}
-               alt={`${tr(product.name)} — Primple`}
+              alt={`${tr(product.name)} — Primple`}
               width={800}
               height={600}
               className="w-full rounded-3xl border border-border object-cover shadow-lift"
@@ -125,10 +128,12 @@ function ProductPage() {
       <section className="border-y border-border bg-card/50">
         <div className="section-shell grid gap-10 py-16 lg:grid-cols-[1fr_1.2fr]">
           <Reveal>
-             <h2 className="text-3xl">{tr("Why businesses print this with Primple")}</h2>
+            <h2 className="text-3xl">{tr("Why businesses print this with Primple")}</h2>
           </Reveal>
           <Reveal delay={0.1}>
-             <p className="text-lg leading-relaxed text-muted-foreground">{tr(product.description)}</p>
+            <p className="text-lg leading-relaxed text-muted-foreground">
+              {tr(product.description)}
+            </p>
             <ul className="mt-6 grid gap-3 sm:grid-cols-2">
               {[
                 "The price on screen is the price you pay",
@@ -138,7 +143,7 @@ function ProductPage() {
               ].map((b) => (
                 <li key={b} className="flex gap-2 text-sm">
                   <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-                   {tr(b)}
+                  {tr(b)}
                 </li>
               ))}
             </ul>
@@ -148,19 +153,19 @@ function ProductPage() {
 
       <FaqSection
         items={product.faqs}
-         eyebrow={tr(product.name)}
-         title={`${tr(product.name)} — ${tr("good to know")}`}
+        eyebrow={tr(product.name)}
+        title={`${tr(product.name)} — ${tr("good to know")}`}
       />
 
       <section className="section-shell pb-24">
         <div className="flex items-end justify-between gap-4">
-           <h2 className="text-2xl">{tr("Often printed together")}</h2>
+          <h2 className="text-2xl">{tr("Often printed together")}</h2>
           <Link
             to="/products"
             className="inline-flex items-center gap-1 text-sm font-semibold hover:text-primary"
           >
-             {tr("All products")}
-             <ArrowRight className="size-4 rtl:rotate-180" />
+            {tr("All products")}
+            <ArrowRight className="size-4 rtl:rotate-180" />
           </Link>
         </div>
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

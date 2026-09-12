@@ -14,7 +14,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
         Aller au contenu principal
       </a>
       <Header />
-      <main id="contenu-principal" tabIndex={-1} className="flex-1">{children}</main>
+      <main id="contenu-principal" tabIndex={-1} className="flex-1">
+        {children}
+      </main>
       <Footer />
       <WhatsAppButton />
     </div>

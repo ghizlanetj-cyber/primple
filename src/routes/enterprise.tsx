@@ -17,9 +17,10 @@ export const Route = createFileRoute("/enterprise")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/enterprise" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/enterprise" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/enterprise" }],
   }),
   component: EnterprisePage,
 });
@@ -44,12 +45,30 @@ function EnterprisePage() {
       <ContentSection
         title="Built for procurement"
         items={[
-          { title: "Brand templates", body: "Locked layouts so branches order on-brand without design reviews." },
-          { title: "Approval flows", body: "Orders above a threshold wait for the approver you nominate." },
-          { title: "Consolidated invoicing", body: "One monthly invoice across sites, departments and cost centres." },
-          { title: "Volume pricing", body: "Negotiated rates on your recurring products and quantities." },
-          { title: "Named account manager", body: "A single contact for deadlines, escalations and planning." },
-          { title: "Reporting", body: "Spend, lead times and on-time delivery by team and product." },
+          {
+            title: "Brand templates",
+            body: "Locked layouts so branches order on-brand without design reviews.",
+          },
+          {
+            title: "Approval flows",
+            body: "Orders above a threshold wait for the approver you nominate.",
+          },
+          {
+            title: "Consolidated invoicing",
+            body: "One monthly invoice across sites, departments and cost centres.",
+          },
+          {
+            title: "Volume pricing",
+            body: "Negotiated rates on your recurring products and quantities.",
+          },
+          {
+            title: "Named account manager",
+            body: "A single contact for deadlines, escalations and planning.",
+          },
+          {
+            title: "Reporting",
+            body: "Spend, lead times and on-time delivery by team and product.",
+          },
         ]}
       />
 

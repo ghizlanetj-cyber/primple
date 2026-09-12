@@ -97,7 +97,12 @@ export function Header() {
             </AnimatePresence>
           </div>
 
-           <Button variant="ghost" size="icon" asChild className="relative size-8 text-ink-muted hover:text-ink-foreground">
+          <Button
+            variant="ghost"
+            size="icon"
+            asChild
+            className="relative size-8 text-ink-muted hover:text-ink-foreground"
+          >
             <Link to="/cart" aria-label={t("cta.cart")}>
               <ShoppingBag className="size-4" />
               {items.length > 0 && (
@@ -110,7 +115,11 @@ export function Header() {
 
           {user ? (
             <>
-             <Button variant="ghost" asChild className="hidden text-ink-muted hover:text-ink-foreground xl:inline-flex">
+              <Button
+                variant="ghost"
+                asChild
+                className="hidden text-ink-muted hover:text-ink-foreground xl:inline-flex"
+              >
                 <Link to="/dashboard">{t("nav.dashboard")}</Link>
               </Button>
               <Button
@@ -129,14 +138,19 @@ export function Header() {
             </>
           ) : null}
 
-           <Button asChild className="hidden h-9 rounded-full px-5 text-sm md:inline-flex lg:px-6 lg:text-[14px]">
-             <Link to="/login">{t("nav.login")} <ArrowRight className="size-3.5 rtl:rotate-180" /></Link>
+          <Button
+            asChild
+            className="hidden h-9 rounded-full px-5 text-sm md:inline-flex lg:px-6 lg:text-[14px]"
+          >
+            <Link to="/login">
+              {t("nav.login")} <ArrowRight className="size-3.5 rtl:rotate-180" />
+            </Link>
           </Button>
 
           <Button
             variant="ghost"
             size="icon"
-             className="text-ink-foreground xl:hidden"
+            className="text-ink-foreground xl:hidden"
             aria-label={t("cta.menu")}
             onClick={() => setMobileOpen(true)}
           >
@@ -144,9 +158,6 @@ export function Header() {
           </Button>
         </div>
       </div>
-
-
-
 
       <AnimatePresence>
         {mobileOpen && (
@@ -172,8 +183,7 @@ export function Header() {
               </Button>
             </div>
             <div className="section-shell flex flex-col gap-1 pb-8 pt-4">
-              <div
-                className="mb-4 flex items-center rounded-full border border-white/10 bg-white/5 p-1">
+              <div className="mb-4 flex items-center rounded-full border border-white/10 bg-white/5 p-1">
                 {languages.map((l) => (
                   <button
                     key={l}
@@ -181,7 +191,7 @@ export function Header() {
                     onClick={() => setLang(l)}
                     className={cn(
                       "flex-1 rounded-full px-3 py-2 text-sm font-semibold transition-colors",
-                       lang === l ? "bg-primary text-primary-foreground" : "text-ink-muted",
+                      lang === l ? "bg-primary text-primary-foreground" : "text-ink-muted",
                     )}
                     aria-pressed={lang === l}
                   >
@@ -200,7 +210,7 @@ export function Header() {
               ].map((link, i) => (
                 <motion.div
                   key={link.to}
-                   initial={{ opacity: 0, x: lang === "ar" ? 12 : -12 }}
+                  initial={{ opacity: 0, x: lang === "ar" ? 12 : -12 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.04 * i }}
                 >
@@ -219,10 +229,10 @@ export function Header() {
                 </Link>
               </Button>
               {user && (
-                 <Button
+                <Button
                   variant="outline"
                   size="lg"
-                   className="mt-3 border-white/20 bg-transparent text-ink-foreground"
+                  className="mt-3 border-white/20 bg-transparent text-ink-foreground"
                   onClick={async () => {
                     setMobileOpen(false);
                     await signOut();

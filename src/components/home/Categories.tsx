@@ -14,9 +14,13 @@ export function Categories() {
       <Reveal className="flex flex-wrap items-end justify-between gap-6">
         <div className="max-w-2xl">
           <p className="eyebrow text-primary">{tr("Products")}</p>
-           <h2 className="display-xl mt-4 text-4xl md:text-6xl">{tr("Know your price before you print.")}</h2>
+          <h2 className="display-xl mt-4 text-4xl md:text-6xl">
+            {tr("Know your price before you print.")}
+          </h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            {tr("Configure a product, see the price, the production time and the delivery date on the same screen.")}
+            {tr(
+              "Configure a product, see the price, the production time and the delivery date on the same screen.",
+            )}
           </p>
         </div>
         <Button asChild variant="outline" className="rounded-full">
@@ -27,7 +31,7 @@ export function Categories() {
         </Button>
       </Reveal>
 
-       <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {products.slice(0, 9).map((p, i) => (
           <Reveal key={p.slug} delay={(i % 3) * 0.08}>
             <ProductCard product={p} />

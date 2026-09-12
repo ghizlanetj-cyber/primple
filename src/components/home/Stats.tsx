@@ -15,7 +15,11 @@ export function Stats() {
     <section className="section-shell py-16 md:py-24">
       <div className="grid border-y border-border sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s, i) => (
-          <Reveal key={s.label} delay={i * 0.08} className="border-b border-border px-1 py-9 sm:px-7 lg:border-b-0 lg:border-e first:sm:ps-0 last:lg:border-e-0">
+          <Reveal
+            key={s.label}
+            delay={i * 0.08}
+            className="border-b border-border px-1 py-9 sm:px-7 lg:border-b-0 lg:border-e first:sm:ps-0 last:lg:border-e-0"
+          >
             <p className="font-display text-5xl font-extrabold md:text-6xl">
               <Counter to={s.to} suffix={s.suffix} />
             </p>

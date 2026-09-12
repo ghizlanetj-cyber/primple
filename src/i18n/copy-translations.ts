@@ -32,11 +32,10 @@ export const copyPhrases: Record<string, TranslationPair> = {
     "المقاس والورق والتشطيب والكمية — مع تحديث السعر أثناء اختيارك.",
   ),
   "Validate your print": p("Validez votre impression", "أكّد طباعتك"),
-  "Send your file and confirm. You know the price and the timeline before ordering.":
-    p(
-      "Envoyez votre fichier et confirmez. Vous connaissez le prix et le délai avant de commander.",
-      "أرسل ملفك وأكّد الطلب. تعرف السعر والمدة قبل الطلب.",
-    ),
+  "Send your file and confirm. You know the price and the timeline before ordering.": p(
+    "Envoyez votre fichier et confirmez. Vous connaissez le prix et le délai avant de commander.",
+    "أرسل ملفك وأكّد الطلب. تعرف السعر والمدة قبل الطلب.",
+  ),
   "Receive your order": p("Recevez votre commande", "استلم طلبك"),
   "Production starts, you follow each stage until delivery.": p(
     "La production démarre, vous suivez chaque étape jusqu'à la livraison.",
@@ -73,11 +72,10 @@ export const copyPhrases: Record<string, TranslationPair> = {
     "اضبط واطلب وتابع طباعتك دون الحاجة إلى متابعة أحد عبر الهاتف.",
   ),
   "Prices you can see": p("Des prix visibles", "أسعار واضحة"),
-  "The price, the production time and the delivery date appear before you order.":
-    p(
-      "Le prix, le délai de production et la date de livraison s'affichent avant la commande.",
-      "يظهر السعر ومدة الإنتاج وتاريخ التسليم قبل الطلب.",
-    ),
+  "The price, the production time and the delivery date appear before you order.": p(
+    "Le prix, le délai de production et la date de livraison s'affichent avant la commande.",
+    "يظهر السعر ومدة الإنتاج وتاريخ التسليم قبل الطلب.",
+  ),
   "Guidance on your options": p("Un accompagnement sur vos choix", "إرشاد في خياراتك"),
   "Paper, finish, format: each option is explained where you choose it.": p(
     "Papier, finition, format : chaque option est expliquée à l'endroit où vous la choisissez.",
@@ -92,17 +90,15 @@ export const copyPhrases: Record<string, TranslationPair> = {
     "أعد الطلب بالإعدادات نفسها ليبقى مظهر موادك متناسقًا مع الوقت.",
   ),
   "Orders you can follow": p("Des commandes que vous suivez", "طلبات يمكنك تتبعها"),
-  "Artwork approval, production, delivery: every stage is visible from your account.":
-    p(
-      "Validation du fichier, production, livraison : chaque étape est visible depuis votre compte.",
-      "اعتماد الملف، الإنتاج، التسليم: كل مرحلة ظاهرة من حسابك.",
-    ),
+  "Artwork approval, production, delivery: every stage is visible from your account.": p(
+    "Validation du fichier, production, livraison : chaque étape est visible depuis votre compte.",
+    "اعتماد الملف، الإنتاج، التسليم: كل مرحلة ظاهرة من حسابك.",
+  ),
   "Custom projects welcome": p("Les projets sur mesure aussi", "ومشاريع مخصصة كذلك"),
-  "Specific format or material? Send your project and we work out the options with you.":
-    p(
-      "Format ou matière spécifique ? Envoyez votre projet, nous étudions les options avec vous.",
-      "مقاس أو خامة خاصة؟ أرسل مشروعك وندرس الخيارات معك.",
-    ),
+  "Specific format or material? Send your project and we work out the options with you.": p(
+    "Format ou matière spécifique ? Envoyez votre projet, nous étudions les options avec vous.",
+    "مقاس أو خامة خاصة؟ أرسل مشروعك وندرس الخيارات معك.",
+  ),
 
   // Final CTA
   "Your next print starts here.": p(
@@ -165,11 +161,10 @@ export const copyPhrases: Record<string, TranslationPair> = {
       "نعم. اطلب عرض سعر مع مواصفاتك ونعود إليك بالخيارات والسعر الخاص بمشروعك.",
     ),
   "Can I follow my order?": p("Puis-je suivre ma commande ?", "هل يمكنني تتبع طلبي؟"),
-  "Yes. From your account you follow artwork approval, production and delivery for each order.":
-    p(
-      "Oui. Depuis votre compte, vous suivez la validation du fichier, la production et la livraison de chaque commande.",
-      "نعم. من حسابك تتابع اعتماد الملف والإنتاج والتسليم لكل طلب.",
-    ),
+  "Yes. From your account you follow artwork approval, production and delivery for each order.": p(
+    "Oui. Depuis votre compte, vous suivez la validation du fichier, la production et la livraison de chaque commande.",
+    "نعم. من حسابك تتابع اعتماد الملف والإنتاج والتسليم لكل طلب.",
+  ),
   "Can I reorder the same print?": p(
     "Puis-je recommander la même impression ?",
     "هل يمكنني إعادة طلب الطباعة نفسها؟",
@@ -181,11 +176,10 @@ export const copyPhrases: Record<string, TranslationPair> = {
     ),
 
   // Screen-reader summary
-  "Primple — professional and custom printing for brands, businesses and creatives in Morocco":
-    p(
-      "Primple — impression professionnelle et personnalisée pour les marques, les entreprises et les créatifs au Maroc",
-      "Primple — طباعة احترافية ومخصصة للعلامات والشركات والمبدعين في المغرب",
-    ),
+  "Primple — professional and custom printing for brands, businesses and creatives in Morocco": p(
+    "Primple — impression professionnelle et personnalisée pour les marques, les entreprises et les créatifs au Maroc",
+    "Primple — طباعة احترافية ومخصصة للعلامات والشركات والمبدعين في المغرب",
+  ),
 
   // Stats labels
   "Businesses printing with Primple": p(
@@ -311,7 +305,10 @@ export const copyPhrases: Record<string, TranslationPair> = {
     "Nous n'avons pas pu envoyer votre message. Veuillez réessayer.",
     "تعذّر إرسال رسالتك. يرجى المحاولة مرة أخرى.",
   ),
-  "Thanks — your message is in.": p("Merci — votre message est bien reçu.", "شكرًا — وصلتنا رسالتك."),
+  "Thanks — your message is in.": p(
+    "Merci — votre message est bien reçu.",
+    "شكرًا — وصلتنا رسالتك.",
+  ),
   "Our team will get back to you within one working day.": p(
     "Notre équipe vous répond sous un jour ouvré.",
     "سيعاود فريقنا التواصل معك خلال يوم عمل واحد.",

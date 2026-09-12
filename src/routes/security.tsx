@@ -42,12 +42,30 @@ function SecurityPage() {
       <ContentSection
         title="Comment nous protégeons votre travail"
         items={[
-          { title: "Chiffrement des échanges", body: "Chaque importation et chaque chargement de page utilisent HTTPS." },
-          { title: "Contrôle d’accès", body: "Vos commandes et vos fichiers sont accessibles uniquement depuis votre compte." },
-          { title: "Confidentialité des imprimeurs", body: "Les partenaires voient uniquement le travail qu’ils produisent, dans le cadre d’un accord de confidentialité." },
-          { title: "Sécurité des paiements", body: "Les informations de carte utilisées pour l’acompte de 50 % sont traitées par notre prestataire de paiement et ne sont jamais stockées par nos soins." },
-          { title: "Sauvegardes", body: "Les dossiers de commande sont sauvegardés afin de préserver votre historique et vos factures en cas d’incident." },
-          { title: "Suppression sur demande", body: "Demandez-nous de supprimer vos fichiers et les données de votre compte." },
+          {
+            title: "Chiffrement des échanges",
+            body: "Chaque importation et chaque chargement de page utilisent HTTPS.",
+          },
+          {
+            title: "Contrôle d’accès",
+            body: "Vos commandes et vos fichiers sont accessibles uniquement depuis votre compte.",
+          },
+          {
+            title: "Confidentialité des imprimeurs",
+            body: "Les partenaires voient uniquement le travail qu’ils produisent, dans le cadre d’un accord de confidentialité.",
+          },
+          {
+            title: "Sécurité des paiements",
+            body: "Les informations de carte utilisées pour l’acompte de 50 % sont traitées par notre prestataire de paiement et ne sont jamais stockées par nos soins.",
+          },
+          {
+            title: "Sauvegardes",
+            body: "Les dossiers de commande sont sauvegardés afin de préserver votre historique et vos factures en cas d’incident.",
+          },
+          {
+            title: "Suppression sur demande",
+            body: "Demandez-nous de supprimer vos fichiers et les données de votre compte.",
+          },
         ]}
       />
     </SiteShell>

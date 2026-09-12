@@ -15,9 +15,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { authErrorPhrase } from "@/lib/auth-messages";
 
-const title = "Log in or create your Primple account | Primple";
+const title = "Connexion ou création de compte | Primple";
 const description =
-  "Access your printing dashboard, track orders and manage quotes. For businesses, printers and designers.";
+  "Accédez à votre espace d’impression, suivez vos commandes et gérez vos devis, que vous soyez une entreprise, un imprimeur ou un designer.";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>): { redirect?: string } =>
@@ -28,16 +28,22 @@ export const Route = createFileRoute("/login")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
-      { property: "og:url", content: "/login" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/login" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/login" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/login" }],
   }),
   component: LoginPage,
 });
 
 const roles = [
   { id: "business", label: "I buy printing", copy: "Order, track and reorder for your business." },
-  { id: "printer", label: "I'm a printer", copy: "Receive jobs and fill your production capacity." },
+  {
+    id: "printer",
+    label: "I'm a printer",
+    copy: "Receive jobs and fill your production capacity.",
+  },
   { id: "designer", label: "I'm a designer", copy: "Print client work and earn on every order." },
 ];
 
@@ -104,7 +110,9 @@ function LoginPage() {
               {tr(mode === "login" ? "Welcome back." : "Print like a bigger company.")}
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              {tr("One account for ordering, tracking, quotes and invoices — plus every printer we've verified.")}
+              {tr(
+                "One account for ordering, tracking, quotes and invoices — plus every printer we've verified.",
+              )}
             </p>
             <ul className="mt-8 space-y-3 text-sm">
               {[

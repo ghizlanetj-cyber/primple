@@ -48,7 +48,8 @@ const en: Dict = {
   "hero.eyebrow": "Turning ideas into tangible impact",
   "hero.title": "Print. Simple. Speed.   PRIMPLE   ",
   "hero.titleAccent": " ",
-  "hero.sub": "Professional, custom printing for brands, businesses and creatives in Morocco: choose your options, see the price, we produce and deliver.",
+  "hero.sub":
+    "Professional, custom printing for brands, businesses and creatives in Morocco: choose your options, see the price, we produce and deliver.",
   "hero.f1": "Options explained before you choose",
   "hero.f2": "Price and lead time shown before you order",
   "hero.f3": "Every stage tracked until delivery",
@@ -129,7 +130,8 @@ const fr: Dict = {
   "hero.eyebrow": "Des idées transformées en impact réel",
   "hero.title": "Plus que\nde l'impression.",
   "hero.titleAccent": "Des idées qui\nprennent forme.",
-  "hero.sub": "Impression professionnelle et personnalisée pour les marques, les entreprises et les créatifs au Maroc : vous choisissez vos options, vous voyez le prix, nous produisons et livrons.",
+  "hero.sub":
+    "Impression professionnelle et personnalisée pour les marques, les entreprises et les créatifs au Maroc : vous choisissez vos options, vous voyez le prix, nous produisons et livrons.",
   "hero.f1": "Options expliquées avant de choisir",
   "hero.f2": "Prix et délai affichés avant de commander",
   "hero.f3": "Chaque étape suivie jusqu'à la livraison",
@@ -210,7 +212,8 @@ const ar: Dict = {
   "hero.eyebrow": "أفكار تتحول إلى أثر ملموس",
   "hero.title": "مستقبل الطباعة",
   "hero.titleAccent": "يبدأ من هنا.",
-  "hero.sub": "طباعة احترافية ومخصصة للعلامات والشركات والمبدعين في المغرب: اختر خياراتك، وشاهد السعر، ونحن ننتج ونسلّم.",
+  "hero.sub":
+    "طباعة احترافية ومخصصة للعلامات والشركات والمبدعين في المغرب: اختر خياراتك، وشاهد السعر، ونحن ننتج ونسلّم.",
   "hero.f1": "خيارات موضّحة قبل الاختيار",
   "hero.f2": "السعر والمدة قبل الطلب",
   "hero.f3": "متابعة كل مرحلة حتى التسليم",
@@ -311,9 +314,21 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         lang === "en"
           ? text
           : lang === "fr"
-            ? frenchPagePhrases[text] ?? phrases[text]?.fr ?? authPhrases[text]?.fr ?? productPhrases[text]?.fr ?? commercialPhrases[text]?.fr ?? copyPhrases[text]?.fr ?? text
-            : phrases[text]?.ar ?? authPhrases[text]?.ar ?? productPhrases[text]?.ar ?? commercialPhrases[text]?.ar ?? copyPhrases[text]?.ar ?? text,
-      number: (value: number) => value.toLocaleString(lang === "fr" ? "fr-FR" : lang === "ar" ? "ar-MA" : "en-US"),
+            ? (frenchPagePhrases[text] ??
+              phrases[text]?.fr ??
+              authPhrases[text]?.fr ??
+              productPhrases[text]?.fr ??
+              commercialPhrases[text]?.fr ??
+              copyPhrases[text]?.fr ??
+              text)
+            : (phrases[text]?.ar ??
+              authPhrases[text]?.ar ??
+              productPhrases[text]?.ar ??
+              commercialPhrases[text]?.ar ??
+              copyPhrases[text]?.ar ??
+              text),
+      number: (value: number) =>
+        value.toLocaleString(lang === "fr" ? "fr-FR" : lang === "ar" ? "ar-MA" : "en-US"),
     }),
     [lang, setLang],
   );

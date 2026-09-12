@@ -90,7 +90,6 @@ export function Hero() {
             {t("hero.note")}
           </motion.p>
 
-
           <motion.ul
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -111,25 +110,27 @@ export function Hero() {
           className="pointer-events-none hidden self-start justify-self-end text-[0.65rem] uppercase leading-[1.9] tracking-[0.3em] text-ink-foreground/70 lg:block"
         >
           <span className="mb-3 block h-px w-6 bg-ink-foreground/50" />
-          Ideas
+          Idées
           <br />
-          People
+          Personnes
           <br />
-          Brands
+          Marques
           <br />
-          In print
+          Imprimées
         </div>
       </div>
 
       <div className="pointer-events-none mx-auto hidden w-full max-w-[1440px] items-center justify-between px-12 pb-8 pt-6 text-[0.65rem] uppercase tracking-[0.3em] text-ink-foreground/70 xl:flex xl:px-16">
         <span className="mx-auto flex items-center gap-4">
-          Print <span className="h-px w-8 bg-ink-foreground/40" /> People{" "}
-          <span className="h-px w-8 bg-ink-foreground/40" /> Possibility
+          Impression <span className="h-px w-8 bg-ink-foreground/40" /> Humain{" "}
+          <span className="h-px w-8 bg-ink-foreground/40" /> Possibilités
         </span>
         <span className="text-end leading-[1.8]">
           Primple
           <br />
-          <span className="text-[0.6rem] tracking-[0.22em] text-ink-foreground/60">A brighter printed tomorrow</span>
+          <span className="text-[0.6rem] tracking-[0.22em] text-ink-foreground/60">
+            Imprimer un avenir plus lumineux
+          </span>
         </span>
       </div>
     </section>

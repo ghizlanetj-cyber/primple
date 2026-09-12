@@ -46,19 +46,21 @@ export function ArtworkUpload({
             ready: isPdf,
             checks: [
               {
-                 label: tr("Resolution"),
+                label: tr("Resolution"),
                 ok: true,
-                 detail: tr("Sharp enough at final print size"),
+                detail: tr("Sharp enough at final print size"),
               },
               {
-                 label: tr("Bleed"),
+                label: tr("Bleed"),
                 ok: isPdf,
-                 detail: tr(isPdf ? "3 mm bleed found" : "We'll add bleed for you — confirm the edges"),
+                detail: tr(
+                  isPdf ? "3 mm bleed found" : "We'll add bleed for you — confirm the edges",
+                ),
               },
               {
-                 label: tr("Colours"),
+                label: tr("Colours"),
                 ok: true,
-                 detail: tr("Converted to print colours automatically"),
+                detail: tr("Converted to print colours automatically"),
               },
             ],
           });
@@ -114,9 +116,9 @@ export function ArtworkUpload({
               <span className="flex size-11 items-center justify-center rounded-full bg-card shadow-soft">
                 <UploadCloud className="size-5 text-primary" />
               </span>
-               <span className="font-display text-base font-bold">{tr("Upload artwork")}</span>
+              <span className="font-display text-base font-bold">{tr("Upload artwork")}</span>
               <span className="text-sm text-muted-foreground">
-                 {tr("Drag your file here or browse — PDF, PNG, JPG or SVG")}
+                {tr("Drag your file here or browse — PDF, PNG, JPG or SVG")}
               </span>
               {uploading && <Progress value={progress} className="mt-2 h-1.5 w-48" />}
             </button>
@@ -140,7 +142,7 @@ export function ArtworkUpload({
               <Button
                 variant="ghost"
                 size="icon"
-                 aria-label={tr("Remove artwork")}
+                aria-label={tr("Remove artwork")}
                 onClick={() => onChange(null)}
               >
                 <Trash2 className="size-4" />
@@ -161,8 +163,8 @@ export function ArtworkUpload({
                 <AlertTriangle className="size-4" />
               )}
               {artwork.ready
-                 ? tr("Your artwork looks ready to print.")
-                 : tr("One thing to check before printing.")}
+                ? tr("Your artwork looks ready to print.")
+                : tr("One thing to check before printing.")}
             </div>
 
             <ul className="mt-4 space-y-2">

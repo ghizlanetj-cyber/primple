@@ -14,13 +14,17 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { authErrorPhrase } from "@/lib/auth-messages";
 
-const title = "Create your Primple account | Primple";
+const title = "Créer votre compte | Primple";
 const description =
-  "Open a free Primple account to order printing, track production and manage invoices — for businesses, printers and designers.";
+  "Créez votre compte Primple pour commander vos impressions, suivre la production et gérer vos factures, comme entreprise, imprimeur ou designer.";
 
 const roles = [
   { id: "business", label: "I buy printing", copy: "Order, track and reorder for your business." },
-  { id: "printer", label: "I'm a printer", copy: "Receive jobs and fill your production capacity." },
+  {
+    id: "printer",
+    label: "I'm a printer",
+    copy: "Receive jobs and fill your production capacity.",
+  },
   { id: "designer", label: "I'm a designer", copy: "Print client work and earn on every order." },
 ];
 
@@ -36,9 +40,10 @@ export const Route = createFileRoute("/signup")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://primple.lovable.app/signup" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/signup" }],
+    links: [{ rel: "canonical", href: "https://primple.lovable.app/signup" }],
   }),
   component: SignupPage,
 });
@@ -100,7 +105,9 @@ function SignupPage() {
             {tr("Your printing account, in a minute.")}
           </h1>
           <p className="mt-5 max-w-lg text-lg text-muted-foreground">
-            {tr("Track every job, keep your invoices in one place and reorder past prints in one click.")}
+            {tr(
+              "Track every job, keep your invoices in one place and reorder past prints in one click.",
+            )}
           </p>
 
           <div className="mt-8 grid gap-3">
@@ -172,8 +179,14 @@ function SignupPage() {
           </p>
           <p className="mt-3 text-xs text-muted-foreground">
             {tr("By creating an account you agree to our")}{" "}
-            <Link to="/terms" className="underline">{tr("Terms")}</Link>{" "}
-            {tr("and")} <Link to="/privacy" className="underline">{tr("Privacy Policy")}</Link>.
+            <Link to="/terms" className="underline">
+              {tr("Terms")}
+            </Link>{" "}
+            {tr("and")}{" "}
+            <Link to="/privacy" className="underline">
+              {tr("Privacy Policy")}
+            </Link>
+            .
           </p>
         </div>
       </section>
