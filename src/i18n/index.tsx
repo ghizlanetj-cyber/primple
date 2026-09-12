@@ -108,7 +108,7 @@ const fr: Dict = {
   "nav.products": "Produits",
   "nav.solutions": "Solutions",
   "nav.why": "Pourquoi Primple",
-  "nav.work": "Nos réalisations",
+  "nav.work": "Plateforme",
   "nav.contact": "Contact",
   "nav.platform": "Plateforme",
   "nav.pricing": "Tarifs",
