@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Banknote, CheckCircle2, Clock, Lock, Package, Truck } from "lucide-react";
+import { ArrowRight, Banknote, CheckCircle2, Clock, Lock, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -11,6 +11,7 @@ import {
   type OrderRecord,
 } from "@/lib/orders-api";
 import { buildWhatsAppOrderMessage, whatsAppOrderUrl } from "@/lib/whatsapp-order";
+import { invoiceLabels } from "@/lib/invoice";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
@@ -192,7 +193,7 @@ function CheckoutPage() {
                             {i.labels.map((l) => tr(l.value)).join(" · ")}
                           </p>
                           <p className="mt-1 text-sm text-muted-foreground">
-                            {i.printer} · {tr("Production")} {i.productionDays} {tr("days")}
+                            {tr("Production")} {i.productionDays} {tr("days")}
                           </p>
                         </div>
                         <p className="whitespace-nowrap font-semibold">{mad(i.subtotal)}</p>
@@ -328,11 +329,6 @@ function CheckoutPage() {
 
                   <dl className="mt-6 grid gap-4 sm:grid-cols-2">
                     <Summary
-                      icon={Package}
-                      label={tr("Printer")}
-                      value={placedOrder?.printer ?? tr("Primple partner network")}
-                    />
-                    <Summary
                       icon={Clock}
                       label={tr("Estimated production")}
                       value={`2–3 ${tr("working days")}`}
@@ -371,6 +367,16 @@ function CheckoutPage() {
                     >
                       {tr("Track my order")}
                     </Button>
+                    {placedOrder && (
+                      <Button asChild size="lg" variant="outline" className="rounded-full">
+                        <Link
+                          to="/invoice/$reference"
+                          params={{ reference: placedOrder.reference }}
+                        >
+                          {invoiceLabels[lang].download}
+                        </Link>
+                      </Button>
+                    )}
                     <Button asChild size="lg" variant="ghost" className="rounded-full">
                       <Link to="/products">{tr("Continue shopping")}</Link>
                     </Button>
@@ -409,7 +415,7 @@ function CheckoutPage() {
               </div>
             </dl>
             <p className="mt-5 text-xs text-muted-foreground">
-              {tr("Verified printers · Artwork checked · Tracked delivery")}
+              {tr("Artwork checked · Tracked delivery")}
             </p>
           </aside>
         </div>

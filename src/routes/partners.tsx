@@ -1,16 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BadgeCheck, Clock, Star, TrendingUp, Wallet } from "lucide-react";
+import { ArrowRight, BadgeCheck, Clock, TrendingUp, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Reveal } from "@/components/motion/Reveal";
-import { Counter } from "@/components/motion/Counter";
 import { FaqSection } from "@/components/shared/FaqSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { printers } from "@/data/printers";
 import { useI18n } from "@/i18n";
 
 const title = "Devenir imprimeur partenaire de Primple";
@@ -93,15 +91,6 @@ function PartnersPage() {
               )}
             </p>
 
-            <div className="mt-10 grid gap-6 sm:grid-cols-3">
-              <Stat value={340} suffix="+" label="Jobs routed monthly" />
-              <Stat value={97} suffix="%" label="Files print-ready on arrival" />
-              <Stat value={14} suffix=" jours" label="Average payment cycle" />
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Statistiques et évaluations indicatives à confirmer avant publication.
-            </p>
-
             <div className="mt-12 grid gap-5 sm:grid-cols-2">
               {benefits.map((b, i) => (
                 <Reveal key={b.title} delay={i * 0.05}>
@@ -162,39 +151,6 @@ function PartnersPage() {
         </div>
       </section>
 
-      <section className="band-sand border-y border-border">
-        <div className="section-shell py-20 md:py-24">
-          <Reveal>
-            <p className="eyebrow text-primary">{tr("Already on Primple")}</p>
-            <h2 className="mt-4 max-w-2xl text-3xl md:text-4xl">
-              {tr("Printers our customers keep coming back to.")}
-            </h2>
-          </Reveal>
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {printers.map((p, i) => (
-              <Reveal key={p.id} delay={i * 0.06}>
-                <div className="h-full rounded-2xl border border-border bg-background p-6">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-lg">{p.name}</h3>
-                      <p className="text-sm text-muted-foreground">{p.city}</p>
-                    </div>
-                    <span className="inline-flex items-center gap-1 text-sm">
-                      <Star className="size-3.5 fill-primary text-primary" />
-                      {p.rating}
-                    </span>
-                  </div>
-                  <p className="mt-4 text-sm text-muted-foreground">{tr(p.note)}</p>
-                  <p className="mt-4 text-sm">
-                    <span className="font-semibold">{tr("Turnaround")}:</span> {tr(p.turnaround)}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <FaqSection items={faqs} eyebrow="Partners" title="What printers ask before joining." />
 
       <section className="section-shell pb-24">
@@ -217,18 +173,6 @@ function PartnersPage() {
   );
 }
 
-function Stat({ value, suffix, label }: { value: number; suffix: string; label: string }) {
-  const { tr } = useI18n();
-  return (
-    <div>
-      <p className="font-display text-3xl font-extrabold tracking-tight">
-        <Counter to={value} />
-        {suffix}
-      </p>
-      <p className="mt-1 text-sm text-muted-foreground">{tr(label)}</p>
-    </div>
-  );
-}
 
 function Field({ label, name, type = "text" }: { label: string; name: string; type?: string }) {
   const { tr } = useI18n();

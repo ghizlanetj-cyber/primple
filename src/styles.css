@@ -129,6 +129,12 @@
     border-color: var(--color-border);
   }
 
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -262,4 +268,27 @@ html[lang="ar"] .eyebrow {
   font-family: "Noto Kufi Arabic", var(--font-sans);
   font-style: normal;
   letter-spacing: 0;
+}
+
+/* Print-friendly invoice output: only the invoice document is printed. */
+@media print {
+  header,
+  footer,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  table {
+    page-break-inside: avoid;
+  }
 }
