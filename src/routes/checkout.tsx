@@ -11,6 +11,7 @@ import {
   type OrderRecord,
 } from "@/lib/orders-api";
 import { buildWhatsAppOrderMessage, whatsAppOrderUrl } from "@/lib/whatsapp-order";
+import { invoiceLabels } from "@/lib/invoice";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
@@ -366,6 +367,16 @@ function CheckoutPage() {
                     >
                       {tr("Track my order")}
                     </Button>
+                    {placedOrder && (
+                      <Button asChild size="lg" variant="outline" className="rounded-full">
+                        <Link
+                          to="/invoice/$reference"
+                          params={{ reference: placedOrder.reference }}
+                        >
+                          {invoiceLabels[lang].download}
+                        </Link>
+                      </Button>
+                    )}
                     <Button asChild size="lg" variant="ghost" className="rounded-full">
                       <Link to="/products">{tr("Continue shopping")}</Link>
                     </Button>
