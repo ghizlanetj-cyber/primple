@@ -38,6 +38,7 @@ const en: Dict = {
   "cta.theme": "Toggle dark mode",
   "cta.language": "Language",
 
+  "hero.eyebrow": "Turning ideas into tangible impact",
   "hero.title": "Print. Simple. Speed.   PRIMPLE   ",
   "hero.titleAccent": " ",
   "hero.sub": "Design, print and deliver — all from one intelligent platform.",
