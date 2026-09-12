@@ -198,8 +198,8 @@ export function Header() {
             exit={{ opacity: 0 }}
             className="absolute -left-3 -top-3 z-50 h-svh w-screen overflow-y-auto bg-ink text-ink-foreground sm:-left-5 lg:hidden"
           >
-            <div className="flex h-20 items-center justify-between border-b border-white/10 px-6">
-              <Logo invert className="h-6" />
+            <div className="flex h-16 items-center justify-between border-b border-white/10 px-6">
+              <Logo invert className="h-5" />
               <Button
                 variant="ghost"
                 size="icon"
