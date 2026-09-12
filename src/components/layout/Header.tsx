@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Check, ChevronDown, Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { ArrowRight, Check, Globe2, LogOut, Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
 
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
-import { products } from "@/data/products";
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { languageLabels, languages, useI18n } from "@/i18n";
@@ -16,7 +15,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [dark, setDark] = useState(false);
-  const { lang, setLang, t, tr } = useI18n();
+  const { lang, setLang, t } = useI18n();
   const items = useCart((s) => s.items);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -152,33 +151,6 @@ export function Header() {
           </Button>
         </div>
       </div>
-
-      <AnimatePresence>
-        {megaOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="hidden overflow-hidden rounded-b-3xl border-t border-white/15 bg-ink/60 text-ink-foreground backdrop-blur-3xl lg:block"
-          >
-             <div className="grid grid-cols-4 gap-2 px-8 py-7">
-              {products.map((p) => (
-                <Link
-                  key={p.slug}
-                  to="/products/$slug"
-                  params={{ slug: p.slug }}
-                  onClick={() => setMegaOpen(false)}
-                   className="group rounded-lg px-3 py-2.5 transition-colors hover:bg-white/8"
-                >
-                   <p className="text-sm font-semibold">{tr(p.name)}</p>
-                    <p className="text-xs text-ink-muted">{tr(p.benefit)}</p>
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {mobileOpen && (
