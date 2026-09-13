@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { CartItem } from "@/store/cart";
 import type { OrderStage } from "@/data/orders";
+import { fromCents, toCents } from "@/lib/format";
 
 export type OrderItemRecord = {
   slug: string;
@@ -53,9 +54,11 @@ export const DEPOSIT_RATE = 0.5;
 /** Single Primple-managed production path until printer selection ships. */
 export const PRIMPLE_PRODUCTION = "Primple";
 
+/** Deposit rounded to the centime, balance taken by difference: deposit + balance === total. */
 export function splitPayment(total: number) {
-  const deposit = Math.round(total * DEPOSIT_RATE * 100) / 100;
-  return { deposit, balance: Math.round((total - deposit) * 100) / 100 };
+  const totalCents = toCents(total);
+  const depositCents = Math.round(totalCents * DEPOSIT_RATE);
+  return { deposit: fromCents(depositCents), balance: fromCents(totalCents - depositCents) };
 }
 
 export function itemConfigLabel(item: CartItem) {

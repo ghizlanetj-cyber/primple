@@ -13,6 +13,7 @@ import { commercialPhrases } from "./commercial-translations";
 import { copyPhrases } from "./copy-translations";
 import { frenchPagePhrases } from "./fr-page-translations";
 import { homePhrases } from "./home-translations";
+import { setMoneyLocale } from "@/lib/format";
 
 export const languages = ["en", "fr", "ar"] as const;
 export type Lang = (typeof languages)[number];
@@ -323,6 +324,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = lang;
     document.documentElement.dir = dir;
   }, [lang]);
+
+  setMoneyLocale(lang);
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next);

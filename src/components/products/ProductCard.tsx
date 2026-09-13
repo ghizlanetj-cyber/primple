@@ -1,13 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
-import type { Product } from "@/data/products";
+import { fromPriceBasis, type Product } from "@/data/products";
 import { productImages } from "@/data/productImages";
 import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
 
 export function ProductCard({ product }: { product: Product }) {
-  const { tr } = useI18n();
+  const { tr, number } = useI18n();
+  const basis = fromPriceBasis(product);
   return (
     <Link
       to="/products/$slug"
@@ -29,7 +30,17 @@ export function ProductCard({ product }: { product: Product }) {
         <p className="mt-1.5 text-sm text-muted-foreground">{tr(product.benefit)}</p>
         <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
           <span className="text-sm font-semibold">
-            {tr("From")} {mad(product.fromPrice)}
+            {tr("From")} {mad(basis.amount)}
+            <span className="block text-xs font-normal text-muted-foreground">
+              {tr(
+                basis.quantity === 1
+                  ? "for 1 unit, delivery not included"
+                  : "for {quantity} units, delivery not included",
+              ).replace(
+                "{quantity}",
+                number(basis.quantity),
+              )}
+            </span>
           </span>
           <span className="inline-flex items-center gap-1 text-sm font-semibold text-foreground/80 transition-colors group-hover:text-primary">
             {tr("Get a price")}

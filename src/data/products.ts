@@ -1,3 +1,5 @@
+import { fromCents, toCents } from "@/lib/format";
+
 export type OptionChoice = {
   id: string;
   label: string;
@@ -656,17 +658,18 @@ export function priceQuote(product: Product, quantity: number, selection: Select
     factor *= (validPages ? pages : product.pageRange.default) / product.pageRange.default;
   }
   const qFactor = quantityFactor(product, quantity);
-  const unitPrice = product.unitPrice * factor * qFactor;
-  const subtotal = unitPrice * quantity;
-  const delivery = flat;
+  // Money is settled on integer centimes so subtotal + delivery always equals total.
+  const unitCents = toCents(product.unitPrice * factor * qFactor);
+  const subtotalCents = Math.round(unitCents * quantity);
+  const deliveryCents = toCents(flat);
   const productionDays = Math.max(1, product.baseProductionDays + extraDays);
   const express = selection["delivery"] === "express";
 
   return {
-    unitPrice,
-    subtotal,
-    delivery,
-    total: subtotal + delivery,
+    unitPrice: fromCents(unitCents),
+    subtotal: fromCents(subtotalCents),
+    delivery: fromCents(deliveryCents),
+    total: fromCents(subtotalCents + deliveryCents),
     productionDays,
     deliveryMin: express ? 1 : 3,
     deliveryMax: express ? 2 : 5,
@@ -682,4 +685,22 @@ export function selectionLabels(product: Product, selection: Selection) {
   return product.pageRange
     ? [{ group: "Pages", value: `${selection["pages"] ?? product.pageRange.default} pages` }, ...labels]
     : labels;
+}
+
+/**
+ * The real basis of the "From" price: the smallest listed quantity with the
+ * default (cheapest listed) option of every group. Delivery is excluded.
+ */
+export function fromPriceBasis(product: Product) {
+  const quantity = product.quantities[0]!;
+  const selection = defaultSelection(product);
+  const quote = priceQuote(product, quantity, selection);
+  return {
+    quantity,
+    selection,
+    /** Order value for that quantity, before delivery. */
+    amount: quote.subtotal,
+    unitPrice: quote.unitPrice,
+    labels: selectionLabels(product, selection).filter((l) => l.group !== "Delivery"),
+  };
 }
