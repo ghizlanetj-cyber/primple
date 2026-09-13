@@ -30,8 +30,10 @@ export type Product = {
   unitPrice: number;
   quantities: number[];
   baseProductionDays: number;
-  rating: number;
-  reviews: number;
+  rating?: number;
+  reviews?: number;
+  pageRange?: { min: number; max: number; default: number };
+  bulkQuoteAt?: number;
   keywords: string[];
   options: OptionGroup[];
   faqs: { q: string; a: string }[];
@@ -331,6 +333,62 @@ export const products: Product[] = [
     ],
   },
   {
+    slug: "books",
+    name: "Books",
+    category: "Publishing",
+    benefit: "Print one copy or a complete edition.",
+    heroHeadline: "Books made for reading, sharing and keeping.",
+    heroCopy: "Choose the page count, format, print, paper and binding. Your price updates instantly.",
+    description: "Books from 24 to 400 pages, produced from a print-ready PDF in black and white or colour.",
+    fromPrice: 55,
+    unitPrice: 55,
+    quantities: [1, 5, 10, 25, 50, 100, 200, 499],
+    pageRange: { min: 24, max: 400, default: 24 },
+    bulkQuoteAt: 500,
+    baseProductionDays: 5,
+    keywords: ["book printing", "print books Morocco", "livres", "impression livre", "كتب", "طباعة الكتب"],
+    options: [
+      group(
+        "artwork",
+        "Artwork file",
+        [{ id: "print-ready-pdf", label: "Print-ready PDF" }],
+        "Upload one print-ready PDF containing every page in reading order.",
+      ),
+      group("format", "Format", [
+        { id: "a5", label: "A5", factor: 1 },
+        { id: "16x24", label: "16 × 24 cm", factor: 1.08 },
+        { id: "a4", label: "A4", factor: 1.5 },
+      ]),
+      group("colour", "Interior printing", [
+        { id: "black-white", label: "Black & white", factor: 1 },
+        { id: "colour", label: "Colour", factor: 2.2 },
+      ]),
+      group("inside-paper", "Interior paper", [
+        { id: "offset-80", label: "80g offset", factor: 1 },
+        { id: "offset-90", label: "90g offset", factor: 1.08 },
+        { id: "coated-135", label: "135g coated", factor: 1.35 },
+      ]),
+      group("binding", "Binding", [
+        { id: "perfect-bound", label: "Perfect bound", factor: 1 },
+        { id: "hardcover", label: "Hardcover", factor: 1.8, days: 2 },
+        { id: "saddle-stitched", label: "Saddle stitched (24–64 pages)", factor: 0.9 },
+        { id: "metal-spiral", label: "Metal spiral", factor: 1.25 },
+        { id: "plastic-spiral", label: "Plastic spiral", factor: 1.15 },
+      ]),
+      deliveryGroup,
+    ],
+    faqs: [
+      {
+        q: "What file should I send for a book?",
+        a: "Send one print-ready PDF with all pages in reading order. We check it before production.",
+      },
+      {
+        q: "When is saddle stitching available?",
+        a: "Saddle stitching is available for compatible books from 24 to 64 pages.",
+      },
+    ],
+  },
+  {
     slug: "menus",
     name: "Menus",
     category: "Hospitality",
@@ -555,6 +613,7 @@ export type Selection = Record<string, string>;
 export function defaultSelection(product: Product): Selection {
   const sel: Selection = {};
   for (const g of product.options) sel[g.id] = g.choices[0]!.id;
+  if (product.pageRange) sel["pages"] = String(product.pageRange.default);
   return sel;
 }
 
@@ -571,6 +630,15 @@ export type Quote = {
 
 /** Quantity breaks: bigger runs cost less per unit. */
 function quantityFactor(product: Product, quantity: number) {
+  if (product.slug === "books") {
+    if (quantity >= 200) return 0.7;
+    if (quantity >= 100) return 0.75;
+    if (quantity >= 50) return 0.8;
+    if (quantity >= 25) return 0.85;
+    if (quantity >= 10) return 0.9;
+    if (quantity >= 5) return 0.95;
+    return 1;
+  }
   const base = product.quantities[0]!;
   const ratio = quantity / base;
   return Math.max(0.45, Math.pow(ratio, -0.16));
@@ -588,6 +656,11 @@ export function priceQuote(product: Product, quantity: number, selection: Select
     extraDays += choice.days ?? 0;
   }
 
+  if (product.pageRange) {
+    const pages = Number(selection["pages"] ?? product.pageRange.default);
+    const validPages = Number.isInteger(pages) && pages >= product.pageRange.min && pages <= product.pageRange.max;
+    factor *= (validPages ? pages : product.pageRange.default) / product.pageRange.default;
+  }
   const qFactor = quantityFactor(product, quantity);
   const unitPrice = product.unitPrice * factor * qFactor;
   const subtotal = unitPrice * quantity;
@@ -608,8 +681,11 @@ export function priceQuote(product: Product, quantity: number, selection: Select
 }
 
 export function selectionLabels(product: Product, selection: Selection) {
-  return product.options.map((g) => {
+  const labels = product.options.map((g) => {
     const choice = g.choices.find((c) => c.id === selection[g.id]) ?? g.choices[0]!;
     return { group: g.label, value: choice.label };
   });
+  return product.pageRange
+    ? [{ group: "Pages", value: `${selection["pages"] ?? product.pageRange.default} pages` }, ...labels]
+    : labels;
 }

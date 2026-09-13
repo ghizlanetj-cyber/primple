@@ -140,7 +140,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
           className={cn(
             mobile
               ? "w-full"
-              : "fixed inset-x-3 top-[4.75rem] z-50 w-auto max-w-[26.25rem] rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lift sm:absolute sm:inset-x-auto sm:end-0 sm:top-[calc(100%+0.75rem)] sm:w-[min(90vw,25rem)] sm:max-w-none",
+              : "primple-glass fixed inset-x-3 top-[4.75rem] z-50 w-auto max-w-[26.25rem] rounded-2xl border p-2 text-ink-foreground sm:absolute sm:inset-x-auto sm:end-0 sm:top-[calc(100%+0.75rem)] sm:w-[min(90vw,25rem)] sm:max-w-none",
           )}
         >
           <div className="relative">
@@ -173,7 +173,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
               aria-controls="header-search-results"
               aria-activedescendant={results[activeIndex]?.id}
               className={cn(
-                "h-10 w-full rounded-full border border-border bg-background ps-9 pe-10 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring [&::-webkit-search-cancel-button]:appearance-none",
+                "h-10 w-full rounded-full border border-white/20 bg-white/10 ps-9 pe-10 text-sm text-ink-foreground outline-none placeholder:text-ink-muted focus:ring-2 focus:ring-primary [&::-webkit-search-cancel-button]:appearance-none",
                 mobile && "border-white/20 bg-white/10 text-ink-foreground placeholder:text-ink-muted",
               )}
             />
@@ -208,14 +208,14 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
                   onClick={close}
                   className={cn(
                     "grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 rounded-md px-3 py-2.5 text-start transition-colors",
-                    indexPosition === activeIndex && "bg-secondary",
+                    indexPosition === activeIndex && "bg-white/10",
                     mobile && "text-ink-foreground hover:bg-white/10",
                   )}
                 >
                   <Icon className="mt-0.5 size-4 shrink-0 text-primary" />
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-semibold">{result.label}</span>
-                    <span className={cn("block truncate text-xs text-muted-foreground", mobile && "text-ink-muted")}>
+                    <span className="block truncate text-xs text-ink-muted">
                       {result.description}
                     </span>
                   </span>
@@ -223,7 +223,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
               );
             })}
             {results.length === 0 && (
-              <p className={cn("px-3 py-5 text-center text-sm text-muted-foreground", mobile && "text-ink-muted")} role="status">
+              <p className="px-3 py-5 text-center text-sm text-ink-muted" role="status">
                 {tr("No search results")}
               </p>
             )}

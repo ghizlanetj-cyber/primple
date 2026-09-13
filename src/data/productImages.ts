@@ -10,6 +10,7 @@ import postersAsset from "@/assets/poster-outpaint.png.asset.json";
 import textile from "@/assets/prod-textile.jpg";
 import largeFormatAsset from "@/assets/billboard-modern-outpaint.png.asset.json";
 import giftsAsset from "@/assets/business-items-outpaint.png.asset.json";
+import books from "@/assets/product-books.jpg";
 
 export const productImages: Record<string, string> = {
   "business-cards": labelsAsset.url,
@@ -18,6 +19,7 @@ export const productImages: Record<string, string> = {
   "roll-up-banners": rollupAsset.url,
   labels: businessCardsAsset.url,
   brochures: brochuresAsset.url,
+  books,
   menus: menusAsset.url,
   stickers: stickersAsset.url,
   posters: postersAsset.url,
