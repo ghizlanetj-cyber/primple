@@ -283,5 +283,28 @@ export const homePhrases: Record<string, { fr: string; ar: string }> = {
       ar: "يرجى تسجيل الدخول أعلاه لنتمكن من حفظ هذا الطلب في لوحتك قبل المتابعة على واتساب.",
     },
   "Preparing your order…": { fr: "Préparation de votre commande…", ar: "جارٍ تحضير طلبك…" },
+  "The 50% advance is arranged manually on WhatsApp after confirmation. The remaining 50% is paid in cash on delivery; no payment is taken on this website.": {
+    fr: "L'acompte de 50 % est organisé manuellement sur WhatsApp après confirmation. Les 50 % restants sont réglés en espèces à la livraison ; aucun paiement n'est encaissé sur ce site.",
+    ar: "يُرتَّب العربون بنسبة 50٪ يدويًا عبر واتساب بعد التأكيد، وتُدفع الـ50٪ المتبقية نقدًا عند التسليم؛ ولا يتم تحصيل أي دفعة على هذا الموقع.",
+  },
+  "50% advance arranged on WhatsApp · 50% cash on delivery": {
+    fr: "Acompte de 50 % organisé sur WhatsApp · 50 % en espèces à la livraison",
+    ar: "عربون 50٪ يُرتَّب عبر واتساب · 50٪ نقدًا عند التسليم",
+  },
+  "Review order": { fr: "Vérifier la commande", ar: "مراجعة الطلب" },
+  "Enter a whole number between {min} and {max}.": {
+    fr: "Saisissez un nombre entier compris entre {min} et {max}.",
+    ar: "أدخل عددًا صحيحًا بين {min} و{max}.",
+  },
+  "Primary navigation": { fr: "Navigation principale", ar: "التنقل الرئيسي" },
+  "Primary navigation and account actions": {
+    fr: "Navigation principale et actions du compte",
+    ar: "التنقل الرئيسي وإجراءات الحساب",
+  },
+  "Checking your account…": {
+    fr: "Vérification de votre compte…",
+    ar: "جارٍ التحقق من حسابك…",
+  },
+  "New to Primple?": { fr: "Nouveau sur Primple ?", ar: "جديد على Primple؟" },
   Pending: { fr: "En attente", ar: "قيد الانتظار" },
 };
