@@ -1,3 +1,3 @@
-- [ ] Restyle header search panel with existing glass treatment
-- [ ] Add localized Books product, options, pricing, search, and footer
-- [ ] Verify responsive FR/EN/AR behavior, pricing, state isolation, tests, and types
+- [x] Restyle header search panel with existing glass treatment
+- [x] Add localized Books product, options, pricing, search, and footer
+- [x] Verify responsive FR/EN/AR behavior, pricing, state isolation, tests, and types
