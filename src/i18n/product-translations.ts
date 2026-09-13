@@ -293,4 +293,150 @@ export const productPhrases: Record<string, TranslationPair> = {
       fr: "Un PDF avec 3 mm de fond perdu est idéal. Nous vérifions la résolution et le fond perdu avant production et vous prévenons si quelque chose doit être corrigé.",
       ar: "يُفضّل ملف PDF مع 3 مم هامش قص. نتحقق من الدقة والهوامش قبل الإنتاج ونخبرك إذا كان هناك ما يحتاج إلى تصحيح.",
     },
+  "Do you provide a dieline?": {
+    fr: "Fournissez-vous un tracé de découpe ?",
+    ar: "هل توفرون قالب القص؟",
+  },
+  "Yes. Choose your format and we send the dieline template before you upload artwork.": {
+    fr: "Oui. Choisissez votre format et nous vous envoyons le gabarit de découpe avant l’import de votre fichier.",
+    ar: "نعم. اختر الشكل وسنرسل لك قالب القص قبل رفع ملف التصميم.",
+  },
+  "Can I order a sample first?": {
+    fr: "Puis-je d’abord commander un échantillon ?",
+    ar: "هل يمكنني طلب عينة أولًا؟",
+  },
+  "Most packaging partners produce a single physical sample before the full run. Request it in the quote.": {
+    fr: "La plupart de nos partenaires emballage peuvent produire un échantillon physique avant la série complète. Demandez-le dans le devis.",
+    ar: "يمكن لمعظم شركاء التغليف إنتاج عينة فعلية واحدة قبل الكمية الكاملة. اطلبها ضمن عرض السعر.",
+  },
+  "How fast can flyers be printed?": {
+    fr: "Sous quel délai les flyers peuvent-ils être imprimés ?",
+    ar: "ما سرعة طباعة المنشورات؟",
+  },
+  "Standard production is one working day with express delivery available in most cities.": {
+    fr: "La production standard prend un jour ouvré, avec une livraison express disponible dans la plupart des villes.",
+    ar: "تستغرق مدة الإنتاج القياسية يوم عمل واحد، مع توفر التوصيل السريع في معظم المدن.",
+  },
+  "Can I split the delivery?": {
+    fr: "Puis-je répartir la livraison ?",
+    ar: "هل يمكنني تقسيم التوصيل؟",
+  },
+  "Yes — add a second address at checkout.": {
+    fr: "Oui — ajoutez une deuxième adresse lors de la commande.",
+    ar: "نعم — أضف عنوانًا ثانيًا عند إتمام الطلب.",
+  },
+  "Is the stand included?": { fr: "Le support est-il inclus ?", ar: "هل الحامل مشمول؟" },
+  "Yes — cassette, pole and carry bag come with every banner.": {
+    fr: "Oui — la cassette, le mât et le sac de transport sont inclus avec chaque roll-up.",
+    ar: "نعم — تأتي كل لافتة مع القاعدة والعمود وحقيبة الحمل.",
+  },
+  "Can I reprint just the graphic later?": {
+    fr: "Puis-je réimprimer uniquement le visuel plus tard ?",
+    ar: "هل يمكنني إعادة طباعة التصميم وحده لاحقًا؟",
+  },
+  "Yes. Reorder the graphic only from your dashboard.": {
+    fr: "Oui. Recommandez uniquement le visuel depuis votre espace client.",
+    ar: "نعم. أعد طلب التصميم وحده من لوحة التحكم.",
+  },
+  "Rolls or sheets?": { fr: "Rouleaux ou planches ?", ar: "لفائف أم أوراق؟" },
+  "Both. Choose rolls if you apply labels with a machine.": {
+    fr: "Les deux. Choisissez les rouleaux si vous posez les étiquettes à la machine.",
+    ar: "كلاهما. اختر اللفائف إذا كنت تلصق الملصقات باستخدام آلة.",
+  },
+  "Are they fridge and freezer safe?": {
+    fr: "Résistent-elles au réfrigérateur et au congélateur ?",
+    ar: "هل تناسب الثلاجة والمجمّد؟",
+  },
+  "Choose waterproof material for cold and humid storage.": {
+    fr: "Choisissez un support imperméable pour le stockage au froid et à l’humidité.",
+    ar: "اختر خامة مقاومة للماء للتخزين البارد والرطب.",
+  },
+  "Do you print page numbers?": {
+    fr: "Imprimez-vous les numéros de page ?",
+    ar: "هل تطبعون أرقام الصفحات؟",
+  },
+  "Only what's in your artwork — we print exactly what you upload.": {
+    fr: "Uniquement ce qui figure dans votre fichier — nous imprimons exactement ce que vous importez.",
+    ar: "نطبع فقط ما يظهر في ملفك — تمامًا كما ترفعه.",
+  },
+  "Can I get a digital proof?": {
+    fr: "Puis-je recevoir un bon à tirer numérique ?",
+    ar: "هل يمكنني الحصول على إثبات رقمي؟",
+  },
+  "Yes, a PDF proof is sent for approval before production.": {
+    fr: "Oui, un bon à tirer PDF vous est envoyé pour validation avant la production.",
+    ar: "نعم، نرسل إثباتًا بصيغة PDF للموافقة عليه قبل الإنتاج.",
+  },
+  "Can I order a small run?": {
+    fr: "Puis-je commander une petite quantité ?",
+    ar: "هل يمكنني طلب كمية صغيرة؟",
+  },
+  "Yes — from 25 menus.": { fr: "Oui — à partir de 25 menus.", ar: "نعم — ابتداءً من 25 قائمة." },
+  "Can I reorder with new prices?": {
+    fr: "Puis-je recommander avec de nouveaux prix ?",
+    ar: "هل يمكنني إعادة الطلب بأسعار جديدة؟",
+  },
+  "Reorder from your dashboard and upload the updated file.": {
+    fr: "Recommandez depuis votre espace client et importez le fichier mis à jour.",
+    ar: "أعد الطلب من لوحة التحكم وارفع الملف المحدّث.",
+  },
+  "Will they survive outdoors?": {
+    fr: "Résisteront-ils à l’extérieur ?",
+    ar: "هل تتحمل الاستخدام الخارجي؟",
+  },
+  "Choose vinyl — it's rated for two to three years outdoors.": {
+    fr: "Choisissez le vinyle — il est conçu pour résister deux à trois ans à l’extérieur.",
+    ar: "اختر الفينيل — فهو مصمم للاستخدام الخارجي لمدة سنتين إلى ثلاث سنوات.",
+  },
+  "Minimum order?": { fr: "Commande minimale ?", ar: "ما الحد الأدنى للطلب؟" },
+  "250 stickers.": { fr: "250 autocollants.", ar: "250 ملصقًا." },
+  "Flat or rolled?": { fr: "À plat ou en rouleau ?", ar: "مسطحة أم ملفوفة؟" },
+  "Rolled in a tube as standard; flat delivery is available on request.": {
+    fr: "La livraison en tube est standard ; la livraison à plat est disponible sur demande.",
+    ar: "يكون التسليم داخل أنبوب بشكل قياسي، ويتوفر التسليم المسطح عند الطلب.",
+  },
+  "Can I mix sizes?": { fr: "Puis-je mélanger les formats ?", ar: "هل يمكنني مزج المقاسات؟" },
+  "Yes — add each size as its own cart item.": {
+    fr: "Oui — ajoutez chaque format comme un article distinct dans le panier.",
+    ar: "نعم — أضف كل مقاس كعنصر مستقل في السلة.",
+  },
+  "Can I mix sizes in one order?": {
+    fr: "Puis-je mélanger les tailles dans une même commande ?",
+    ar: "هل يمكنني مزج المقاسات في طلب واحد؟",
+  },
+  "Yes — give the size breakdown after upload.": {
+    fr: "Oui — indiquez la répartition des tailles après l’import du fichier.",
+    ar: "نعم — حدّد توزيع المقاسات بعد رفع الملف.",
+  },
+  "Will the print last?": { fr: "L’impression tiendra-t-elle ?", ar: "هل ستدوم الطباعة؟" },
+  "All methods are tested for at least 40 domestic washes.": {
+    fr: "Toutes les méthodes sont testées pour au moins 40 lavages domestiques.",
+    ar: "جميع الطرق مختبرة لتحمل 40 غسلة منزلية على الأقل.",
+  },
+  "Can you install it?": { fr: "Pouvez-vous l’installer ?", ar: "هل يمكنكم تركيبه؟" },
+  "Some partners offer installation — it appears in their offer when available.": {
+    fr: "Certains partenaires proposent l’installation — elle apparaît dans leur offre lorsqu’elle est disponible.",
+    ar: "يوفر بعض الشركاء خدمة التركيب — وتظهر ضمن عرضهم عند توفرها.",
+  },
+  "Is it weatherproof?": { fr: "Résiste-t-il aux intempéries ?", ar: "هل يقاوم العوامل الجوية؟" },
+  "Yes, all outdoor materials are UV and rain rated.": {
+    fr: "Oui, tous les supports extérieurs résistent aux UV et à la pluie.",
+    ar: "نعم، جميع الخامات الخارجية مقاومة للأشعة فوق البنفسجية والمطر.",
+  },
+  "Can I get a branded sample?": {
+    fr: "Puis-je recevoir un échantillon personnalisé ?",
+    ar: "هل يمكنني الحصول على عينة تحمل علامتي؟",
+  },
+  "Yes, request one in the quote before the full run.": {
+    fr: "Oui, demandez-en un dans le devis avant la série complète.",
+    ar: "نعم، اطلب عينة ضمن عرض السعر قبل تنفيذ الكمية الكاملة.",
+  },
+  "Can you deliver to several offices?": {
+    fr: "Pouvez-vous livrer plusieurs bureaux ?",
+    ar: "هل يمكنكم التوصيل إلى عدة مكاتب؟",
+  },
+  "Yes — add multiple addresses at checkout.": {
+    fr: "Oui — ajoutez plusieurs adresses lors de la commande.",
+    ar: "نعم — أضف عدة عناوين عند إتمام الطلب.",
+  },
 };

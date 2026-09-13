@@ -1,6 +1,28 @@
 import type { TranslationPair } from "./translations";
 const p = (fr: string, ar: string): TranslationPair => ({ fr, ar });
 export const commercialPhrases: Record<string, TranslationPair> = {
+  "Demonstration preview": p("Aperçu de démonstration", "معاينة توضيحية"),
+  "Illustrative preview — demonstration data, not customer data.": p(
+    "Aperçu illustratif — données de démonstration, et non données client.",
+    "معاينة توضيحية — بيانات تجريبية وليست بيانات عملاء.",
+  ),
+  "Awaiting approval": p("En attente de validation", "بانتظار الموافقة"),
+  "3 requests": p("3 demandes", "3 طلبات"),
+  "5 jobs": p("5 travaux", "5 أعمال"),
+  Arriving: p("En livraison", "في طريقها للتسليم"),
+  "2 deliveries": p("2 livraisons", "عمليتا تسليم"),
+  "Spend this month": p("Dépenses ce mois-ci", "الإنفاق هذا الشهر"),
+  "18,420 MAD": p("18 420 MAD", "18,420 درهم"),
+  "Coming soon": p("Bientôt disponible", "قريبًا"),
+  "We don't print this product yet.": p(
+    "Nous n’imprimons pas encore ce produit.",
+    "لا نطبع هذا المنتج حاليًا.",
+  ),
+  "Browse all our products or request a custom quote.": p(
+    "Découvrez tous nos produits ou demandez un devis personnalisé.",
+    "تصفّح جميع منتجاتنا أو اطلب عرض سعر مخصصًا.",
+  ),
+  "View all products": p("Voir tous les produits", "عرض جميع المنتجات"),
   "A real account looks like this on Monday morning — nothing to ask anyone for.": p(
     "Voici à quoi ressemble un compte un lundi matin : aucune relance à faire.",
     "هكذا يبدو الحساب صباح الاثنين: لا حاجة لمتابعة أي شخص.",

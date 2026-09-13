@@ -13,7 +13,7 @@ import { contact } from "@/config/contact";
 const columns: { titleKey: string; links: { label: string; to: string }[] }[] = [
   {
     titleKey: "footer.products",
-    links: products.slice(0, 8).map((p) => ({ label: p.name, to: `/products/${p.slug}` })),
+    links: products.map((p) => ({ label: p.name, to: `/products/${p.slug}` })),
   },
   {
     titleKey: "nav.platform",

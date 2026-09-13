@@ -179,19 +179,20 @@ function ProductPage() {
 }
 
 function ProductNotFound() {
+  const { tr } = useI18n();
   return (
     <SiteShell>
       <div className="section-shell py-32 text-center">
-        <h1 className="text-4xl">Nous n’imprimons pas encore ce produit.</h1>
+        <h1 className="text-4xl">{tr("We don't print this product yet.")}</h1>
         <p className="mt-4 text-muted-foreground">
-          Découvrez tous nos produits ou demandez un devis personnalisé.
+          {tr("Browse all our products or request a custom quote.")}
         </p>
         <Link
           to="/products"
           className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
         >
-          Voir tous les produits
-          <ArrowRight className="size-4" />
+          {tr("View all products")}
+          <ArrowRight className="size-4 rtl:rotate-180" />
         </Link>
       </div>
     </SiteShell>

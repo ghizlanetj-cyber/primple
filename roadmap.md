@@ -22,3 +22,8 @@
 - [x] Owner-scoped invoice views with truthful missing-data states
 - [x] Consistent manual WhatsApp 50/50 payment copy on audited pages
 - [x] Centralize the confirmed contact email across footer, contact, invoices, and legal copy
+- [x] Complete Arabic product FAQ, action, validation, and product-not-found copy
+- [x] Explicitly owner-filter dashboard orders, totals, and invoice sources
+- [x] Add existing Posters, Textile Printing, Large Format, and Corporate Gifts footer links
+- [x] Localize and clearly label the platform demonstration data block
+- [x] Mark unavailable blog articles as non-clickable coming-soon content
