@@ -129,7 +129,7 @@ function CheckoutPage() {
 
   return (
     <SiteShell>
-      <section className="section-shell py-14 md:py-20">
+      <section className="section-shell pb-14 pt-24 md:py-20">
         <h1 className="text-4xl md:text-5xl">
           {tr(step === 3 ? "Your order is pending confirmation." : "Review order")}
         </h1>
