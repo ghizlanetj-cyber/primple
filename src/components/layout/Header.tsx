@@ -1,11 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, LogOut, Menu, ShoppingBag, X } from "lucide-react";
+import { ArrowRight, LogOut, Menu, ShoppingBag } from "lucide-react";
 
 import { LanguageSelect } from "@/components/layout/LanguageSelect";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
@@ -14,10 +22,9 @@ import { useAuth } from "@/hooks/useAuth";
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const mobileCloseRef = useRef<HTMLButtonElement>(null);
   const { lang, t, tr } = useI18n();
   const items = useCart((s) => s.items);
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,16 +33,6 @@ export function Header() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    if (!mobileOpen) return;
-    mobileCloseRef.current?.focus();
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMobileOpen(false);
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [mobileOpen]);
 
   return (
     <header
@@ -75,7 +72,7 @@ export function Header() {
             </Link>
           </Button>
 
-          {user ? (
+          {!loading && user ? (
             <>
               <Button
                 variant="ghost"
@@ -98,102 +95,106 @@ export function Header() {
                 <LogOut className="size-4 rtl:rotate-180" />
               </Button>
             </>
-          ) : null}
-
-          <Button
-            asChild
-            className="hidden h-9 rounded-full px-5 text-sm md:inline-flex lg:px-6 lg:text-[14px]"
-          >
-            <Link to="/login">
-              {t("nav.login")} <ArrowRight className="size-3.5 rtl:rotate-180" />
-            </Link>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-ink-foreground xl:hidden"
-            aria-label={t("cta.menu")}
-            onClick={() => setMobileOpen(true)}
-          >
-            <Menu className="size-5" />
-          </Button>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute -left-3 -top-3 z-50 h-svh w-screen overflow-y-auto bg-ink text-ink-foreground sm:-left-5 lg:hidden"
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("cta.menu")}
-          >
-            <div className="flex h-16 items-center justify-between border-b border-white/10 px-6">
-              <Logo invert className="h-5" />
-              <Button
-                ref={mobileCloseRef}
-                variant="ghost"
-                size="icon"
-                aria-label={t("cta.close")}
-                onClick={() => setMobileOpen(false)}
-              >
-                <X className="size-5" />
+          ) : !loading ? (
+            <div className="hidden items-center gap-1.5 md:flex">
+              <Button variant="ghost" asChild className="text-ink-muted hover:text-ink-foreground">
+                <Link to="/login">{t("nav.login")}</Link>
               </Button>
-            </div>
-            <div className="section-shell flex flex-col gap-1 pb-8 pt-4">
-              {[
-                { to: "/services", label: t("nav.solutions") },
-                { to: "/products", label: t("nav.products") },
-                { to: "/about", label: t("nav.why") },
-                { to: "/platform", label: t("nav.work") },
-                { to: "/contact", label: t("nav.contact") },
-                { to: "/dashboard", label: t("nav.dashboard") },
-                ...(user ? [] : [{ to: "/login", label: t("nav.login") }]),
-              ].map((link, i) => (
-                <motion.div
-                  key={link.to}
-                  initial={{ opacity: 0, x: lang === "ar" ? 12 : -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.04 * i }}
-                >
-                  <Link
-                    to={link.to}
-                    onClick={() => setMobileOpen(false)}
-                    className="block border-b border-white/10 py-4 font-display text-2xl font-bold text-ink-foreground"
-                  >
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-              <LanguageSelect variant="mobile" id="mobile-language" className="mt-6" />
-              <Button asChild size="lg" className="mt-4 rounded-full">
-                <Link to="/products" onClick={() => setMobileOpen(false)}>
-                  {t("cta.start")}
+              <Button asChild className="h-9 rounded-full px-4 text-sm lg:px-5">
+                <Link to="/signup">
+                  {tr("Create account")} <ArrowRight className="size-3.5 rtl:rotate-180" />
                 </Link>
               </Button>
-              {user && (
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="mt-3 border-white/20 bg-transparent text-ink-foreground"
-                  onClick={async () => {
-                    setMobileOpen(false);
-                    await signOut();
-                    navigate({ to: "/" });
-                  }}
-                >
-                  <LogOut className="size-4 rtl:rotate-180" />
-                  {tr("Log out")}
-                </Button>
-              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          ) : null}
+
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="min-h-11 min-w-11 text-ink-foreground xl:hidden"
+                aria-label={t("cta.menu")}
+                aria-expanded={mobileOpen}
+              >
+                <Menu className="size-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side={lang === "ar" ? "left" : "right"}
+              closeLabel={t("cta.close")}
+              className="w-[min(92vw,24rem)] overflow-y-auto border-white/10 bg-ink p-0 text-ink-foreground"
+            >
+              <SheetHeader className="border-b border-white/10 px-6 py-5 text-start">
+                <Logo invert className="h-5" />
+                <SheetTitle className="sr-only">{t("cta.menu")}</SheetTitle>
+                <SheetDescription className="sr-only">
+                  {tr("Primary navigation and account actions")}
+                </SheetDescription>
+              </SheetHeader>
+              <nav className="flex flex-col px-6 pb-8 pt-4" aria-label={tr("Primary navigation")}>
+                {[
+                  { to: "/services", label: t("nav.solutions") },
+                  { to: "/products", label: t("nav.products") },
+                  { to: "/about", label: t("nav.why") },
+                  { to: "/platform", label: t("nav.work") },
+                  { to: "/contact", label: t("nav.contact") },
+                ].map((link) => (
+                  <SheetClose asChild key={link.to}>
+                    <Link
+                      to={link.to}
+                      className="border-b border-white/10 py-4 font-display text-2xl font-bold text-ink-foreground"
+                    >
+                      {link.label}
+                    </Link>
+                  </SheetClose>
+                ))}
+
+                {!loading && user ? (
+                  <>
+                    <SheetClose asChild>
+                      <Link
+                        to="/dashboard"
+                        className="border-b border-white/10 py-4 font-display text-2xl font-bold text-ink-foreground"
+                      >
+                        {t("nav.dashboard")}
+                      </Link>
+                    </SheetClose>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      className="mt-5 border-white/20 bg-transparent text-ink-foreground"
+                      onClick={async () => {
+                        setMobileOpen(false);
+                        await signOut();
+                        navigate({ to: "/" });
+                      }}
+                    >
+                      <LogOut className="size-4 rtl:rotate-180" />
+                      {tr("Log out")}
+                    </Button>
+                  </>
+                ) : !loading ? (
+                  <div className="mt-5 grid gap-3">
+                    <SheetClose asChild>
+                      <Button asChild variant="outline" size="lg" className="border-white/20 bg-transparent text-ink-foreground">
+                        <Link to="/login">{t("nav.login")}</Link>
+                      </Button>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Button asChild size="lg">
+                        <Link to="/signup">{tr("Create account")}</Link>
+                      </Button>
+                    </SheetClose>
+                  </div>
+                ) : null}
+
+                <LanguageSelect variant="mobile" id="mobile-language" className="mt-6" />
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
     </header>
   );
 }
