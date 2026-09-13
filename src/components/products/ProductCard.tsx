@@ -30,7 +30,13 @@ export function ProductCard({ product }: { product: Product }) {
         <p className="mt-1.5 text-sm text-muted-foreground">{tr(product.benefit)}</p>
         <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
           <span className="text-sm font-semibold">
-            {tr("From")} {mad(product.fromPrice)}
+            {tr("From")} {mad(basis.amount)}
+            <span className="block text-xs font-normal text-muted-foreground">
+              {tr("for {quantity} units, delivery not included").replace(
+                "{quantity}",
+                number(basis.quantity),
+              )}
+            </span>
           </span>
           <span className="inline-flex items-center gap-1 text-sm font-semibold text-foreground/80 transition-colors group-hover:text-primary">
             {tr("Get a price")}

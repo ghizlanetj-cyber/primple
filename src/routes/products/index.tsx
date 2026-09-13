@@ -173,7 +173,7 @@ function ProductsPage() {
         title="Not sure which product fits?"
         copy="Tell us what you need printed and we'll suggest the right format, material and quantity."
         primary={{ label: "Get a printing price", to: "/pricing" }}
-        secondary={{ label: "Talk to our team", to: "/partners" }}
+        secondary={{ label: "Talk to our team", to: "/contact" }}
       />
     </SiteShell>
   );
