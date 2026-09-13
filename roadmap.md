@@ -27,3 +27,10 @@
 - [x] Add existing Posters, Textile Printing, Large Format, and Corporate Gifts footer links
 - [x] Localize and clearly label the platform demonstration data block
 - [x] Mark unavailable blog articles as non-clickable coming-soon content
+## Current focused pass
+- [ ] Reorganize responsive shared header and add accessible local search
+- [ ] Set fixed 30 DH delivery wording/calculation where delivery applies
+- [ ] Consolidate invoice to one localized download action
+- [ ] Swap business-card and label imagery
+- [ ] Replace unsupported home statistics with qualitative benefits
+- [ ] Verify desktop, tablet, 390px, locales, search, menu, delivery, invoice, images, homepage
