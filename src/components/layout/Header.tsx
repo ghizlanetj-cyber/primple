@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, LogOut, Menu, ShoppingBag } from "lucide-react";
+import { LogOut, Menu, ShoppingBag } from "lucide-react";
 
 import { LanguageSelect } from "@/components/layout/LanguageSelect";
 import { HeaderSearch } from "@/components/layout/HeaderSearch";
@@ -106,11 +106,6 @@ export function Header() {
             <div className="hidden items-center gap-1 md:flex">
               <Button variant="ghost" asChild className="h-9 px-3 text-ink-foreground hover:text-ink-foreground">
                 <Link to="/login">{t("nav.login")}</Link>
-              </Button>
-              <Button asChild className="h-9 rounded-full px-3 text-xs lg:px-4">
-                <Link to="/signup">
-                  {t("cta.start")} <ArrowRight className="size-3.5 rtl:rotate-180" />
-                </Link>
               </Button>
             </div>
           ) : null}

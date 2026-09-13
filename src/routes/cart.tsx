@@ -149,7 +149,7 @@ function CartPage() {
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">{tr("Delivery")}</dt>
-                  <dd>{totals.delivery === 0 ? tr("Included") : mad(totals.delivery)}</dd>
+                  <dd>{mad(totals.delivery)}</dd>
                 </div>
                 <div className="flex justify-between border-t border-border pt-3 font-semibold">
                   <dt>{tr("Total")}</dt>
