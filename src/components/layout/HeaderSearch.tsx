@@ -43,7 +43,7 @@ function normalize(value: string) {
     .trim();
 }
 
-export function HeaderSearch({ mobile = false }: { mobile?: boolean }) {
+export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: boolean; onRequestClose?: () => void }) {
   const { tr } = useI18n();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -151,7 +151,10 @@ export function HeaderSearch({ mobile = false }: { mobile?: boolean }) {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               onKeyDown={(event) => {
-                if (event.key === "Escape" && !mobile) close();
+                if (event.key === "Escape") {
+                  if (mobile) onRequestClose?.();
+                  else close();
+                }
                 if (event.key === "ArrowDown") {
                   event.preventDefault();
                   setActiveIndex((value) => Math.min(value + 1, results.length - 1));

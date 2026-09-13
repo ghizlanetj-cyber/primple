@@ -191,7 +191,7 @@ export function Header() {
                 ) : null}
 
                 <div className="mt-6 border-t border-white/10 pt-6">
-                  <HeaderSearch mobile />
+                  <HeaderSearch mobile onRequestClose={() => setMobileOpen(false)} />
                 </div>
                 <LanguageSelect variant="mobile" id="mobile-language" className="mt-6" />
               </nav>
