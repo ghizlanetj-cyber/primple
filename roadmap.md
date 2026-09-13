@@ -1,36 +1,3 @@
-# Roadmap
-
-- [x] Remove all dark-mode behavior, variants, preferences, and dark token overrides
-- [x] Language selector in the global footer
-- [x] Language control in the header (desktop + mobile menu), synchronized with the footer
-- [x] FR/EN/AR homepage + shared shell translations and RTL behavior
-- [ ] Arabic translations for the secondary marketing/legal routes (currently fall back to English)
-- [x] Remove demo/mock dashboard data (orders, quotes, printers, fake stats)
-- [x] Real invoice generated from the authenticated order (print/download, FR/EN/AR, RTL)
-- [x] Remove printer selection UI (DB column kept for a future update)
-- [x] Mobile responsiveness pass (no horizontal overflow on key routes)
-- [x] Verified dashboard orders are real customer rows (RLS-scoped), no demo fixtures left
-- [x] Private client-artwork storage + order_files table with owner-only RLS and signed URLs
-- [x] Client files section per order and "My files" view (FR/EN/AR, RTL, mobile)
-- [x] Internal storage documentation (docs/client-files.md)
-- [x] Branded public OAuth callback and safe post-login destination for Google and Apple
-- [ ] Provider consent branding: add Primple's own Google and Apple credentials in Cloud auth settings
-- [x] Synchronize the English homepage with the current French design and content
-- [x] Accessible mobile navigation and auth-aware header actions
-- [x] Coherent login/signup routes without authenticated loading flashes
-- [x] Strict localized custom-quantity validation in configurator and cart
-- [x] Owner-scoped invoice views with truthful missing-data states
-- [x] Consistent manual WhatsApp 50/50 payment copy on audited pages
-- [x] Centralize the confirmed contact email across footer, contact, invoices, and legal copy
-- [x] Complete Arabic product FAQ, action, validation, and product-not-found copy
-- [x] Explicitly owner-filter dashboard orders, totals, and invoice sources
-- [x] Add existing Posters, Textile Printing, Large Format, and Corporate Gifts footer links
-- [x] Localize and clearly label the platform demonstration data block
-- [x] Mark unavailable blog articles as non-clickable coming-soon content
-## Current focused pass
-- [x] Reorganize responsive shared header and add accessible local search
-- [x] Set fixed 30 DH delivery wording/calculation where delivery applies
-- [x] Consolidate invoice to one localized download action
-- [x] Swap business-card and label imagery
-- [x] Replace unsupported home statistics with qualitative benefits
-- [x] Verify desktop, tablet, 390px, locales, search, menu, delivery, invoice, images, homepage
+- [ ] Restyle header search panel with existing glass treatment
+- [ ] Add localized Books product, options, pricing, search, and footer
+- [ ] Verify responsive FR/EN/AR behavior, pricing, state isolation, tests, and types
