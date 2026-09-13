@@ -140,7 +140,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
           className={cn(
             mobile
               ? "w-full"
-              : "absolute end-0 top-[calc(100%+0.75rem)] w-[min(90vw,25rem)] rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lift",
+              : "fixed inset-x-3 top-[4.75rem] z-50 w-auto max-w-[26.25rem] rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lift sm:absolute sm:inset-x-auto sm:end-0 sm:top-[calc(100%+0.75rem)] sm:w-[min(90vw,25rem)] sm:max-w-none",
           )}
         >
           <div className="relative">
