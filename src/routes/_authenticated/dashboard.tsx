@@ -352,7 +352,7 @@ function DashboardPage() {
                         aria-label={`${L.download} ${invoiceNumber(activeRecord)}`}
                       >
                         <FileText className="size-4" />
-                        {t("dash.invoice")}
+                        {L.open}
                       </Link>
                     </Button>
                   )}
@@ -416,7 +416,7 @@ function DashboardPage() {
                           className="font-semibold hover:text-primary"
                           aria-label={`${L.invoice} ${invoiceNumber(record)}`}
                         >
-                          {L.print}
+                          {L.open}
                         </Link>
                       </td>
                     </tr>

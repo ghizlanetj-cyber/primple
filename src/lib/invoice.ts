@@ -5,6 +5,25 @@ export function invoiceNumber(order: Pick<OrderRecord, "reference">) {
   return `INV-${order.reference.replace("PRM-", "")}`;
 }
 
+const requiredInvoiceFields = [
+  ["items", "orders.items"],
+  ["createdAt", "orders.created_at"],
+  ["customerName", "orders.contact_name"],
+  ["email", "orders.email"],
+  ["phone", "orders.phone"],
+  ["address", "orders.address"],
+  ["city", "orders.city"],
+] as const;
+
+export function missingInvoiceFields(order: OrderRecord): string[] {
+  return requiredInvoiceFields.flatMap(([key, field]) => {
+    const value = order[key];
+    return value === null || value === "" || (Array.isArray(value) && value.length === 0)
+      ? [field]
+      : [];
+  });
+}
+
 export type InvoiceLabels = {
   invoice: string;
   invoiceNo: string;
@@ -32,6 +51,9 @@ export type InvoiceLabels = {
   back: string;
   title: string;
   notFound: string;
+  incomplete: string;
+  missingFields: string;
+  open: string;
 };
 
 export const invoiceLabels: Record<Lang, InvoiceLabels> = {
@@ -62,6 +84,9 @@ export const invoiceLabels: Record<Lang, InvoiceLabels> = {
     back: "Retour au tableau de bord",
     title: "Facture",
     notFound: "Facture introuvable pour cette commande.",
+    incomplete: "Cette facture ne peut pas être générée avec les données enregistrées.",
+    missingFields: "Champs manquants dans la commande",
+    open: "Ouvrir la facture",
   },
   en: {
     invoice: "Invoice",
@@ -90,6 +115,9 @@ export const invoiceLabels: Record<Lang, InvoiceLabels> = {
     back: "Back to dashboard",
     title: "Invoice",
     notFound: "No invoice found for this order.",
+    incomplete: "This invoice cannot be generated from the recorded order data.",
+    missingFields: "Missing order fields",
+    open: "Open invoice",
   },
   ar: {
     invoice: "فاتورة",
@@ -118,5 +146,8 @@ export const invoiceLabels: Record<Lang, InvoiceLabels> = {
     back: "العودة إلى لوحة التحكم",
     title: "فاتورة",
     notFound: "لا توجد فاتورة لهذا الطلب.",
+    incomplete: "لا يمكن إنشاء هذه الفاتورة من بيانات الطلب المسجلة.",
+    missingFields: "حقول الطلب الناقصة",
+    open: "فتح الفاتورة",
   },
 };
