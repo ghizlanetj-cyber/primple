@@ -38,9 +38,15 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed left-1/2 top-2 z-50 w-[calc(100%-1rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/15 shadow-lift backdrop-blur-2xl backdrop-saturate-150 transition-colors duration-300 sm:w-[calc(100%-2rem)] lg:top-3 lg:w-[calc(100%-3rem)]",
-        scrolled ? "bg-ink/90" : "bg-ink/78",
+        "fixed left-1/2 top-2 z-50 w-[calc(100%-1.5rem)] max-w-[1390px] -translate-x-1/2 rounded-full border transition-opacity duration-300 sm:w-[calc(100%-2.5rem)] lg:top-3 lg:w-[calc(100%-4rem)]",
       )}
+      style={{
+        backgroundColor: "rgba(80, 112, 122, 0.28)",
+        borderColor: "rgba(220, 240, 245, 0.16)",
+        boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 28px rgba(0, 0, 0, 0.12)",
+        backdropFilter: "blur(18px) saturate(125%)",
+        textShadow: "0 1px 2px rgba(0, 0, 0, 0.18)",
+      }}
     >
       <div className="relative grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 sm:px-4 lg:h-[60px] lg:px-5">
         <div className="flex min-w-0 items-center gap-4 xl:gap-6">
