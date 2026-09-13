@@ -52,7 +52,7 @@ function SignupPage() {
   const { tr } = useI18n();
   const navigate = useNavigate();
   const search = Route.useSearch();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [role, setRole] = useState(
     roles.some((r) => r.id === search.role) ? (search.role as string) : "business",
   );
@@ -95,6 +95,17 @@ function SignupPage() {
       setBusy(false);
     }
   };
+
+  if (loading || user) {
+    return (
+      <SiteShell>
+        <div className="section-shell flex min-h-[60vh] items-center justify-center" role="status">
+          <Loader2 className="size-6 animate-spin text-primary" />
+          <span className="sr-only">{tr("Checking your account…")}</span>
+        </div>
+      </SiteShell>
+    );
+  }
 
   return (
     <SiteShell>

@@ -283,5 +283,73 @@ export const homePhrases: Record<string, { fr: string; ar: string }> = {
       ar: "يرجى تسجيل الدخول أعلاه لنتمكن من حفظ هذا الطلب في لوحتك قبل المتابعة على واتساب.",
     },
   "Preparing your order…": { fr: "Préparation de votre commande…", ar: "جارٍ تحضير طلبك…" },
+  "The 50% advance is arranged manually on WhatsApp after confirmation. The remaining 50% is paid in cash on delivery; no payment is taken on this website.": {
+    fr: "L'acompte de 50 % est organisé manuellement sur WhatsApp après confirmation. Les 50 % restants sont réglés en espèces à la livraison ; aucun paiement n'est encaissé sur ce site.",
+    ar: "يُرتَّب العربون بنسبة 50٪ يدويًا عبر واتساب بعد التأكيد، وتُدفع الـ50٪ المتبقية نقدًا عند التسليم؛ ولا يتم تحصيل أي دفعة على هذا الموقع.",
+  },
+  "50% advance arranged on WhatsApp · 50% cash on delivery": {
+    fr: "Acompte de 50 % organisé sur WhatsApp · 50 % en espèces à la livraison",
+    ar: "عربون 50٪ يُرتَّب عبر واتساب · 50٪ نقدًا عند التسليم",
+  },
+  "Review order": { fr: "Vérifier la commande", ar: "مراجعة الطلب" },
+  "Enter a whole number between {min} and {max}.": {
+    fr: "Saisissez un nombre entier compris entre {min} et {max}.",
+    ar: "أدخل عددًا صحيحًا بين {min} و{max}.",
+  },
+  "Primary navigation": { fr: "Navigation principale", ar: "التنقل الرئيسي" },
+  "Primary navigation and account actions": {
+    fr: "Navigation principale et actions du compte",
+    ar: "التنقل الرئيسي وإجراءات الحساب",
+  },
+  "Checking your account…": {
+    fr: "Vérification de votre compte…",
+    ar: "جارٍ التحقق من حسابك…",
+  },
+  "New to Primple?": { fr: "Nouveau sur Primple ?", ar: "جديد على Primple؟" },
+  "Continue to confirmation": {
+    fr: "Continuer vers la confirmation",
+    ar: "المتابعة إلى التأكيد",
+  },
+  "Payment arrangement": { fr: "Organisation du paiement", ar: "ترتيب الدفع" },
+  "4. Confirm the 50% advance": {
+    fr: "4. Confirmez l'acompte de 50 %",
+    ar: "4. أكّد العربون بنسبة 50٪",
+  },
+  "The 50% advance is arranged manually with our team on WhatsApp. Production starts after confirmation; the remaining 50% is paid in cash on delivery.": {
+    fr: "L'acompte de 50 % est organisé manuellement avec notre équipe sur WhatsApp. La production démarre après confirmation ; les 50 % restants sont réglés en espèces à la livraison.",
+    ar: "يُرتَّب العربون بنسبة 50٪ يدويًا مع فريقنا عبر واتساب. يبدأ الإنتاج بعد التأكيد، وتُدفع الـ50٪ المتبقية نقدًا عند التسليم.",
+  },
+  "Primple confirms the order with you on WhatsApp and arranges the 50% advance manually. Production starts after the advance is confirmed. The remaining 50% is paid in cash to the courier on delivery; no payment is taken on this website.": {
+    fr: "Primple confirme la commande avec vous sur WhatsApp et organise manuellement l'acompte de 50 %. La production démarre après confirmation de l'acompte. Les 50 % restants sont réglés en espèces au livreur ; aucun paiement n'est encaissé sur ce site.",
+    ar: "تؤكد Primple الطلب معك عبر واتساب وترتّب العربون بنسبة 50٪ يدويًا. يبدأ الإنتاج بعد تأكيد العربون، وتُدفع الـ50٪ المتبقية نقدًا لمندوب التوصيل؛ ولا يتم تحصيل أي دفعة على هذا الموقع.",
+  },
+  "The standard Primple terms are a 50% advance arranged manually on WhatsApp, then 50% cash on delivery. No payment is taken on this website. Enterprise accounts can request monthly invoicing after a review.": {
+    fr: "Les conditions standard de Primple sont un acompte de 50 % organisé manuellement sur WhatsApp, puis 50 % en espèces à la livraison. Aucun paiement n'est encaissé sur ce site. Les comptes Entreprise peuvent demander une facturation mensuelle après examen.",
+    ar: "شروط Primple القياسية هي عربون 50٪ يُرتَّب يدويًا عبر واتساب، ثم 50٪ نقدًا عند التسليم. لا يتم تحصيل أي دفعة على هذا الموقع. ويمكن لحسابات الشركات طلب فوترة شهرية بعد المراجعة.",
+  },
+  "Production starts after the manually arranged 50% advance is confirmed; the remaining 50% is paid in cash on delivery.": {
+    fr: "La production démarre après confirmation de l'acompte de 50 % organisé manuellement ; les 50 % restants sont réglés en espèces à la livraison.",
+    ar: "يبدأ الإنتاج بعد تأكيد العربون بنسبة 50٪ المرتب يدويًا، وتُدفع الـ50٪ المتبقية نقدًا عند التسليم.",
+  },
+  "An order is confirmed after Primple validates the details with you on WhatsApp and confirms receipt of the manually arranged 50% advance. We check your file before production and contact you if it cannot be printed correctly.": {
+    fr: "Une commande est confirmée après validation des détails avec Primple sur WhatsApp et confirmation de la réception de l'acompte de 50 % organisé manuellement. Nous contrôlons votre fichier avant la production et vous contactons s'il ne peut pas être imprimé correctement.",
+    ar: "يتم تأكيد الطلب بعد أن تتحقق Primple معك من التفاصيل عبر واتساب وتؤكد استلام العربون بنسبة 50٪ المرتب يدويًا. نراجع ملفك قبل الإنتاج ونتواصل معك إذا تعذرت طباعته بشكل صحيح.",
+  },
+  "Primple's standard terms are a 50% advance arranged manually with our team on WhatsApp, followed by the remaining 50% paid in cash to the courier on delivery. No payment is taken on this website, and production starts only after the advance is confirmed as received.": {
+    fr: "Les conditions standard de Primple prévoient un acompte de 50 % organisé manuellement avec notre équipe sur WhatsApp, puis le règlement des 50 % restants en espèces au livreur lors de la livraison. Aucun paiement n'est encaissé sur ce site et la production commence uniquement après confirmation de la réception de l'acompte.",
+    ar: "تنص شروط Primple القياسية على عربون 50٪ يُرتَّب يدويًا مع فريقنا عبر واتساب، ثم دفع الـ50٪ المتبقية نقدًا لمندوب التوصيل عند التسليم. لا يتم تحصيل أي دفعة على هذا الموقع، ولا يبدأ الإنتاج إلا بعد تأكيد استلام العربون.",
+  },
+  "The printer handling your job receives only what is needed for printing and delivery. Couriers receive delivery details. The 50% advance is arranged manually with our team on WhatsApp; no payment or card details are collected on this website. We never sell your data.": {
+    fr: "L'imprimeur chargé de votre travail reçoit uniquement les éléments nécessaires à l'impression et à la livraison. Les transporteurs reçoivent les informations de livraison. L'acompte de 50 % est organisé manuellement avec notre équipe sur WhatsApp ; aucune donnée de paiement ou de carte n'est collectée sur ce site. Nous ne vendons jamais vos données.",
+    ar: "لا تتلقى المطبعة المسؤولة عن طلبك سوى المعلومات اللازمة للطباعة والتوصيل، ويتلقى الناقلون بيانات التوصيل. يُرتَّب العربون بنسبة 50٪ يدويًا مع فريقنا عبر واتساب؛ ولا يجمع هذا الموقع أي بيانات دفع أو بطاقة. نحن لا نبيع بياناتك مطلقًا.",
+  },
+  "Primple does not collect or store card details. The 50% advance is arranged manually with our team on WhatsApp, and no payment is taken on this website.": {
+    fr: "Primple ne collecte ni ne stocke aucune donnée de carte. L'acompte de 50 % est organisé manuellement avec notre équipe sur WhatsApp et aucun paiement n'est encaissé sur ce site.",
+    ar: "لا تجمع Primple بيانات البطاقة ولا تخزنها. يُرتَّب العربون بنسبة 50٪ يدويًا مع فريقنا عبر واتساب، ولا يتم تحصيل أي دفعة على هذا الموقع.",
+  },
+  "You can open and print an invoice from your dashboard when the order contains the required billing details.": {
+    fr: "Vous pouvez ouvrir et imprimer une facture depuis votre espace lorsque la commande contient les informations de facturation requises.",
+    ar: "يمكنك فتح الفاتورة وطباعتها من لوحة التحكم عندما يتضمن الطلب بيانات الفوترة المطلوبة.",
+  },
   Pending: { fr: "En attente", ar: "قيد الانتظار" },
 };

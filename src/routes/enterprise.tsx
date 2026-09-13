@@ -74,9 +74,9 @@ function EnterprisePage() {
 
       <ContentSection
         title="Payment terms"
-        intro="The standard Primple terms are 50% advance and 50% cash on delivery. Enterprise accounts can request monthly invoicing after a review."
+        intro="The standard Primple terms are a 50% advance arranged manually on WhatsApp, then 50% cash on delivery. No payment is taken on this website. Enterprise accounts can request monthly invoicing after a review."
         items={[
-          { title: "Standard", body: "50% advance to release production, 50% cash on delivery." },
+          { title: "Standard", body: "Production starts after the manually arranged 50% advance is confirmed; the remaining 50% is paid in cash on delivery." },
           { title: "Enterprise", body: "Monthly consolidated invoicing, subject to approval." },
           { title: "Projects", body: "Milestone billing for large or phased campaigns." },
         ]}

@@ -6,7 +6,7 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { mad } from "@/lib/format";
 import { listMyOrders } from "@/lib/orders-api";
-import { invoiceLabels, invoiceNumber } from "@/lib/invoice";
+import { invoiceLabels, invoiceNumber, missingInvoiceFields } from "@/lib/invoice";
 import { contact } from "@/config/contact";
 import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/i18n";
@@ -66,9 +66,26 @@ function InvoicePage() {
   }
 
   const paid = order.depositPaid ? L.advancePaid : L.pendingPayment;
+  const missingFields = missingInvoiceFields(order);
   const created = new Date(order.createdAt).toLocaleDateString(
     lang === "fr" ? "fr-MA" : lang === "ar" ? "ar-MA" : "en-GB",
   );
+
+  if (missingFields.length > 0) {
+    return (
+      <SiteShell>
+        <section className="section-shell py-24 text-center" dir={dir}>
+          <h1 className="text-3xl">{L.incomplete}</h1>
+          <p className="mt-4 text-sm text-muted-foreground">
+            {L.missingFields}: <code dir="ltr">{missingFields.join(", ")}</code>
+          </p>
+          <Button asChild className="mt-8 rounded-full">
+            <Link to="/dashboard">{L.back}</Link>
+          </Button>
+        </section>
+      </SiteShell>
+    );
+  }
 
   return (
     <SiteShell>

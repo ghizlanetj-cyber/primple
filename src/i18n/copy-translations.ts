@@ -278,13 +278,13 @@ export const copyPhrases: Record<string, TranslationPair> = {
     "Connectez-vous ci-dessus pour que nous puissions enregistrer cette commande dans votre espace client.",
     "سجّل الدخول أعلاه حتى نتمكن من حفظ هذا الطلب في لوحتك.",
   ),
-  "Pay 50% now to start production. The remaining 50% is paid in cash on delivery.": p(
-    "Payez 50 % maintenant pour lancer la production. Les 50 % restants sont réglés en espèces à la livraison.",
-    "ادفع 50٪ الآن لبدء الإنتاج، وتُدفع الـ50٪ المتبقية نقدًا عند التسليم.",
+  "For questions about these terms: {contactEmail}.": p(
+    "Pour toute question concernant ces conditions : {contactEmail}.",
+    "لأي سؤال حول هذه الشروط: {contactEmail}.",
   ),
-  "Card number for the 50% advance": p(
-    "Numéro de carte pour l'acompte de 50 %",
-    "رقم البطاقة لدفع 50٪ مقدمًا",
+  "You may request a copy or correction of your data, or ask us to delete your account and files. Write to {contactEmail}.": p(
+    "Vous pouvez demander une copie ou une correction de vos données, ou demander la suppression de votre compte et de vos fichiers. Écrivez à {contactEmail}.",
+    "يمكنك طلب نسخة من بياناتك أو تصحيحها، أو طلب حذف حسابك وملفاتك. راسلنا على {contactEmail}.",
   ),
   "Within 5 working days": p("Sous 5 jours ouvrés", "خلال 5 أيام عمل"),
   "Primple partner network": p("Réseau de partenaires Primple", "شبكة شركاء Primple"),

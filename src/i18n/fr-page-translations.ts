@@ -97,10 +97,6 @@ export const frenchPagePhrases: Record<string, string> = {
   "Spend, lead times and on-time delivery by team and product.":
     "Dépenses, délais et ponctualité des livraisons par équipe et par produit.",
   "Payment terms": "Conditions de paiement",
-  "The standard Primple terms are 50% advance and 50% cash on delivery. Enterprise accounts can request monthly invoicing after a review.":
-    "Les conditions standard de Primple sont un acompte de 50 %, puis 50 % en espèces à la livraison. Les comptes Entreprise peuvent demander une facturation mensuelle après examen.",
-  "50% advance to release production, 50% cash on delivery.":
-    "50 % d’acompte pour lancer la production, puis 50 % en espèces à la livraison.",
   "Monthly consolidated invoicing, subject to approval.":
     "Facturation mensuelle consolidée, sous réserve d’approbation.",
   Projects: "Projets",
@@ -115,8 +111,6 @@ export const frenchPagePhrases: Record<string, string> = {
   "Preparing your file": "Préparer votre fichier",
   "Export as PDF with 3mm bleed, 300dpi images and fonts outlined.":
     "Exportez un PDF avec 3 mm de fond perdu, des images à 300 dpi et les polices vectorisées.",
-  "Pay 50% when you order, and the remaining 50% in cash on delivery.":
-    "Payez 50 % à la commande, puis les 50 % restants en espèces à la livraison.",
   "Delivery times": "Délais de livraison",
   "Most jobs are produced in 2–3 working days and delivered within 5.":
     "La plupart des travaux sont produits en 2 à 3 jours ouvrés et livrés sous 5 jours.",
@@ -130,8 +124,6 @@ export const frenchPagePhrases: Record<string, string> = {
   "Send photos within 7 days of delivery and we reprint or refund.":
     "Envoyez des photos dans les 7 jours suivant la livraison ; nous réimprimons ou remboursons.",
   "How does the 50/50 payment work?": "Comment fonctionne le paiement 50/50 ?",
-  "You pay 50% of the total when you place the order, which releases your job to the printer. The remaining 50% is paid in cash to the courier on delivery.":
-    "Vous payez 50 % du total à la commande, ce qui transmet le travail à l’imprimeur. Les 50 % restants sont réglés en espèces au livreur lors de la livraison.",
   "Can I get a sample before a big run?": "Puis-je obtenir un échantillon avant une grande série ?",
   "Yes. Ask for a proof copy on the contact page and we'll quote a single sample before the full run.":
     "Oui. Demandez un exemplaire d’essai depuis la page de contact ; nous établirons un devis pour un échantillon avant la série complète.",
@@ -171,9 +163,6 @@ export const frenchPagePhrases: Record<string, string> = {
   "3. We match a printer": "3. Nous sélectionnons un imprimeur",
   "Your job goes to the verified partner best placed for the deadline.":
     "Votre travail est confié au partenaire vérifié le mieux placé pour respecter le délai.",
-  "4. Pay 50% now": "4. Payez 50 % maintenant",
-  "A 50% advance releases production; the remaining 50% is cash on delivery.":
-    "Un acompte de 50 % lance la production ; les 50 % restants sont réglés en espèces à la livraison.",
   "5. Track production": "5. Suivez la production",
   "Live stages from artwork approval to quality check.":
     "Suivez les étapes, de la validation du fichier au contrôle qualité.",

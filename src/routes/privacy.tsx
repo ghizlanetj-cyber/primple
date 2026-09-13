@@ -44,7 +44,7 @@ function PrivacyPage() {
           },
           {
             title: "Avec qui nous les partageons",
-            body: "L’imprimeur chargé de votre travail reçoit uniquement les éléments nécessaires à son impression et à sa livraison. Les transporteurs reçoivent les informations de livraison. Les prestataires de paiement traitent l’acompte de 50 %. Nous ne vendons jamais vos données.",
+            body: "The printer handling your job receives only what is needed for printing and delivery. Couriers receive delivery details. The 50% advance is arranged manually with our team on WhatsApp; no payment or card details are collected on this website. We never sell your data.",
           },
           {
             title: "Durée de conservation",
@@ -52,7 +52,7 @@ function PrivacyPage() {
           },
           {
             title: "Vos droits",
-            body: "Vous pouvez demander une copie de vos données, les corriger ou demander la suppression de votre compte et de vos fichiers. Écrivez à contact@primpel.com.",
+            body: "You may request a copy or correction of your data, or ask us to delete your account and files. Write to {contactEmail}.",
           },
           {
             title: "Cookies",

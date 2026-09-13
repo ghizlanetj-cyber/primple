@@ -77,8 +77,8 @@ function AboutPage() {
             body: "Your job goes to the verified partner best placed for the deadline.",
           },
           {
-            title: "4. Pay 50% now",
-            body: "A 50% advance releases production; the remaining 50% is cash on delivery.",
+            title: "4. Confirm the 50% advance",
+            body: "The 50% advance is arranged manually with our team on WhatsApp. Production starts after confirmation; the remaining 50% is paid in cash on delivery.",
           },
           {
             title: "5. Track production",

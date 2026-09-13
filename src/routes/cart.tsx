@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Clock, FileText, ShoppingBag, Trash2, Truck } from "lucide-react";
 import { motion } from "motion/react";
@@ -7,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { mad, madUnit } from "@/lib/format";
 import { cartTotals, useCart } from "@/store/cart";
 import { productImages } from "@/data/productImages";
+import { getProduct } from "@/data/products";
+import { parseQuantity, productQuantityLimits } from "@/lib/quantity";
+import type { CartItem } from "@/store/cart";
 import { useI18n } from "@/i18n";
 
 const title = "Votre panier d’impression | Primple";
@@ -115,18 +119,7 @@ function CartPage() {
                     </div>
 
                     <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
-                      <label className="flex items-center gap-2 text-sm">
-                        {tr("Quantity")}
-                        <input
-                          type="number"
-                          min={1}
-                          value={item.quantity}
-                          onChange={(e) =>
-                            setQuantity(item.id, Math.max(1, Number(e.target.value) || 1))
-                          }
-                          className="h-9 w-24 rounded-full border border-input bg-background px-3 text-center text-sm"
-                        />
-                      </label>
+                      <CartQuantityInput item={item} onValidQuantity={setQuantity} />
                       <div className="text-end">
                         <p className="text-xs text-muted-foreground">
                           {madUnit(item.unitPrice)} {tr("per unit")}
@@ -165,17 +158,67 @@ function CartPage() {
               </dl>
               <Button asChild size="lg" className="mt-6 w-full rounded-full">
                 <Link to="/checkout">
-                  {tr("Review & pay")}
+                  {tr("Review order")}
                   <ArrowRight className="size-4 rtl:rotate-180" />
                 </Link>
               </Button>
               <p className="mt-3 text-center text-xs text-muted-foreground">
-                {tr("Secure payment · Artwork checked before production")}
+                {tr("50% advance arranged on WhatsApp · 50% cash on delivery")}
               </p>
             </aside>
           </div>
         )}
       </section>
     </SiteShell>
+  );
+}
+
+function CartQuantityInput({
+  item,
+  onValidQuantity,
+}: {
+  item: CartItem;
+  onValidQuantity: (id: string, quantity: number) => void;
+}) {
+  const { tr, number } = useI18n();
+  const [value, setValue] = useState(String(item.quantity));
+  const product = getProduct(item.slug);
+  const limits = product ? productQuantityLimits(product) : { min: 1, max: Number.MAX_SAFE_INTEGER };
+  const parsed = parseQuantity(value, limits);
+  const invalid = parsed === null;
+  const errorId = `cart-quantity-error-${item.id}`;
+
+  useEffect(() => setValue(String(item.quantity)), [item.quantity]);
+
+  const error = tr("Enter a whole number between {min} and {max}.")
+    .replace("{min}", number(limits.min))
+    .replace("{max}", number(limits.max));
+
+  return (
+    <div>
+      <label className="flex items-center gap-2 text-sm" htmlFor={`cart-quantity-${item.id}`}>
+        {tr("Quantity")}
+        <input
+          id={`cart-quantity-${item.id}`}
+          type="text"
+          inputMode="numeric"
+          value={value}
+          aria-invalid={invalid}
+          aria-describedby={invalid ? errorId : undefined}
+          onChange={(event) => {
+            const next = event.target.value;
+            setValue(next);
+            const quantity = parseQuantity(next, limits);
+            if (quantity !== null) onValidQuantity(item.id, quantity);
+          }}
+          className="h-9 w-24 rounded-full border border-input bg-background px-3 text-center text-sm"
+        />
+      </label>
+      {invalid && (
+        <p id={errorId} className="mt-2 max-w-xs text-xs text-destructive" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }

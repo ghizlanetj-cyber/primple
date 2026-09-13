@@ -16,3 +16,9 @@
 - [x] Branded public OAuth callback and safe post-login destination for Google and Apple
 - [ ] Provider consent branding: add Primple's own Google and Apple credentials in Cloud auth settings
 - [x] Synchronize the English homepage with the current French design and content
+- [x] Accessible mobile navigation and auth-aware header actions
+- [x] Coherent login/signup routes without authenticated loading flashes
+- [x] Strict localized custom-quantity validation in configurator and cart
+- [x] Owner-scoped invoice views with truthful missing-data states
+- [x] Consistent manual WhatsApp 50/50 payment copy on audited pages
+- [x] Centralize the confirmed contact email across footer, contact, invoices, and legal copy

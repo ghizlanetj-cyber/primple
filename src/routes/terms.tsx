@@ -36,11 +36,11 @@ function TermsPage() {
         sections={[
           {
             title: "1. Commandes",
-            body: "Une commande est confirmée lorsque vous terminez le paiement et que l’acompte de 50 % est reçu. Nous contrôlons votre fichier avant la production ; s’il ne peut pas être imprimé correctement, nous vous contactons avant toute utilisation de la presse.",
+            body: "An order is confirmed after Primple validates the details with you on WhatsApp and confirms receipt of the manually arranged 50% advance. We check your file before production and contact you if it cannot be printed correctly.",
           },
           {
             title: "2. Paiement",
-            body: "Les conditions standard de Primple prévoient le paiement à l’avance de 50 % du total de la commande, puis le règlement des 50 % restants en espèces au livreur lors de la livraison. La production commence uniquement après réception de l’acompte. En cas de refus de la commande à la livraison, l’acompte déjà versé reste dû.",
+            body: "Primple's standard terms are a 50% advance arranged manually with our team on WhatsApp, followed by the remaining 50% paid in cash to the courier on delivery. No payment is taken on this website, and production starts only after the advance is confirmed as received.",
           },
           {
             title: "3. Prix",
@@ -68,7 +68,7 @@ function TermsPage() {
           },
           {
             title: "9. Contact",
-            body: "Pour toute question concernant ces conditions : contact@primpel.com.",
+            body: "For questions about these terms: {contactEmail}.",
           },
         ]}
       />

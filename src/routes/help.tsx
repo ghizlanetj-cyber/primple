@@ -49,7 +49,7 @@ function HelpPage() {
           },
           {
             title: "Payment terms",
-            body: "Pay 50% when you order, and the remaining 50% in cash on delivery.",
+            body: "The 50% advance is arranged manually on WhatsApp after confirmation. The remaining 50% is paid in cash on delivery; no payment is taken on this website.",
           },
           {
             title: "Delivery times",
@@ -74,7 +74,7 @@ function HelpPage() {
         items={[
           {
             q: "How does the 50/50 payment work?",
-            a: "You pay 50% of the total when you place the order, which releases your job to the printer. The remaining 50% is paid in cash to the courier on delivery.",
+            a: "Primple confirms the order with you on WhatsApp and arranges the 50% advance manually. Production starts after the advance is confirmed. The remaining 50% is paid in cash to the courier on delivery; no payment is taken on this website.",
           },
           {
             q: "Can I get a sample before a big run?",
@@ -90,7 +90,7 @@ function HelpPage() {
           },
           {
             q: "Can I get an invoice for my company?",
-            a: "Every order generates an invoice you can download from your dashboard.",
+            a: "You can open and print an invoice from your dashboard when the order contains the required billing details.",
           },
         ]}
       />

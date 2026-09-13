@@ -15,6 +15,7 @@ import {
   type Selection,
 } from "@/data/products";
 import { mad, madUnit } from "@/lib/format";
+import { parseQuantity, productQuantityLimits } from "@/lib/quantity";
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
@@ -24,7 +25,9 @@ export function Configurator({ product }: { product: Product }) {
   const navigate = useNavigate();
   const add = useCart((s) => s.add);
 
-  const [quantity, setQuantity] = useState(product.quantities[2] ?? product.quantities[0]!);
+  const limits = productQuantityLimits(product);
+  const initialQuantity = product.quantities[2] ?? product.quantities[0] ?? limits.min;
+  const [quantity, setQuantity] = useState(initialQuantity);
   const [customQuantity, setCustomQuantity] = useState("");
   const [selection, setSelection] = useState<Selection>(() => defaultSelection(product));
   const [artwork, setArtwork] = useState<ArtworkState | null>(null);
@@ -34,8 +37,14 @@ export function Configurator({ product }: { product: Product }) {
     [product, quantity, selection],
   );
   const total = quote.total;
+  const parsedCustomQuantity = customQuantity === "" ? null : parseQuantity(customQuantity, limits);
+  const customQuantityInvalid = customQuantity !== "" && parsedCustomQuantity === null;
+  const quantityError = tr("Enter a whole number between {min} and {max}.")
+    .replace("{min}", number(limits.min))
+    .replace("{max}", number(limits.max));
 
   const addToCart = () => {
+    if (customQuantityInvalid) return;
     add({
       slug: product.slug,
       name: product.name,
@@ -81,18 +90,27 @@ export function Configurator({ product }: { product: Product }) {
                 </ChipRadio>
               ))}
               <Input
+                id={`custom-quantity-${product.slug}`}
                 value={customQuantity}
                 onChange={(e) => {
-                  const v = e.target.value.replace(/[^0-9]/g, "");
+                  const v = e.target.value;
                   setCustomQuantity(v);
-                  if (v) setQuantity(Math.max(1, Number(v)));
+                  const parsed = parseQuantity(v, limits);
+                  if (parsed !== null) setQuantity(parsed);
                 }}
                 placeholder={tr("Custom")}
                 inputMode="numeric"
                 aria-label={tr("Or enter your own quantity")}
+                aria-invalid={customQuantityInvalid}
+                aria-describedby={customQuantityInvalid ? `custom-quantity-error-${product.slug}` : undefined}
                 className="h-9 w-24 rounded-full text-center"
               />
             </div>
+            {customQuantityInvalid && (
+              <p id={`custom-quantity-error-${product.slug}`} className="mt-2 text-sm text-destructive" role="alert">
+                {quantityError}
+              </p>
+            )}
             {quote.savingsPercent > 0 && (
               <p className="mt-3 text-sm text-success">
                 {tr("You save")} {quote.savingsPercent}% {tr("per unit at this quantity.")}
@@ -186,12 +204,19 @@ export function Configurator({ product }: { product: Product }) {
             </p>
           </div>
 
-          <Button size="lg" className="mt-6 w-full rounded-full" onClick={addToCart}>
+          <Button
+            size="lg"
+            className="mt-6 w-full rounded-full"
+            onClick={addToCart}
+            disabled={customQuantityInvalid}
+          >
             {tr("Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">
-            {tr("No surprise fees at checkout. Pay when you're happy with the setup.")}
+            {tr(
+              "The 50% advance is arranged manually on WhatsApp after confirmation. The remaining 50% is paid in cash on delivery; no payment is taken on this website.",
+            )}
           </p>
         </div>
       </aside>

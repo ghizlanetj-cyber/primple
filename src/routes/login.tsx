@@ -9,7 +9,6 @@ import { SocialAuthButtons } from "@/components/auth/SocialAuthButtons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,23 +36,11 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-const roles = [
-  { id: "business", label: "I buy printing", copy: "Order, track and reorder for your business." },
-  {
-    id: "printer",
-    label: "I'm a printer",
-    copy: "Receive jobs and fill your production capacity.",
-  },
-  { id: "designer", label: "I'm a designer", copy: "Print client work and earn on every order." },
-];
-
 function LoginPage() {
   const { tr } = useI18n();
   const navigate = useNavigate();
   const { redirect } = Route.useSearch();
-  const { user } = useAuth();
-  const [mode, setMode] = useState<"login" | "signup">("login");
-  const [role, setRole] = useState("business");
+  const { user, loading } = useAuth();
   const [busy, setBusy] = useState(false);
 
   const destination = redirect && redirect.startsWith("/") ? redirect : "/dashboard";
@@ -67,38 +54,30 @@ function LoginPage() {
     const form = new FormData(event.currentTarget);
     const email = String(form.get("email") ?? "").trim();
     const password = String(form.get("password") ?? "");
-    const fullName = String(form.get("name") ?? "").trim();
 
     setBusy(true);
     try {
-      if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast.success(tr("Welcome back to Primple."));
-        navigate({ to: destination });
-      } else {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`,
-            data: { full_name: fullName, account_type: role },
-          },
-        });
-        if (error) throw error;
-        if (data.session) {
-          toast.success(tr("Your account is ready."));
-          navigate({ to: destination });
-        } else {
-          toast.success(tr("Check your inbox to confirm your email address."));
-        }
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      toast.success(tr("Welcome back to Primple."));
+      navigate({ to: destination });
     } catch (error) {
       toast.error(tr(authErrorPhrase(error)));
     } finally {
       setBusy(false);
     }
   };
+
+  if (loading || user) {
+    return (
+      <SiteShell>
+        <div className="section-shell flex min-h-[60vh] items-center justify-center" role="status">
+          <Loader2 className="size-6 animate-spin text-primary" />
+          <span className="sr-only">{tr("Checking your account…")}</span>
+        </div>
+      </SiteShell>
+    );
+  }
 
   return (
     <SiteShell>
@@ -107,7 +86,7 @@ function LoginPage() {
           <div>
             <Logo className="h-9" />
             <h1 className="mt-8 text-4xl md:text-5xl">
-              {tr(mode === "login" ? "Welcome back." : "Print like a bigger company.")}
+              {tr("Welcome back.")}
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
               {tr(
@@ -130,23 +109,8 @@ function LoginPage() {
           </div>
 
           <div className="rounded-3xl border border-border bg-card p-7 shadow-lift md:p-8">
-            <div className="flex rounded-full bg-secondary p-1">
-              {(["login", "signup"] as const).map((m) => (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => setMode(m)}
-                  className={cn(
-                    "flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
-                    mode === m ? "bg-background shadow-soft" : "text-muted-foreground",
-                  )}
-                >
-                  {tr(m === "login" ? "Log in" : "Create account")}
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-7">
+            <h2 className="text-xl">{tr("Log in")}</h2>
+            <div className="mt-6">
               <SocialAuthButtons redirectTo={destination} />
             </div>
 
@@ -157,36 +121,6 @@ function LoginPage() {
             </div>
 
             <form className="space-y-4" onSubmit={onSubmit}>
-              {mode === "signup" && (
-                <div>
-                  <p className="text-sm font-semibold">{tr("I'm here to…")}</p>
-                  <div className="mt-3 grid gap-2">
-                    {roles.map((r) => (
-                      <button
-                        key={r.id}
-                        type="button"
-                        onClick={() => setRole(r.id)}
-                        className={cn(
-                          "rounded-xl border p-3.5 text-start transition-all",
-                          role === r.id
-                            ? "border-primary bg-primary/10"
-                            : "border-border hover:border-primary/40",
-                        )}
-                      >
-                        <p className="text-sm font-semibold">{tr(r.label)}</p>
-                        <p className="text-xs text-muted-foreground">{tr(r.copy)}</p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {mode === "signup" && (
-                <div>
-                  <Label htmlFor="name">{tr("Full name")}</Label>
-                  <Input id="name" name="name" required className="mt-1.5" />
-                </div>
-              )}
               <div>
                 <Label htmlFor="email">{tr("Work email")}</Label>
                 <Input id="email" name="email" type="email" required className="mt-1.5" />
@@ -199,17 +133,28 @@ function LoginPage() {
                   type="password"
                   required
                   minLength={6}
-                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  autoComplete="current-password"
                   className="mt-1.5"
                 />
               </div>
 
               <Button type="submit" size="lg" disabled={busy} className="w-full rounded-full">
                 {busy && <Loader2 className="size-4 animate-spin" />}
-                {tr(mode === "login" ? "Log in" : "Create my account")}
+                {tr("Log in")}
                 {!busy && <ArrowRight className="size-4 rtl:rotate-180" />}
               </Button>
             </form>
+
+            <p className="mt-5 text-center text-sm text-muted-foreground">
+              {tr("New to Primple?")} {" "}
+              <Link
+                to="/signup"
+                search={redirect ? { redirect } : {}}
+                className="font-semibold text-foreground hover:text-primary"
+              >
+                {tr("Create account")}
+              </Link>
+            </p>
 
             <p className="mt-5 text-center text-xs text-muted-foreground">
               {tr("By continuing you agree to our terms. Prefer to look around first?")}{" "}
