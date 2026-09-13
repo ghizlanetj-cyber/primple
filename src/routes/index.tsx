@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Hero } from "@/components/home/Hero";
@@ -78,7 +79,26 @@ const faqs = [
 ];
 
 function Home() {
-  const { tr } = useI18n();
+  const { lang, tr } = useI18n();
+
+  useEffect(() => {
+    const localizedTitle =
+      lang === "en" ? "Professional and custom printing in Morocco | Primple" : title;
+    const localizedDescription =
+      lang === "en"
+        ? "Business cards, flyers, brochures, packaging and labels: configure your print, see the price and lead time, and track production through delivery."
+        : description;
+
+    document.title = localizedTitle;
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute("content", localizedDescription);
+    document.querySelector('meta[property="og:title"]')?.setAttribute("content", localizedTitle);
+    document
+      .querySelector('meta[property="og:description"]')
+      ?.setAttribute("content", localizedDescription);
+  }, [lang]);
+
   return (
     <SiteShell>
       <p className="sr-only">

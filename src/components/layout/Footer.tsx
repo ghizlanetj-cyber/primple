@@ -46,7 +46,7 @@ const legalLinks = [
 ];
 
 export function Footer() {
-  const { t, tr } = useI18n();
+  const { lang, t, tr } = useI18n();
 
   return (
     <footer className="bg-ink text-ink-foreground">
@@ -60,7 +60,7 @@ export function Footer() {
               )}
             </p>
             <address className="mt-5 space-y-1 text-sm not-italic text-ink-muted">
-              <p>{tr(contact.address)}</p>
+              <p>{lang === "en" ? "Casablanca, Morocco" : tr(contact.address)}</p>
               <p>
                 <a href={contact.mailto} className="hover:text-ink-foreground">
                   {contact.email}

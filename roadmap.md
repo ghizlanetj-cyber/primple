@@ -15,3 +15,4 @@
 - [x] Internal storage documentation (docs/client-files.md)
 - [x] Branded public OAuth callback and safe post-login destination for Google and Apple
 - [ ] Provider consent branding: add Primple's own Google and Apple credentials in Cloud auth settings
+- [x] Synchronize the English homepage with the current French design and content

@@ -27,9 +27,9 @@ type Dict = Record<string, string>;
 
 const en: Dict = {
   "nav.products": "Products",
-  "nav.solutions": "Solutions",
+  "nav.solutions": "Services",
   "nav.why": "Why Primple",
-  "nav.work": "Our work",
+  "nav.work": "Platform",
   "nav.contact": "Contact",
   "nav.platform": "Platform",
   "nav.pricing": "Pricing",
@@ -46,8 +46,8 @@ const en: Dict = {
   "cta.language": "Language",
 
   "hero.eyebrow": "Turning ideas into tangible impact",
-  "hero.title": "Print. Simple. Speed.   PRIMPLE   ",
-  "hero.titleAccent": " ",
+  "hero.title": "More than\nprinting.",
+  "hero.titleAccent": "Ideas taking\nshape.",
   "hero.sub":
     "Professional, custom printing for brands, businesses and creatives in Morocco: choose your options, see the price, we produce and deliver.",
   "hero.f1": "Options explained before you choose",
