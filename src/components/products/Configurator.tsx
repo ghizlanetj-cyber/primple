@@ -15,7 +15,7 @@ import {
   type Selection,
 } from "@/data/products";
 import { mad, madUnit } from "@/lib/format";
-import { parseQuantity, productQuantityLimits } from "@/lib/quantity";
+import { isBulkQuoteQuantity, parseQuantity, productQuantityLimits } from "@/lib/quantity";
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
@@ -39,6 +39,7 @@ export function Configurator({ product }: { product: Product }) {
   const total = quote.total;
   const parsedCustomQuantity = customQuantity === "" ? null : parseQuantity(customQuantity, limits);
   const customQuantityInvalid = customQuantity !== "" && parsedCustomQuantity === null;
+  const bulkQuote = isBulkQuoteQuantity(product, quantity);
   const quantityError = tr("Enter a whole number between {min} and {max}.")
     .replace("{min}", number(limits.min))
     .replace("{max}", number(limits.max));
@@ -53,7 +54,7 @@ export function Configurator({ product }: { product: Product }) {
     : "";
 
   const addToCart = () => {
-    if (customQuantityInvalid || pagesInvalid) return;
+    if (customQuantityInvalid || pagesInvalid || bulkQuote) return;
     add({
       slug: product.slug,
       name: product.name,
@@ -180,7 +181,7 @@ export function Configurator({ product }: { product: Product }) {
             </fieldset>
           ))}
           {product.bulkQuoteAt && (
-            <p className="mt-6 text-sm text-muted-foreground">{tr("500+ copies: request a custom quote.")}</p>
+            <p className={cn("mt-6 text-sm", bulkQuote ? "font-semibold text-primary" : "text-muted-foreground")}>{tr("500+ copies: request a custom quote.")}</p>
           )}
           {product.pageRange && (
             <p className="mt-3 text-sm text-muted-foreground">{tr("Base price: 55 DH for 24 pages, A5, black and white, 80g offset paper and perfect binding. Options and quantity discounts update the price.")}</p>
@@ -251,9 +252,9 @@ export function Configurator({ product }: { product: Product }) {
             size="lg"
             className="mt-6 w-full rounded-full"
             onClick={addToCart}
-            disabled={customQuantityInvalid || pagesInvalid}
+            disabled={customQuantityInvalid || pagesInvalid || bulkQuote}
           >
-            {tr("Add to cart")}
+            {tr(bulkQuote ? "Request a custom quote" : "Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">

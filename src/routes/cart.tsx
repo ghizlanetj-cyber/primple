@@ -9,7 +9,7 @@ import { mad, madUnit } from "@/lib/format";
 import { cartTotals, useCart } from "@/store/cart";
 import { productImages } from "@/data/productImages";
 import { getProduct } from "@/data/products";
-import { parseQuantity, productQuantityLimits } from "@/lib/quantity";
+import { isBulkQuoteQuantity, parseQuantity, productQuantityLimits } from "@/lib/quantity";
 import type { CartItem } from "@/store/cart";
 import { useI18n } from "@/i18n";
 
@@ -185,7 +185,7 @@ function CartQuantityInput({
   const product = getProduct(item.slug);
   const limits = product ? productQuantityLimits(product) : { min: 1, max: Number.MAX_SAFE_INTEGER };
   const parsed = parseQuantity(value, limits);
-  const invalid = parsed === null;
+  const invalid = parsed === null || (product ? isBulkQuoteQuantity(product, parsed) : false);
   const errorId = `cart-quantity-error-${item.id}`;
 
   useEffect(() => setValue(String(item.quantity)), [item.quantity]);
@@ -209,7 +209,7 @@ function CartQuantityInput({
             const next = event.target.value;
             setValue(next);
             const quantity = parseQuantity(next, limits);
-            if (quantity !== null) onValidQuantity(item.id, quantity);
+            if (quantity !== null && (!product || !isBulkQuoteQuantity(product, quantity))) onValidQuantity(item.id, quantity);
           }}
           className="h-9 w-24 rounded-full border border-input bg-background px-3 text-center text-sm"
         />

@@ -9,6 +9,10 @@ export function productQuantityLimits(product: Pick<Product, "quantities">): Qua
   };
 }
 
+export function isBulkQuoteQuantity(product: Pick<Product, "bulkQuoteAt">, quantity: number) {
+  return product.bulkQuoteAt !== undefined && quantity >= product.bulkQuoteAt;
+}
+
 export function parseQuantity(value: string, limits: QuantityLimits): number | null {
   if (!/^[1-9]\d*$/.test(value)) return null;
   const quantity = Number(value);
