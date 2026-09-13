@@ -112,6 +112,7 @@ function ProductPage() {
                 </span>
               ) : null}
             </div>
+            <p className="mt-2 text-xs text-muted-foreground">{basisNote}</p>
           </Reveal>
 
           <Reveal delay={0.1}>

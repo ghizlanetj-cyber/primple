@@ -1,13 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
-import type { Product } from "@/data/products";
+import { fromPriceBasis, type Product } from "@/data/products";
 import { productImages } from "@/data/productImages";
 import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
 
 export function ProductCard({ product }: { product: Product }) {
-  const { tr } = useI18n();
+  const { tr, number } = useI18n();
+  const basis = fromPriceBasis(product);
   return (
     <Link
       to="/products/$slug"
