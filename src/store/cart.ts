@@ -74,9 +74,12 @@ export const useCart = create<CartState>()(
 
 /** Fixed standard delivery fee in MAD, charged once per order. */
 export const DELIVERY_FEE = 30;
+/** Fixed express delivery fee in MAD, charged once per order. */
+export const EXPRESS_DELIVERY_FEE = 120;
 
 export function cartTotals(items: CartItem[]) {
   const subtotal = items.reduce((sum, i) => sum + i.subtotal, 0);
-  const delivery = items.length > 0 ? DELIVERY_FEE : 0;
+  const hasExpress = items.some((item) => item.selection["delivery"] === "express");
+  const delivery = items.length === 0 ? 0 : hasExpress ? EXPRESS_DELIVERY_FEE : DELIVERY_FEE;
   return { subtotal, delivery, total: subtotal + delivery };
 }
