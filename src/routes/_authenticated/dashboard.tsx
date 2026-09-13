@@ -134,7 +134,7 @@ function DashboardPage() {
             </Button>
           </div>
 
-          <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-3">
+          <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 md:grid-cols-3">
             <Kpi
               icon={LayoutDashboard}
               label={t("dash.kpi.progress")}
@@ -147,7 +147,7 @@ function DashboardPage() {
               value={String(delivered)}
               hint={tr("Across your Primple account")}
             />
-            <div className="col-span-2 lg:col-span-1">
+            <div className="col-span-2 md:col-span-1">
               <Kpi
                 icon={Receipt}
                 label={t("dash.kpi.spend")}
