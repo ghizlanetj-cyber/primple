@@ -90,7 +90,7 @@ function HelpPage() {
           },
           {
             q: "Can I get an invoice for my company?",
-            a: "Every order generates an invoice you can download from your dashboard.",
+            a: "You can open and print an invoice from your dashboard when the order contains the required billing details.",
           },
         ]}
       />

@@ -347,5 +347,9 @@ export const homePhrases: Record<string, { fr: string; ar: string }> = {
     fr: "Primple ne collecte ni ne stocke aucune donnée de carte. L'acompte de 50 % est organisé manuellement avec notre équipe sur WhatsApp et aucun paiement n'est encaissé sur ce site.",
     ar: "لا تجمع Primple بيانات البطاقة ولا تخزنها. يُرتَّب العربون بنسبة 50٪ يدويًا مع فريقنا عبر واتساب، ولا يتم تحصيل أي دفعة على هذا الموقع.",
   },
+  "You can open and print an invoice from your dashboard when the order contains the required billing details.": {
+    fr: "Vous pouvez ouvrir et imprimer une facture depuis votre espace lorsque la commande contient les informations de facturation requises.",
+    ar: "يمكنك فتح الفاتورة وطباعتها من لوحة التحكم عندما يتضمن الطلب بيانات الفوترة المطلوبة.",
+  },
   Pending: { fr: "En attente", ar: "قيد الانتظار" },
 };

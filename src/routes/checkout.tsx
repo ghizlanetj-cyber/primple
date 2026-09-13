@@ -131,7 +131,7 @@ function CheckoutPage() {
     <SiteShell>
       <section className="section-shell py-14 md:py-20">
         <h1 className="text-4xl md:text-5xl">
-          {tr(step === 3 ? "Your order is pending confirmation." : "Review & pay")}
+          {tr(step === 3 ? "Your order is pending confirmation." : "Review order")}
         </h1>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">

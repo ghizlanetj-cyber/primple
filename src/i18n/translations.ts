@@ -181,11 +181,6 @@ export const phrases: Record<string, TranslationPair> = {
   Subtotal: { fr: "Sous-total", ar: "المجموع الفرعي" },
   Included: { fr: "Incluse", ar: "مشمولة" },
   Total: { fr: "Total", ar: "الإجمالي" },
-  "Review & pay": { fr: "Vérifier et payer", ar: "المراجعة والدفع" },
-  "Secure payment · Artwork checked before production": {
-    fr: "Paiement sécurisé · Fichier vérifié avant production",
-    ar: "دفع آمن · مراجعة الملف قبل الإنتاج",
-  },
   "Configure your print": { fr: "Configurez votre impression", ar: "خصّص طباعتك" },
   "Change anything — the price and dates update as you go.": {
     fr: "Modifiez les options : le prix et les dates se mettent à jour instantanément.",
@@ -202,10 +197,6 @@ export const phrases: Record<string, TranslationPair> = {
   "Estimated total": { fr: "Total estimé", ar: "الإجمالي التقديري" },
   "Start this print": { fr: "Lancer cette impression", ar: "ابدأ هذه الطباعة" },
   "Continue to artwork": { fr: "Continuer vers le fichier", ar: "المتابعة إلى ملف التصميم" },
-  "No surprise fees at checkout. Pay when you're happy with the setup.": {
-    fr: "Aucun frais surprise au paiement. Payez une fois la configuration validée.",
-    ar: "لا رسوم مفاجئة عند الدفع. ادفع بعد التأكد من الإعدادات.",
-  },
   "Upload artwork": { fr: "Importer le fichier", ar: "رفع ملف التصميم" },
   "Drag your file here or browse — PDF, PNG, JPG or SVG": {
     fr: "Glissez votre fichier ici ou parcourez vos dossiers — PDF, PNG, JPG ou SVG",
@@ -309,7 +300,6 @@ export const phrases: Record<string, TranslationPair> = {
   "Delivery address": { fr: "Adresse de livraison", ar: "عنوان التسليم" },
   City: { fr: "Ville", ar: "المدينة" },
   Postcode: { fr: "Code postal", ar: "الرمز البريدي" },
-  "Continue to payment": { fr: "Continuer vers le paiement", ar: "المتابعة إلى الدفع" },
   "Encrypted payment. Your printer only starts once payment clears.": {
     fr: "Paiement chiffré. L’imprimeur commence uniquement après validation du paiement.",
     ar: "دفع مشفّر. تبدأ المطبعة العمل فقط بعد تأكيد الدفع.",

@@ -278,14 +278,6 @@ export const copyPhrases: Record<string, TranslationPair> = {
     "Connectez-vous ci-dessus pour que nous puissions enregistrer cette commande dans votre espace client.",
     "سجّل الدخول أعلاه حتى نتمكن من حفظ هذا الطلب في لوحتك.",
   ),
-  "Pay 50% now to start production. The remaining 50% is paid in cash on delivery.": p(
-    "Payez 50 % maintenant pour lancer la production. Les 50 % restants sont réglés en espèces à la livraison.",
-    "ادفع 50٪ الآن لبدء الإنتاج، وتُدفع الـ50٪ المتبقية نقدًا عند التسليم.",
-  ),
-  "Card number for the 50% advance": p(
-    "Numéro de carte pour l'acompte de 50 %",
-    "رقم البطاقة لدفع 50٪ مقدمًا",
-  ),
   "For questions about these terms: {contactEmail}.": p(
     "Pour toute question concernant ces conditions : {contactEmail}.",
     "لأي سؤال حول هذه الشروط: {contactEmail}.",
