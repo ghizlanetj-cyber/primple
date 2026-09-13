@@ -382,7 +382,7 @@ function DashboardPage() {
 
           {!isLoading && orders.length > 0 && view === "invoices" && (
             <>
-              <div className="space-y-3 md:hidden">
+              <div className="grid gap-3 md:grid-cols-2 lg:hidden">
                 {records.map((record) => (
                   <article key={record.id} className="surface-card p-4">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
@@ -421,7 +421,7 @@ function DashboardPage() {
                   </article>
                 ))}
               </div>
-              <div className="surface-card hidden overflow-x-auto md:block">
+              <div className="surface-card hidden overflow-x-auto lg:block">
               <table className="w-full min-w-[36rem] text-sm">
                 <thead className="bg-secondary/60 text-start">
                   <tr>
