@@ -1,7 +1,38 @@
 // Homepage and shared-shell copy with French and Arabic equivalents.
 // Keys are the English source strings used in the components.
 export const homePhrases: Record<string, { fr: string; ar: string }> = {
-  // Stats
+  // Qualitative trust section
+  "Why brands choose Primple": {
+    fr: "Pourquoi les marques choisissent Primple",
+    ar: "لماذا تختار العلامات Primple",
+  },
+  "Clear choices, visible costs and a process that stays easy to follow.": {
+    fr: "Des choix clairs, des coûts visibles et un parcours facile à suivre.",
+    ar: "خيارات واضحة وتكاليف ظاهرة ومسار سهل المتابعة.",
+  },
+  "Transparent prices": { fr: "Prix transparents", ar: "أسعار شفافة" },
+  "See the product price and delivery fee before confirming.": {
+    fr: "Voyez le prix du produit et les frais de livraison avant de confirmer.",
+    ar: "شاهد سعر المنتج ورسوم التوصيل قبل التأكيد.",
+  },
+  "Options explained": { fr: "Options expliquées", ar: "خيارات موضّحة" },
+  "Understand papers, formats and finishes while you choose.": {
+    fr: "Comprenez les papiers, formats et finitions au moment de choisir.",
+    ar: "افهم أنواع الورق والمقاسات والتشطيبات أثناء الاختيار.",
+  },
+  "Order tracking": { fr: "Suivi de commande", ar: "تتبع الطلب" },
+  "Follow artwork approval, production and delivery from your account.": {
+    fr: "Suivez la validation du fichier, la production et la livraison depuis votre compte.",
+    ar: "تابع اعتماد الملف والإنتاج والتسليم من حسابك.",
+  },
+  "Delivery organized in Morocco": {
+    fr: "Livraison organisée au Maroc",
+    ar: "توصيل منظم في المغرب",
+  },
+  "A clear delivery window and one fixed 30 DH standard fee.": {
+    fr: "Un délai clair et des frais fixes de 30 DH pour la livraison standard.",
+    ar: "موعد واضح ورسوم ثابتة قدرها 30 درهمًا للتوصيل العادي.",
+  },
   "Businesses printing with Primple": {
     fr: "Entreprises qui impriment avec Primple",
     ar: "شركات تطبع مع Primple",

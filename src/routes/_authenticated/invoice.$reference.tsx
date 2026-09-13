@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Download, Printer } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
@@ -97,25 +97,14 @@ function InvoicePage() {
               {L.back}
             </Link>
           </Button>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              className="rounded-full"
-              onClick={() => window.print()}
-              aria-label={`${L.download} ${invoiceNumber(order)}`}
-            >
-              <Download className="size-4" />
-              {L.download}
-            </Button>
-            <Button
-              variant="outline"
-              className="rounded-full"
-              onClick={() => window.print()}
-              aria-label={`${L.print} ${invoiceNumber(order)}`}
-            >
-              <Printer className="size-4" />
-              {L.print}
-            </Button>
-          </div>
+          <Button
+            className="rounded-full"
+            onClick={() => window.print()}
+            aria-label={`${L.download} ${invoiceNumber(order)}`}
+          >
+            <Download className="size-4" />
+            {L.download}
+          </Button>
         </div>
 
         <article className="mt-6 rounded-2xl border border-border bg-card p-5 sm:p-8 print:border-0 print:p-0 print:shadow-none">

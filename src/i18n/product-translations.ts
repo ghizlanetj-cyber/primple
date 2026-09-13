@@ -146,6 +146,10 @@ export const productPhrases: Record<string, TranslationPair> = {
     fr: "Choisissez le format, le papier et la quantité, puis consultez le prix livraison comprise.",
     ar: "اختر المقاس والورق والكمية، واطّلع على السعر شاملًا التسليم.",
   },
+  "Choose size, paper and quantity and see the price with the fixed 30 DH delivery fee.": {
+    fr: "Choisissez le format, le papier et la quantité, puis voyez le prix avec les frais de livraison fixes de 30 DH.",
+    ar: "اختر المقاس والورق والكمية، ثم شاهد السعر مع رسوم التوصيل الثابتة البالغة 30 درهمًا.",
+  },
   "A3 to B0 posters on satin, matte or heavy art paper.": {
     fr: "Affiches du format A3 au B0 sur papier satiné, mat ou couché épais.",
     ar: "ملصقات من A3 إلى B0 على ورق ساتان أو مطفي أو فني سميك.",

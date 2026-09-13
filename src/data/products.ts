@@ -94,8 +94,8 @@ export const deliveryGroup: OptionGroup = {
   label: "Delivery",
   help: "Express moves your job to the front of the queue.",
   choices: [
-    { id: "standard", label: "Standard", note: "3–5 days", flat: 0 },
-    { id: "express", label: "Express", note: "1–2 days", flat: 120, days: -1 },
+    { id: "standard", label: "Standard", note: "3–5 days · 30 DH", flat: 30 },
+    { id: "express", label: "Express", note: "1–2 days · 30 DH", flat: 30, days: -1 },
   ],
 };
 
@@ -411,7 +411,7 @@ export const products: Product[] = [
     category: "Large Format",
     benefit: "Fill the window by the weekend.",
     heroHeadline: "Posters printed sharp, delivered flat or rolled.",
-    heroCopy: "Choose size, paper and quantity and see the price with delivery included.",
+    heroCopy: "Choose size, paper and quantity and see the price with the fixed 30 DH delivery fee.",
     description: "A3 to B0 posters on satin, matte or heavy art paper.",
     fromPrice: 180,
     unitPrice: 18,
