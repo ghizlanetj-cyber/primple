@@ -95,7 +95,7 @@ export const deliveryGroup: OptionGroup = {
   help: "Express moves your job to the front of the queue.",
   choices: [
     { id: "standard", label: "Standard", note: "3–5 days · 30 DH", flat: 30 },
-    { id: "express", label: "Express", note: "1–2 days · 30 DH", flat: 30, days: -1 },
+    { id: "express", label: "Express", note: "1–2 days · 120 DH", flat: 120, days: -1 },
   ],
 };
 
