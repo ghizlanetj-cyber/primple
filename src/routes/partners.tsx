@@ -49,8 +49,8 @@ const benefits = [
   },
   {
     icon: Wallet,
-    title: "Paid on schedule",
-    copy: "Customers pay upfront through Primple. You produce and get settled predictably.",
+    title: "Clear payment terms",
+    copy: "Customers confirm their order with Primple and arrange a 50% advance on WhatsApp; the balance is paid in cash on delivery. Payment terms with partner printers are agreed case by case.",
   },
 ];
 
@@ -87,7 +87,7 @@ function PartnersPage() {
             </h1>
             <p className="mt-6 text-lg text-muted-foreground md:text-xl">
               {tr(
-                "Primple sends you print-ready jobs from businesses that already paid. You do what you do best — produce beautifully, on time.",
+                "Primple sends you print-ready jobs from businesses that confirmed their order and arranged the 50% advance. You do what you do best — produce beautifully, on time.",
               )}
             </p>
 

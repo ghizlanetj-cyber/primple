@@ -25,7 +25,7 @@ import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { SocialAuthButtons } from "@/components/auth/SocialAuthButtons";
 
-const title = "Vérifier et payer votre commande | Primple";
+const title = "Vérifier et confirmer votre commande | Primple";
 const description =
   "Confirmez votre commande sur WhatsApp : acompte de 50 % organisé manuellement, puis 50 % en espèces à la livraison. Aucun paiement sur le site.";
 
@@ -46,7 +46,7 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
-const steps = ["Order", "Delivery", "Payment", "Confirmation"];
+const steps = ["Order", "Delivery", "Payment terms", "Confirmation"];
 
 function CheckoutPage() {
   const { tr, number, lang } = useI18n();
@@ -131,7 +131,7 @@ function CheckoutPage() {
     <SiteShell>
       <section className="section-shell pb-14 pt-24 md:py-20">
         <h1 className="text-4xl md:text-5xl">
-          {tr(step === 3 ? "Your order is pending confirmation." : "Review order")}
+          {tr(step === 3 ? "Your order is pending confirmation." : "Review and confirm your order")}
         </h1>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -157,9 +157,9 @@ function CheckoutPage() {
           <div className="mt-8 rounded-2xl border border-border bg-secondary/40 p-6">
             <h2 className="text-lg">{tr("Sign in to finish your order")}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              {tr("An account is required to confirm and pay for your order.")}{" "}
+              {tr("An account is required to confirm your order.")}{" "}
               {tr(
-                "You can review your items now, but you'll need to log in or create an account before the payment step.",
+                "You can review your items now, but you'll need to log in or create an account before confirming.",
               )}
             </p>
             <p className="mt-2 text-sm text-muted-foreground">

@@ -44,7 +44,7 @@ function CartPage() {
       <section className="section-shell pb-14 pt-24 md:py-20">
         <h1 className="text-4xl md:text-5xl">{tr("Your printing cart")}</h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          {tr("Check the setup, then review and pay. Prices include everything you see here.")}
+          {tr("Check the setup, then review and confirm your order. Prices include everything you see here.")}
         </p>
 
         {items.length === 0 ? (
