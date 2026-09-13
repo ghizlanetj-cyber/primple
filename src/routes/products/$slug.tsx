@@ -122,7 +122,7 @@ function ProductPage() {
       </section>
 
       <section className="section-shell py-14">
-        <Configurator product={product} />
+        <Configurator key={product.slug} product={product} />
       </section>
 
       <section className="border-y border-border bg-card/50">
