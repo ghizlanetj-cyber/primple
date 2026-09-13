@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { FileText, HelpCircle, Search, Sparkles, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { productImages } from "@/data/productImages";
 import { products } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
@@ -14,8 +16,31 @@ type SearchResult = {
   to: "/products/$slug" | "/services" | "/help" | "/blog";
   slug?: string;
   kind: "product" | "service" | "faq" | "blog";
+  category: string;
+  image?: string;
   searchText: string;
 };
+
+const popularProductSlugs = [
+  "business-cards",
+  "packaging",
+  "flyers",
+  "labels",
+  "brochures",
+  "books",
+  "posters",
+  "roll-up-banners",
+];
+
+const searchCategories = [
+  { label: "All", value: "All" },
+  { label: "Products", value: "Products" },
+  { label: "Stationery", value: "Stationery" },
+  { label: "Packaging", value: "Packaging" },
+  { label: "Flyers / Marketing", value: "Marketing" },
+  { label: "Publishing", value: "Publishing" },
+  { label: "Large Format", value: "Large Format" },
+];
 
 const serviceLabels = [
   "Artwork preflight",
@@ -45,10 +70,16 @@ function normalize(value: string) {
 
 export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: boolean; onRequestClose?: () => void }) {
   const { tr } = useI18n();
+  const prefersReducedMotion = useReducedMotion();
+  const id = useId().replace(/:/g, "");
+  const panelId = `header-search-panel-${id}`;
+  const resultsId = `header-search-results-${id}`;
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
   const index = useMemo<SearchResult[]>(() => {
@@ -59,6 +90,8 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
       to: "/products/$slug" as const,
       slug: product.slug,
       kind: "product" as const,
+      category: product.category,
+      ...(productImages[product.slug] ? { image: productImages[product.slug] } : {}),
       searchText: `${product.name} ${product.benefit} ${product.description} ${product.keywords.join(" ")}`,
     }));
     const faqResults = products.flatMap((product) =>
@@ -69,6 +102,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
         to: "/products/$slug" as const,
         slug: product.slug,
         kind: "faq" as const,
+        category: product.category,
         searchText: `${faq.q} ${faq.a} ${product.name}`,
       })),
     );
@@ -78,6 +112,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
       description: tr("Services"),
       to: "/services" as const,
       kind: "service" as const,
+      category: "Services",
       searchText: label,
     }));
     const blog = blogLabels.map((label, itemIndex) => ({
@@ -86,6 +121,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
       description: `${tr("Blog")} · ${tr("Coming soon")}`,
       to: "/blog" as const,
       kind: "blog" as const,
+      category: "Blog",
       searchText: label,
     }));
     return [...productResults, ...services, ...faqResults, ...blog];
@@ -93,54 +129,77 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
 
   const results = useMemo(() => {
     const terms = normalize(query).split(" ").filter(Boolean);
-    if (terms.length === 0) return index.slice(0, 6);
+    const inCategory = (item: SearchResult) =>
+      category === "All" || (category === "Products" ? item.kind === "product" : item.category === category);
+    if (terms.length === 0) {
+      return popularProductSlugs
+        .map((slug) => index.find((item) => item.kind === "product" && item.slug === slug))
+        .filter((item): item is SearchResult => Boolean(item))
+        .filter(inCategory)
+        .slice(0, 8);
+    }
     return index
       .filter((item) => {
         const haystack = normalize(`${item.label} ${item.description} ${item.searchText}`);
-        return terms.every((term) => haystack.includes(term));
+        return inCategory(item) && terms.every((term) => haystack.includes(term));
       })
-      .slice(0, 7);
-  }, [index, query]);
+      .slice(0, 8);
+  }, [category, index, query]);
 
   useEffect(() => {
     if (!open) return;
     inputRef.current?.focus();
     const onPointerDown = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+      if (!rootRef.current?.contains(event.target as Node)) close(false);
     };
     document.addEventListener("mousedown", onPointerDown);
     return () => document.removeEventListener("mousedown", onPointerDown);
   }, [open]);
 
-  useEffect(() => setActiveIndex(0), [query]);
+  useEffect(() => setActiveIndex(0), [category, query]);
 
-  const close = () => {
+  const close = (restoreFocus = true) => {
     setOpen(false);
     setQuery("");
+    setCategory("All");
+    if (restoreFocus) window.setTimeout(() => triggerRef.current?.focus(), prefersReducedMotion ? 0 : 180);
   };
+
+  const showPanel = open || mobile;
 
   return (
     <div ref={rootRef} className={cn("relative", mobile && "w-full")}>
       <Button
+        ref={triggerRef}
         type="button"
         variant="ghost"
         size="icon"
         className={cn("size-9 text-ink-foreground hover:text-ink-foreground", mobile && "hidden")}
         aria-label={tr("Search Primple")}
         aria-expanded={open}
-        aria-controls="header-search-panel"
-        onClick={() => setOpen((value) => !value)}
+        aria-controls={panelId}
+        onClick={() => {
+          if (open) close();
+          else setOpen(true);
+        }}
       >
         <Search className="size-4" />
       </Button>
 
-      {(open || mobile) && (
-        <div
-          id="header-search-panel"
+      <AnimatePresence>
+        {showPanel && (
+        <motion.div
+          id={panelId}
+          role="dialog"
+          aria-label={tr("Search Primple")}
+          initial={mobile || prefersReducedMotion ? false : { opacity: 0, scale: 0.98, y: -6 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98, y: -6 }}
+          transition={{ duration: prefersReducedMotion ? 0 : 0.18, ease: "easeOut" }}
           className={cn(
             mobile
-              ? "w-full"
-              : "primple-glass fixed inset-x-3 top-[4.75rem] z-50 w-auto max-w-[26.25rem] rounded-2xl border p-2 text-ink-foreground sm:absolute sm:inset-x-auto sm:end-0 sm:top-[calc(100%+0.75rem)] sm:w-[min(90vw,25rem)] sm:max-w-none",
+              ? "w-full text-ink-foreground"
+              : "search-glass fixed inset-x-3 top-[4.75rem] z-50 w-auto rounded-2xl border p-3 text-ink-foreground lg:absolute lg:inset-x-auto lg:end-0 lg:top-[calc(100%+0.65rem)] lg:w-[min(92vw,46rem)]",
           )}
         >
           <div className="relative">
@@ -170,11 +229,10 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
               }}
               placeholder={tr("Search products, services and help")}
               aria-label={tr("Search products, services and help")}
-              aria-controls="header-search-results"
+              aria-controls={resultsId}
               aria-activedescendant={results[activeIndex]?.id}
               className={cn(
-                "h-10 w-full rounded-full border border-white/20 bg-white/10 ps-9 pe-10 text-sm text-ink-foreground outline-none placeholder:text-ink-muted focus:ring-2 focus:ring-primary [&::-webkit-search-cancel-button]:appearance-none",
-                mobile && "border-white/20 bg-white/10 text-ink-foreground placeholder:text-ink-muted",
+                "h-10 w-full rounded-full border border-white/15 bg-white/10 ps-9 pe-10 text-sm text-ink-foreground outline-none placeholder:text-ink-muted focus:ring-2 focus:ring-primary [&::-webkit-search-cancel-button]:appearance-none",
               )}
             />
             {query && (
@@ -191,7 +249,31 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
             )}
           </div>
 
-          <div id="header-search-results" role="listbox" className="mt-2 max-h-80 overflow-y-auto">
+          <div className="mt-3 grid min-h-0 gap-3 md:grid-cols-[8.75rem_minmax(0,1fr)]">
+            <div className="flex gap-1.5 overflow-x-auto pb-1 md:flex-col md:overflow-visible md:border-e md:border-white/10 md:pe-3" aria-label={tr("Categories")}>
+              {searchCategories.map((item) => (
+                <Button
+                  key={item.value}
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  aria-pressed={category === item.value}
+                  onClick={() => setCategory(item.value)}
+                  className={cn(
+                    "h-8 shrink-0 justify-start rounded-md px-2.5 text-xs text-ink-muted hover:bg-white/10 hover:text-ink-foreground",
+                    category === item.value && "bg-white/12 text-ink-foreground",
+                  )}
+                >
+                  {tr(item.label)}
+                </Button>
+              ))}
+            </div>
+
+          <div className="min-w-0">
+            <p className="mb-1.5 px-1 text-[11px] font-semibold uppercase text-ink-muted">
+              {tr(query ? "Results" : "Top sellers / Popular")}
+            </p>
+          <div id={resultsId} role="listbox" className="grid max-h-[min(23rem,52vh)] grid-cols-1 gap-1 overflow-y-auto pe-1 sm:grid-cols-2">
             {results.map((result, indexPosition) => {
               const Icon = result.kind === "product" ? Sparkles : result.kind === "faq" ? HelpCircle : FileText;
               const linkProps = result.slug
@@ -205,19 +287,23 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
                   role="option"
                   aria-selected={indexPosition === activeIndex}
                   onMouseEnter={() => setActiveIndex(indexPosition)}
-                  onClick={close}
+                  onClick={() => close()}
                   className={cn(
-                    "grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 rounded-md px-3 py-2.5 text-start transition-colors",
-                    indexPosition === activeIndex && "bg-white/10",
-                    mobile && "text-ink-foreground hover:bg-white/10",
+                    "grid min-h-16 grid-cols-[3rem_minmax(0,1fr)] items-center gap-2.5 rounded-lg p-1.5 text-start transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                    indexPosition === activeIndex ? "bg-white/12" : "hover:bg-white/8",
                   )}
                 >
-                  <Icon className="mt-0.5 size-4 shrink-0 text-primary" />
+                  {result.image ? (
+                    <img src={result.image} alt="" className="size-12 rounded-md object-cover" loading="lazy" />
+                  ) : (
+                    <span className="flex size-12 items-center justify-center rounded-md bg-white/8">
+                      <Icon className="size-4 shrink-0 text-primary" />
+                    </span>
+                  )}
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-semibold">{result.label}</span>
-                    <span className="block truncate text-xs text-ink-muted">
-                      {result.description}
-                    </span>
+                    <span className="block truncate text-[11px] font-medium text-primary">{tr(result.category)}</span>
+                    <span className="block truncate text-xs text-ink-muted">{result.description}</span>
                   </span>
                 </Link>
               );
@@ -228,8 +314,11 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
               </p>
             )}
           </div>
-        </div>
+          </div>
+          </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }

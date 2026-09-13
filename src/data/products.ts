@@ -339,7 +339,7 @@ export const products: Product[] = [
     benefit: "Print one copy or a complete edition.",
     heroHeadline: "Books made for reading, sharing and keeping.",
     heroCopy: "Choose the page count, format, print, paper and binding. Your price updates instantly.",
-    description: "Books from 24 to 400 pages, produced from a print-ready PDF in black and white or colour.",
+    description: "Books from 24 to 400 pages, printed in black and white or colour with file review before production.",
     fromPrice: 55,
     unitPrice: 55,
     quantities: [1, 5, 10, 25, 50, 100, 200, 499],
@@ -348,12 +348,6 @@ export const products: Product[] = [
     baseProductionDays: 5,
     keywords: ["book printing", "print books Morocco", "livres", "impression livre", "كتب", "طباعة الكتب"],
     options: [
-      group(
-        "artwork",
-        "Artwork file",
-        [{ id: "print-ready-pdf", label: "Print-ready PDF" }],
-        "Upload one print-ready PDF containing every page in reading order.",
-      ),
       group("format", "Format", [
         { id: "a5", label: "A5", factor: 1 },
         { id: "16x24", label: "16 × 24 cm", factor: 1.08 },
@@ -380,7 +374,7 @@ export const products: Product[] = [
     faqs: [
       {
         q: "What file should I send for a book?",
-        a: "Send one print-ready PDF with all pages in reading order. We check it before production.",
+        a: "Upload the complete interior file with every page in reading order. We review it before production.",
       },
       {
         q: "When is saddle stitching available?",
