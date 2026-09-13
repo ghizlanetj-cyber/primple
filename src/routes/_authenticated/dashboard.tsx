@@ -234,13 +234,13 @@ function DashboardPage() {
                     key={order.id}
                     onClick={() => setSelectedId(order.id)}
                     className={cn(
-                      "w-full rounded-xl border p-4 text-start transition-all sm:rounded-2xl sm:p-5",
+                      "w-full min-w-0 overflow-hidden rounded-xl border p-4 text-start transition-all sm:rounded-2xl sm:p-5",
                       order.id === activeId
                         ? "border-primary bg-primary/10"
                         : "border-border bg-card hover:border-primary/40",
                     )}
                   >
-                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+                    <div className="grid min-w-0 grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
                       <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">{order.id}</p>
                         <p className="mt-1 font-display font-bold">
@@ -252,7 +252,7 @@ function DashboardPage() {
                       </div>
                       <span
                         className={cn(
-                          "shrink-0 rounded-full px-3 py-1 text-xs font-semibold",
+                          "max-w-full justify-self-start whitespace-normal rounded-full px-3 py-1 text-start text-xs font-semibold leading-snug sm:justify-self-end",
                           order.stage === "Delivered"
                             ? "bg-success/15 text-success"
                             : "bg-primary/20 text-foreground",
@@ -273,7 +273,7 @@ function DashboardPage() {
                 transition={{ duration: 0.3 }}
                 className="surface-card p-4 shadow-lift sm:p-6"
               >
-                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
+                 <div className="grid min-w-0 grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-4">
                   <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">{active.id}</p>
                     <h2 className="mt-1 text-xl">{tr(active.product)}</h2>
@@ -281,7 +281,9 @@ function DashboardPage() {
                       {tr(active.config)}
                     </p>
                   </div>
-                  <p className="font-display text-lg font-extrabold">{mad(active.total)}</p>
+                   <p className="break-words font-display text-lg font-extrabold sm:text-end">
+                     {mad(active.total)}
+                   </p>
                 </div>
 
                 <ol className="mt-7 space-y-4">
