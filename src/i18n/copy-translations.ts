@@ -4,6 +4,18 @@ const p = (fr: string, ar: string): TranslationPair => ({ fr, ar });
 
 /** Copy rewritten for conversion + SEO (French-first site). */
 export const copyPhrases: Record<string, TranslationPair> = {
+  "Production pricing and the fixed 30 DH standard delivery fee are visible before you commit.": p(
+    "Le prix de production et les frais fixes de 30 DH pour la livraison standard sont visibles avant votre confirmation.",
+    "يظهر سعر الإنتاج ورسوم التوصيل العادي الثابتة البالغة 30 درهمًا قبل التأكيد.",
+  ),
+  "Standard delivery is organized across Morocco for a fixed 30 DH fee. The delivery window is shown before you confirm.": p(
+    "La livraison standard est organisée partout au Maroc pour un forfait de 30 DH. Le délai est affiché avant votre confirmation.",
+    "يُنظَّم التوصيل العادي في جميع أنحاء المغرب برسوم ثابتة قدرها 30 درهمًا، ويظهر موعد التسليم قبل التأكيد.",
+  ),
+  "Yes. Standard delivery is organized nationwide for a fixed 30 DH fee. Express options, when available, are shown separately.": p(
+    "Oui. La livraison standard est organisée partout au Maroc pour un forfait de 30 DH. Les options express disponibles sont affichées séparément.",
+    "نعم. يُنظَّم التوصيل العادي في جميع أنحاء المغرب برسوم ثابتة قدرها 30 درهمًا، وتظهر خيارات التوصيل السريع المتاحة بشكل منفصل.",
+  ),
   // Client files (private artwork storage)
   "Client files": p("Fichiers du client", "ملفات العميل"),
   "My files": p("Mes fichiers", "ملفاتي"),

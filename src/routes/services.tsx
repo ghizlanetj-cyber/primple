@@ -55,7 +55,7 @@ function ServicesPage() {
           },
           {
             title: "Transparent quoting",
-            body: "One price including production and delivery, visible before you commit.",
+            body: "Production pricing and the fixed 30 DH standard delivery fee are visible before you commit.",
           },
           {
             title: "Production tracking",

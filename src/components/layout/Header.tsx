@@ -3,6 +3,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, LogOut, Menu, ShoppingBag } from "lucide-react";
 
 import { LanguageSelect } from "@/components/layout/LanguageSelect";
+import { HeaderSearch } from "@/components/layout/HeaderSearch";
 import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,30 +38,30 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed left-1/2 top-3 z-50 w-[calc(100%-2rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/[0.16] shadow-[0_10px_32px_rgba(0,0,0,0.10)] backdrop-blur-[20px] backdrop-saturate-[1.15] transition-colors duration-500 sm:w-[calc(100%-3rem)] lg:top-4 lg:w-[calc(100%-96px)]",
-        scrolled ? "bg-[rgba(35,33,42,0.52)]" : "bg-[rgba(35,33,42,0.38)]",
+        "fixed left-1/2 top-2 z-50 w-[calc(100%-1rem)] max-w-[1390px] -translate-x-1/2 rounded-full border border-white/15 shadow-lift backdrop-blur-2xl backdrop-saturate-150 transition-colors duration-300 sm:w-[calc(100%-2rem)] lg:top-3 lg:w-[calc(100%-3rem)]",
+        scrolled ? "bg-ink/90" : "bg-ink/78",
       )}
     >
-      <div className="relative grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:flex sm:justify-between sm:px-6 md:h-16 lg:h-[68px] lg:px-8">
-        <div className="flex min-w-0 items-center gap-5 xl:gap-7">
-          <Logo invert className="h-5 shrink-0 md:h-[22px] lg:w-[102px]" />
-          <nav className="hidden items-center gap-x-6 xl:flex xl:gap-x-7">
-            <NavLink to="/services">{t("nav.solutions")}</NavLink>
+      <div className="relative grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 sm:px-4 lg:h-[60px] lg:px-5">
+        <div className="flex min-w-0 items-center gap-4 xl:gap-6">
+          <Logo invert className="h-[18px] shrink-0 lg:h-5" />
+          <nav className="hidden min-w-0 items-center gap-x-4 xl:flex 2xl:gap-x-5" aria-label={tr("Primary navigation")}>
             <NavLink to="/products">{t("nav.products")}</NavLink>
-
-            <NavLink to="/about">{t("nav.why")}</NavLink>
-            <NavLink to="/platform">{t("nav.work")}</NavLink>
-            <NavLink to="/contact">{t("nav.contact")}</NavLink>
+            <NavLink to="/services">{t("nav.solutions")}</NavLink>
+            <NavLink to="/platform">{tr("How it works")}</NavLink>
+            <NavLink to="/pricing">{t("nav.pricing")}</NavLink>
+            <NavLink to="/help">{tr("Help")}</NavLink>
           </nav>
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <LanguageSelect variant="header" id="header-language" className="hidden sm:flex" />
+        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
+          <LanguageSelect variant="header" id="header-language" className="hidden lg:flex" />
+          <HeaderSearch />
           <Button
             variant="ghost"
             size="icon"
             asChild
-            className="relative size-8 text-ink-muted hover:text-ink-foreground"
+            className="relative size-9 text-ink-foreground hover:text-ink-foreground"
           >
             <Link to="/cart" aria-label={t("cta.cart")}>
               <ShoppingBag className="size-4" />
@@ -77,7 +78,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 asChild
-                className="hidden text-ink-muted hover:text-ink-foreground xl:inline-flex"
+                className="hidden h-9 px-3 text-ink-foreground hover:text-ink-foreground md:inline-flex"
               >
                 <Link to="/dashboard">{t("nav.dashboard")}</Link>
               </Button>
@@ -86,7 +87,7 @@ export function Header() {
                 size="icon"
                 aria-label={tr("Log out")}
                 title={tr("Log out")}
-                className="hidden size-8 rounded-full md:inline-flex"
+                className="hidden size-9 rounded-full text-ink-foreground md:inline-flex"
                 onClick={async () => {
                   await signOut();
                   navigate({ to: "/" });
@@ -96,13 +97,13 @@ export function Header() {
               </Button>
             </>
           ) : !loading ? (
-            <div className="hidden items-center gap-1.5 md:flex">
-              <Button variant="ghost" asChild className="text-ink-muted hover:text-ink-foreground">
+            <div className="hidden items-center gap-1 md:flex">
+              <Button variant="ghost" asChild className="h-9 px-3 text-ink-foreground hover:text-ink-foreground">
                 <Link to="/login">{t("nav.login")}</Link>
               </Button>
-              <Button asChild className="h-9 rounded-full px-4 text-sm lg:px-5">
+              <Button asChild className="h-9 rounded-full px-3 text-xs lg:px-4">
                 <Link to="/signup">
-                  {tr("Create account")} <ArrowRight className="size-3.5 rtl:rotate-180" />
+                  {t("cta.start")} <ArrowRight className="size-3.5 rtl:rotate-180" />
                 </Link>
               </Button>
             </div>
@@ -134,11 +135,11 @@ export function Header() {
               </SheetHeader>
               <nav className="flex flex-col px-6 pb-8 pt-4" aria-label={tr("Primary navigation")}>
                 {[
-                  { to: "/services", label: t("nav.solutions") },
                   { to: "/products", label: t("nav.products") },
-                  { to: "/about", label: t("nav.why") },
-                  { to: "/platform", label: t("nav.work") },
-                  { to: "/contact", label: t("nav.contact") },
+                  { to: "/services", label: t("nav.solutions") },
+                  { to: "/platform", label: tr("How it works") },
+                  { to: "/pricing", label: t("nav.pricing") },
+                  { to: "/help", label: tr("Help") },
                 ].map((link) => (
                   <SheetClose asChild key={link.to}>
                     <Link
@@ -189,6 +190,9 @@ export function Header() {
                   </div>
                 ) : null}
 
+                <div className="mt-6 border-t border-white/10 pt-6">
+                  <HeaderSearch mobile />
+                </div>
                 <LanguageSelect variant="mobile" id="mobile-language" className="mt-6" />
               </nav>
             </SheetContent>

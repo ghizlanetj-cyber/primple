@@ -12,11 +12,11 @@ import largeFormatAsset from "@/assets/billboard-modern-outpaint.png.asset.json"
 import giftsAsset from "@/assets/business-items-outpaint.png.asset.json";
 
 export const productImages: Record<string, string> = {
-  "business-cards": businessCardsAsset.url,
+  "business-cards": labelsAsset.url,
   packaging: packagingAsset.url,
   flyers: flyersAsset.url,
   "roll-up-banners": rollupAsset.url,
-  labels: labelsAsset.url,
+  labels: businessCardsAsset.url,
   brochures: brochuresAsset.url,
   menus: menusAsset.url,
   stickers: stickersAsset.url,

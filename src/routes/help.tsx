@@ -53,7 +53,7 @@ function HelpPage() {
           },
           {
             title: "Delivery times",
-            body: "Most jobs are produced in 2–3 working days and delivered within 5.",
+            body: "Standard delivery is organized across Morocco for a fixed 30 DH fee. The delivery window is shown before you confirm.",
           },
           {
             title: "Tracking an order",
@@ -82,7 +82,7 @@ function HelpPage() {
           },
           {
             q: "Do you deliver across Morocco?",
-            a: "Yes, we deliver nationwide with tracked courier partners.",
+            a: "Yes. Standard delivery is organized nationwide for a fixed 30 DH fee. Express options, when available, are shown separately.",
           },
           {
             q: "What if my artwork fails the check?",
