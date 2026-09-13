@@ -3,7 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { PageHero } from "@/components/shared/PageHero";
 import { LegalBody } from "@/components/shared/LegalBody";
-import { contact } from "@/config/contact";
 
 const title = "Politique de confidentialité | Primple";
 const description =
@@ -53,7 +52,7 @@ function PrivacyPage() {
           },
           {
             title: "Vos droits",
-            body: `You may request a copy or correction of your data, or ask us to delete your account and files. Write to ${contact.email}.`,
+            body: "You may request a copy or correction of your data, or ask us to delete your account and files. Write to {contactEmail}.",
           },
           {
             title: "Cookies",

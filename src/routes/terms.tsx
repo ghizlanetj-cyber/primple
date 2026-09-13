@@ -3,7 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { PageHero } from "@/components/shared/PageHero";
 import { LegalBody } from "@/components/shared/LegalBody";
-import { contact } from "@/config/contact";
 
 const title = "Conditions d’utilisation | Primple";
 const description =
@@ -69,7 +68,7 @@ function TermsPage() {
           },
           {
             title: "9. Contact",
-            body: `For questions about these terms: ${contact.email}.`,
+            body: "For questions about these terms: {contactEmail}.",
           },
         ]}
       />
