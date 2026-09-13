@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import { getProduct, priceQuote } from "@/data/products";
+import { fromCents, toCents } from "@/lib/format";
 
 
 export type CartItem = {
@@ -78,8 +79,15 @@ export const DELIVERY_FEE = 30;
 export const EXPRESS_DELIVERY_FEE = 120;
 
 export function cartTotals(items: CartItem[]) {
-  const subtotal = items.reduce((sum, i) => sum + i.subtotal, 0);
+  // Summed on integer centimes so total always equals subtotal + delivery.
+  const subtotalCents = items.reduce((sum, i) => sum + toCents(i.subtotal), 0);
   const hasExpress = items.some((item) => item.selection["delivery"] === "express");
-  const delivery = items.length === 0 ? 0 : hasExpress ? EXPRESS_DELIVERY_FEE : DELIVERY_FEE;
-  return { subtotal, delivery, total: subtotal + delivery };
+  const deliveryCents = toCents(
+    items.length === 0 ? 0 : hasExpress ? EXPRESS_DELIVERY_FEE : DELIVERY_FEE,
+  );
+  return {
+    subtotal: fromCents(subtotalCents),
+    delivery: fromCents(deliveryCents),
+    total: fromCents(subtotalCents + deliveryCents),
+  };
 }
