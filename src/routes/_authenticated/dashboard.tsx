@@ -108,11 +108,11 @@ function DashboardPage() {
   return (
     <SiteShell>
       <div className="band-sand border-b border-border">
-        <div className="section-shell py-12 md:py-16">
-          <div className="flex flex-wrap items-end justify-between gap-6">
+        <div className="section-shell pb-8 pt-24 sm:pb-10 sm:pt-28 md:py-16 md:pt-32 lg:pt-36">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
             <div className="min-w-0">
               <p className="eyebrow text-muted-foreground">{t("dash.eyebrow")}</p>
-              <h1 className="display-xl mt-4 text-3xl sm:text-4xl md:text-5xl">
+              <h1 className="display-xl mt-3 text-3xl sm:mt-4 sm:text-4xl md:text-5xl">
                 {t("dash.title")} <span className="display-accent">{t("dash.titleAccent")}</span>
               </h1>
               <p className="mt-4 text-base text-muted-foreground md:text-lg">
@@ -126,7 +126,7 @@ function DashboardPage() {
                 </p>
               )}
             </div>
-            <Button asChild size="lg" className="rounded-full px-7">
+            <Button asChild size="lg" className="w-full rounded-full px-7 sm:w-auto">
               <Link to="/products">
                 {t("dash.new")}
                 <ArrowRight className="size-4 rtl:rotate-180" />
@@ -134,7 +134,7 @@ function DashboardPage() {
             </Button>
           </div>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-3">
             <Kpi
               icon={LayoutDashboard}
               label={t("dash.kpi.progress")}
@@ -147,26 +147,28 @@ function DashboardPage() {
               value={String(delivered)}
               hint={tr("Across your Primple account")}
             />
-            <Kpi
-              icon={Receipt}
-              label={t("dash.kpi.spend")}
-              value={mad(spend)}
-              hint={tr("Across your Primple account")}
-            />
+            <div className="col-span-2 lg:col-span-1">
+              <Kpi
+                icon={Receipt}
+                label={t("dash.kpi.spend")}
+                value={mad(spend)}
+                hint={tr("Across your Primple account")}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <section className="section-shell grid gap-8 py-12 lg:grid-cols-[16rem_1fr] lg:items-start md:py-16">
-        <aside className="surface-card p-3 lg:sticky lg:top-28">
-          <nav className="flex gap-1 lg:flex-col">
+      <section className="section-shell grid gap-6 py-8 md:gap-8 md:py-12 lg:grid-cols-[16rem_1fr] lg:items-start lg:py-16">
+        <aside className="surface-card p-2 sm:p-3 lg:sticky lg:top-28">
+          <nav className="grid grid-cols-3 gap-1 lg:flex lg:flex-col">
             {nav.map((item) => (
               <button
                 key={item.key}
                 type="button"
                 onClick={() => setView(item.key)}
                 className={cn(
-                  "flex min-h-11 flex-1 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-colors",
+                  "flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-lg px-1.5 py-2 text-center text-[11px] font-semibold leading-tight transition-colors sm:min-h-11 sm:flex-row sm:gap-2.5 sm:rounded-xl sm:px-3.5 sm:py-2.5 sm:text-sm lg:justify-start lg:text-start",
                   view === item.key
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground",
@@ -174,7 +176,7 @@ function DashboardPage() {
                 aria-current={view === item.key ? "page" : undefined}
               >
                 <item.icon className="size-4 shrink-0" />
-                <span className="truncate">{item.label}</span>
+                <span className="w-full truncate sm:w-auto">{item.label}</span>
               </button>
             ))}
           </nav>
@@ -193,7 +195,7 @@ function DashboardPage() {
           <Button
             variant="outline"
             size="sm"
-            className="mt-4 w-full rounded-full"
+            className="mt-2 w-full rounded-full sm:mt-4"
             onClick={async () => {
               await signOut();
               navigate({ to: "/" });
@@ -225,20 +227,20 @@ function DashboardPage() {
           )}
 
           {!isLoading && orders.length > 0 && view === "orders" && active && (
-            <div className="grid gap-6 xl:grid-cols-[1fr_1.1fr] xl:items-start">
+            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] xl:items-start">
               <div className="space-y-3">
                 {orders.map((order) => (
                   <button
                     key={order.id}
                     onClick={() => setSelectedId(order.id)}
                     className={cn(
-                      "w-full rounded-2xl border p-5 text-start transition-all",
+                      "w-full rounded-xl border p-4 text-start transition-all sm:rounded-2xl sm:p-5",
                       order.id === activeId
                         ? "border-primary bg-primary/10"
                         : "border-border bg-card hover:border-primary/40",
                     )}
                   >
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">{order.id}</p>
                         <p className="mt-1 font-display font-bold">
@@ -269,9 +271,9 @@ function DashboardPage() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="surface-card p-5 shadow-lift sm:p-6"
+                className="surface-card p-4 shadow-lift sm:p-6"
               >
-                <div className="flex flex-wrap items-start justify-between gap-4">
+                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
                   <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">{active.id}</p>
                     <h2 className="mt-1 text-xl">{tr(active.product)}</h2>
@@ -337,15 +339,15 @@ function DashboardPage() {
                   />
                 )}
 
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <Button asChild className="rounded-full">
+                <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
+                  <Button asChild className="w-full rounded-full sm:w-auto">
                     <Link to="/products/$slug" params={{ slug: active.productSlug }}>
                       <Repeat className="size-4" />
                       {t("dash.reorder")}
                     </Link>
                   </Button>
                   {activeRecord && (
-                    <Button asChild variant="outline" className="rounded-full">
+                    <Button asChild variant="outline" className="w-full rounded-full sm:w-auto">
                       <Link
                         to="/invoice/$reference"
                         params={{ reference: activeRecord.reference }}
@@ -362,7 +364,7 @@ function DashboardPage() {
           )}
 
           {view === "files" && (
-            <div className="surface-card p-5 sm:p-6">
+            <div className="surface-card p-4 sm:p-6">
               <h2 className="text-xl">{tr("My files")}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {tr("Every file you uploaded, newest first, with the order it belongs to.")}
@@ -379,7 +381,47 @@ function DashboardPage() {
           )}
 
           {!isLoading && orders.length > 0 && view === "invoices" && (
-            <div className="surface-card overflow-x-auto">
+            <>
+              <div className="space-y-3 md:hidden">
+                {records.map((record) => (
+                  <article key={record.id} className="surface-card p-4">
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate font-display font-bold">{invoiceNumber(record)}</p>
+                        <p className="mt-1 truncate text-xs text-muted-foreground">{record.reference}</p>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-primary/20 px-2.5 py-1 text-xs font-semibold text-foreground">
+                        {record.depositPaid ? L.advancePaid : L.pendingPayment}
+                      </span>
+                    </div>
+                    <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-4 text-sm">
+                      <div>
+                        <dt className="text-xs text-muted-foreground">{t("dash.inv.date")}</dt>
+                        <dd className="mt-1 font-medium">
+                          {new Date(record.createdAt).toLocaleDateString(
+                            lang === "fr" ? "fr-MA" : lang === "ar" ? "ar-MA" : "en-GB",
+                          )}
+                        </dd>
+                      </div>
+                      <div className="text-end">
+                        <dt className="text-xs text-muted-foreground">{t("dash.inv.amount")}</dt>
+                        <dd className="mt-1 font-medium">{mad(record.total)}</dd>
+                      </div>
+                    </dl>
+                    <Button asChild variant="outline" className="mt-4 w-full rounded-full">
+                      <Link
+                        to="/invoice/$reference"
+                        params={{ reference: record.reference }}
+                        aria-label={`${L.invoice} ${invoiceNumber(record)}`}
+                      >
+                        <FileText className="size-4" />
+                        {L.open}
+                      </Link>
+                    </Button>
+                  </article>
+                ))}
+              </div>
+              <div className="surface-card hidden overflow-x-auto md:block">
               <table className="w-full min-w-[36rem] text-sm">
                 <thead className="bg-secondary/60 text-start">
                   <tr>
@@ -423,7 +465,8 @@ function DashboardPage() {
                   ))}
                 </tbody>
               </table>
-            </div>
+              </div>
+            </>
           )}
         </div>
       </section>
@@ -443,12 +486,12 @@ function Kpi({
   hint: string;
 }) {
   return (
-    <div className="surface-card p-5">
+    <div className="surface-card h-full p-4 sm:p-5">
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm text-muted-foreground">{label}</p>
         <Icon className="size-4 shrink-0 text-primary" />
       </div>
-      <p className="mt-2 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{value}</p>
+      <p className="mt-2 break-words font-display text-xl font-extrabold sm:text-3xl">{value}</p>
       <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
     </div>
   );

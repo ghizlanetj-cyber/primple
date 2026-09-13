@@ -65,7 +65,7 @@ export function ClientFiles({
           {files.map((file) => (
             <li
               key={file.id}
-              className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row sm:items-center sm:justify-between sm:rounded-2xl sm:p-4"
             >
               <div className="flex min-w-0 items-start gap-3">
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-secondary">
@@ -73,7 +73,7 @@ export function ClientFiles({
                 </span>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold">{file.name}</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
+                  <p className="mt-0.5 break-words text-xs text-muted-foreground">
                     {[
                       file.mimeType ?? file.name.split(".").pop()?.toUpperCase(),
                       formatBytes(file.sizeBytes),
@@ -90,11 +90,11 @@ export function ClientFiles({
                   )}
                 </div>
               </div>
-              <div className="flex shrink-0 gap-2">
+              <div className="grid shrink-0 grid-cols-2 gap-2 sm:flex">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
+                  className="w-full rounded-full sm:w-auto"
                   onClick={() => void open(file, false)}
                 >
                   <Eye className="size-4" />
@@ -103,7 +103,7 @@ export function ClientFiles({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="rounded-full"
+                  className="w-full rounded-full sm:w-auto"
                   onClick={() => void open(file, true)}
                 >
                   <Download className="size-4" />
