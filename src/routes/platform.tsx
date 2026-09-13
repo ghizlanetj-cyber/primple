@@ -119,7 +119,7 @@ function PlatformPage() {
 
           <Reveal delay={0.1}>
             <div className="rounded-3xl border border-border bg-card p-6 shadow-lift">
-              <p className="eyebrow text-muted-foreground">{tr("This week")}</p>
+              <p className="eyebrow text-muted-foreground">{tr("Demonstration preview")}</p>
               <div className="mt-4 space-y-3">
                 {[
                   { label: "Awaiting approval", value: "3 requests", tone: "primary" },
@@ -137,12 +137,7 @@ function PlatformPage() {
                 ))}
               </div>
               <p className="mt-5 text-xs text-muted-foreground">
-                {tr(
-                  "A real account looks like this on Monday morning — nothing to ask anyone for.",
-                )}
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Exemple illustratif — données de démonstration.
+                {tr("Illustrative preview — demonstration data, not customer data.")}
               </p>
             </div>
           </Reveal>

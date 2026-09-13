@@ -86,7 +86,7 @@ function BlogPage() {
                 <p className="eyebrow text-primary">{tr(post.tag)}</p>
                 <h2 className="mt-3 text-lg">{tr(post.title)}</h2>
                 <p className="mt-2 flex-1 text-sm text-muted-foreground">{tr(post.excerpt)}</p>
-                <p className="mt-4 text-xs text-muted-foreground">{tr(post.read)}</p>
+                <p className="mt-4 text-xs font-semibold text-primary">{tr("Coming soon")}</p>
               </article>
             </Reveal>
           ))}

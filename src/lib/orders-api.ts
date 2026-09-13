@@ -88,9 +88,17 @@ function toRecord(row: Record<string, unknown>): OrderRecord {
 }
 
 export async function listMyOrders(): Promise<OrderRecord[]> {
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+  if (authError) throw authError;
+  if (!user) return [];
+
   const { data, error } = await supabase
     .from("orders")
     .select("*")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []).map((row) => toRecord(row as Record<string, unknown>));
