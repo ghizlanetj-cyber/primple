@@ -1,22 +1,22 @@
 import type { TranslationPair } from "./translations";
 const p = (fr: string, ar: string): TranslationPair => ({ fr, ar });
 export const commercialPhrases: Record<string, TranslationPair> = {
-  "Payment terms": p("ModalitÃ©s de paiement", "Ø´Ø±ÙØ· Ø§ÙØ¯ÙØ¹"),
+  "Payment terms": p("Modalités de paiement", "شروط الدفع"),
   "Review and confirm your order": p(
-    "VÃ©rifiez et confirmez votre commande",
-    "Ø±Ø§Ø¬Ø¹ Ø·ÙØ¨Ù ÙØ£ÙÙØ¯Ù",
+    "Vérifiez et confirmez votre commande",
+    "راجع طلبك وأكّده",
   ),
   "Check the setup, then review and confirm your order. Prices include everything you see here.": p(
-    "VÃ©rifiez la configuration, puis vÃ©rifiez et confirmez votre commande. Les prix incluent tout ce qui est affichÃ© ici.",
-    "ØªØ­ÙÙ ÙÙ Ø§ÙØ¥Ø¹Ø¯Ø§Ø¯Ø§ØªØ Ø«Ù Ø±Ø§Ø¬Ø¹ Ø·ÙØ¨Ù ÙØ£ÙÙØ¯Ù. ØªØ´ÙÙ Ø§ÙØ£Ø³Ø¹Ø§Ø± ÙÙ ÙØ§ ÙÙ ÙØ¹Ø±ÙØ¶ ÙÙØ§.",
+    "Vérifiez la configuration, puis vérifiez et confirmez votre commande. Les prix incluent tout ce qui est affiché ici.",
+    "تحقق من الإعدادات، ثم راجع طلبك وأكّده. تشمل الأسعار كل ما هو معروض هنا.",
   ),
   "An account is required to confirm your order.": p(
-    "Un compte est nÃ©cessaire pour confirmer votre commande.",
-    "ÙÙØ²Ù Ø­Ø³Ø§Ø¨ ÙØªØ£ÙÙØ¯ Ø·ÙØ¨Ù.",
+    "Un compte est nécessaire pour confirmer votre commande.",
+    "يلزم حساب لتأكيد طلبك.",
   ),
   "You can review your items now, but you'll need to log in or create an account before confirming.": p(
-    "Vous pouvez vÃ©rifier vos articles maintenant, mais vous devrez vous connecter ou crÃ©er un compte avant de confirmer.",
-    "ÙÙÙÙÙ ÙØ±Ø§Ø¬Ø¹Ø© Ø¹ÙØ§ØµØ±Ù Ø§ÙØ¢ÙØ ÙÙÙ Ø¹ÙÙÙ ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ Ø£Ù Ø¥ÙØ´Ø§Ø¡ Ø­Ø³Ø§Ø¨ ÙØ¨Ù Ø§ÙØªØ£ÙÙØ¯.",
+    "Vous pouvez vérifier vos articles maintenant, mais vous devrez vous connecter ou créer un compte avant de confirmer.",
+    "يمكنك مراجعة عناصرك الآن، لكن عليك تسجيل الدخول أو إنشاء حساب قبل التأكيد.",
   ),
   "3–5 days · 30 DH": p("3 à 5 jours · 30 DH", "3–5 أيام · 30 درهم"),
   "1–2 days · 120 DH": p("1 à 2 jours · 120 DH", "1–2 يوم · 120 درهم"),
