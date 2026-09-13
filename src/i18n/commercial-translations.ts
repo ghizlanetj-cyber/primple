@@ -1,6 +1,42 @@
 import type { TranslationPair } from "./translations";
 const p = (fr: string, ar: string): TranslationPair => ({ fr, ar });
 export const commercialPhrases: Record<string, TranslationPair> = {
+  "Payment terms": p("ModalitÃ©s de paiement", "Ø´Ø±ÙØ· Ø§ÙØ¯ÙØ¹"),
+  "Review and confirm your order": p(
+    "VÃ©rifiez et confirmez votre commande",
+    "Ø±Ø§Ø¬Ø¹ Ø·ÙØ¨Ù ÙØ£ÙÙØ¯Ù",
+  ),
+  "Check the setup, then review and confirm your order. Prices include everything you see here.": p(
+    "VÃ©rifiez la configuration, puis vÃ©rifiez et confirmez votre commande. Les prix incluent tout ce qui est affichÃ© ici.",
+    "ØªØ­ÙÙ ÙÙ Ø§ÙØ¥Ø¹Ø¯Ø§Ø¯Ø§ØªØ Ø«Ù Ø±Ø§Ø¬Ø¹ Ø·ÙØ¨Ù ÙØ£ÙÙØ¯Ù. ØªØ´ÙÙ Ø§ÙØ£Ø³Ø¹Ø§Ø± ÙÙ ÙØ§ ÙÙ ÙØ¹Ø±ÙØ¶ ÙÙØ§.",
+  ),
+  "An account is required to confirm your order.": p(
+    "Un compte est nÃ©cessaire pour confirmer votre commande.",
+    "ÙÙØ²Ù Ø­Ø³Ø§Ø¨ ÙØªØ£ÙÙØ¯ Ø·ÙØ¨Ù.",
+  ),
+  "You can review your items now, but you'll need to log in or create an account before confirming.": p(
+    "Vous pouvez vÃ©rifier vos articles maintenant, mais vous devrez vous connecter ou crÃ©er un compte avant de confirmer.",
+    "ÙÙÙÙÙ ÙØ±Ø§Ø¬Ø¹Ø© Ø¹ÙØ§ØµØ±Ù Ø§ÙØ¢ÙØ ÙÙÙ Ø¹ÙÙÙ ØªØ³Ø¬ÙÙ Ø§ÙØ¯Ø®ÙÙ Ø£Ù Ø¥ÙØ´Ø§Ø¡ Ø­Ø³Ø§Ø¨ ÙØ¨Ù Ø§ÙØªØ£ÙÙØ¯.",
+  ),
+  "3–5 days · 30 DH": p("3 à 5 jours · 30 DH", "3–5 أيام · 30 درهم"),
+  "1–2 days · 120 DH": p("1 à 2 jours · 120 DH", "1–2 يوم · 120 درهم"),
+  "For {quantity} units · {options} · delivery not included": p(
+    "Pour {quantity} exemplaires · {options} · livraison non incluse",
+    "لـ {quantity} نسخة · {options} · التوصيل غير مشمول",
+  ),
+  "for {quantity} units, delivery not included": p(
+    "pour {quantity} exemplaires, livraison non incluse",
+    "لـ {quantity} نسخة، التوصيل غير مشمول",
+  ),
+  "Clear payment terms": p("Modalités de paiement claires", "شروط دفع واضحة"),
+  "Customers confirm their order with Primple and arrange a 50% advance on WhatsApp; the balance is paid in cash on delivery. Payment terms with partner printers are agreed case by case.": p(
+    "Les clients confirment leur commande avec Primple et organisent un acompte de 50 % sur WhatsApp ; le solde est réglé en espèces à la livraison. Les modalités de paiement avec les imprimeurs partenaires sont convenues au cas par cas.",
+    "يؤكّد العملاء طلبهم مع Primple ويرتّبون دفعة 50% عبر واتساب، ويُدفع الباقي نقدًا عند التسليم. تُتفق شروط الدفع مع المطابع الشريكة حالة بحالة.",
+  ),
+  "Primple sends you print-ready jobs from businesses that confirmed their order and arranged the 50% advance. You do what you do best — produce beautifully, on time.": p(
+    "Primple vous envoie des travaux prêts à imprimer, de la part d’entreprises qui ont confirmé leur commande et organisé l’acompte de 50 %. Vous faites ce que vous savez faire de mieux : produire, bien et à temps.",
+    "ترسل لك Primple أعمالًا جاهزة للطباعة من شركات أكّدت طلبها ورتّبت دفعة 50%. وأنت تقوم بما تتقنه: الإنتاج بجودة وفي الوقت.",
+  ),
   "Demonstration preview": p("Aperçu de démonstration", "معاينة توضيحية"),
   "Illustrative preview — demonstration data, not customer data.": p(
     "Aperçu illustratif — données de démonstration, et non données client.",
