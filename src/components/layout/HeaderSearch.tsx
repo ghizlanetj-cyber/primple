@@ -32,7 +32,15 @@ const popularProductSlugs = [
   "roll-up-banners",
 ];
 
-const searchCategories = ["Products", "Stationery", "Packaging", "Marketing", "Publishing", "Large Format"];
+const searchCategories = [
+  { label: "All", value: "All" },
+  { label: "Products", value: "Products" },
+  { label: "Stationery", value: "Stationery" },
+  { label: "Packaging", value: "Packaging" },
+  { label: "Flyers / Marketing", value: "Marketing" },
+  { label: "Publishing", value: "Publishing" },
+  { label: "Large Format", value: "Large Format" },
+];
 
 const serviceLabels = [
   "Artwork preflight",
@@ -68,7 +76,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
   const resultsId = `header-search-results-${id}`;
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("Products");
+  const [category, setCategory] = useState("All");
   const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -121,7 +129,8 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
 
   const results = useMemo(() => {
     const terms = normalize(query).split(" ").filter(Boolean);
-    const inCategory = (item: SearchResult) => category === "Products" || item.category === category;
+    const inCategory = (item: SearchResult) =>
+      category === "All" || (category === "Products" ? item.kind === "product" : item.category === category);
     if (terms.length === 0) {
       return popularProductSlugs
         .map((slug) => index.find((item) => item.kind === "product" && item.slug === slug))
@@ -152,7 +161,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
   const close = (restoreFocus = true) => {
     setOpen(false);
     setQuery("");
-    setCategory("Products");
+    setCategory("All");
     if (restoreFocus) window.setTimeout(() => triggerRef.current?.focus(), prefersReducedMotion ? 0 : 180);
   };
 
@@ -190,7 +199,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
           className={cn(
             mobile
               ? "w-full text-ink-foreground"
-              : "search-glass fixed inset-x-3 top-[4.75rem] z-50 w-auto rounded-2xl border p-3 text-ink-foreground sm:absolute sm:inset-x-auto sm:end-0 sm:top-[calc(100%+0.65rem)] sm:w-[min(92vw,46rem)]",
+              : "search-glass fixed inset-x-3 top-[4.75rem] z-50 w-auto rounded-2xl border p-3 text-ink-foreground lg:absolute lg:inset-x-auto lg:end-0 lg:top-[calc(100%+0.65rem)] lg:w-[min(92vw,46rem)]",
           )}
         >
           <div className="relative">
@@ -244,18 +253,18 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
             <div className="flex gap-1.5 overflow-x-auto pb-1 md:flex-col md:overflow-visible md:border-e md:border-white/10 md:pe-3" aria-label={tr("Categories")}>
               {searchCategories.map((item) => (
                 <Button
-                  key={item}
+                  key={item.value}
                   type="button"
                   variant="ghost"
                   size="sm"
-                  aria-pressed={category === item}
-                  onClick={() => setCategory(item)}
+                  aria-pressed={category === item.value}
+                  onClick={() => setCategory(item.value)}
                   className={cn(
                     "h-8 shrink-0 justify-start rounded-md px-2.5 text-xs text-ink-muted hover:bg-white/10 hover:text-ink-foreground",
-                    category === item && "bg-white/12 text-ink-foreground",
+                    category === item.value && "bg-white/12 text-ink-foreground",
                   )}
                 >
-                  {tr(item)}
+                  {tr(item.label)}
                 </Button>
               ))}
             </div>

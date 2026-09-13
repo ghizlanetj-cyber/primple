@@ -21,6 +21,8 @@ export const commercialPhrases: Record<string, TranslationPair> = {
   ),
   "No search results": p("Aucun résultat", "لا توجد نتائج"),
   Categories: p("Catégories", "الفئات"),
+  All: p("Tout", "الكل"),
+  "Flyers / Marketing": p("Flyers / Marketing", "المنشورات / التسويق"),
   Results: p("Résultats", "النتائج"),
   "Top sellers / Popular": p("Meilleures ventes / Populaires", "الأكثر مبيعًا / شيوعًا"),
   Help: p("Aide", "المساعدة"),
