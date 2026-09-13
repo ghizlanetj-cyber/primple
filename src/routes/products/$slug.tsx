@@ -67,9 +67,13 @@ export const Route = createFileRoute("/products/$slug")({
 });
 
 function ProductPage() {
-  const { tr } = useI18n();
+  const { tr, number } = useI18n();
   const { product } = Route.useLoaderData();
   const related = products.filter((p) => p.slug !== product.slug).slice(0, 3);
+  const basis = fromPriceBasis(product);
+  const basisNote = tr("For {quantity} units · {options} · delivery not included")
+    .replace("{quantity}", number(basis.quantity))
+    .replace("{options}", basis.labels.map((l) => tr(l.value)).join(" · "));
 
   return (
     <SiteShell>
