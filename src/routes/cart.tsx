@@ -41,7 +41,7 @@ function CartPage() {
 
   return (
     <SiteShell>
-      <section className="section-shell py-14 md:py-20">
+      <section className="section-shell pb-14 pt-24 md:py-20">
         <h1 className="text-4xl md:text-5xl">{tr("Your printing cart")}</h1>
         <p className="mt-4 text-lg text-muted-foreground">
           {tr("Check the setup, then review and pay. Prices include everything you see here.")}
