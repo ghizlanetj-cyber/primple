@@ -656,17 +656,18 @@ export function priceQuote(product: Product, quantity: number, selection: Select
     factor *= (validPages ? pages : product.pageRange.default) / product.pageRange.default;
   }
   const qFactor = quantityFactor(product, quantity);
-  const unitPrice = product.unitPrice * factor * qFactor;
-  const subtotal = unitPrice * quantity;
-  const delivery = flat;
+  // Money is settled on integer centimes so subtotal + delivery always equals total.
+  const unitCents = toCents(product.unitPrice * factor * qFactor);
+  const subtotalCents = Math.round(unitCents * quantity);
+  const deliveryCents = toCents(flat);
   const productionDays = Math.max(1, product.baseProductionDays + extraDays);
   const express = selection["delivery"] === "express";
 
   return {
-    unitPrice,
-    subtotal,
-    delivery,
-    total: subtotal + delivery,
+    unitPrice: fromCents(unitCents),
+    subtotal: fromCents(subtotalCents),
+    delivery: fromCents(deliveryCents),
+    total: fromCents(subtotalCents + deliveryCents),
     productionDays,
     deliveryMin: express ? 1 : 3,
     deliveryMax: express ? 2 : 5,
