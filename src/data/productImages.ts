@@ -18,6 +18,7 @@ export const productImages: Record<string, string> = {
   "roll-up-banners": rollupAsset.url,
   labels: businessCardsAsset.url,
   brochures: brochuresAsset.url,
+  books: brochuresAsset.url,
   menus: menusAsset.url,
   stickers: stickersAsset.url,
   posters: postersAsset.url,

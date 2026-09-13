@@ -42,9 +42,18 @@ export function Configurator({ product }: { product: Product }) {
   const quantityError = tr("Enter a whole number between {min} and {max}.")
     .replace("{min}", number(limits.min))
     .replace("{max}", number(limits.max));
+  const pages = product.pageRange ? Number(selection["pages"] ?? product.pageRange.default) : null;
+  const pagesInvalid = product.pageRange
+    ? !Number.isInteger(pages) || pages === null || pages < product.pageRange.min || pages > product.pageRange.max
+    : false;
+  const pagesError = product.pageRange
+    ? tr("Enter a whole number between {min} and {max} pages.")
+        .replace("{min}", number(product.pageRange.min))
+        .replace("{max}", number(product.pageRange.max))
+    : "";
 
   const addToCart = () => {
-    if (customQuantityInvalid) return;
+    if (customQuantityInvalid || pagesInvalid) return;
     add({
       slug: product.slug,
       name: product.name,
@@ -118,6 +127,33 @@ export function Configurator({ product }: { product: Product }) {
             )}
           </fieldset>
 
+          {product.pageRange && (
+            <fieldset className="mt-7 border-0 p-0">
+              <legend className="text-sm font-semibold">{tr("Page count")}</legend>
+              <p className="text-xs text-muted-foreground">{tr("The price is based on the total number of interior pages.")}</p>
+              <Input
+                id={`pages-${product.slug}`}
+                type="text"
+                inputMode="numeric"
+                value={selection["pages"] ?? String(product.pageRange.default)}
+                onChange={(event) => {
+                  const next = event.target.value;
+                  setSelection((current) => ({
+                    ...current,
+                    pages: next,
+                    ...(Number(next) > 64 && current["binding"] === "saddle-stitched"
+                      ? { binding: "perfect-bound" }
+                      : {}),
+                  }));
+                }}
+                aria-invalid={pagesInvalid}
+                aria-describedby={pagesInvalid ? `pages-error-${product.slug}` : undefined}
+                className="mt-3 h-10 w-32 rounded-full text-center"
+              />
+              {pagesInvalid && <p id={`pages-error-${product.slug}`} className="mt-2 text-sm text-destructive" role="alert">{pagesError}</p>}
+            </fieldset>
+          )}
+
           {product.options.map((group) => (
             <fieldset key={group.id} className="mt-7 border-0 p-0">
               <legend className="text-sm font-semibold">{tr(group.label)}</legend>
@@ -129,6 +165,7 @@ export function Configurator({ product }: { product: Product }) {
                     name={`option-${group.id}`}
                     value={choice.id}
                     checked={selection[group.id] === choice.id}
+                    disabled={group.id === "binding" && choice.id === "saddle-stitched" && (pages === null || pages > 64)}
                     onSelect={() => setSelection((s) => ({ ...s, [group.id]: choice.id }))}
                   >
                     {tr(choice.label)}
@@ -142,6 +179,12 @@ export function Configurator({ product }: { product: Product }) {
               </div>
             </fieldset>
           ))}
+          {product.bulkQuoteAt && (
+            <p className="mt-6 text-sm text-muted-foreground">{tr("500+ copies: request a custom quote.")}</p>
+          )}
+          {product.pageRange && (
+            <p className="mt-3 text-sm text-muted-foreground">{tr("Base price: 55 DH for 24 pages, A5, black and white, 80g offset paper and perfect binding. Options and quantity discounts update the price.")}</p>
+          )}
         </section>
 
         <section className="rounded-2xl border border-border bg-card p-6">
@@ -208,7 +251,7 @@ export function Configurator({ product }: { product: Product }) {
             size="lg"
             className="mt-6 w-full rounded-full"
             onClick={addToCart}
-            disabled={customQuantityInvalid}
+            disabled={customQuantityInvalid || pagesInvalid}
           >
             {tr("Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
@@ -239,18 +282,21 @@ function ChipRadio({
   name,
   value,
   checked,
+  disabled = false,
   onSelect,
 }: {
   children: React.ReactNode;
   name: string;
   value: string;
   checked: boolean;
+  disabled?: boolean;
   onSelect: () => void;
 }) {
   return (
     <label
       className={cn(
         "cursor-pointer select-none rounded-full border px-4 py-2 text-sm font-medium transition-all",
+        disabled && "cursor-not-allowed opacity-45",
         "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2",
         checked
           ? "border-primary bg-primary text-primary-foreground shadow-soft"
@@ -262,6 +308,7 @@ function ChipRadio({
         name={name}
         value={value}
         checked={checked}
+        disabled={disabled}
         onChange={onSelect}
         className="sr-only"
       />

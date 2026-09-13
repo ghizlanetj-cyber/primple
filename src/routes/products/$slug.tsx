@@ -48,11 +48,9 @@ export const Route = createFileRoute("/products/$slug")({
             "@type": "Product",
             name,
             description,
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: product.rating,
-              reviewCount: product.reviews,
-            },
+            ...(product.rating && product.reviews
+              ? { aggregateRating: { "@type": "AggregateRating", ratingValue: product.rating, reviewCount: product.reviews } }
+              : {}),
             offers: {
               "@type": "Offer",
               price: product.fromPrice,
@@ -102,10 +100,12 @@ function ProductPage() {
                 <Truck className="size-4" />
                 {tr("Delivery")} 1–5 {tr("days")}
               </span>
-              <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                <Star className="size-4 fill-primary text-primary" />
-                {product.rating} · {product.reviews} {tr("reviews")}
-              </span>
+              {product.rating && product.reviews ? (
+                <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                  <Star className="size-4 fill-primary text-primary" />
+                  {product.rating} · {product.reviews} {tr("reviews")}
+                </span>
+              ) : null}
             </div>
           </Reveal>
 
