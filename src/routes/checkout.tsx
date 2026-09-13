@@ -27,7 +27,7 @@ import { SocialAuthButtons } from "@/components/auth/SocialAuthButtons";
 
 const title = "Vérifier et payer votre commande | Primple";
 const description =
-  "Confirmez votre commande d'impression, vos informations de livraison et votre paiement : 50 % d'acompte, 50 % à la livraison, sans frais surprise.";
+  "Confirmez votre commande sur WhatsApp : acompte de 50 % organisé manuellement, puis 50 % en espèces à la livraison. Aucun paiement sur le site.";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -246,7 +246,7 @@ function CheckoutPage() {
                     <Field label="Postcode" name="postcode" />
                   </div>
                   <Button type="submit" size="lg" className="mt-6 rounded-full">
-                    {tr("Continue to payment")}
+                    {tr("Continue to confirmation")}
                     <ArrowRight className="size-4 rtl:rotate-180" />
                   </Button>
                 </form>
@@ -254,11 +254,11 @@ function CheckoutPage() {
 
               {step === 2 && (
                 <form onSubmit={handlePlaceOrder}>
-                  <h2 className="text-xl">{tr("Payment")}</h2>
+                  <h2 className="text-xl">{tr("Payment arrangement")}</h2>
                   <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                     <Lock className="size-4" />
                     {tr(
-                      "Pay 50% now to start production. The remaining 50% is paid in cash on delivery.",
+                      "The 50% advance is arranged manually on WhatsApp after confirmation. The remaining 50% is paid in cash on delivery; no payment is taken on this website.",
                     )}
                   </p>
 

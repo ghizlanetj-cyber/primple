@@ -56,7 +56,7 @@ function SecurityPage() {
           },
           {
             title: "Sécurité des paiements",
-            body: "Les informations de carte utilisées pour l’acompte de 50 % sont traitées par notre prestataire de paiement et ne sont jamais stockées par nos soins.",
+            body: "Primple does not collect or store card details. The 50% advance is arranged manually with our team on WhatsApp, and no payment is taken on this website.",
           },
           {
             title: "Sauvegardes",
