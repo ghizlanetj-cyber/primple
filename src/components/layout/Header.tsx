@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, LogOut, Menu, ShoppingBag } from "lucide-react";
+import { LogOut, Menu, ShoppingBag } from "lucide-react";
 
 import { LanguageSelect } from "@/components/layout/LanguageSelect";
 import { HeaderSearch } from "@/components/layout/HeaderSearch";
