@@ -1,6 +1,14 @@
 import type { TranslationPair } from "./translations";
 const p = (fr: string, ar: string): TranslationPair => ({ fr, ar });
 export const commercialPhrases: Record<string, TranslationPair> = {
+  "For 1 unit · {options} · delivery not included": p(
+    "Pour 1 exemplaire · {options} · livraison non incluse",
+    "لنسخة واحدة · {options} · التوصيل غير مشمول",
+  ),
+  "for 1 unit, delivery not included": p(
+    "pour 1 exemplaire, livraison non incluse",
+    "لنسخة واحدة، التوصيل غير مشمول",
+  ),
   "Payment terms": p("Modalités de paiement", "شروط الدفع"),
   "Review and confirm your order": p(
     "Vérifiez et confirmez votre commande",

@@ -32,7 +32,11 @@ export function ProductCard({ product }: { product: Product }) {
           <span className="text-sm font-semibold">
             {tr("From")} {mad(basis.amount)}
             <span className="block text-xs font-normal text-muted-foreground">
-              {tr("for {quantity} units, delivery not included").replace(
+              {tr(
+                basis.quantity === 1
+                  ? "for 1 unit, delivery not included"
+                  : "for {quantity} units, delivery not included",
+              ).replace(
                 "{quantity}",
                 number(basis.quantity),
               )}

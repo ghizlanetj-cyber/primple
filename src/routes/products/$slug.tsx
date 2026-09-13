@@ -71,7 +71,11 @@ function ProductPage() {
   const { product } = Route.useLoaderData();
   const related = products.filter((p) => p.slug !== product.slug).slice(0, 3);
   const basis = fromPriceBasis(product);
-  const basisNote = tr("For {quantity} units · {options} · delivery not included")
+  const basisNote = tr(
+    basis.quantity === 1
+      ? "For 1 unit · {options} · delivery not included"
+      : "For {quantity} units · {options} · delivery not included",
+  )
     .replace("{quantity}", number(basis.quantity))
     .replace("{options}", basis.labels.map((l) => tr(l.value)).join(" · "));
 
