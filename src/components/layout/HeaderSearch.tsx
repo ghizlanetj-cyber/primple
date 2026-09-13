@@ -83,7 +83,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
       slug: product.slug,
       kind: "product" as const,
       category: product.category,
-      image: productImages[product.slug],
+      ...(productImages[product.slug] ? { image: productImages[product.slug] } : {}),
       searchText: `${product.name} ${product.benefit} ${product.description} ${product.keywords.join(" ")}`,
     }));
     const faqResults = products.flatMap((product) =>
@@ -169,7 +169,10 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
         aria-label={tr("Search Primple")}
         aria-expanded={open}
         aria-controls={panelId}
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => {
+          if (open) close();
+          else setOpen(true);
+        }}
       >
         <Search className="size-4" />
       </Button>
@@ -275,7 +278,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
                   role="option"
                   aria-selected={indexPosition === activeIndex}
                   onMouseEnter={() => setActiveIndex(indexPosition)}
-                  onClick={close}
+                  onClick={() => close()}
                   className={cn(
                     "grid min-h-16 grid-cols-[3rem_minmax(0,1fr)] items-center gap-2.5 rounded-lg p-1.5 text-start transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                     indexPosition === activeIndex ? "bg-white/12" : "hover:bg-white/8",
