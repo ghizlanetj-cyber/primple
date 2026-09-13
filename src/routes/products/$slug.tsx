@@ -6,7 +6,7 @@ import { Configurator } from "@/components/products/Configurator";
 import { ProductCard } from "@/components/products/ProductCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { FaqSection } from "@/components/shared/FaqSection";
-import { getProduct, products } from "@/data/products";
+import { fromPriceBasis, getProduct, products } from "@/data/products";
 import { productImages } from "@/data/productImages";
 import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
@@ -26,8 +26,9 @@ export const Route = createFileRoute("/products/$slug")({
       };
     }
     const { product } = loaderData;
+    const basis = fromPriceBasis(product);
     const name = productPhrases[product.name]?.fr ?? phrases[product.name]?.fr ?? product.name;
-    const title = `Impression ${name.toLowerCase()} sur mesure — à partir de ${mad(product.fromPrice)} | Primple`;
+    const title = `Impression ${name.toLowerCase()} sur mesure — à partir de ${mad(basis.amount)} | Primple`;
     const description = `${name} sur mesure : formats, papiers, finitions et quantités au choix. Prix et délai affichés avant la commande, production suivie jusqu'à la livraison.`;
     return {
       meta: [
@@ -53,7 +54,7 @@ export const Route = createFileRoute("/products/$slug")({
               : {}),
             offers: {
               "@type": "Offer",
-              price: product.fromPrice,
+              price: basis.amount,
               priceCurrency: "MAD",
             },
           }),
@@ -89,7 +90,7 @@ function ProductPage() {
 
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
               <span className="font-display text-lg font-extrabold">
-                {tr("From")} {mad(product.fromPrice)}
+                {tr("From")} {mad(basis.amount)}
               </span>
               <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                 <Clock className="size-4" />
