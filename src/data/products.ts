@@ -686,3 +686,21 @@ export function selectionLabels(product: Product, selection: Selection) {
     ? [{ group: "Pages", value: `${selection["pages"] ?? product.pageRange.default} pages` }, ...labels]
     : labels;
 }
+
+/**
+ * The real basis of the "From" price: the smallest listed quantity with the
+ * default (cheapest listed) option of every group. Delivery is excluded.
+ */
+export function fromPriceBasis(product: Product) {
+  const quantity = product.quantities[0]!;
+  const selection = defaultSelection(product);
+  const quote = priceQuote(product, quantity, selection);
+  return {
+    quantity,
+    selection,
+    /** Order value for that quantity, before delivery. */
+    amount: quote.subtotal,
+    unitPrice: quote.unitPrice,
+    labels: selectionLabels(product, selection).filter((l) => l.group !== "Delivery"),
+  };
+}
