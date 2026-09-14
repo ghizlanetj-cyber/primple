@@ -189,8 +189,6 @@ function InvoicePage() {
             <Row label={L.subtotal} value={mad(order.subtotal)} />
             <Row label={L.delivery} value={mad(order.delivery)} />
             <Row label={L.total} value={mad(order.total)} strong />
-            <Row label={L.advance} value={mad(order.depositAmount)} />
-            <Row label={L.balance} value={mad(order.balanceAmount)} />
           </dl>
 
           <p className="mt-8 border-t border-border pt-4 text-xs text-muted-foreground">

@@ -163,7 +163,7 @@ function CartPage() {
                 </Link>
               </Button>
               <p className="mt-3 text-center text-xs text-muted-foreground">
-                {tr("50% advance arranged on WhatsApp · 50% cash on delivery")}
+                {tr("Secure card payment in MAD · Artwork checked before production")}
               </p>
             </aside>
           </div>

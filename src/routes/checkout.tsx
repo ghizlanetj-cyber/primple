@@ -1,18 +1,15 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Banknote, CheckCircle2, Clock, Lock, Truck } from "lucide-react";
+import { ArrowRight, CheckCircle2, Clock, CreditCard, Loader2, Lock, ShieldCheck, Truck } from "lucide-react";
 import { toast } from "sonner";
 
-import {
-  createOrder,
-  splitPayment,
-  type DeliveryDetails,
-  type OrderRecord,
-} from "@/lib/orders-api";
-import { buildWhatsAppOrderMessage, whatsAppOrderUrl } from "@/lib/whatsapp-order";
+import { createOrder, type DeliveryDetails, type OrderRecord } from "@/lib/orders-api";
 import { attachFilesToOrder } from "@/lib/files-api";
 import { invoiceLabels } from "@/lib/invoice";
+import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
+import { loadYouCanPay, type YouCanPayElement, type YouCanPayLocale } from "@/lib/youcanpay";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
@@ -25,9 +22,9 @@ import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { SocialAuthButtons } from "@/components/auth/SocialAuthButtons";
 
-const title = "Vérifier et confirmer votre commande | Primple";
+const title = "Payer votre commande par carte | Primple";
 const description =
-  "Confirmez votre commande sur WhatsApp : acompte de 50 % organisé manuellement, puis 50 % en espèces à la livraison. Aucun paiement sur le site.";
+  "Réglez votre commande d'impression Primple en ligne par carte bancaire, en dirhams, avec YouCan Pay.";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -46,7 +43,7 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
-const steps = ["Order", "Delivery", "Payment terms", "Confirmation"];
+const steps = ["Order", "Delivery", "Payment", "Confirmation"];
 
 function CheckoutPage() {
   const { tr, number, lang } = useI18n();
@@ -54,34 +51,43 @@ function CheckoutPage() {
   const { items, clear } = useCart();
   const { user } = useAuth();
   const totals = cartTotals(items);
+
+  const startPayment = useServerFn(startPrintPayment);
+  const loadConfig = useServerFn(getYouCanPayConfig);
+
   const [step, setStep] = useState(0);
   const [details, setDetails] = useState<DeliveryDetails | null>(null);
   const [placing, setPlacing] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [cardReady, setCardReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [placedOrder, setPlacedOrder] = useState<OrderRecord | null>(null);
-  const [whatsAppLink, setWhatsAppLink] = useState<string>("");
-  const split = splitPayment(placedOrder?.total ?? totals.total);
   const orderId = placedOrder?.reference ?? "";
 
-  const handlePlaceOrder = async (event: React.FormEvent<HTMLFormElement>) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const elementRef = useRef<YouCanPayElement | null>(null);
+
+  const handleStartPayment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!user) {
-      toast.error(
-        tr(
-          "Please sign in above so we can save this order to your dashboard before continuing on WhatsApp.",
-        ),
-      );
+      toast.error(tr("Please sign in above so we can save this order before you pay."));
       return;
     }
     if (!details) {
-      toast.error(tr("Please complete your delivery details before continuing on WhatsApp."));
+      toast.error(tr("Please complete your delivery details before paying."));
       setStep(1);
       return;
     }
     setPlacing(true);
+    setError(null);
     const snapshotItems = items;
-    const snapshotTotals = totals;
     try {
+      const config = await loadConfig({});
+      if (!config.configured) throw new Error(tr("Card payment is not available right now."));
+
       const order = await createOrder({ userId: user.id, items, totals, details });
+      setPlacedOrder(order);
+
       const artworkPaths = snapshotItems
         .map((i) => i.artworkPath)
         .filter((p): p is string => Boolean(p));
@@ -90,26 +96,42 @@ function CheckoutPage() {
       } catch {
         // The order is placed; file linking is retried by staff if it fails.
       }
-      const url = whatsAppOrderUrl(
-        buildWhatsAppOrderMessage({
-          lang,
-          items: snapshotItems,
-          totals: snapshotTotals,
-          split: splitPayment(order.total),
-          reference: order.reference,
-          details,
-        }),
-      );
-      setPlacedOrder(order);
-      setWhatsAppLink(url);
-      setStep(3);
-      clear();
-      window.open(url, "_blank", "noopener,noreferrer");
-      toast.success(tr("Order recorded. Continue on WhatsApp to confirm it."));
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : tr("We couldn't place your order."));
+
+      const payment = await startPayment({ data: { orderId: order.id } });
+
+      const yp = await loadYouCanPay();
+      const locale: YouCanPayLocale = lang === "ar" ? "ar" : lang === "en" ? "en" : "fr";
+      const element = yp(config.publicKey, { locale }).elements({
+        token: payment.token,
+        container: containerRef.current ?? "#youcanpay-print-form",
+      });
+      elementRef.current = element;
+      await element.mount();
+      setCardReady(true);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : tr("The payment could not be started."));
     } finally {
       setPlacing(false);
+    }
+  };
+
+  const handleConfirmPayment = async () => {
+    if (!elementRef.current) return;
+    setPaying(true);
+    setError(null);
+    try {
+      const result = await elementRef.current.confirm();
+      if (result.status === "succeeded") {
+        setStep(3);
+        clear();
+        toast.success(tr("Payment received. Your order is confirmed."));
+      } else {
+        setError(result.error?.message ?? tr("The payment was declined."));
+      }
+    } catch {
+      setError(tr("The payment was declined."));
+    } finally {
+      setPaying(false);
     }
   };
 
@@ -131,7 +153,7 @@ function CheckoutPage() {
     <SiteShell>
       <section className="section-shell pb-14 pt-24 md:py-20">
         <h1 className="text-4xl md:text-5xl">
-          {tr(step === 3 ? "Your order is pending confirmation." : "Review and confirm your order")}
+          {tr(step === 3 ? "Your order is confirmed." : "Review and pay for your order")}
         </h1>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -246,93 +268,86 @@ function CheckoutPage() {
                     <Field label="Postcode" name="postcode" />
                   </div>
                   <Button type="submit" size="lg" className="mt-6 rounded-full">
-                    {tr("Continue to confirmation")}
+                    {tr("Continue to payment")}
                     <ArrowRight className="size-4 rtl:rotate-180" />
                   </Button>
                 </form>
               )}
 
               {step === 2 && (
-                <form onSubmit={handlePlaceOrder}>
-                  <h2 className="text-xl">{tr("Payment arrangement")}</h2>
-                  <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                    <Lock className="size-4" />
-                    {tr(
-                      "The 50% advance is arranged manually on WhatsApp after confirmation. The remaining 50% is paid in cash on delivery; no payment is taken on this website.",
-                    )}
+                <form onSubmit={handleStartPayment}>
+                  <h2 className="text-xl">{tr("Secure card payment")}</h2>
+                  <p className="mt-2 flex items-start gap-2 text-sm text-muted-foreground">
+                    <ShieldCheck className="mt-0.5 size-4 shrink-0" />
+                    {tr("Card details are handled by YouCan Pay. Primple never sees or stores your card.")}
                   </p>
 
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-primary bg-primary/10 p-5">
-                      <p className="flex items-center gap-2 text-sm font-semibold">
-                        <Lock className="size-4 text-primary" />
-                        {tr("Advance to arrange (50%)")}
-                      </p>
-                      <p className="mt-2 font-display text-2xl font-extrabold">
-                        {mad(split.deposit)}
-                      </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {tr("Arranged with our team on WhatsApp before production.")}
-                      </p>
-                    </div>
-                    <div className="rounded-2xl border border-border bg-secondary/50 p-5">
-                      <p className="flex items-center gap-2 text-sm font-semibold">
-                        <Banknote className="size-4 text-primary" />
-                        {tr("Cash on delivery (50%)")}
-                      </p>
-                      <p className="mt-2 font-display text-2xl font-extrabold">
-                        {mad(split.balance)}
-                      </p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {tr("Paid to the courier when your order arrives.")}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="mt-6 rounded-2xl border border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
-                    {tr(
-                      "We use WhatsApp to confirm your order and arrange the 50% advance payment manually. Your order stays pending until Primple confirms it. No payment is taken on this website.",
+                  <div
+                    id="youcanpay-print-form"
+                    ref={containerRef}
+                    className={cn(
+                      "mt-6 rounded-2xl border border-border bg-background p-4",
+                      cardReady ? "min-h-[280px]" : "hidden",
                     )}
-                  </p>
+                  />
 
                   {!user && (
                     <p className="mt-4 text-sm text-destructive">
-                      {tr(
-                        "Please sign in above so we can save this order to your dashboard before continuing on WhatsApp.",
-                      )}
+                      {tr("Please sign in above so we can save this order before you pay.")}
                     </p>
                   )}
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="mt-6 rounded-full"
-                    disabled={placing || !user}
-                    aria-describedby="whatsapp-checkout-hint"
-                  >
-                    {placing
-                      ? tr("Preparing your order…")
-                      : `${tr("Finalise via WhatsApp")} · ${mad(totals.total)}`}
-                    <ArrowRight className="size-4 rtl:rotate-180" />
-                  </Button>
-                  <p id="whatsapp-checkout-hint" className="mt-2 text-xs text-muted-foreground">
-                    {tr("Opens WhatsApp with a prefilled summary of your order")}
-                  </p>
+                  {!cardReady ? (
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="mt-6 rounded-full"
+                      disabled={placing || !user}
+                    >
+                      {placing ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <>
+                          <CreditCard className="size-4" />
+                          {`${tr("Pay by card")} · ${mad(totals.total)}`}
+                        </>
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      size="lg"
+                      className="mt-6 rounded-full"
+                      onClick={handleConfirmPayment}
+                      disabled={paying}
+                    >
+                      {paying ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        `${tr("Pay")} ${mad(placedOrder?.total ?? totals.total)}`
+                      )}
+                    </Button>
+                  )}
+
+                  {error && (
+                    <p className="mt-4 text-sm text-destructive" role="alert">
+                      {error}
+                    </p>
+                  )}
                 </form>
               )}
 
               {step === 3 && (
                 <div>
                   <span className="flex size-12 items-center justify-center rounded-full bg-primary/15">
-                    <Clock className="size-6 text-primary" />
+                    <CheckCircle2 className="size-6 text-primary" />
                   </span>
                   <h2 className="mt-5 text-xl">
-                    {tr("Order")} {orderId} · {tr("Pending")}
+                    {tr("Order")} {orderId} · {tr("Paid")}
                   </h2>
                   <p className="mt-2 text-muted-foreground">
-                    {tr("Your order is pending confirmation.")}{" "}
                     {tr(
-                      "We received your order details. Confirm it on WhatsApp with our team; production starts once Primple confirms the order and the 50% advance.",
+                      "Your card payment went through. We start production and keep you posted on your dashboard.",
                     )}
                   </p>
 
@@ -349,28 +364,15 @@ function CheckoutPage() {
                     />
                     <Summary
                       icon={Lock}
-                      label={tr("Advance to arrange (50%)")}
-                      value={mad(split.deposit)}
+                      label={tr("Amount paid")}
+                      value={mad(placedOrder?.total ?? totals.total)}
                     />
-                    <Summary
-                      icon={Banknote}
-                      label={tr("Cash on delivery (50%)")}
-                      value={mad(split.balance)}
-                    />
+                    <Summary icon={CreditCard} label={tr("Payment method")} value={tr("Card · YouCan Pay")} />
                   </dl>
 
                   <div className="mt-8 flex flex-wrap gap-3">
-                    {whatsAppLink && (
-                      <Button asChild size="lg" className="rounded-full">
-                        <a href={whatsAppLink} target="_blank" rel="noopener noreferrer">
-                          {tr("Reopen WhatsApp")}
-                          <ArrowRight className="size-4 rtl:rotate-180" />
-                        </a>
-                      </Button>
-                    )}
                     <Button
                       size="lg"
-                      variant="outline"
                       className="rounded-full"
                       onClick={() => navigate({ to: "/dashboard" })}
                     >
@@ -412,15 +414,7 @@ function CheckoutPage() {
               </div>
               <div className="flex justify-between border-t border-border pt-3 font-semibold">
                 <dt>{tr("Total")}</dt>
-                <dd>{mad(totals.total)}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">{tr("Advance to arrange (50%)")}</dt>
-                <dd>{mad(split.deposit)}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">{tr("Cash on delivery (50%)")}</dt>
-                <dd>{mad(split.balance)}</dd>
+                <dd>{mad(placedOrder?.total ?? totals.total)}</dd>
               </div>
             </dl>
             <p className="mt-5 text-xs text-muted-foreground">
