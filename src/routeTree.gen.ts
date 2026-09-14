@@ -35,6 +35,7 @@ import { Route as ProductsSlugRouteImport } from './routes/products/$slug'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as ShopHandleRouteImport } from './routes/shop/$handle'
 import { Route as AuthenticatedInvoiceReferenceRouteImport } from './routes/_authenticated/invoice.$reference'
+import { Route as ApiPublicYoucanpayWebhookRouteImport } from './routes/api/public/youcanpay-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -166,6 +167,12 @@ const AuthenticatedInvoiceReferenceRoute =
     path: '/invoice/$reference',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicYoucanpayWebhookRoute =
+  ApiPublicYoucanpayWebhookRouteImport.update({
+    id: '/api/public/youcanpay-webhook',
+    path: '/api/public/youcanpay-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
+  '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -220,6 +228,7 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsIndexRoute
   '/shop': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
+  '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -249,6 +258,7 @@ export interface FileRoutesById {
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/_authenticated/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
+  '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -278,6 +288,7 @@ export interface FileRouteTypes {
     | '/products/'
     | '/shop/'
     | '/invoice/$reference'
+    | '/api/public/youcanpay-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -305,6 +316,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/shop'
     | '/invoice/$reference'
+    | '/api/public/youcanpay-webhook'
   id:
     | '__root__'
     | '/'
@@ -333,6 +345,7 @@ export interface FileRouteTypes {
     | '/products/'
     | '/shop/'
     | '/_authenticated/invoice/$reference'
+    | '/api/public/youcanpay-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -360,6 +373,7 @@ export interface RootRouteChildren {
   ShopHandleRoute: typeof ShopHandleRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
+  ApiPublicYoucanpayWebhookRoute: typeof ApiPublicYoucanpayWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -546,6 +560,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInvoiceReferenceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/youcanpay-webhook': {
+      id: '/api/public/youcanpay-webhook'
+      path: '/api/public/youcanpay-webhook'
+      fullPath: '/api/public/youcanpay-webhook'
+      preLoaderRoute: typeof ApiPublicYoucanpayWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -587,6 +608,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShopHandleRoute: ShopHandleRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
+  ApiPublicYoucanpayWebhookRoute: ApiPublicYoucanpayWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

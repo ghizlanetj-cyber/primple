@@ -87,7 +87,7 @@ export const startShopPayment = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin.from("shop_orders").insert({
       user_id: userId,
       reference,
-      items: priced,
+      items: priced.map((line) => ({ ...line })),
       amount_cents: amountCents,
       currency,
       status: "pending",
