@@ -24,7 +24,6 @@ interface CartStore {
   removeItem: (variantId: string) => Promise<void>;
   clearCart: () => void;
   syncCart: () => Promise<void>;
-  getCheckoutUrl: () => string | null;
 }
 
 const CART_QUERY = `
@@ -272,7 +271,6 @@ export const useShopifyCart = create<CartStore>()(
       },
 
       clearCart: () => set({ items: [], cartId: null, checkoutUrl: null }),
-      getCheckoutUrl: () => get().checkoutUrl,
 
       syncCart: async () => {
         const { cartId, isSyncing, clearCart } = get();
