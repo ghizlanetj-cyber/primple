@@ -32,6 +32,8 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProductsSlugRouteImport } from './routes/products/$slug'
+import { Route as ShopIndexRouteImport } from './routes/shop/index'
+import { Route as ShopHandleRouteImport } from './routes/shop/$handle'
 import { Route as AuthenticatedInvoiceReferenceRouteImport } from './routes/_authenticated/invoice.$reference'
 
 const IndexRoute = IndexRouteImport.update({
@@ -148,6 +150,16 @@ const ProductsSlugRoute = ProductsSlugRouteImport.update({
   path: '/products/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopIndexRoute = ShopIndexRouteImport.update({
+  id: '/shop/',
+  path: '/shop/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopHandleRoute = ShopHandleRouteImport.update({
+  id: '/shop/$handle',
+  path: '/shop/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedInvoiceReferenceRoute =
   AuthenticatedInvoiceReferenceRouteImport.update({
     id: '/invoice/$reference',
@@ -177,7 +189,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/products/$slug': typeof ProductsSlugRoute
+  '/shop/$handle': typeof ShopHandleRoute
   '/products/': typeof ProductsIndexRoute
+  '/shop/': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
 }
 export interface FileRoutesByTo {
@@ -202,7 +216,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/products/$slug': typeof ProductsSlugRoute
+  '/shop/$handle': typeof ShopHandleRoute
   '/products': typeof ProductsIndexRoute
+  '/shop': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
 }
 export interface FileRoutesById {
@@ -229,7 +245,9 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/products/$slug': typeof ProductsSlugRoute
+  '/shop/$handle': typeof ShopHandleRoute
   '/products/': typeof ProductsIndexRoute
+  '/shop/': typeof ShopIndexRoute
   '/_authenticated/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
 }
 export interface FileRouteTypes {
@@ -256,7 +274,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/auth/callback'
     | '/products/$slug'
+    | '/shop/$handle'
     | '/products/'
+    | '/shop/'
     | '/invoice/$reference'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -281,7 +301,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/auth/callback'
     | '/products/$slug'
+    | '/shop/$handle'
     | '/products'
+    | '/shop'
     | '/invoice/$reference'
   id:
     | '__root__'
@@ -307,7 +329,9 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/auth/callback'
     | '/products/$slug'
+    | '/shop/$handle'
     | '/products/'
+    | '/shop/'
     | '/_authenticated/invoice/$reference'
   fileRoutesById: FileRoutesById
 }
@@ -333,7 +357,9 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
+  ShopHandleRoute: typeof ShopHandleRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
+  ShopIndexRoute: typeof ShopIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -499,6 +525,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop/': {
+      id: '/shop/'
+      path: '/shop'
+      fullPath: '/shop/'
+      preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/$handle': {
+      id: '/shop/$handle'
+      path: '/shop/$handle'
+      fullPath: '/shop/$handle'
+      preLoaderRoute: typeof ShopHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/invoice/$reference': {
       id: '/_authenticated/invoice/$reference'
       path: '/invoice/$reference'
@@ -544,7 +584,9 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   ProductsSlugRoute: ProductsSlugRoute,
+  ShopHandleRoute: ShopHandleRoute,
   ProductsIndexRoute: ProductsIndexRoute,
+  ShopIndexRoute: ShopIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
