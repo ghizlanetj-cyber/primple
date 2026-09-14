@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ExternalLink, Loader2, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { CreditCard, Loader2, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,8 +19,8 @@ import { useI18n } from "@/i18n";
 export function CartDrawer() {
   const { tr } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
-  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } =
-    useShopifyCart();
+  const navigate = useNavigate();
+  const { items, isLoading, isSyncing, updateQuantity, removeItem, syncCart } = useShopifyCart();
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + Number(item.price.amount) * item.quantity, 0);
@@ -30,11 +31,9 @@ export function CartDrawer() {
   }, [isOpen, syncCart]);
 
   const handleCheckout = () => {
-    const checkoutUrl = getCheckoutUrl();
-    if (checkoutUrl) {
-      window.open(checkoutUrl, "_blank");
-      setIsOpen(false);
-    }
+    if (items.length === 0) return;
+    setIsOpen(false);
+    navigate({ to: "/shop/checkout" });
   };
 
   return (
@@ -141,8 +140,8 @@ export function CartDrawer() {
                     <Loader2 className="size-4 animate-spin" />
                   ) : (
                     <>
-                      <ExternalLink className="size-4" />
-                      {tr("Checkout with Shopify")}
+                      <CreditCard className="size-4" />
+                      {tr("Pay by card")}
                     </>
                   )}
                 </Button>

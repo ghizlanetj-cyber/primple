@@ -34,7 +34,10 @@ import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProductsSlugRouteImport } from './routes/products/$slug'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as ShopHandleRouteImport } from './routes/shop/$handle'
+import { Route as ShopCheckoutRouteImport } from './routes/shop/checkout'
+import { Route as ShopConfirmationRouteImport } from './routes/shop/confirmation'
 import { Route as AuthenticatedInvoiceReferenceRouteImport } from './routes/_authenticated/invoice.$reference'
+import { Route as ApiPublicYoucanpayWebhookRouteImport } from './routes/api/public/youcanpay-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -160,11 +163,27 @@ const ShopHandleRoute = ShopHandleRouteImport.update({
   path: '/shop/$handle',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopCheckoutRoute = ShopCheckoutRouteImport.update({
+  id: '/shop/checkout',
+  path: '/shop/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopConfirmationRoute = ShopConfirmationRouteImport.update({
+  id: '/shop/confirmation',
+  path: '/shop/confirmation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedInvoiceReferenceRoute =
   AuthenticatedInvoiceReferenceRouteImport.update({
     id: '/invoice/$reference',
     path: '/invoice/$reference',
     getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const ApiPublicYoucanpayWebhookRoute =
+  ApiPublicYoucanpayWebhookRouteImport.update({
+    id: '/api/public/youcanpay-webhook',
+    path: '/api/public/youcanpay-webhook',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -190,9 +209,12 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
+  '/shop/checkout': typeof ShopCheckoutRoute
+  '/shop/confirmation': typeof ShopConfirmationRoute
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
+  '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -217,9 +239,12 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
+  '/shop/checkout': typeof ShopCheckoutRoute
+  '/shop/confirmation': typeof ShopConfirmationRoute
   '/products': typeof ProductsIndexRoute
   '/shop': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
+  '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -246,9 +271,12 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
+  '/shop/checkout': typeof ShopCheckoutRoute
+  '/shop/confirmation': typeof ShopConfirmationRoute
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/_authenticated/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
+  '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -275,9 +303,12 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/products/$slug'
     | '/shop/$handle'
+    | '/shop/checkout'
+    | '/shop/confirmation'
     | '/products/'
     | '/shop/'
     | '/invoice/$reference'
+    | '/api/public/youcanpay-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -302,9 +333,12 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/products/$slug'
     | '/shop/$handle'
+    | '/shop/checkout'
+    | '/shop/confirmation'
     | '/products'
     | '/shop'
     | '/invoice/$reference'
+    | '/api/public/youcanpay-webhook'
   id:
     | '__root__'
     | '/'
@@ -330,9 +364,12 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/products/$slug'
     | '/shop/$handle'
+    | '/shop/checkout'
+    | '/shop/confirmation'
     | '/products/'
     | '/shop/'
     | '/_authenticated/invoice/$reference'
+    | '/api/public/youcanpay-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -358,8 +395,11 @@ export interface RootRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ShopHandleRoute: typeof ShopHandleRoute
+  ShopCheckoutRoute: typeof ShopCheckoutRoute
+  ShopConfirmationRoute: typeof ShopConfirmationRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
+  ApiPublicYoucanpayWebhookRoute: typeof ApiPublicYoucanpayWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -539,12 +579,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopHandleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop/checkout': {
+      id: '/shop/checkout'
+      path: '/shop/checkout'
+      fullPath: '/shop/checkout'
+      preLoaderRoute: typeof ShopCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/confirmation': {
+      id: '/shop/confirmation'
+      path: '/shop/confirmation'
+      fullPath: '/shop/confirmation'
+      preLoaderRoute: typeof ShopConfirmationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/invoice/$reference': {
       id: '/_authenticated/invoice/$reference'
       path: '/invoice/$reference'
       fullPath: '/invoice/$reference'
       preLoaderRoute: typeof AuthenticatedInvoiceReferenceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/youcanpay-webhook': {
+      id: '/api/public/youcanpay-webhook'
+      path: '/api/public/youcanpay-webhook'
+      fullPath: '/api/public/youcanpay-webhook'
+      preLoaderRoute: typeof ApiPublicYoucanpayWebhookRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -585,8 +646,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ShopHandleRoute: ShopHandleRoute,
+  ShopCheckoutRoute: ShopCheckoutRoute,
+  ShopConfirmationRoute: ShopConfirmationRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
+  ApiPublicYoucanpayWebhookRoute: ApiPublicYoucanpayWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
