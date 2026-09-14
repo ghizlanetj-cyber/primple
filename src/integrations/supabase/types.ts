@@ -109,7 +109,9 @@ export type Database = {
           expected_at: string | null
           id: string
           items: Json
+          paid_at: string | null
           payment_method: string
+          payment_status: string
           phone: string | null
           postcode: string | null
           printer: string | null
@@ -119,6 +121,8 @@ export type Database = {
           total: number
           updated_at: string
           user_id: string
+          youcanpay_token_id: string | null
+          youcanpay_transaction_id: string | null
         }
         Insert: {
           address?: string | null
@@ -134,7 +138,9 @@ export type Database = {
           expected_at?: string | null
           id?: string
           items?: Json
+          paid_at?: string | null
           payment_method?: string
+          payment_status?: string
           phone?: string | null
           postcode?: string | null
           printer?: string | null
@@ -144,6 +150,8 @@ export type Database = {
           total?: number
           updated_at?: string
           user_id: string
+          youcanpay_token_id?: string | null
+          youcanpay_transaction_id?: string | null
         }
         Update: {
           address?: string | null
@@ -159,7 +167,9 @@ export type Database = {
           expected_at?: string | null
           id?: string
           items?: Json
+          paid_at?: string | null
           payment_method?: string
+          payment_status?: string
           phone?: string | null
           postcode?: string | null
           printer?: string | null
@@ -169,6 +179,8 @@ export type Database = {
           total?: number
           updated_at?: string
           user_id?: string
+          youcanpay_token_id?: string | null
+          youcanpay_transaction_id?: string | null
         }
         Relationships: []
       }

@@ -57,6 +57,13 @@
       "when": 1789387293135,
       "tag": "0007_create_shop_orders_youcanpay",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789388017012,
+      "tag": "0008_orders_card_payment",
+      "breakpoints": true
     }
   ]
 }
