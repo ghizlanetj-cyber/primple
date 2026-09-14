@@ -22,6 +22,7 @@ const columns: { titleKey: string; links: { label: string; to: string }[] }[] = 
       { label: "Services", to: "/services" },
       { label: "Pricing", to: "/pricing" },
       { label: "Enterprise", to: "/enterprise" },
+      { label: "Shop", to: "/shop" },
       { label: "Help Center", to: "/help" },
       { label: "Client dashboard", to: "/dashboard" },
     ],
