@@ -399,8 +399,6 @@ export const commercialPhrases: Record<string, TranslationPair> = {
   Phone: p("Téléphone", "الهاتف"),
   City: p("Ville", "المدينة"),
   "Delivery address": p("Adresse de livraison", "عنوان التوصيل"),
-  Pay: p("Payer", "ادفع"),
-  "Continue to payment": p("Continuer vers le paiement", "المتابعة إلى الدفع"),
   "Card details are handled by YouCan Pay. Primple never sees or stores your card.": p(
     "Les données de carte sont traitées par YouCan Pay. Primple ne voit ni ne conserve votre carte.",
     "تتم معالجة بيانات البطاقة عبر YouCan Pay. لا تطّلع Primple على بطاقتك ولا تحتفظ بها.",
