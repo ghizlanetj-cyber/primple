@@ -50,6 +50,13 @@
       "when": 1789298480172,
       "tag": "0006_restrict_privileged_functions_and_role_writes",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789387293135,
+      "tag": "0007_create_shop_orders_youcanpay",
+      "breakpoints": true
     }
   ]
 }

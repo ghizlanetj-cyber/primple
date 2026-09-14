@@ -199,6 +199,63 @@ export type Database = {
         }
         Relationships: []
       }
+      shop_orders: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          customer_address: string | null
+          customer_city: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          id: string
+          items: Json
+          paid_at: string | null
+          reference: string
+          status: string
+          user_id: string | null
+          youcanpay_token_id: string | null
+          youcanpay_transaction_id: string | null
+        }
+        Insert: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          customer_address?: string | null
+          customer_city?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          items?: Json
+          paid_at?: string | null
+          reference: string
+          status?: string
+          user_id?: string | null
+          youcanpay_token_id?: string | null
+          youcanpay_transaction_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          customer_address?: string | null
+          customer_city?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          items?: Json
+          paid_at?: string | null
+          reference?: string
+          status?: string
+          user_id?: string | null
+          youcanpay_token_id?: string | null
+          youcanpay_transaction_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
