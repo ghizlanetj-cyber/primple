@@ -126,3 +126,69 @@ export const getShopOrderStatus = createServerFn({ method: "POST" })
     if (!order) return null;
     return order;
   });
+
+/**
+ * Card payment for a print order. The amount is re-read from the saved order,
+ * never taken from the browser, and the caller must own the order.
+ */
+export const startPrintPayment = createServerFn({ method: "POST" })
+  .inputValidator((input: { orderId: string }) => {
+    const orderId = String(input?.orderId ?? "").trim();
+    if (!/^[0-9a-f-]{36}$/i.test(orderId)) throw new Error("Unknown order.");
+    return { orderId };
+  })
+  .handler(async ({ data }) => {
+    const { tokenizePayment, optionalUserId } = await import("./youcanpay.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const request = getRequest();
+    const userId = await optionalUserId(request?.headers.get("authorization") ?? null);
+    if (!userId) throw new Error("Please sign in to pay for this order.");
+
+    const { data: order, error } = await supabaseAdmin
+      .from("orders")
+      .select("id, user_id, reference, total, email, payment_status")
+      .eq("id", data.orderId)
+      .maybeSingle();
+
+    if (error || !order) throw new Error("Unknown order.");
+    if (order.user_id !== userId) throw new Error("Unknown order.");
+    if (order.payment_status === "paid") throw new Error("This order is already paid.");
+
+    const amountCents = Math.round(Number(order.total) * 100);
+    if (!Number.isFinite(amountCents) || amountCents <= 0) throw new Error("The order total is invalid.");
+
+    const origin = siteOrigin();
+    const { tokenId, transactionId } = await tokenizePayment({
+      reference: order.reference,
+      amountCents,
+      currency: "MAD",
+      successUrl: `${origin}/checkout?ref=${order.reference}`,
+      errorUrl: `${origin}/checkout?ref=${order.reference}&failed=1`,
+      customerEmail: order.email ?? undefined,
+    });
+
+    await supabaseAdmin
+      .from("orders")
+      .update({ youcanpay_token_id: tokenId, youcanpay_transaction_id: transactionId })
+      .eq("id", order.id);
+
+    return { reference: order.reference, token: tokenId, amountCents, currency: "MAD" };
+  });
+
+/** Payment status of a print order, read from the database. */
+export const getPrintOrderStatus = createServerFn({ method: "POST" })
+  .inputValidator((input: { reference: string }) => {
+    const reference = String(input?.reference ?? "").trim();
+    if (!/^PRM-\d{4,8}$/.test(reference)) throw new Error("Unknown order.");
+    return { reference };
+  })
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: order } = await supabaseAdmin
+      .from("orders")
+      .select("reference, payment_status, total, paid_at, status")
+      .eq("reference", data.reference)
+      .maybeSingle();
+    return order ?? null;
+  });

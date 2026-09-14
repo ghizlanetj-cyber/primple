@@ -35,12 +35,37 @@ export const Route = createFileRoute("/api/public/youcanpay-webhook")({
         if (!paid && !failed) return new Response("ok");
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const transactionId = event.payload?.transaction?.id ?? null;
+        const isPrintOrder = reference ? reference.startsWith("PRM-") : false;
+
+        if (isPrintOrder) {
+          let printQuery = supabaseAdmin
+            .from("orders")
+            .update({
+              payment_status: paid ? "paid" : "failed",
+              deposit_paid: paid,
+              paid_at: paid ? new Date().toISOString() : null,
+              youcanpay_transaction_id: transactionId,
+            })
+            .neq("payment_status", "paid");
+          printQuery = reference
+            ? printQuery.eq("reference", reference)
+            : printQuery.eq("youcanpay_token_id", tokenId!);
+
+          const { error } = await printQuery;
+          if (error) {
+            console.error("[YouCanPay] webhook print update failed", error.message);
+            return new Response("Update failed", { status: 500 });
+          }
+          return new Response("ok");
+        }
+
         let query = supabaseAdmin
           .from("shop_orders")
           .update({
             status: paid ? "paid" : "failed",
             paid_at: paid ? new Date().toISOString() : null,
-            youcanpay_transaction_id: event.payload?.transaction?.id ?? null,
+            youcanpay_transaction_id: transactionId,
           })
           .eq("status", "pending");
 
