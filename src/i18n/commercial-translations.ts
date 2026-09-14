@@ -393,7 +393,7 @@ export const commercialPhrases: Record<string, TranslationPair> = {
   "items in your cart": p("articles dans votre panier", "عناصر في سلتك"),
   "Checkout with Shopify": p("Payer avec Shopify", "الدفع عبر Shopify"),
   Total: p("Total", "المجموع"),
-  Remove: p("Retirer", "إزالة"),
+  
   "Back to shop": p("Retour à la boutique", "العودة إلى المتجر"),
   "Product not found": p("Article introuvable", "المنتج غير موجود"),
 };
