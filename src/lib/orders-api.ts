@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { CartItem } from "@/store/cart";
 import type { OrderStage } from "@/data/orders";
-import { fromCents, toCents } from "@/lib/format";
+
 
 export type OrderItemRecord = {
   slug: string;
