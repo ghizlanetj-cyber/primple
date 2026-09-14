@@ -56,7 +56,7 @@ function SecurityPage() {
           },
           {
             title: "Sécurité des paiements",
-            body: "Primple does not collect or store card details. The 50% advance is arranged manually with our team on WhatsApp, and no payment is taken on this website.",
+            body: "Primple ne collecte ni ne stocke les données de carte bancaire. Les paiements sont traités en dirhams (MAD) par YouCan Pay sur notre checkout sécurisé.",
           },
           {
             title: "Sauvegardes",

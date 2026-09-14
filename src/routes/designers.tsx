@@ -69,7 +69,7 @@ function DesignersPage() {
           { title: "One dashboard", body: "Every client job, quote and invoice in one place." },
           {
             title: "Simple payment",
-            body: "50% advance to start production, 50% cash on delivery.",
+            body: "Pay the full amount by card in MAD on our secure checkout; production starts once the payment is confirmed.",
           },
         ]}
       />

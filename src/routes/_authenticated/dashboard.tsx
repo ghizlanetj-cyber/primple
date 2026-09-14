@@ -393,7 +393,7 @@ function DashboardPage() {
                         <p className="mt-1 truncate text-xs text-muted-foreground">{record.reference}</p>
                       </div>
                       <span className="shrink-0 rounded-full bg-primary/20 px-2.5 py-1 text-xs font-semibold text-foreground">
-                        {record.depositPaid ? L.advancePaid : L.pendingPayment}
+                        {record.paymentStatus === "paid" ? L.advancePaid : L.pendingPayment}
                       </span>
                     </div>
                     <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-4 text-sm">
@@ -450,7 +450,7 @@ function DashboardPage() {
                       <td className="p-4">{mad(record.total)}</td>
                       <td className="p-4">
                         <span className="rounded-full bg-primary/20 px-2.5 py-1 text-xs font-semibold text-foreground">
-                          {record.depositPaid ? L.advancePaid : L.pendingPayment}
+                          {record.paymentStatus === "paid" ? L.advancePaid : L.pendingPayment}
                         </span>
                       </td>
                       <td className="p-4">

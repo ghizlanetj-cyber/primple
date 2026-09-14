@@ -39,8 +39,6 @@ export type InvoiceLabels = {
   subtotal: string;
   delivery: string;
   total: string;
-  advance: string;
-  balance: string;
   paymentStatus: string;
   orderStatus: string;
   pendingPayment: string;
@@ -72,8 +70,6 @@ export const invoiceLabels: Record<Lang, InvoiceLabels> = {
     subtotal: "Sous-total",
     delivery: "Livraison",
     total: "Total",
-    advance: "Acompte (50 %)",
-    balance: "Solde à la livraison (50 %)",
     paymentStatus: "Statut du paiement",
     orderStatus: "Statut de la commande",
     pendingPayment: "En attente : paiement par carte non finalisé",
@@ -103,8 +99,6 @@ export const invoiceLabels: Record<Lang, InvoiceLabels> = {
     subtotal: "Subtotal",
     delivery: "Delivery",
     total: "Total",
-    advance: "Advance (50%)",
-    balance: "Balance on delivery (50%)",
     paymentStatus: "Payment status",
     orderStatus: "Order status",
     pendingPayment: "Pending: card payment not completed",
@@ -134,8 +128,6 @@ export const invoiceLabels: Record<Lang, InvoiceLabels> = {
     subtotal: "المجموع الفرعي",
     delivery: "التوصيل",
     total: "المجموع",
-    advance: "الدفعة المقدمة (50٪)",
-    balance: "الرصيد عند التسليم (50٪)",
     paymentStatus: "حالة الدفع",
     orderStatus: "حالة الطلب",
     pendingPayment: "قيد الانتظار: لم يكتمل الدفع بالبطاقة",

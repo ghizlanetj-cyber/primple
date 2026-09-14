@@ -74,9 +74,9 @@ function EnterprisePage() {
 
       <ContentSection
         title="Payment terms"
-        intro="The standard Primple terms are a 50% advance arranged manually on WhatsApp, then 50% cash on delivery. No payment is taken on this website. Enterprise accounts can request monthly invoicing after a review."
+        intro="Standard orders are paid in full by card in MAD on our secure checkout, powered by YouCan Pay. Enterprise accounts can request monthly consolidated invoicing after a review."
         items={[
-          { title: "Standard", body: "Production starts after the manually arranged 50% advance is confirmed; the remaining 50% is paid in cash on delivery." },
+          { title: "Standard", body: "Pay the full amount by card in MAD; production starts once the payment is confirmed." },
           { title: "Enterprise", body: "Monthly consolidated invoicing, subject to approval." },
           { title: "Projects", body: "Milestone billing for large or phased campaigns." },
         ]}

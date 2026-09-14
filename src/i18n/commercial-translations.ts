@@ -37,13 +37,13 @@ export const commercialPhrases: Record<string, TranslationPair> = {
     "لـ {quantity} نسخة، التوصيل غير مشمول",
   ),
   "Clear payment terms": p("Modalités de paiement claires", "شروط دفع واضحة"),
-  "Customers confirm their order with Primple and arrange a 50% advance on WhatsApp; the balance is paid in cash on delivery. Payment terms with partner printers are agreed case by case.": p(
-    "Les clients confirment leur commande avec Primple et organisent un acompte de 50 % sur WhatsApp ; le solde est réglé en espèces à la livraison. Les modalités de paiement avec les imprimeurs partenaires sont convenues au cas par cas.",
-    "يؤكّد العملاء طلبهم مع Primple ويرتّبون دفعة 50% عبر واتساب، ويُدفع الباقي نقدًا عند التسليم. تُتفق شروط الدفع مع المطابع الشريكة حالة بحالة.",
+  "Customers pay Primple in full by card in MAD before production starts. Payment terms with partner printers are agreed case by case.": p(
+    "Les clients paient Primple intégralement par carte en MAD avant le début de la production. Les modalités de paiement avec les imprimeurs partenaires sont convenues au cas par cas.",
+    "يدفع العملاء لـ Primple كامل المبلغ بالبطاقة بالدرهم قبل بدء الإنتاج. تُتفق شروط الدفع مع المطابع الشريكة حالة بحالة.",
   ),
-  "Primple sends you print-ready jobs from businesses that confirmed their order and arranged the 50% advance. You do what you do best — produce beautifully, on time.": p(
-    "Primple vous envoie des travaux prêts à imprimer, de la part d’entreprises qui ont confirmé leur commande et organisé l’acompte de 50 %. Vous faites ce que vous savez faire de mieux : produire, bien et à temps.",
-    "ترسل لك Primple أعمالًا جاهزة للطباعة من شركات أكّدت طلبها ورتّبت دفعة 50%. وأنت تقوم بما تتقنه: الإنتاج بجودة وفي الوقت.",
+  "Primple sends you print-ready jobs from businesses that already paid. You do what you do best — produce beautifully, on time.": p(
+    "Primple vous envoie des travaux prêts à imprimer, de la part d’entreprises qui ont déjà payé. Vous faites ce que vous savez faire de mieux : produire, bien et à temps.",
+    "ترسل لك Primple أعمالًا جاهزة للطباعة من شركات دفعت بالفعل. وأنت تقوم بما تتقنه: الإنتاج بجودة وفي الوقت.",
   ),
   "Demonstration preview": p("Aperçu de démonstration", "معاينة توضيحية"),
   "Illustrative preview — demonstration data, not customer data.": p(
@@ -134,11 +134,6 @@ export const commercialPhrases: Record<string, TranslationPair> = {
     ),
   "Primple on Instagram": p("Primple sur Instagram", "Primple على إنستغرام"),
   "Primple on LinkedIn": p("Primple sur LinkedIn", "Primple على لينكدإن"),
-  "Primple sends you print-ready jobs from businesses that already paid. You do what you do best — produce beautifully, on time.":
-    p(
-      "Primple vous envoie des travaux prêts à imprimer, commandés par des entreprises ayant déjà payé. Vous vous concentrez sur votre savoir-faire : produire avec qualité et dans les délais.",
-      "ترسل إليك Primple أعمالًا جاهزة للطباعة من شركات دفعت مسبقًا. ركّز على ما تتقنه: إنتاج عالي الجودة وفي الموعد.",
-    ),
   "Primple — the online printing marketplace and printing management platform": p(
     "Primple — la place de marché et plateforme de gestion de l’impression",
     "Primple — سوق الطباعة الإلكتروني ومنصة إدارة الطباعة",

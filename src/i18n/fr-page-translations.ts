@@ -123,7 +123,7 @@ export const frenchPagePhrases: Record<string, string> = {
   "Quality issues": "Problèmes de qualité",
   "Send photos within 7 days of delivery and we reprint or refund.":
     "Envoyez des photos dans les 7 jours suivant la livraison ; nous réimprimons ou remboursons.",
-  "How does the 50/50 payment work?": "Comment fonctionne le paiement 50/50 ?",
+  "How do I pay for an order?": "Comment payer une commande ?",
   "Can I get a sample before a big run?": "Puis-je obtenir un échantillon avant une grande série ?",
   "Yes. Ask for a proof copy on the contact page and we'll quote a single sample before the full run.":
     "Oui. Demandez un exemplaire d’essai depuis la page de contact ; nous établirons un devis pour un échantillon avant la série complète.",
@@ -252,8 +252,8 @@ export const frenchPagePhrases: Record<string, string> = {
   "Every client job, quote and invoice in one place.":
     "Tous les travaux, devis et factures de vos clients au même endroit.",
   "Simple payment": "Paiement simple",
-  "50% advance to start production, 50% cash on delivery.":
-    "50 % d’acompte pour lancer la production, puis 50 % en espèces à la livraison.",
+  "Pay the full amount by card in MAD on our secure checkout; production starts once the payment is confirmed.":
+    "Payez l’intégralité par carte en MAD sur notre checkout sécurisé ; la production démarre dès confirmation du paiement.",
   "Designer FAQ": "FAQ designers",
   "Questions before you sign up.": "Vos questions avant l’inscription.",
   "Can I deliver directly to my client?": "Puis-je faire livrer directement mon client ?",
