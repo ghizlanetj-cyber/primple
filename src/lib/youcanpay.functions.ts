@@ -165,7 +165,7 @@ export const startPrintPayment = createServerFn({ method: "POST" })
       currency: "MAD",
       successUrl: `${origin}/checkout?ref=${order.reference}`,
       errorUrl: `${origin}/checkout?ref=${order.reference}&failed=1`,
-      customerEmail: order.email ?? undefined,
+      ...(order.email ? { customerEmail: order.email } : {}),
     });
 
     await supabaseAdmin
