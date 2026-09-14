@@ -259,7 +259,7 @@ export function Configurator({ product }: { product: Product }) {
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">
             {tr(
-              "The 50% advance is arranged manually on WhatsApp after confirmation. The remaining 50% is paid in cash on delivery; no payment is taken on this website.",
+              "Your payment is made online by card in MAD. Production starts once the payment is confirmed.",
             )}
           </p>
         </div>

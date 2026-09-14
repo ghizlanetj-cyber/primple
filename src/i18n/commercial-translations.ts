@@ -395,6 +395,38 @@ export const commercialPhrases: Record<string, TranslationPair> = {
   "Pay by card": p("Payer par carte", "الدفع بالبطاقة"),
   "Secure card payment": p("Paiement sécurisé par carte", "دفع آمن بالبطاقة"),
   "Order summary": p("Récapitulatif de la commande", "ملخص الطلب"),
+  "Review and pay for your order": p("Vérifiez et payez votre commande", "راجع طلبك وادفع"),
+  "Your order is confirmed.": p("Votre commande est confirmée.", "تم تأكيد طلبك."),
+  Payment: p("Paiement", "الدفع"),
+  Paid: p("Payée", "مدفوعة"),
+  "Pay by card": p("Payer par carte", "الدفع بالبطاقة"),
+  "Amount paid": p("Montant payé", "المبلغ المدفوع"),
+  "Payment method": p("Moyen de paiement", "طريقة الدفع"),
+  "Card · YouCan Pay": p("Carte · YouCan Pay", "بطاقة · YouCan Pay"),
+  "Payment received. Your order is confirmed.": p(
+    "Paiement reçu. Votre commande est confirmée.",
+    "تم استلام الدفع. تم تأكيد طلبك.",
+  ),
+  "Your card payment went through. We start production and keep you posted on your dashboard.": p(
+    "Votre paiement par carte est validé. La production démarre et vous suivez tout depuis votre tableau de bord.",
+    "تم قبول دفعتك بالبطاقة. يبدأ الإنتاج ويمكنك متابعة كل شيء من لوحة التحكم.",
+  ),
+  "Please sign in above so we can save this order before you pay.": p(
+    "Connectez-vous ci-dessus pour que nous enregistrions cette commande avant le paiement.",
+    "سجّل الدخول أعلاه حتى نحفظ هذا الطلب قبل الدفع.",
+  ),
+  "Please complete your delivery details before paying.": p(
+    "Complétez vos informations de livraison avant de payer.",
+    "أكمل معلومات التوصيل قبل الدفع.",
+  ),
+  "Secure card payment in MAD · Artwork checked before production": p(
+    "Paiement sécurisé par carte en MAD · Fichiers vérifiés avant production",
+    "دفع آمن بالبطاقة بالدرهم · التحقق من الملفات قبل الإنتاج",
+  ),
+  "Your payment is made online by card in MAD. Production starts once the payment is confirmed.": p(
+    "Le paiement se fait en ligne par carte en MAD. La production démarre dès la confirmation du paiement.",
+    "يتم الدفع عبر الإنترنت بالبطاقة بالدرهم. يبدأ الإنتاج فور تأكيد الدفع.",
+  ),
   "Full name": p("Nom complet", "الاسم الكامل"),
   Phone: p("Téléphone", "الهاتف"),
   City: p("Ville", "المدينة"),
