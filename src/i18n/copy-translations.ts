@@ -265,22 +265,19 @@ export const copyPhrases: Record<string, TranslationPair> = {
     ),
 
   // Checkout + payment terms
-  "Advance now (50%)": p("Acompte maintenant (50 %)", "الدفعة المقدمة الآن (50٪)"),
-  "Cash on delivery (50%)": p("Paiement à la livraison (50 %)", "الدفع عند الاستلام (50٪)"),
-  "Advance paid (50%)": p("Acompte payé (50 %)", "الدفعة المقدمة المدفوعة (50٪)"),
-  "Paid to the courier when your order arrives.": p(
-    "À régler au livreur à la réception de votre commande.",
-    "يُدفع لمندوب التوصيل عند وصول طلبك.",
+  "Amount to pay": p("Montant à payer", "المبلغ المستحق"),
+  "Card · YouCan Pay": p("Carte · YouCan Pay", "بطاقة · YouCan Pay"),
+  "Paid by card": p("Payée par carte", "مدفوعة بالبطاقة"),
+  "Payment confirmed": p("Paiement confirmé", "تم تأكيد الدفع"),
+  "Pay by card": p("Payer par carte", "ادفع بالبطاقة"),
+  "Your card payment is processed securely by YouCan Pay. Production starts once the payment is confirmed.": p(
+    "Votre paiement par carte est traité en toute sécurité par YouCan Pay. La production démarre dès confirmation du paiement.",
+    "يتم معالجة دفعتك بالبطاقة بأمان بواسطة YouCan Pay. يبدأ الإنتاج فور تأكيد الدفع.",
   ),
-  "Confirms your order and releases it to the printer.": p(
-    "Confirme votre commande et la transmet à l'imprimeur.",
-    "يؤكد طلبك ويرسله إلى المطبعة.",
-  ),
-  "Pay 50% advance": p("Payer l'acompte de 50 %", "ادفع مقدمًا 50٪"),
   "Placing your order…": p("Enregistrement de votre commande…", "جارٍ تسجيل طلبك…"),
-  "Order confirmed. 50% advance received.": p(
-    "Commande confirmée. Acompte de 50 % reçu.",
-    "تم تأكيد الطلب. تم استلام دفعة 50٪.",
+  "Order confirmed. Payment received.": p(
+    "Commande confirmée. Paiement reçu.",
+    "تم تأكيد الطلب. تم استلام الدفع.",
   ),
   "We couldn't place your order.": p(
     "Nous n'avons pas pu enregistrer votre commande.",

@@ -6,7 +6,7 @@ import { LegalBody } from "@/components/shared/LegalBody";
 
 const title = "Conditions d’utilisation | Primple";
 const description =
-  "Les conditions applicables à vos commandes Primple : commande, paiement 50/50, livraison, réimpression et responsabilité.";
+  "Les conditions applicables à vos commandes Primple : commande, paiement sécurisé par carte, livraison, réimpression et responsabilité.";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -36,11 +36,11 @@ function TermsPage() {
         sections={[
           {
             title: "1. Commandes",
-            body: "An order is confirmed after Primple validates the details with you on WhatsApp and confirms receipt of the manually arranged 50% advance. We check your file before production and contact you if it cannot be printed correctly.",
+            body: "Une commande est confirmée après validation de vos informations et réception du paiement par carte sur notre passerelle sécurisée YouCan Pay. Nous contrôlons votre fichier avant production et vous contactons s’il ne peut pas être imprimé correctement.",
           },
           {
             title: "2. Paiement",
-            body: "Primple's standard terms are a 50% advance arranged manually with our team on WhatsApp, followed by the remaining 50% paid in cash to the courier on delivery. No payment is taken on this website, and production starts only after the advance is confirmed as received.",
+            body: "Le règlement s’effectue en totalité par carte bancaire en dirhams (MAD) sur le checkout sécurisé de Primple, via YouCan Pay. Primple ne collecte ni ne stocke vos données de carte. La production démarre uniquement après confirmation du paiement.",
           },
           {
             title: "3. Prix",

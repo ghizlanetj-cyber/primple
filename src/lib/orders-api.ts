@@ -25,6 +25,7 @@ export type OrderRecord = {
   depositAmount: number;
   balanceAmount: number;
   depositPaid: boolean;
+  paymentStatus: "unpaid" | "paid" | "failed";
   city: string | null;
   /** Kept for backend compatibility with a future printer-selection update. */
   printer: string | null;
@@ -48,18 +49,8 @@ export type DeliveryDetails = {
   postcode: string;
 };
 
-/** Primple payment terms: 50% advance now, 50% cash on delivery. */
-export const DEPOSIT_RATE = 0.5;
-
-/** Single Primple-managed production path until printer selection ships. */
-export const PRIMPLE_PRODUCTION = "Primple";
-
-/** Deposit rounded to the centime, balance taken by difference: deposit + balance === total. */
-export function splitPayment(total: number) {
-  const totalCents = toCents(total);
-  const depositCents = Math.round(totalCents * DEPOSIT_RATE);
-  return { deposit: fromCents(depositCents), balance: fromCents(totalCents - depositCents) };
-}
+/** Primple payment terms: full payment by card in MAD via YouCan Pay. */
+const PRIMPLE_PRODUCTION = "Primple";
 
 export function itemConfigLabel(item: CartItem) {
   return item.labels.map((l) => l.value).join(" · ");
@@ -77,6 +68,7 @@ function toRecord(row: Record<string, unknown>): OrderRecord {
     depositAmount: Number(row["deposit_amount"] ?? 0),
     balanceAmount: Number(row["balance_amount"] ?? 0),
     depositPaid: Boolean(row["deposit_paid"]),
+    paymentStatus: (row["payment_status"] as "unpaid" | "paid" | "failed") ?? "unpaid",
     city: (row["city"] as string) ?? null,
     printer: (row["printer"] as string) ?? null,
     expectedAt: (row["expected_at"] as string) ?? null,
@@ -113,7 +105,6 @@ export async function createOrder(input: {
   totals: { subtotal: number; delivery: number; total: number };
   details: DeliveryDetails;
 }): Promise<OrderRecord> {
-  const { deposit, balance } = splitPayment(input.totals.total);
   const reference = `PRM-${Math.floor(10000 + Math.random() * 89999)}`;
   const maxDays = input.items.reduce((m, i) => Math.max(m, i.deliveryMax || i.productionDays), 5);
   const expected = new Date(Date.now() + maxDays * 24 * 60 * 60 * 1000);
@@ -135,10 +126,10 @@ export async function createOrder(input: {
     subtotal: input.totals.subtotal,
     delivery: input.totals.delivery,
     total: input.totals.total,
-    deposit_amount: deposit,
-    balance_amount: balance,
+    deposit_amount: input.totals.total,
+    balance_amount: 0,
     deposit_paid: false,
-    payment_method: "deposit_50_cod_50",
+    payment_method: "card_youcanpay",
     contact_name: input.details.name,
     company: input.details.company ?? null,
     email: input.details.email,

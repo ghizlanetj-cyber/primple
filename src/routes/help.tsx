@@ -49,7 +49,7 @@ function HelpPage() {
           },
           {
             title: "Payment terms",
-            body: "The 50% advance is arranged manually on WhatsApp after confirmation. The remaining 50% is paid in cash on delivery; no payment is taken on this website.",
+            body: "Payment is made in full by card in MAD on our secure checkout, powered by YouCan Pay. Production starts once the payment is confirmed.",
           },
           {
             title: "Delivery times",
@@ -73,8 +73,8 @@ function HelpPage() {
       <FaqSection
         items={[
           {
-            q: "How does the 50/50 payment work?",
-            a: "Primple confirms the order with you on WhatsApp and arranges the 50% advance manually. Production starts after the advance is confirmed. The remaining 50% is paid in cash to the courier on delivery; no payment is taken on this website.",
+            q: "How do I pay for an order?",
+            a: "Add your print job to the cart, enter your delivery details, then pay the full amount by card in MAD on our secure checkout. YouCan Pay handles the transaction; Primple never stores your card details. Production starts once the payment is confirmed.",
           },
           {
             q: "Can I get a sample before a big run?",

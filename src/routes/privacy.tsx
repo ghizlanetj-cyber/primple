@@ -44,7 +44,7 @@ function PrivacyPage() {
           },
           {
             title: "Avec qui nous les partageons",
-            body: "The printer handling your job receives only what is needed for printing and delivery. Couriers receive delivery details. The 50% advance is arranged manually with our team on WhatsApp; no payment or card details are collected on this website. We never sell your data.",
+            body: "The printer handling your job receives only what is needed for printing and delivery. Couriers receive delivery details. Payments are processed by YouCan Pay on Primple's secure checkout; no card details are collected or stored on this website. We never sell your data.",
           },
           {
             title: "Durée de conservation",

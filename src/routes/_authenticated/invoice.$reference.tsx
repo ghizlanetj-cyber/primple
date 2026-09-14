@@ -65,7 +65,7 @@ function InvoicePage() {
     );
   }
 
-  const paid = order.depositPaid ? L.advancePaid : L.pendingPayment;
+  const paid = order.paymentStatus === "paid" ? L.advancePaid : L.pendingPayment;
   const missingFields = missingInvoiceFields(order);
   const created = new Date(order.createdAt).toLocaleDateString(
     lang === "fr" ? "fr-MA" : lang === "ar" ? "ar-MA" : "en-GB",
