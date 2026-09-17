@@ -165,16 +165,21 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
     if (restoreFocus) window.setTimeout(() => triggerRef.current?.focus(), prefersReducedMotion ? 0 : 180);
   };
 
-  const showPanel = open || mobile;
+  const showPanel = open;
 
   return (
     <div ref={rootRef} className={cn("relative", mobile && "w-full")}>
       <Button
         ref={triggerRef}
         type="button"
-        variant="ghost"
-        size="icon"
-        className={cn("size-9 text-ink-foreground hover:text-ink-foreground", mobile && "hidden")}
+        variant={mobile ? "outline" : "ghost"}
+        size={mobile ? "default" : "icon"}
+        className={cn(
+          "text-ink-foreground hover:text-ink-foreground",
+          mobile
+            ? "h-11 w-full justify-start gap-2.5 rounded-full border-white/15 bg-white/5 ps-3.5 text-sm font-normal"
+            : "size-9",
+        )}
         aria-label={tr("Search Primple")}
         aria-expanded={open}
         aria-controls={panelId}
@@ -183,7 +188,8 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
           else setOpen(true);
         }}
       >
-        <Search className="size-4" />
+        <Search className="size-4 shrink-0" />
+        {mobile && <span className="truncate text-ink-muted">{tr("Search products, services and help")}</span>}
       </Button>
 
       <AnimatePresence>
@@ -198,7 +204,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
           transition={{ duration: prefersReducedMotion ? 0 : 0.18, ease: "easeOut" }}
           className={cn(
             mobile
-              ? "w-full text-ink-foreground"
+              ? "mt-3 w-full text-ink-foreground"
               : "search-glass fixed inset-x-3 top-[4.75rem] z-50 w-auto rounded-2xl border p-3 text-ink-foreground lg:absolute lg:inset-x-auto lg:end-0 lg:top-[calc(100%+0.65rem)] lg:w-[min(92vw,46rem)]",
           )}
         >
