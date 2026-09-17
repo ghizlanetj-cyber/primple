@@ -122,7 +122,6 @@ export function Header() {
             >
               <SheetHeader className="flex-row items-center justify-between space-y-0 border-b border-white/10 px-6 py-4 text-start">
                 <Logo invert className="h-5" />
-                <HeaderSearch mobile onRequestClose={() => setMobileOpen(false)} />
                 <SheetTitle className="sr-only">{t("cta.menu")}</SheetTitle>
                 <SheetDescription className="sr-only">
                   {tr("Primary navigation and account actions")}
