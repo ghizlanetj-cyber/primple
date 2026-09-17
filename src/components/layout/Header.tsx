@@ -120,8 +120,9 @@ export function Header() {
               closeLabel={t("cta.close")}
               className="w-[min(92vw,24rem)] overflow-y-auto border-white/10 bg-ink p-0 text-ink-foreground"
             >
-              <SheetHeader className="border-b border-white/10 px-6 py-5 text-start">
+              <SheetHeader className="flex-row items-center justify-between space-y-0 border-b border-white/10 px-6 py-4 text-start">
                 <Logo invert className="h-5" />
+                <HeaderSearch mobile onRequestClose={() => setMobileOpen(false)} />
                 <SheetTitle className="sr-only">{t("cta.menu")}</SheetTitle>
                 <SheetDescription className="sr-only">
                   {tr("Primary navigation and account actions")}
@@ -184,9 +185,6 @@ export function Header() {
                   </div>
                 ) : null}
 
-                <div className="mt-6 border-t border-white/10 pt-6">
-                  <HeaderSearch mobile onRequestClose={() => setMobileOpen(false)} />
-                </div>
                 <LanguageSelect variant="mobile" id="mobile-language" className="mt-6" />
               </nav>
             </SheetContent>

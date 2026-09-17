@@ -168,17 +168,15 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
   const showPanel = open;
 
   return (
-    <div ref={rootRef} className={cn("relative", mobile && "w-full")}>
+    <div ref={rootRef} className="relative">
       <Button
         ref={triggerRef}
         type="button"
-        variant={mobile ? "outline" : "ghost"}
-        size={mobile ? "default" : "icon"}
+        variant="ghost"
+        size="icon"
         className={cn(
-          "text-ink-foreground hover:text-ink-foreground",
-          mobile
-            ? "h-11 w-full justify-start gap-2.5 rounded-full border-white/15 bg-white/5 ps-3.5 text-sm font-normal"
-            : "size-9",
+          "size-10 rounded-full text-ink-foreground hover:text-ink-foreground",
+          mobile && "me-9",
         )}
         aria-label={tr("Search Primple")}
         aria-expanded={open}
@@ -189,7 +187,6 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
         }}
       >
         <Search className="size-4 shrink-0" />
-        {mobile && <span className="truncate text-ink-muted">{tr("Search products, services and help")}</span>}
       </Button>
 
       <AnimatePresence>
@@ -203,9 +200,10 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
           exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98, y: -6 }}
           transition={{ duration: prefersReducedMotion ? 0 : 0.18, ease: "easeOut" }}
           className={cn(
+            "rounded-2xl border border-white/10 p-3 text-ink-foreground shadow-lift",
             mobile
-              ? "mt-3 w-full text-ink-foreground"
-              : "search-glass fixed inset-x-3 top-[4.75rem] z-50 w-auto rounded-2xl border p-3 text-ink-foreground lg:absolute lg:inset-x-auto lg:end-0 lg:top-[calc(100%+0.65rem)] lg:w-[min(92vw,46rem)]",
+              ? "absolute end-0 top-[calc(100%+0.6rem)] z-50 w-[min(84vw,21rem)] bg-ink"
+              : "search-glass fixed inset-x-3 top-[4.75rem] z-50 w-auto lg:absolute lg:inset-x-auto lg:end-0 lg:top-[calc(100%+0.65rem)] lg:w-[min(92vw,46rem)]",
           )}
         >
           <div className="relative">
