@@ -69,18 +69,15 @@ function validateGuestOrder(input: GuestOrderInput): GuestOrderInput {
 export const createGuestOrder = createServerFn({ method: "POST" })
   .inputValidator(validateGuestOrder)
   .handler(async ({ data }) => {
-    const { lineQuote } = await import("@/data/pricing");
+    const { orderTotals } = await import("@/data/pricing");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    let subtotalCents = 0;
-    let deliveryCents = 0;
-    let maxDays = 3;
-    const items = data.lines.map((line) => {
-      const quote = lineQuote(line.slug, line.quantity, line.selection);
-      if (!quote) throw new Error("One of the items is no longer available.");
-      subtotalCents += Math.round(quote.subtotal * 100);
-      deliveryCents = Math.max(deliveryCents, Math.round(quote.delivery * 100));
-      maxDays = Math.max(maxDays, quote.deliveryMax);
+    const totals = orderTotals(data.lines);
+    if (!totals) throw new Error("One of the items is no longer available.");
+    const { subtotalCents, deliveryCents, totalCents } = totals;
+    const maxDays = Math.max(3, totals.deliveryMax);
+    const items = data.lines.map((line, index) => {
+      const quote = totals.quotes[index]!;
       return {
         slug: line.slug,
         name: line.slug,
@@ -94,7 +91,6 @@ export const createGuestOrder = createServerFn({ method: "POST" })
       };
     });
 
-    const totalCents = subtotalCents + deliveryCents;
     if (totalCents <= 0) throw new Error("The order total is invalid.");
 
     const reference = `PRM-${Math.floor(10000 + Math.random() * 89999)}`;
@@ -161,6 +157,7 @@ export const claimGuestOrder = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { canClaimOrder } = await import("./order-access");
     const email = (context.claims as { email?: string } | null)?.email ?? "";
 
     const { data: order } = await supabaseAdmin
@@ -169,16 +166,10 @@ export const claimGuestOrder = createServerFn({ method: "POST" })
       .eq("reference", data.reference)
       .maybeSingle();
 
-    if (!order || order.user_id || order.claim_token !== data.claimToken) {
+    if (!canClaimOrder(order, { userId: context.userId, email, claimToken: data.claimToken })) {
       return { claimed: false };
     }
-    if (
-      email &&
-      order.guest_email &&
-      order.guest_email.toLowerCase() !== email.toLowerCase()
-    ) {
-      return { claimed: false };
-    }
+    if (!order) return { claimed: false };
 
     const { error } = await supabaseAdmin
       .from("orders")
