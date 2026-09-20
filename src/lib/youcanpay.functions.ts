@@ -184,13 +184,12 @@ export const startPrintPayment = createServerFn({ method: "POST" })
 
     if (error || !order) throw new Error("Unknown order.");
     // Either the signed-in owner, or the guest holding this order's claim token.
-    const isOwner = Boolean(userId) && order.user_id === userId;
-    const isGuest =
-      !order.user_id &&
-      Boolean(order.claim_token) &&
-      "claimToken" in data &&
-      data.claimToken === order.claim_token;
-    if (!isOwner && !isGuest) throw new Error("Unknown order.");
+    const { canPayOrder } = await import("./order-access");
+    const allowed = canPayOrder(order, {
+      userId,
+      claimToken: "claimToken" in data ? data.claimToken : null,
+    });
+    if (!allowed) throw new Error("Unknown order.");
     if (order.payment_status === "paid") throw new Error("This order is already paid.");
 
     // Never trust the stored total: re-price every line from the catalog.

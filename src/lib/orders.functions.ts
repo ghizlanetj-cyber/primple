@@ -157,6 +157,7 @@ export const claimGuestOrder = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { canClaimOrder } = await import("./order-access");
     const email = (context.claims as { email?: string } | null)?.email ?? "";
 
     const { data: order } = await supabaseAdmin
@@ -165,16 +166,10 @@ export const claimGuestOrder = createServerFn({ method: "POST" })
       .eq("reference", data.reference)
       .maybeSingle();
 
-    if (!order || order.user_id || order.claim_token !== data.claimToken) {
+    if (!canClaimOrder(order, { userId: context.userId, email, claimToken: data.claimToken })) {
       return { claimed: false };
     }
-    if (
-      email &&
-      order.guest_email &&
-      order.guest_email.toLowerCase() !== email.toLowerCase()
-    ) {
-      return { claimed: false };
-    }
+    if (!order) return { claimed: false };
 
     const { error } = await supabaseAdmin
       .from("orders")
