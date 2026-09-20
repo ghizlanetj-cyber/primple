@@ -745,19 +745,41 @@ export function selectionLabels(product: Product, selection: Selection) {
     : labels;
 }
 
+/** The genuinely cheapest configuration of a product, delivery excluded. */
+export function cheapestSelection(product: Product): Selection {
+  const selection: Selection = {};
+  for (const g of product.options) {
+    if (g.id === "delivery") {
+      selection[g.id] = g.choices[0]!.id;
+      continue;
+    }
+    const cheapest = g.choices.reduce((best, c) =>
+      (c.factor ?? 1) < (best.factor ?? 1) ? c : best,
+    );
+    selection[g.id] = cheapest.id;
+  }
+  if (product.pageRange) selection["pages"] = String(product.pageRange.min);
+  if (product.dimensions) {
+    selection["width"] = String(product.dimensions.defaultWidth);
+    selection["height"] = String(product.dimensions.defaultHeight);
+  }
+  return selection;
+}
+
 /**
  * The real basis of the "From" price: the smallest listed quantity with the
- * default (cheapest listed) option of every group. Delivery is excluded.
+ * cheapest option of every group, priced by the same engine. Delivery excluded.
  */
 export function fromPriceBasis(product: Product) {
-  const quantity = product.quantities[0]!;
-  const selection = defaultSelection(product);
+  const quantity = Math.min(...product.quantities);
+  const selection = cheapestSelection(product);
   const quote = priceQuote(product, quantity, selection);
   return {
     quantity,
     selection,
     /** Order value for that quantity, before delivery. */
     amount: quote.subtotal,
+    unitPrice: quote.unitPrice,
     labels: selectionLabels(product, selection).filter((l) => l.group !== "Delivery"),
   };
 }
