@@ -30,6 +30,8 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as PacksIndexRouteImport } from './routes/packs/index'
+import { Route as PacksSlugRouteImport } from './routes/packs/$slug'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProductsSlugRouteImport } from './routes/products/$slug'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
@@ -143,6 +145,16 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PacksIndexRoute = PacksIndexRouteImport.update({
+  id: '/packs/',
+  path: '/packs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PacksSlugRoute = PacksSlugRouteImport.update({
+  id: '/packs/$slug',
+  path: '/packs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsIndexRoute = ProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
@@ -207,10 +219,12 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/packs/$slug': typeof PacksSlugRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/confirmation': typeof ShopConfirmationRoute
+  '/packs/': typeof PacksIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
@@ -237,10 +251,12 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/packs/$slug': typeof PacksSlugRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/confirmation': typeof ShopConfirmationRoute
+  '/packs': typeof PacksIndexRoute
   '/products': typeof ProductsIndexRoute
   '/shop': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
@@ -269,10 +285,12 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/packs/$slug': typeof PacksSlugRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/confirmation': typeof ShopConfirmationRoute
+  '/packs/': typeof PacksIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/_authenticated/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
@@ -301,10 +319,12 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/auth/callback'
+    | '/packs/$slug'
     | '/products/$slug'
     | '/shop/$handle'
     | '/shop/checkout'
     | '/shop/confirmation'
+    | '/packs/'
     | '/products/'
     | '/shop/'
     | '/invoice/$reference'
@@ -331,10 +351,12 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/auth/callback'
+    | '/packs/$slug'
     | '/products/$slug'
     | '/shop/$handle'
     | '/shop/checkout'
     | '/shop/confirmation'
+    | '/packs'
     | '/products'
     | '/shop'
     | '/invoice/$reference'
@@ -362,10 +384,12 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/dashboard'
     | '/auth/callback'
+    | '/packs/$slug'
     | '/products/$slug'
     | '/shop/$handle'
     | '/shop/checkout'
     | '/shop/confirmation'
+    | '/packs/'
     | '/products/'
     | '/shop/'
     | '/_authenticated/invoice/$reference'
@@ -393,10 +417,12 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  PacksSlugRoute: typeof PacksSlugRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ShopHandleRoute: typeof ShopHandleRoute
   ShopCheckoutRoute: typeof ShopCheckoutRoute
   ShopConfirmationRoute: typeof ShopConfirmationRoute
+  PacksIndexRoute: typeof PacksIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
   ApiPublicYoucanpayWebhookRoute: typeof ApiPublicYoucanpayWebhookRoute
@@ -551,6 +577,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/packs/': {
+      id: '/packs/'
+      path: '/packs'
+      fullPath: '/packs/'
+      preLoaderRoute: typeof PacksIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/packs/$slug': {
+      id: '/packs/$slug'
+      path: '/packs/$slug'
+      fullPath: '/packs/$slug'
+      preLoaderRoute: typeof PacksSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products/': {
       id: '/products/'
       path: '/products'
@@ -644,10 +684,12 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  PacksSlugRoute: PacksSlugRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ShopHandleRoute: ShopHandleRoute,
   ShopCheckoutRoute: ShopCheckoutRoute,
   ShopConfirmationRoute: ShopConfirmationRoute,
+  PacksIndexRoute: PacksIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
   ApiPublicYoucanpayWebhookRoute: ApiPublicYoucanpayWebhookRoute,
