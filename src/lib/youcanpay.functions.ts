@@ -162,10 +162,11 @@ async function recomputeOrderCents(order: {
 }
 
 export const startPrintPayment = createServerFn({ method: "POST" })
-  .inputValidator((input: { orderId: string }) => {
+  .inputValidator((input: { orderId: string; claimToken?: string }) => {
     const orderId = String(input?.orderId ?? "").trim();
     if (!/^[0-9a-f-]{36}$/i.test(orderId)) throw new Error("Unknown order.");
-    return { orderId };
+    const claimToken = String(input?.claimToken ?? "").trim();
+    return claimToken ? { orderId, claimToken } : { orderId };
   })
   .handler(async ({ data }) => {
     const { tokenizePayment, optionalUserId } = await import("./youcanpay.server");
