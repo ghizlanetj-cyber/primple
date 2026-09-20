@@ -13,6 +13,7 @@ import { commercialPhrases } from "./commercial-translations";
 import { copyPhrases } from "./copy-translations";
 import { frenchPagePhrases } from "./fr-page-translations";
 import { homePhrases } from "./home-translations";
+import { packPhrases } from "./pack-translations";
 import { setMoneyLocale } from "@/lib/format";
 
 export const languages = ["en", "fr", "ar"] as const;
@@ -348,6 +349,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
               authPhrases[text]?.fr ??
               productPhrases[text]?.fr ??
               commercialPhrases[text]?.fr ??
+              packPhrases[text]?.fr ??
               copyPhrases[text]?.fr ??
               text)
             : (homePhrases[text]?.ar ??
@@ -355,6 +357,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
               authPhrases[text]?.ar ??
               productPhrases[text]?.ar ??
               commercialPhrases[text]?.ar ??
+              packPhrases[text]?.ar ??
               copyPhrases[text]?.ar ??
               text),
       number: (value: number) =>
