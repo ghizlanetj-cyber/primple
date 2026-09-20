@@ -603,6 +603,7 @@ export function defaultSelection(product: Product): Selection {
 }
 
 export type Quote = {
+  /** Product price per unit, delivery excluded. */
   unitPrice: number;
   subtotal: number;
   delivery: number;
@@ -611,6 +612,8 @@ export type Quote = {
   deliveryMin: number;
   deliveryMax: number;
   savingsPercent: number;
+  /** Printed surface in m2 for area-priced products, otherwise null. */
+  area: number | null;
 };
 
 /** Quantity breaks: bigger runs cost less per unit. */
@@ -625,43 +628,95 @@ function quantityFactor(product: Product, quantity: number) {
     return 1;
   }
   const base = product.quantities[0]!;
-  const ratio = quantity / base;
+  const ratio = Math.max(quantity, 1) / base;
   return Math.max(0.45, Math.pow(ratio, -0.16));
 }
 
-export function priceQuote(product: Product, quantity: number, selection: Selection): Quote {
+/** Option, page-count and variant multipliers. Quantity and surface excluded. */
+function configFactor(product: Product, selection: Selection) {
   let factor = 1;
-  let flat = 0;
-  let extraDays = 0;
-
   for (const g of product.options) {
+    if (g.id === "delivery") continue;
     const choice = g.choices.find((c) => c.id === selection[g.id]) ?? g.choices[0]!;
     factor *= choice.factor ?? 1;
+  }
+  if (product.pageRange) {
+    const pages = Number(selection["pages"] ?? product.pageRange.default);
+    const valid =
+      Number.isInteger(pages) && pages >= product.pageRange.min && pages <= product.pageRange.max;
+    factor *= (valid ? pages : product.pageRange.default) / product.pageRange.default;
+  }
+  return factor;
+}
+
+function positive(value: string | undefined, fallback: number, spec: DimensionSpec) {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n <= 0) return fallback;
+  return Math.min(Math.max(n, spec.min), spec.max);
+}
+
+/** Printed surface in m2. Always 1 for products that are not priced by area. */
+export function selectionArea(product: Product, selection: Selection) {
+  const spec = product.dimensions;
+  if (!spec) return null;
+  const width = positive(selection["width"], spec.defaultWidth, spec);
+  const height = positive(selection["height"], spec.defaultHeight, spec);
+  return Math.round(width * height * 10000) / 10000;
+}
+
+const unitBaseCache = new Map<string, number>();
+
+/**
+ * Single calibration point: the unit price (per unit, or per m2 for area-priced
+ * products) that makes the market anchor subtotal come out exact.
+ */
+function unitBase(product: Product) {
+  const cached = unitBaseCache.get(product.slug);
+  if (cached !== undefined) return cached;
+  const anchor = product.anchor;
+  const selection: Selection = { ...defaultSelection(product), ...(anchor.selection ?? {}) };
+  const denominator =
+    anchor.quantity *
+    configFactor(product, selection) *
+    quantityFactor(product, anchor.quantity) *
+    (selectionArea(product, selection) ?? 1);
+  const value = anchor.subtotal / denominator;
+  unitBaseCache.set(product.slug, value);
+  return value;
+}
+
+export function priceQuote(product: Product, quantity: number, selection: Selection): Quote {
+  const qty = Math.max(1, Math.floor(quantity) || 1);
+  let flat = 0;
+  let extraDays = 0;
+  for (const g of product.options) {
+    const choice = g.choices.find((c) => c.id === selection[g.id]) ?? g.choices[0]!;
     flat += choice.flat ?? 0;
     extraDays += choice.days ?? 0;
   }
 
-  if (product.pageRange) {
-    const pages = Number(selection["pages"] ?? product.pageRange.default);
-    const validPages = Number.isInteger(pages) && pages >= product.pageRange.min && pages <= product.pageRange.max;
-    factor *= (validPages ? pages : product.pageRange.default) / product.pageRange.default;
-  }
-  const qFactor = quantityFactor(product, quantity);
+  const area = selectionArea(product, selection);
+  const qFactor = quantityFactor(product, qty);
+  const rawUnit = unitBase(product) * configFactor(product, selection) * qFactor * (area ?? 1);
   // Money is settled on integer centimes so subtotal + delivery always equals total.
-  const unitCents = toCents(product.unitPrice * factor * qFactor);
-  const subtotalCents = Math.round(unitCents * quantity);
+  const subtotalCents = Math.max(0, Math.round(rawUnit * 100 * qty));
   const deliveryCents = toCents(flat);
   const productionDays = Math.max(1, product.baseProductionDays + extraDays);
   const express = selection["delivery"] === "express";
+  const smallestQuantity = Math.min(...product.quantities);
+  const referenceFactor = quantityFactor(product, smallestQuantity);
+  const savings = referenceFactor > 0 ? 1 - qFactor / referenceFactor : 0;
 
   return {
+    unitPrice: fromCents(subtotalCents) / qty,
     subtotal: fromCents(subtotalCents),
     delivery: fromCents(deliveryCents),
     total: fromCents(subtotalCents + deliveryCents),
     productionDays,
     deliveryMin: express ? 1 : 3,
     deliveryMax: express ? 2 : 5,
-    savingsPercent: Math.round((1 - qFactor) * 100),
+    savingsPercent: Math.max(0, Math.round(savings * 100)),
+    area,
   };
 }
 
