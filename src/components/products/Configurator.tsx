@@ -52,6 +52,18 @@ export function Configurator({ product }: { product: Product }) {
         .replace("{min}", number(product.pageRange.min))
         .replace("{max}", number(product.pageRange.max))
     : "";
+  const dimensionValue = (key: "width" | "height", fallback: number) => {
+    const raw = selection[key];
+    return raw === undefined || raw === "" ? fallback : Number(raw);
+  };
+  const dimensionsInvalid = product.dimensions
+    ? !(
+        Number.isFinite(dimensionValue("width", product.dimensions.defaultWidth)) &&
+        dimensionValue("width", product.dimensions.defaultWidth) > 0 &&
+        Number.isFinite(dimensionValue("height", product.dimensions.defaultHeight)) &&
+        dimensionValue("height", product.dimensions.defaultHeight) > 0
+      )
+    : false;
 
   const addToCart = () => {
     if (customQuantityInvalid || pagesInvalid || bulkQuote) return;
