@@ -57,6 +57,11 @@ function SignupPage() {
     roles.some((r) => r.id === search.role) ? (search.role as string) : "business",
   );
   const [busy, setBusy] = useState(false);
+  // A guest who just paid gets their order email filled in for them.
+  const [guestEmail, setGuestEmail] = useState("");
+  useEffect(() => {
+    setGuestEmail(readGuestClaim()?.email ?? "");
+  }, []);
 
   const destination = search.redirect?.startsWith("/") ? search.redirect : "/dashboard";
 
@@ -162,7 +167,15 @@ function SignupPage() {
             </div>
             <div>
               <Label htmlFor="email">{tr("Email")}</Label>
-              <Input id="email" name="email" type="email" required className="mt-1.5" />
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                defaultValue={guestEmail}
+                key={guestEmail}
+                className="mt-1.5"
+              />
             </div>
             <div>
               <Label htmlFor="password">{tr("Password")}</Label>
