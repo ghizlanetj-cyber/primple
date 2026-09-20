@@ -1,4 +1,9 @@
 import { supabase } from "@/integrations/supabase/client";
+import {
+  deleteGuestArtwork,
+  prepareGuestArtworkUpload,
+  registerGuestArtwork,
+} from "@/lib/files.functions";
 
 /**
  * Client artwork lives in the private Lovable Cloud storage bucket below.
@@ -23,6 +28,7 @@ export type ClientFile = {
   sizeBytes: number;
   status: string;
   createdAt: string;
+  guestToken?: string;
 };
 
 function toFile(row: Record<string, unknown>): ClientFile {
@@ -37,7 +43,31 @@ function toFile(row: Record<string, unknown>): ClientFile {
     sizeBytes: Number(row["size_bytes"] ?? 0),
     status: String(row["status"] ?? "uploaded"),
     createdAt: String(row["created_at"]),
+    ...((row["guest_token"] as string | null) ? { guestToken: String(row["guest_token"]) } : {}),
   };
+}
+
+export async function uploadGuestFile(file: File): Promise<ClientFile> {
+  const prepared = await prepareGuestArtworkUpload({
+    data: { name: file.name, mimeType: file.type, sizeBytes: file.size },
+  });
+  const { error: uploadError } = await supabase.storage
+    .from(ARTWORK_BUCKET)
+    .uploadToSignedUrl(prepared.path, prepared.uploadToken, file, {
+      ...(file.type ? { contentType: file.type } : {}),
+    });
+  if (uploadError) throw uploadError;
+
+  const row = await registerGuestArtwork({
+    data: {
+      path: prepared.path,
+      guestToken: prepared.guestToken,
+      name: file.name,
+      mimeType: file.type,
+      sizeBytes: file.size,
+    },
+  });
+  return toFile(row as Record<string, unknown>);
 }
 
 export function fileExtension(name: string) {
@@ -126,6 +156,13 @@ export async function signedFileUrl(path: string, download = false) {
 }
 
 export async function deleteClientFile(file: ClientFile) {
+  if (file.guestToken) {
+    const result = await deleteGuestArtwork({
+      data: { path: file.path, guestToken: file.guestToken },
+    });
+    if (!result.deleted) throw new Error("The file could not be removed.");
+    return;
+  }
   const { error: storageError } = await supabase.storage.from(ARTWORK_BUCKET).remove([file.path]);
   if (storageError) throw storageError;
   const { error } = await supabase.from("order_files").delete().eq("id", file.id);
