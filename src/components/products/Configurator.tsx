@@ -243,7 +243,7 @@ export function Configurator({ product }: { product: Product }) {
             <p className={cn("mt-6 text-sm", bulkQuote ? "font-semibold text-primary" : "text-muted-foreground")}>{tr("500+ copies: request a custom quote.")}</p>
           )}
           {product.pageRange && (
-            <p className="mt-3 text-sm text-muted-foreground">{tr("Base price: 55 DH for 24 pages, A5, black and white, 80g offset paper and perfect binding. Options and quantity discounts update the price.")}</p>
+            <p className="mt-3 text-sm text-muted-foreground">{tr("Base price: 45 DH for 24 pages, A5, black and white, 80g offset paper and perfect binding. Options and quantity discounts update the price.")}</p>
           )}
         </section>
 
