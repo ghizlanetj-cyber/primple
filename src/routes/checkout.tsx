@@ -6,6 +6,8 @@ import { ArrowRight, CheckCircle2, Clock, CreditCard, Loader2, Lock, ShieldCheck
 import { toast } from "sonner";
 
 import { createOrder, type DeliveryDetails, type OrderRecord } from "@/lib/orders-api";
+import { createGuestOrder } from "@/lib/orders.functions";
+import { saveGuestClaim } from "@/lib/guest-claim";
 import { attachFilesToOrder } from "@/lib/files-api";
 import { invoiceLabels } from "@/lib/invoice";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
@@ -54,6 +56,7 @@ function CheckoutPage() {
 
   const startPayment = useServerFn(startPrintPayment);
   const loadConfig = useServerFn(getYouCanPayConfig);
+  const placeGuestOrder = useServerFn(createGuestOrder);
 
   const [step, setStep] = useState(0);
   const [details, setDetails] = useState<DeliveryDetails | null>(null);
@@ -69,10 +72,6 @@ function CheckoutPage() {
 
   const handleStartPayment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!user) {
-      toast.error(tr("Please sign in above so we can save this order before you pay."));
-      return;
-    }
     if (!details) {
       toast.error(tr("Please complete your delivery details before paying."));
       setStep(1);
@@ -85,19 +84,52 @@ function CheckoutPage() {
       const config = await loadConfig({});
       if (!config.configured) throw new Error(tr("Card payment is not available right now."));
 
-      const order = await createOrder({ userId: user.id, items, totals, details });
+      let order: OrderRecord;
+      let claimToken: string | undefined;
+      if (user) {
+        order = await createOrder({ userId: user.id, items, totals, details });
+      } else {
+        // Guests order too: the server prices every line and hands back a
+        // one-time token so the order can be attached to a new account later.
+        const guest = await placeGuestOrder({
+          data: {
+            lines: items.map((i) => ({
+              slug: i.slug,
+              quantity: i.quantity,
+              selection: i.selection,
+            })),
+            details,
+          },
+        });
+        claimToken = guest.claimToken;
+        order = {
+          id: guest.id,
+          reference: guest.reference,
+          total: guest.total,
+          expectedAt: guest.expectedAt ?? "",
+        } as OrderRecord;
+        saveGuestClaim({
+          reference: guest.reference,
+          claimToken: guest.claimToken,
+          email: details.email,
+        });
+      }
       setPlacedOrder(order);
 
       const artworkPaths = snapshotItems
         .map((i) => i.artworkPath)
         .filter((p): p is string => Boolean(p));
-      try {
-        await attachFilesToOrder(artworkPaths, order.id, order.reference);
-      } catch {
-        // The order is placed; file linking is retried by staff if it fails.
+      if (user) {
+        try {
+          await attachFilesToOrder(artworkPaths, order.id, order.reference);
+        } catch {
+          // The order is placed; file linking is retried by staff if it fails.
+        }
       }
 
-      const payment = await startPayment({ data: { orderId: order.id } });
+      const payment = await startPayment({
+        data: claimToken ? { orderId: order.id, claimToken } : { orderId: order.id },
+      });
 
       const yp = await loadYouCanPay();
       const locale: YouCanPayLocale = lang === "ar" ? "ar" : lang === "en" ? "en" : "fr";
@@ -175,30 +207,6 @@ function CheckoutPage() {
           ))}
         </div>
 
-        {!user && step < 3 && (
-          <div className="mt-8 rounded-2xl border border-border bg-secondary/40 p-6">
-            <h2 className="text-lg">{tr("Sign in to finish your order")}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {tr("An account is required to confirm your order.")}{" "}
-              {tr(
-                "You can review your items now, but you'll need to log in or create an account before confirming.",
-              )}
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {tr(
-                "Your cart, configuration and prices are saved while you log in or create your account.",
-              )}
-            </p>
-            <div className="mt-4 grid gap-3 sm:max-w-md">
-              <SocialAuthButtons redirectTo="/checkout" />
-              <Button asChild variant="ghost" size="lg" className="rounded-full">
-                <Link to="/login" search={{ redirect: "/checkout" }}>
-                  {tr("Log in or create an account")}
-                </Link>
-              </Button>
-            </div>
-          </div>
-        )}
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
           <AnimatePresence mode="wait">
@@ -292,18 +300,15 @@ function CheckoutPage() {
                   />
 
                   {!user && (
-                    <p className="mt-4 text-sm text-destructive">
-                      {tr("Please sign in above so we can save this order before you pay.")}
+                    <p className="mt-4 text-sm text-muted-foreground">
+                      {tr(
+                        "No account needed to pay. You can create one right after payment to track this order.",
+                      )}
                     </p>
                   )}
 
                   {!cardReady ? (
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="mt-6 rounded-full"
-                      disabled={placing || !user}
-                    >
+                    <Button type="submit" size="lg" className="mt-6 rounded-full" disabled={placing}>
                       {placing ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (
@@ -370,15 +375,42 @@ function CheckoutPage() {
                     <Summary icon={CreditCard} label={tr("Payment method")} value={tr("Card · YouCan Pay")} />
                   </dl>
 
+                  {!user && (
+                    <div className="mt-8 rounded-2xl border border-border bg-secondary/40 p-6">
+                      <h3 className="text-lg">{tr("Create your account")}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {tr("We'll attach this order to your account once your email is confirmed.")}
+                      </p>
+                      <ul className="mt-4 grid gap-2 text-sm text-muted-foreground">
+                        <li>• {tr("Follow this order until it is delivered")}</li>
+                        <li>• {tr("Keep your files for your next orders")}</li>
+                        <li>• {tr("Find all your invoices in one place")}</li>
+                        <li>• {tr("Reorder in a couple of clicks")}</li>
+                      </ul>
+                      <p className="mt-4 text-sm">
+                        <span className="text-muted-foreground">{tr("Email")}: </span>
+                        <span className="font-semibold">{details?.email}</span>
+                      </p>
+                      <div className="mt-4 grid gap-3 sm:max-w-md">
+                        <SocialAuthButtons redirectTo="/dashboard" />
+                        <Button asChild size="lg" className="rounded-full">
+                          <Link to="/signup">{tr("Create your account")}</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-8 flex flex-wrap gap-3">
-                    <Button
-                      size="lg"
-                      className="rounded-full"
-                      onClick={() => navigate({ to: "/dashboard" })}
-                    >
-                      {tr("Track my order")}
-                    </Button>
-                    {placedOrder && (
+                    {user && (
+                      <Button
+                        size="lg"
+                        className="rounded-full"
+                        onClick={() => navigate({ to: "/dashboard" })}
+                      >
+                        {tr("Track my order")}
+                      </Button>
+                    )}
+                    {user && placedOrder && (
                       <Button asChild size="lg" variant="outline" className="rounded-full">
                         <Link
                           to="/invoice/$reference"

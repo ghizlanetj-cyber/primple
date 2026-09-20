@@ -162,10 +162,11 @@ async function recomputeOrderCents(order: {
 }
 
 export const startPrintPayment = createServerFn({ method: "POST" })
-  .inputValidator((input: { orderId: string }) => {
+  .inputValidator((input: { orderId: string; claimToken?: string }) => {
     const orderId = String(input?.orderId ?? "").trim();
     if (!/^[0-9a-f-]{36}$/i.test(orderId)) throw new Error("Unknown order.");
-    return { orderId };
+    const claimToken = String(input?.claimToken ?? "").trim();
+    return claimToken ? { orderId, claimToken } : { orderId };
   })
   .handler(async ({ data }) => {
     const { tokenizePayment, optionalUserId } = await import("./youcanpay.server");
@@ -173,16 +174,24 @@ export const startPrintPayment = createServerFn({ method: "POST" })
 
     const request = getRequest();
     const userId = await optionalUserId(request?.headers.get("authorization") ?? null);
-    if (!userId) throw new Error("Please sign in to pay for this order.");
 
     const { data: order, error } = await supabaseAdmin
       .from("orders")
-      .select("id, user_id, reference, items, subtotal, delivery, total, email, payment_status")
+      .select(
+        "id, user_id, reference, items, subtotal, delivery, total, email, payment_status, claim_token",
+      )
       .eq("id", data.orderId)
       .maybeSingle();
 
     if (error || !order) throw new Error("Unknown order.");
-    if (order.user_id !== userId) throw new Error("Unknown order.");
+    // Either the signed-in owner, or the guest holding this order's claim token.
+    const isOwner = Boolean(userId) && order.user_id === userId;
+    const isGuest =
+      !order.user_id &&
+      Boolean(order.claim_token) &&
+      "claimToken" in data &&
+      data.claimToken === order.claim_token;
+    if (!isOwner && !isGuest) throw new Error("Unknown order.");
     if (order.payment_status === "paid") throw new Error("This order is already paid.");
 
     // Never trust the stored total: re-price every line from the catalog.
