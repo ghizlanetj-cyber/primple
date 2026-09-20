@@ -6,6 +6,8 @@ import { ArrowRight, CheckCircle2, Clock, CreditCard, Loader2, Lock, ShieldCheck
 import { toast } from "sonner";
 
 import { createOrder, type DeliveryDetails, type OrderRecord } from "@/lib/orders-api";
+import { createGuestOrder } from "@/lib/orders.functions";
+import { saveGuestClaim } from "@/lib/guest-claim";
 import { attachFilesToOrder } from "@/lib/files-api";
 import { invoiceLabels } from "@/lib/invoice";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
