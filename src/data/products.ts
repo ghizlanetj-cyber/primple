@@ -33,6 +33,9 @@ export type DimensionSpec = {
   max: number;
 };
 
+/** Explicit quantity break: at `quantity` the base unit price is multiplied by `factor`. */
+export type QuantityBreak = { quantity: number; factor: number };
+
 
 export type Product = {
   slug: string;
@@ -47,6 +50,8 @@ export type Product = {
   /** Area-priced products (m2) expose width and height in metres. */
   dimensions?: DimensionSpec;
   quantities: number[];
+  /** Ascending, strictly decreasing factors. Interpolated between tiers. */
+  quantityBreaks?: QuantityBreak[];
   baseProductionDays: number;
   rating?: number;
   reviews?: number;
