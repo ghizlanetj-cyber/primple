@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
@@ -28,7 +28,10 @@ import { mad } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { claimGuestOrder } from "@/lib/orders.functions";
+import { clearGuestClaim, readGuestClaim } from "@/lib/guest-claim";
 
 const title = "Votre espace d’impression | Primple";
 const description =
@@ -79,6 +82,27 @@ function DashboardPage() {
     queryFn: listMyOrders,
     enabled: Boolean(user),
   });
+
+  // An order paid before signing up is attached here, once the email is verified.
+  const claimOrder = useServerFn(claimGuestOrder);
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (!user) return;
+    const claim = readGuestClaim();
+    if (!claim) return;
+    let cancelled = false;
+    void claimOrder({ data: { reference: claim.reference, claimToken: claim.claimToken } })
+      .then((result) => {
+        clearGuestClaim();
+        if (!cancelled && result.claimed) {
+          void queryClient.invalidateQueries({ queryKey: ["orders", user.id] });
+        }
+      })
+      .catch(() => clearGuestClaim());
+    return () => {
+      cancelled = true;
+    };
+  }, [user, claimOrder, queryClient]);
 
   const {
     data: files = [],
