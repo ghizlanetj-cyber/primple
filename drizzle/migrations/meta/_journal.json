@@ -71,6 +71,13 @@
       "when": 1789940024174,
       "tag": "0009_orders_guest_claim",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1789943250558,
+      "tag": "0010_allow_secure_guest_artwork",
+      "breakpoints": true
     }
   ]
 }
