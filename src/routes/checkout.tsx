@@ -81,19 +81,52 @@ function CheckoutPage() {
       const config = await loadConfig({});
       if (!config.configured) throw new Error(tr("Card payment is not available right now."));
 
-      const order = await createOrder({ userId: user.id, items, totals, details });
+      let order: OrderRecord;
+      let claimToken: string | undefined;
+      if (user) {
+        order = await createOrder({ userId: user.id, items, totals, details });
+      } else {
+        // Guests order too: the server prices every line and hands back a
+        // one-time token so the order can be attached to a new account later.
+        const guest = await placeGuestOrder({
+          data: {
+            lines: items.map((i) => ({
+              slug: i.slug,
+              quantity: i.quantity,
+              selection: i.selection,
+            })),
+            details,
+          },
+        });
+        claimToken = guest.claimToken;
+        order = {
+          id: guest.id,
+          reference: guest.reference,
+          total: guest.total,
+          expectedAt: guest.expectedAt ?? "",
+        } as OrderRecord;
+        saveGuestClaim({
+          reference: guest.reference,
+          claimToken: guest.claimToken,
+          email: details.email,
+        });
+      }
       setPlacedOrder(order);
 
       const artworkPaths = snapshotItems
         .map((i) => i.artworkPath)
         .filter((p): p is string => Boolean(p));
-      try {
-        await attachFilesToOrder(artworkPaths, order.id, order.reference);
-      } catch {
-        // The order is placed; file linking is retried by staff if it fails.
+      if (user) {
+        try {
+          await attachFilesToOrder(artworkPaths, order.id, order.reference);
+        } catch {
+          // The order is placed; file linking is retried by staff if it fails.
+        }
       }
 
-      const payment = await startPayment({ data: { orderId: order.id } });
+      const payment = await startPayment({
+        data: claimToken ? { orderId: order.id, claimToken } : { orderId: order.id },
+      });
 
       const yp = await loadYouCanPay();
       const locale: YouCanPayLocale = lang === "ar" ? "ar" : lang === "en" ? "en" : "fr";
