@@ -56,6 +56,7 @@ function CheckoutPage() {
 
   const startPayment = useServerFn(startPrintPayment);
   const loadConfig = useServerFn(getYouCanPayConfig);
+  const placeGuestOrder = useServerFn(createGuestOrder);
 
   const [step, setStep] = useState(0);
   const [details, setDetails] = useState<DeliveryDetails | null>(null);
