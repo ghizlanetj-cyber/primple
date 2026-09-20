@@ -155,6 +155,53 @@ export function Configurator({ product }: { product: Product }) {
             </fieldset>
           )}
 
+          {product.dimensions && (
+            <fieldset className="mt-7 border-0 p-0">
+              <legend className="text-sm font-semibold">{tr("Dimensions")}</legend>
+              <p className="text-xs text-muted-foreground">
+                {tr("The price is based on the printed surface in square metres.")}
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <label className="flex items-center gap-2 text-sm" htmlFor={`width-${product.slug}`}>
+                  {tr("Width (m)")}
+                  <Input
+                    id={`width-${product.slug}`}
+                    type="text"
+                    inputMode="decimal"
+                    value={selection["width"] ?? String(product.dimensions.defaultWidth)}
+                    onChange={(e) => setSelection((s) => ({ ...s, width: e.target.value }))}
+                    aria-invalid={dimensionsInvalid}
+                    className="h-10 w-24 rounded-full text-center"
+                  />
+                </label>
+                <label className="flex items-center gap-2 text-sm" htmlFor={`height-${product.slug}`}>
+                  {tr("Height (m)")}
+                  <Input
+                    id={`height-${product.slug}`}
+                    type="text"
+                    inputMode="decimal"
+                    value={selection["height"] ?? String(product.dimensions.defaultHeight)}
+                    onChange={(e) => setSelection((s) => ({ ...s, height: e.target.value }))}
+                    aria-invalid={dimensionsInvalid}
+                    className="h-10 w-24 rounded-full text-center"
+                  />
+                </label>
+              </div>
+              {dimensionsInvalid ? (
+                <p className="mt-2 text-sm text-destructive" role="alert">
+                  {tr("Enter a width and a height greater than zero, in metres.")}
+                </p>
+              ) : (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {tr("Printed surface")}: {number(quote.area ?? 0)} m² · {madUnit(quote.unitPrice)}{" "}
+                  {tr("per unit")}
+                </p>
+              )}
+            </fieldset>
+          )}
+
+
+
           {product.options.map((group) => (
             <fieldset key={group.id} className="mt-7 border-0 p-0">
               <legend className="text-sm font-semibold">{tr(group.label)}</legend>
