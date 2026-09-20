@@ -16,6 +16,7 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DesignServicesRouteImport } from './routes/design-services'
 import { Route as DesignersRouteImport } from './routes/designers'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as HelpRouteImport } from './routes/help'
@@ -73,6 +74,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignServicesRoute = DesignServicesRouteImport.update({
+  id: '/design-services',
+  path: '/design-services',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignersRoute = DesignersRouteImport.update({
@@ -205,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/design-services': typeof DesignServicesRoute
   '/designers': typeof DesignersRoute
   '/enterprise': typeof EnterpriseRoute
   '/help': typeof HelpRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/design-services': typeof DesignServicesRoute
   '/designers': typeof DesignersRoute
   '/enterprise': typeof EnterpriseRoute
   '/help': typeof HelpRoute
@@ -271,6 +279,7 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/design-services': typeof DesignServicesRoute
   '/designers': typeof DesignersRoute
   '/enterprise': typeof EnterpriseRoute
   '/help': typeof HelpRoute
@@ -305,6 +314,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/design-services'
     | '/designers'
     | '/enterprise'
     | '/help'
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/design-services'
     | '/designers'
     | '/enterprise'
     | '/help'
@@ -370,6 +381,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/design-services'
     | '/designers'
     | '/enterprise'
     | '/help'
@@ -404,6 +416,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
+  DesignServicesRoute: typeof DesignServicesRoute
   DesignersRoute: typeof DesignersRoute
   EnterpriseRoute: typeof EnterpriseRoute
   HelpRoute: typeof HelpRoute
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/design-services': {
+      id: '/design-services'
+      path: '/design-services'
+      fullPath: '/design-services'
+      preLoaderRoute: typeof DesignServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/designers': {
@@ -671,6 +691,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
+  DesignServicesRoute: DesignServicesRoute,
   DesignersRoute: DesignersRoute,
   EnterpriseRoute: EnterpriseRoute,
   HelpRoute: HelpRoute,
