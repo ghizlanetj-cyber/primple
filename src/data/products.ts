@@ -614,6 +614,10 @@ export function defaultSelection(product: Product): Selection {
   const sel: Selection = {};
   for (const g of product.options) sel[g.id] = g.choices[0]!.id;
   if (product.pageRange) sel["pages"] = String(product.pageRange.default);
+  if (product.dimensions) {
+    sel["width"] = String(product.dimensions.defaultWidth);
+    sel["height"] = String(product.dimensions.defaultHeight);
+  }
   return sel;
 }
 
