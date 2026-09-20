@@ -76,14 +76,20 @@ function CartPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="grid gap-5 rounded-2xl border border-border bg-card p-5 sm:grid-cols-[140px_1fr]"
                 >
-                  <img
-                    src={productImages[item.slug]}
-                    alt={tr(item.name)}
-                    width={800}
-                    height={600}
-                    loading="lazy"
-                    className="h-28 w-full rounded-xl object-cover sm:h-full"
-                  />
+                  {lineImage(item.slug) ? (
+                    <img
+                      src={lineImage(item.slug)}
+                      alt={tr(item.name)}
+                      width={800}
+                      height={600}
+                      loading="lazy"
+                      className="h-28 w-full rounded-xl object-cover sm:h-full"
+                    />
+                  ) : (
+                    <div className="flex h-28 w-full items-center justify-center rounded-xl bg-secondary text-sm text-muted-foreground sm:h-full">
+                      {tr("Design service")}
+                    </div>
+                  )}
                   <div>
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -130,13 +136,30 @@ function CartPage() {
                       </div>
                     </div>
 
-                    <Link
-                      to="/products/$slug"
-                      params={{ slug: item.slug }}
-                      className="mt-3 inline-flex text-sm font-semibold hover:text-primary"
-                    >
-                      {tr("Edit configuration")}
-                    </Link>
+                    {isPackSlug(item.slug) ? (
+                      <Link
+                        to="/packs/$slug"
+                        params={{ slug: packSlugFromCartSlug(item.slug) }}
+                        className="mt-3 inline-flex text-sm font-semibold hover:text-primary"
+                      >
+                        {tr("Edit this pack")}
+                      </Link>
+                    ) : item.slug === DESIGN_SERVICE_SLUG ? (
+                      <Link
+                        to="/design-services"
+                        className="mt-3 inline-flex text-sm font-semibold hover:text-primary"
+                      >
+                        {tr("Change my design hours")}
+                      </Link>
+                    ) : (
+                      <Link
+                        to="/products/$slug"
+                        params={{ slug: item.slug }}
+                        className="mt-3 inline-flex text-sm font-semibold hover:text-primary"
+                      >
+                        {tr("Edit configuration")}
+                      </Link>
+                    )}
                   </div>
                 </motion.article>
               ))}
