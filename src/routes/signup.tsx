@@ -13,6 +13,7 @@ import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { authErrorPhrase } from "@/lib/auth-messages";
+import { readGuestClaim } from "@/lib/guest-claim";
 
 const title = "Créer votre compte | Primple";
 const description =
