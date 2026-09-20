@@ -593,39 +593,6 @@ export const products: Product[] = [
       { q: "Is it weatherproof?", a: "Yes, all outdoor materials are UV and rain rated." },
     ],
   },
-  {
-    slug: "corporate-gifts",
-    name: "Corporate Gifts",
-    category: "Gifts",
-    benefit: "Say thank you with your logo on it.",
-    heroHeadline: "Corporate gifts your clients actually use.",
-    heroCopy: "Choose the item, branding method and quantity, then see the price with delivery.",
-    description: "Notebooks, bottles, tote bags, pens and gift sets branded with your identity.",
-    quantities: [50, 100, 250, 500],
-    anchor: { quantity: 50, subtotal: 1800, selection: { item: "notebook" } },
-    baseProductionDays: 5,
-    rating: 4.7,
-    reviews: 63,
-    keywords: ["corporate gifts printing", "branded merchandise", "company gifts"],
-    options: [
-      group("item", "Item", [
-        { id: "notebook", label: "Notebook", factor: 1 },
-        { id: "bottle", label: "Bottle", factor: 1.6 },
-        { id: "tote", label: "Tote bag", factor: 0.9 },
-        { id: "giftset", label: "Gift set", factor: 2.6 },
-      ]),
-      group("branding", "Branding", [
-        { id: "print", label: "Print", factor: 1 },
-        { id: "engrave", label: "Engraving", factor: 1.25, days: 2 },
-        { id: "emboss", label: "Embossing", factor: 1.2, days: 1 },
-      ]),
-      deliveryGroup,
-    ],
-    faqs: [
-      { q: "Can I get a branded sample?", a: "Yes, request one in the quote before the full run." },
-      { q: "Can you deliver to several offices?", a: "Yes — add multiple addresses at checkout." },
-    ],
-  },
 ];
 
 export function getProduct(slug: string) {
@@ -661,14 +628,25 @@ export type Quote = {
 
 /** Quantity breaks: bigger runs cost less per unit. */
 function quantityFactor(product: Product, quantity: number) {
-  if (product.slug === "books") {
-    if (quantity >= 200) return 0.7;
-    if (quantity >= 100) return 0.75;
-    if (quantity >= 50) return 0.8;
-    if (quantity >= 25) return 0.85;
-    if (quantity >= 10) return 0.9;
-    if (quantity >= 5) return 0.95;
-    return 1;
+  const breaks = product.quantityBreaks;
+  if (breaks && breaks.length > 0) {
+    const qty = Math.max(quantity, 1);
+    const first = breaks[0]!;
+    const last = breaks[breaks.length - 1]!;
+    if (qty <= first.quantity) return first.factor;
+    if (qty >= last.quantity) return last.factor;
+    for (let i = 1; i < breaks.length; i += 1) {
+      const low = breaks[i - 1]!;
+      const high = breaks[i]!;
+      if (qty <= high.quantity) {
+        // Log-linear interpolation keeps the unit price monotonically decreasing.
+        const t =
+          (Math.log(qty) - Math.log(low.quantity)) /
+          (Math.log(high.quantity) - Math.log(low.quantity));
+        return low.factor + t * (high.factor - low.factor);
+      }
+    }
+    return last.factor;
   }
   const base = product.quantities[0]!;
   const ratio = Math.max(quantity, 1) / base;
