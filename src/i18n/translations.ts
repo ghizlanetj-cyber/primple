@@ -375,7 +375,6 @@ export const phrases: Record<string, TranslationPair> = {
   Stickers: { fr: "Autocollants", ar: "الملصقات اللاصقة" },
   Posters: { fr: "Affiches", ar: "الملصقات الإعلانية" },
   "Textile Printing": { fr: "Impression textile", ar: "طباعة المنسوجات" },
-  "Corporate Gifts": { fr: "Cadeaux d’entreprise", ar: "هدايا الشركات" },
 };
 
 export const authPhrases: Record<string, TranslationPair> = {
