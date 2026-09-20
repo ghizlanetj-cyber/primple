@@ -19,6 +19,21 @@ export type OptionGroup = {
   choices: OptionChoice[];
 };
 
+/** Market reference: this exact configuration costs exactly `subtotal` MAD. */
+export type PriceAnchor = {
+  quantity: number;
+  subtotal: number;
+  selection?: Record<string, string>;
+};
+
+export type DimensionSpec = {
+  defaultWidth: number;
+  defaultHeight: number;
+  min: number;
+  max: number;
+};
+
+
 export type Product = {
   slug: string;
   name: string;
