@@ -108,15 +108,14 @@ function Home() {
         )}
       </p>
       <Hero />
-
-      <Stats />
-      <HowItWorks />
       <Categories />
-
+      <PacksTeaser />
+      <HowItWorks />
+      <DesignServiceCta />
+      <Stats />
       <PlatformBridge />
-      <PartnerTeaser />
       <Testimonials />
-      <FaqSection items={faqs} title="Questions before printing" />
+      <FaqSection items={faqs.slice(0, 4)} title="Questions before printing" />
       <FinalCta />
     </SiteShell>
   );
