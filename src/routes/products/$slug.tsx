@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { ArrowRight, Clock, Star, Truck } from "lucide-react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
@@ -7,7 +7,10 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { FaqSection } from "@/components/shared/FaqSection";
 import { fromPriceBasis, getProduct, products } from "@/data/products";
-import { productImages } from "@/data/productImages";
+import { productImageAlt, productImages } from "@/data/productImages";
+
+/** Slugs we no longer sell; they redirect to the catalog. */
+const retiredProducts = new Set(["corporate-gifts"]);
 import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
 import { productPhrases } from "@/i18n/product-translations";
@@ -15,6 +18,8 @@ import { phrases } from "@/i18n/translations";
 
 export const Route = createFileRoute("/products/$slug")({
   loader: ({ params }) => {
+    // Retired products keep their old URL working.
+    if (retiredProducts.has(params.slug)) throw redirect({ to: "/products" });
     const product = getProduct(params.slug);
     if (!product) throw notFound();
     return { product };
