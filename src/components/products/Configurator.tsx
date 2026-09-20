@@ -80,7 +80,13 @@ export function Configurator({ product }: { product: Product }) {
       productionDays: quote.productionDays,
       deliveryMin: quote.deliveryMin,
       deliveryMax: quote.deliveryMax,
-      ...(artwork ? { artwork: artwork.name, artworkPath: artwork.path } : {}),
+      ...(artwork
+        ? {
+            artwork: artwork.name,
+            artworkPath: artwork.path,
+            ...(artwork.guestToken ? { artworkGuestToken: artwork.guestToken } : {}),
+          }
+        : {}),
     });
     toast.success(`${number(quantity)} ${tr(product.name)} — ${tr("added to your cart.")}`);
     navigate({ to: "/cart" });

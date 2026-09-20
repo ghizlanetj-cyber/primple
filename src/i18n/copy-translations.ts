@@ -63,6 +63,10 @@ export const copyPhrases: Record<string, TranslationPair> = {
     "Fichier importé dans votre compte.",
     "تم رفع الملف إلى حسابك.",
   ),
+  "File ready for your guest order.": p(
+    "Fichier prêt pour votre commande sans compte.",
+    "الملف جاهز لطلبك من دون حساب.",
+  ),
   "We couldn't upload your file. Please try again.": p(
     "Impossible d'importer votre fichier. Réessayez.",
     "تعذر رفع ملفك. حاول مرة أخرى.",
@@ -74,6 +78,10 @@ export const copyPhrases: Record<string, TranslationPair> = {
   "Saved to your account. You'll find it on your order in your dashboard.": p(
     "Enregistré dans votre compte. Vous le retrouverez sur votre commande dans votre espace.",
     "تم الحفظ في حسابك. ستجده مع طلبك في لوحة التحكم.",
+  ),
+  "Ready for checkout. This file will stay private with your guest order.": p(
+    "Prêt pour la commande. Ce fichier restera privé et lié à votre commande sans compte.",
+    "جاهز لإتمام الطلب. سيبقى هذا الملف خاصًا ومرتبطًا بطلبك من دون حساب.",
   ),
 
   // Hero microcopy

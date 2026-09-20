@@ -97,6 +97,8 @@ function CheckoutPage() {
               slug: i.slug,
               quantity: i.quantity,
               selection: i.selection,
+              ...(i.artworkPath ? { artworkPath: i.artworkPath } : {}),
+              ...(i.artworkGuestToken ? { artworkGuestToken: i.artworkGuestToken } : {}),
             })),
             details,
           },

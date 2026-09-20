@@ -7,6 +7,8 @@ export type GuestOrderLineInput = {
   quantity: number;
   selection: Record<string, string>;
   config?: string;
+  artworkPath?: string;
+  artworkGuestToken?: string;
 };
 
 export type GuestOrderInput = {
@@ -40,7 +42,17 @@ function validateGuestOrder(input: GuestOrderInput): GuestOrderInput {
     for (const [key, value] of Object.entries(line.selection ?? {})) {
       selection[text(key, 40)] = text(value, 2000);
     }
-    return { slug: text(line.slug, 80), quantity, selection };
+    const artworkPath = text(line.artworkPath, 500);
+    const artworkGuestToken = text(line.artworkGuestToken, 60);
+    if ((artworkPath || artworkGuestToken) && !artworkPath.startsWith(`guests/${artworkGuestToken}/`)) {
+      throw new Error("Invalid artwork upload.");
+    }
+    return {
+      slug: text(line.slug, 80),
+      quantity,
+      selection,
+      ...(artworkPath && artworkGuestToken ? { artworkPath, artworkGuestToken } : {}),
+    };
   });
 
   const email = text(input.details?.email, 160);
@@ -131,6 +143,18 @@ export const createGuestOrder = createServerFn({ method: "POST" })
       throw new Error("The order could not be saved. Please try again.");
     }
 
+    for (const line of data.lines) {
+      if (!line.artworkPath || !line.artworkGuestToken) continue;
+      const { error: fileError } = await supabaseAdmin
+        .from("order_files")
+        .update({ order_id: order.id, order_reference: order.reference, status: "attached" })
+        .eq("path", line.artworkPath)
+        .eq("guest_token", line.artworkGuestToken)
+        .is("user_id", null)
+        .is("order_id", null);
+      if (fileError) throw new Error("The artwork could not be attached to the order.");
+    }
+
     return {
       id: order.id,
       reference: order.reference,
@@ -183,11 +207,13 @@ export const claimGuestOrder = createServerFn({ method: "POST" })
 
     if (error) return { claimed: false };
 
-    // Bring any artwork uploaded with that email along with the order.
+    // Transfer only artwork already secured to this claimed order.
     await supabaseAdmin
       .from("order_files")
-      .update({ order_id: order.id, order_reference: data.reference })
-      .eq("order_reference", data.reference);
+      .update({ user_id: context.userId, guest_token: null })
+      .eq("order_id", order.id)
+      .eq("order_reference", data.reference)
+      .is("user_id", null);
 
     return { claimed: true };
   });
