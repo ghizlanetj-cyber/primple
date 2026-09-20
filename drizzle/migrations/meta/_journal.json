@@ -64,6 +64,13 @@
       "when": 1789388017012,
       "tag": "0008_orders_card_payment",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1789940024174,
+      "tag": "0009_orders_guest_claim",
+      "breakpoints": true
     }
   ]
 }

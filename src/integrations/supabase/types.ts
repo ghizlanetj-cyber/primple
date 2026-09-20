@@ -99,6 +99,8 @@ export type Database = {
           address: string | null
           balance_amount: number
           city: string | null
+          claim_token: string | null
+          claimed_at: string | null
           company: string | null
           contact_name: string | null
           created_at: string
@@ -107,6 +109,7 @@ export type Database = {
           deposit_paid: boolean
           email: string | null
           expected_at: string | null
+          guest_email: string | null
           id: string
           items: Json
           paid_at: string | null
@@ -120,7 +123,7 @@ export type Database = {
           subtotal: number
           total: number
           updated_at: string
-          user_id: string
+          user_id: string | null
           youcanpay_token_id: string | null
           youcanpay_transaction_id: string | null
         }
@@ -128,6 +131,8 @@ export type Database = {
           address?: string | null
           balance_amount?: number
           city?: string | null
+          claim_token?: string | null
+          claimed_at?: string | null
           company?: string | null
           contact_name?: string | null
           created_at?: string
@@ -136,6 +141,7 @@ export type Database = {
           deposit_paid?: boolean
           email?: string | null
           expected_at?: string | null
+          guest_email?: string | null
           id?: string
           items?: Json
           paid_at?: string | null
@@ -149,7 +155,7 @@ export type Database = {
           subtotal?: number
           total?: number
           updated_at?: string
-          user_id: string
+          user_id?: string | null
           youcanpay_token_id?: string | null
           youcanpay_transaction_id?: string | null
         }
@@ -157,6 +163,8 @@ export type Database = {
           address?: string | null
           balance_amount?: number
           city?: string | null
+          claim_token?: string | null
+          claimed_at?: string | null
           company?: string | null
           contact_name?: string | null
           created_at?: string
@@ -165,6 +173,7 @@ export type Database = {
           deposit_paid?: boolean
           email?: string | null
           expected_at?: string | null
+          guest_email?: string | null
           id?: string
           items?: Json
           paid_at?: string | null
@@ -178,7 +187,7 @@ export type Database = {
           subtotal?: number
           total?: number
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
           youcanpay_token_id?: string | null
           youcanpay_transaction_id?: string | null
         }
