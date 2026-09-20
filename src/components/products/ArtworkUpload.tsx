@@ -86,12 +86,6 @@ export function ArtworkUpload({
         }}
       />
 
-          <Link to="/login" className="font-semibold text-foreground hover:underline">
-            {tr("Log in")}
-          </Link>
-        </p>
-      )}
-
       <AnimatePresence mode="wait">
         {!artwork ? (
           <motion.div
@@ -102,7 +96,7 @@ export function ArtworkUpload({
           >
             <button
               type="button"
-              disabled={!user || uploading}
+              disabled={uploading}
               onClick={() => inputRef.current?.click()}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -165,7 +159,11 @@ export function ArtworkUpload({
 
             <div className="mt-4 flex items-center gap-2 rounded-xl bg-success/12 px-3 py-2.5 text-sm font-medium text-success">
               <CheckCircle2 className="size-4 shrink-0" />
-              {tr("Saved to your account. You'll find it on your order in your dashboard.")}
+              {tr(
+                user
+                  ? "Saved to your account. You'll find it on your order in your dashboard."
+                  : "Ready for checkout. This file will stay private with your guest order.",
+              )}
             </div>
           </motion.div>
         )}
