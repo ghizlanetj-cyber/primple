@@ -92,3 +92,57 @@ export function lineQuote(
 export function isDigitalSlug(slug: string) {
   return slug === DESIGN_SERVICE_SLUG;
 }
+
+export type OrderLineInput = {
+  slug: string;
+  quantity: number;
+  selection?: Selection;
+};
+
+export type OrderTotals = {
+  subtotalCents: number;
+  deliveryCents: number;
+  totalCents: number;
+  /** Longest production time across the order. */
+  productionDays: number;
+  /** Longest delivery window across the order. */
+  deliveryMax: number;
+  quotes: LineQuote[];
+};
+
+/**
+ * The one aggregation used by the cart, the order creation and the payment
+ * recompute, so the browser total and the charged amount can never diverge.
+ * Delivery is charged once per order: the highest fee among shipped lines.
+ */
+export function orderTotals(lines: OrderLineInput[]): OrderTotals | null {
+  let subtotalCents = 0;
+  let deliveryCents = 0;
+  let productionDays = 0;
+  let deliveryMax = 0;
+  const quotes: LineQuote[] = [];
+
+  for (const line of lines) {
+    const quantity = Number(line.quantity);
+    const quote = lineQuote(
+      line.slug,
+      Number.isFinite(quantity) && quantity > 0 ? quantity : 1,
+      line.selection ?? {},
+    );
+    if (!quote) return null;
+    quotes.push(quote);
+    subtotalCents += Math.round(quote.subtotal * 100);
+    deliveryCents = Math.max(deliveryCents, Math.round(quote.delivery * 100));
+    productionDays = Math.max(productionDays, quote.productionDays);
+    deliveryMax = Math.max(deliveryMax, quote.deliveryMax);
+  }
+
+  return {
+    subtotalCents,
+    deliveryCents,
+    totalCents: subtotalCents + deliveryCents,
+    productionDays,
+    deliveryMax,
+    quotes,
+  };
+}
