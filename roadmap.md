@@ -1,5 +1,5 @@
 - [x] Restyle header search panel with existing glass treatment
 - [x] Add localized Books product, options, pricing, search, and footer
 - [x] Verify responsive FR/EN/AR behavior, pricing, state isolation, tests, and types
-- [ ] Simplify quantity choices to quantity and dynamic savings only
-- [ ] Enable secure guest artwork upload through checkout and later account claim
+- [x] Simplify quantity choices to quantity and dynamic savings only
+- [x] Enable secure guest artwork upload through checkout and later account claim
