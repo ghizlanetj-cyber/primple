@@ -78,16 +78,18 @@ export const useCart = create<CartState>()(
 
 
 /** Fixed standard delivery fee in MAD, charged once per order. */
-export const DELIVERY_FEE = 30;
+export const DELIVERY_FEE = STANDARD_DELIVERY_FEE;
 /** Fixed express delivery fee in MAD, charged once per order. */
-export const EXPRESS_DELIVERY_FEE = 120;
+export const EXPRESS_DELIVERY_FEE = EXPRESS_FEE;
 
 export function cartTotals(items: CartItem[]) {
   // Summed on integer centimes so total always equals subtotal + delivery.
   const subtotalCents = items.reduce((sum, i) => sum + toCents(i.subtotal), 0);
-  const hasExpress = items.some((item) => item.selection["delivery"] === "express");
+  // Digital services (design hours) never trigger a delivery fee.
+  const shipped = items.filter((item) => !isDigitalSlug(item.slug));
+  const hasExpress = shipped.some((item) => item.selection["delivery"] === "express");
   const deliveryCents = toCents(
-    items.length === 0 ? 0 : hasExpress ? EXPRESS_DELIVERY_FEE : DELIVERY_FEE,
+    shipped.length === 0 ? 0 : hasExpress ? EXPRESS_DELIVERY_FEE : DELIVERY_FEE,
   );
   return {
     subtotal: fromCents(subtotalCents),
