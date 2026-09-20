@@ -9,6 +9,8 @@ import { mad, madUnit } from "@/lib/format";
 import { cartTotals, useCart } from "@/store/cart";
 import { productImages } from "@/data/productImages";
 import { getProduct } from "@/data/products";
+import { isPackSlug, packSlugFromCartSlug } from "@/data/packs";
+import { DESIGN_SERVICE_SLUG } from "@/data/design-service";
 import { isBulkQuoteQuantity, parseQuantity, productQuantityLimits } from "@/lib/quantity";
 import type { CartItem } from "@/store/cart";
 import { useI18n } from "@/i18n";
