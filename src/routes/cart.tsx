@@ -133,7 +133,13 @@ function CartPage() {
                     </div>
 
                     <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
-                      <CartQuantityInput item={item} onValidQuantity={setQuantity} />
+                      {getProduct(item.slug) ? (
+                        <CartQuantityInput item={item} onValidQuantity={setQuantity} />
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          {item.labels.map((l) => tr(l.value)).join(" · ")}
+                        </p>
+                      )}
                       <div className="text-end">
                         <p className="text-xs text-muted-foreground">
                           {madUnit(item.unitPrice)} {tr("per unit")}
@@ -196,6 +202,12 @@ function CartPage() {
               <p className="mt-3 text-center text-xs text-muted-foreground">
                 {tr("Secure card payment in MAD · Artwork checked before production")}
               </p>
+              <Link
+                to="/design-services"
+                className="mt-4 block rounded-xl bg-secondary/60 p-3 text-center text-xs font-semibold hover:text-primary"
+              >
+                {tr("Need a designer? 100 MAD an hour.")}
+              </Link>
             </aside>
           </div>
         )}
