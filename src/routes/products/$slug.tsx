@@ -127,7 +127,11 @@ function ProductPage() {
           <Reveal delay={0.1}>
             <img
               src={productImages[product.slug]}
-              alt={`${tr(product.name)} — Primple`}
+              alt={
+                productImageAlt[product.slug]
+                  ? tr(productImageAlt[product.slug]!)
+                  : `${tr(product.name)} — Primple`
+              }
               width={800}
               height={600}
               className="w-full rounded-3xl border border-border object-cover shadow-lift"
