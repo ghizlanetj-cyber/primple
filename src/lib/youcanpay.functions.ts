@@ -151,7 +151,7 @@ async function recomputeOrderCents(order: {
 
   const totals = orderTotals(
     lines.map((line) => ({
-      slug: line.slug,
+      slug: String(line.slug),
       quantity: Number(line.quantity),
       selection: line.selection ?? {},
     })),
