@@ -140,7 +140,16 @@ export const products: Product[] = [
     description:
       "Printed by verified partners on premium stock, checked before production and delivered with tracking. Order 100 cards for a new hire or 5,000 for the whole team — the price is on screen before you commit.",
 
-    quantities: [100, 250, 500, 1000, 2500],
+    quantities: [100, 250, 500, 1000, 2500, 5000],
+    // Large runs are cut by ~30% so 1,000 double-sided rounded cards land on 850 MAD.
+    quantityBreaks: [
+      { quantity: 100, factor: 1 },
+      { quantity: 250, factor: 0.8646 },
+      { quantity: 500, factor: 0.7737 },
+      { quantity: 1000, factor: 85000 / 170775 },
+      { quantity: 2500, factor: 0.419 },
+      { quantity: 5000, factor: 0.375 },
+    ],
     anchor: { quantity: 100, subtotal: 135 },
     baseProductionDays: 2,
     rating: 4.9,
@@ -357,7 +366,17 @@ export const products: Product[] = [
     heroHeadline: "Books made for reading, sharing and keeping.",
     heroCopy: "Choose the page count, format, print, paper and binding. Your price updates instantly.",
     description: "Books from 24 to 400 pages, printed in black and white or colour with file review before production.",
-    quantities: [1, 5, 10, 25, 50, 100, 200, 499],
+    quantities: [1, 5, 10, 25, 50, 100, 250],
+    // The two largest runs are cut by 30% against the previous curve.
+    quantityBreaks: [
+      { quantity: 1, factor: 1 },
+      { quantity: 5, factor: 0.95 },
+      { quantity: 10, factor: 0.9 },
+      { quantity: 25, factor: 0.85 },
+      { quantity: 50, factor: 0.8 },
+      { quantity: 100, factor: 0.525 },
+      { quantity: 250, factor: 0.49 },
+    ],
     anchor: { quantity: 1, subtotal: 45 },
     pageRange: { min: 24, max: 400, default: 24 },
     bulkQuoteAt: 500,
