@@ -15,6 +15,12 @@ import { isBulkQuoteQuantity, parseQuantity, productQuantityLimits } from "@/lib
 import type { CartItem } from "@/store/cart";
 import { useI18n } from "@/i18n";
 
+/** Cart lines can be a catalog product, a pack or the design service. */
+function lineImage(slug: string): string | undefined {
+  if (isPackSlug(slug)) return `/packs/${packSlugFromCartSlug(slug)}.webp`;
+  return productImages[slug];
+}
+
 const title = "Votre panier d’impression | Primple";
 const description =
   "Vérifiez vos produits, configurations, délais de production et livraison avant de finaliser votre commande.";
