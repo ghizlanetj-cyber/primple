@@ -7,9 +7,8 @@ import brochuresAsset from "@/assets/magazine-outpaint.png.asset.json";
 import menusAsset from "@/assets/menu-your-brand-outpaint.png.asset.json";
 import stickersAsset from "@/assets/label-sticker-system-outpaint.png.asset.json";
 import postersAsset from "@/assets/poster-outpaint.png.asset.json";
-import textile from "@/assets/prod-textile.jpg";
+import textile from "@/assets/prod-textile-dtf.webp";
 import largeFormatAsset from "@/assets/billboard-modern-outpaint.png.asset.json";
-import giftsAsset from "@/assets/business-items-outpaint.png.asset.json";
 import books from "@/assets/product-books.jpg";
 
 export const productImages: Record<string, string> = {
@@ -25,5 +24,10 @@ export const productImages: Record<string, string> = {
   posters: postersAsset.url,
   "textile-printing": textile,
   "large-format": largeFormatAsset.url,
-  "corporate-gifts": giftsAsset.url,
+};
+
+/** English alt text, translated at render time through tr(). */
+export const productImageAlt: Record<string, string> = {
+  "textile-printing":
+    "Bright Moroccan workshop with DTF-printed t-shirts on a rail and printed tote bags on a table",
 };
