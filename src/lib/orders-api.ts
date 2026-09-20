@@ -8,6 +8,8 @@ export type OrderItemRecord = {
   name: string;
   quantity: number;
   config: string;
+  /** Exact configuration, so the server can re-price the order independently. */
+  selection?: Record<string, string>;
   unitPrice: number;
   subtotal: number;
   printer: string;
@@ -118,6 +120,7 @@ export async function createOrder(input: {
       name: i.name,
       quantity: i.quantity,
       config: itemConfigLabel(i),
+      selection: i.selection,
       unitPrice: i.unitPrice,
       subtotal: i.subtotal,
       printer: PRIMPLE_PRODUCTION,
