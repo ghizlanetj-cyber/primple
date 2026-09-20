@@ -66,7 +66,7 @@ export function Configurator({ product }: { product: Product }) {
     : false;
 
   const addToCart = () => {
-    if (customQuantityInvalid || pagesInvalid || bulkQuote) return;
+    if (customQuantityInvalid || pagesInvalid || dimensionsInvalid || bulkQuote) return;
     add({
       slug: product.slug,
       name: product.name,
@@ -311,7 +311,7 @@ export function Configurator({ product }: { product: Product }) {
             size="lg"
             className="mt-6 w-full rounded-full"
             onClick={addToCart}
-            disabled={customQuantityInvalid || pagesInvalid || bulkQuote}
+            disabled={customQuantityInvalid || pagesInvalid || dimensionsInvalid || bulkQuote}
           >
             {tr(bulkQuote ? "Request a custom quote" : "Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
