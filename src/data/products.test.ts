@@ -40,16 +40,20 @@ describe("quantity behaviour", () => {
       }
     });
 
-    it(`${product.slug} never gets cheaper with a premium option`, () => {
-      const base = priceQuote(product, product.anchor.quantity, anchorSelection(product)).subtotal;
+    it(`${product.slug} keeps option prices ordered by premium level`, () => {
       for (const group of product.options) {
         if (group.id === "delivery") continue;
-        for (const choice of group.choices) {
-          const quote = priceQuote(product, product.anchor.quantity, {
+        const priced = group.choices.map((choice) => ({
+          factor: choice.factor ?? 1,
+          subtotal: priceQuote(product, product.anchor.quantity, {
             ...anchorSelection(product),
             [group.id]: choice.id,
-          });
-          if ((choice.factor ?? 1) >= 1) expect(quote.subtotal).toBeGreaterThanOrEqual(base - 1e-9);
+          }).subtotal,
+        }));
+        for (const a of priced) {
+          for (const b of priced) {
+            if (a.factor > b.factor) expect(a.subtotal).toBeGreaterThanOrEqual(b.subtotal - 1e-9);
+          }
         }
       }
     });
