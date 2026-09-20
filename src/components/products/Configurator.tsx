@@ -97,20 +97,33 @@ export function Configurator({ product }: { product: Product }) {
           <fieldset className="mt-6 border-0 p-0">
             <legend className="text-sm font-semibold">{tr("Quantity")}</legend>
             <div className="mt-3 flex flex-wrap gap-2">
-              {product.quantities.map((q) => (
-                <ChipRadio
-                  key={q}
-                  name="quantity"
-                  value={String(q)}
-                  checked={quantity === q && customQuantity === ""}
-                  onSelect={() => {
-                    setQuantity(q);
-                    setCustomQuantity("");
-                  }}
-                >
-                  {number(q)}
-                </ChipRadio>
-              ))}
+              {product.quantities.map((q) => {
+                const tierQuote = priceQuote(product, q, selection);
+                return (
+                  <ChipRadio
+                    key={q}
+                    name="quantity"
+                    value={String(q)}
+                    checked={quantity === q && customQuantity === ""}
+                    onSelect={() => {
+                      setQuantity(q);
+                      setCustomQuantity("");
+                    }}
+                  >
+                    <span className="flex flex-col items-center leading-tight">
+                      <span>{number(q)}</span>
+                      <span className="text-xs font-normal opacity-80">
+                        {mad(tierQuote.subtotal)} · {madUnit(tierQuote.unitPrice)}
+                      </span>
+                      {tierQuote.savingsPercent > 0 && (
+                        <span className="text-[11px] font-semibold text-success">
+                          -{tierQuote.savingsPercent}%
+                        </span>
+                      )}
+                    </span>
+                  </ChipRadio>
+                );
+              })}
               <Input
                 id={`custom-quantity-${product.slug}`}
                 value={customQuantity}
@@ -255,12 +268,17 @@ export function Configurator({ product }: { product: Product }) {
           <div className="mt-5">
             <ArtworkUpload artwork={artwork} onChange={setArtwork} />
           </div>
-          <p className="mt-4 flex items-start gap-2 rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
-            <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
-            {tr(
-              "No file yet? Get help preparing your artwork or turning an idea into something you can print — add it later without losing this configuration.",
-            )}
-          </p>
+          <div className="mt-4 flex flex-wrap items-start gap-3 rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
+            <p className="flex items-start gap-2">
+              <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
+              {tr(
+                "No file yet? Get help preparing your artwork or turning an idea into something you can print — add it later without losing this configuration.",
+              )}
+            </p>
+            <Button asChild variant="outline" size="sm" className="rounded-full">
+              <Link to="/design-services">{tr("Book a designer — 100 MAD/h")}</Link>
+            </Button>
+          </div>
         </section>
       </div>
 
