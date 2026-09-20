@@ -19,6 +19,21 @@ export type OptionGroup = {
   choices: OptionChoice[];
 };
 
+/** Market reference: this exact configuration costs exactly `subtotal` MAD. */
+export type PriceAnchor = {
+  quantity: number;
+  subtotal: number;
+  selection?: Record<string, string>;
+};
+
+export type DimensionSpec = {
+  defaultWidth: number;
+  defaultHeight: number;
+  min: number;
+  max: number;
+};
+
+
 export type Product = {
   slug: string;
   name: string;
@@ -27,9 +42,10 @@ export type Product = {
   heroHeadline: string;
   heroCopy: string;
   description: string;
-  fromPrice: number;
-  /** price per unit at the reference quantity */
-  unitPrice: number;
+  /** Market-anchored reference price: the exact subtotal for this configuration. */
+  anchor: PriceAnchor;
+  /** Area-priced products (m2) expose width and height in metres. */
+  dimensions?: DimensionSpec;
   quantities: number[];
   baseProductionDays: number;
   rating?: number;
@@ -118,10 +134,9 @@ export const products: Product[] = [
       "Choose your paper, finish and quantity. Upload your artwork and get your printing options instantly.",
     description:
       "Printed by verified partners on premium stock, checked before production and delivered with tracking. Order 100 cards for a new hire or 5,000 for the whole team — the price is on screen before you commit.",
-    fromPrice: 61,
-    unitPrice: 0.61,
 
     quantities: [100, 250, 500, 1000, 2500],
+    anchor: { quantity: 100, subtotal: 135 },
     baseProductionDays: 2,
     rating: 4.9,
     reviews: 412,
@@ -148,9 +163,8 @@ export const products: Product[] = [
       "Pick your box format, material and finish. Get production times and pricing without waiting for a supplier reply.",
     description:
       "Mailer boxes, folding cartons and sleeves produced by partners with die-cutting capability. Structural files and mockups reviewed before production starts.",
-    fromPrice: 1450,
-    unitPrice: 14.5,
     quantities: [100, 250, 500, 1000],
+    anchor: { quantity: 100, subtotal: 855 },
     baseProductionDays: 6,
     rating: 4.8,
     reviews: 128,
@@ -189,9 +203,8 @@ export const products: Product[] = [
     heroCopy: "Choose size, paper and quantity. See the price and the delivery date instantly.",
     description:
       "A5, A4 and DL flyers on coated or uncoated stock, printed in as little as one working day by partners near you.",
-    fromPrice: 108,
-    unitPrice: 0.43,
     quantities: [250, 500, 1000, 2500, 5000],
+    anchor: { quantity: 1000, subtotal: 675, selection: { size: "a5", printing: "double" } },
     baseProductionDays: 1,
     rating: 4.8,
     reviews: 306,
@@ -225,9 +238,8 @@ export const products: Product[] = [
     heroCopy: "Choose size and base quality, upload artwork and see your price with delivery.",
     description:
       "Printed on anti-curl banner media with aluminium cassettes and a carry bag included.",
-    fromPrice: 690,
-    unitPrice: 690,
     quantities: [1, 2, 5, 10],
+    anchor: { quantity: 1, subtotal: 839, selection: { size: "80", base: "premium" } },
     baseProductionDays: 2,
     rating: 4.7,
     reviews: 94,
@@ -264,9 +276,8 @@ export const products: Product[] = [
     heroCopy: "Choose shape, material and quantity — pricing and production time update as you go.",
     description:
       "Roll or sheet labels on paper, transparent or waterproof material, die-cut to shape.",
-    fromPrice: 280,
-    unitPrice: 0.28,
     quantities: [500, 1000, 2500, 5000, 10000],
+    anchor: { quantity: 500, subtotal: 449, selection: { shape: "circle", material: "paper", finish: "matte" } },
     baseProductionDays: 3,
     rating: 4.9,
     reviews: 187,
@@ -302,9 +313,8 @@ export const products: Product[] = [
     heroCopy: "Pick pages, fold and paper. Price and production time update instantly.",
     description:
       "Folded leaflets and stitched brochures from 4 to 32 pages, printed and trimmed to size.",
-    fromPrice: 540,
-    unitPrice: 2.7,
-    quantities: [200, 500, 1000, 2500],
+    quantities: [100, 200, 500, 1000, 2500],
+    anchor: { quantity: 100, subtotal: 849, selection: { pages: "4", fold: "stitched" } },
     baseProductionDays: 3,
     rating: 4.8,
     reviews: 121,
@@ -342,9 +352,8 @@ export const products: Product[] = [
     heroHeadline: "Books made for reading, sharing and keeping.",
     heroCopy: "Choose the page count, format, print, paper and binding. Your price updates instantly.",
     description: "Books from 24 to 400 pages, printed in black and white or colour with file review before production.",
-    fromPrice: 55,
-    unitPrice: 55,
     quantities: [1, 5, 10, 25, 50, 100, 200, 499],
+    anchor: { quantity: 1, subtotal: 45 },
     pageRange: { min: 24, max: 400, default: 24 },
     bulkQuoteAt: 500,
     baseProductionDays: 5,
@@ -393,9 +402,8 @@ export const products: Product[] = [
     heroCopy: "Choose size, material and laminate. See the price before you print.",
     description:
       "Wipe-clean laminated menus, folded card menus and daily inserts for restaurants and cafés.",
-    fromPrice: 220,
-    unitPrice: 8.8,
     quantities: [25, 50, 100, 250],
+    anchor: { quantity: 50, subtotal: 675, selection: { size: "a4", protection: "laminate" } },
     baseProductionDays: 2,
     rating: 4.9,
     reviews: 78,
@@ -430,9 +438,8 @@ export const products: Product[] = [
     heroHeadline: "Stickers cut to whatever shape you need.",
     heroCopy: "Choose material, shape and quantity — the price updates as you choose.",
     description: "Die-cut vinyl and paper stickers in sheets or rolls, indoor or outdoor rated.",
-    fromPrice: 240,
-    unitPrice: 0.24,
     quantities: [250, 500, 1000, 2500, 5000],
+    anchor: { quantity: 500, subtotal: 495, selection: { shape: "custom" } },
     baseProductionDays: 2,
     rating: 4.9,
     reviews: 264,
@@ -467,9 +474,8 @@ export const products: Product[] = [
     heroHeadline: "Posters printed sharp, delivered flat or rolled.",
     heroCopy: "Choose size, paper and quantity and see the price with the fixed 30 DH delivery fee.",
     description: "A3 to B0 posters on satin, matte or heavy art paper.",
-    fromPrice: 180,
-    unitPrice: 18,
     quantities: [10, 25, 50, 100, 250],
+    anchor: { quantity: 10, subtotal: 270, selection: { size: "a3" } },
     baseProductionDays: 2,
     rating: 4.8,
     reviews: 143,
@@ -500,9 +506,8 @@ export const products: Product[] = [
     heroHeadline: "T-shirts, polos and workwear printed to your brand.",
     heroCopy: "Choose garment, print method and sizes. Pricing and production time update live.",
     description: "Screen printing, DTF and embroidery on shirts, hoodies, aprons and caps.",
-    fromPrice: 890,
-    unitPrice: 89,
     quantities: [10, 25, 50, 100, 250],
+    anchor: { quantity: 10, subtotal: 1790, selection: { garment: "tshirt", method: "dtf" } },
     baseProductionDays: 4,
     rating: 4.7,
     reviews: 96,
@@ -535,9 +540,9 @@ export const products: Product[] = [
     heroCopy:
       "Enter your dimensions, choose material and finishing, and see the price immediately.",
     description: "PVC banners, mesh, forex boards, window vinyl and exhibition graphics.",
-    fromPrice: 240,
-    unitPrice: 240,
     quantities: [1, 2, 5, 10, 25],
+    anchor: { quantity: 1, subtotal: 109, selection: { material: "pvc", finishing: "hem", width: "1", height: "1" } },
+    dimensions: { defaultWidth: 1, defaultHeight: 1, min: 0.1, max: 20 },
     baseProductionDays: 3,
     rating: 4.8,
     reviews: 87,
@@ -572,9 +577,8 @@ export const products: Product[] = [
     heroHeadline: "Corporate gifts your clients actually use.",
     heroCopy: "Choose the item, branding method and quantity, then see the price with delivery.",
     description: "Notebooks, bottles, tote bags, pens and gift sets branded with your identity.",
-    fromPrice: 1200,
-    unitPrice: 24,
     quantities: [50, 100, 250, 500],
+    anchor: { quantity: 50, subtotal: 1800, selection: { item: "notebook" } },
     baseProductionDays: 5,
     rating: 4.7,
     reviews: 63,
@@ -610,10 +614,15 @@ export function defaultSelection(product: Product): Selection {
   const sel: Selection = {};
   for (const g of product.options) sel[g.id] = g.choices[0]!.id;
   if (product.pageRange) sel["pages"] = String(product.pageRange.default);
+  if (product.dimensions) {
+    sel["width"] = String(product.dimensions.defaultWidth);
+    sel["height"] = String(product.dimensions.defaultHeight);
+  }
   return sel;
 }
 
 export type Quote = {
+  /** Product price per unit, delivery excluded. */
   unitPrice: number;
   subtotal: number;
   delivery: number;
@@ -622,6 +631,8 @@ export type Quote = {
   deliveryMin: number;
   deliveryMax: number;
   savingsPercent: number;
+  /** Printed surface in m2 for area-priced products, otherwise null. */
+  area: number | null;
 };
 
 /** Quantity breaks: bigger runs cost less per unit. */
@@ -636,44 +647,95 @@ function quantityFactor(product: Product, quantity: number) {
     return 1;
   }
   const base = product.quantities[0]!;
-  const ratio = quantity / base;
+  const ratio = Math.max(quantity, 1) / base;
   return Math.max(0.45, Math.pow(ratio, -0.16));
 }
 
-export function priceQuote(product: Product, quantity: number, selection: Selection): Quote {
+/** Option, page-count and variant multipliers. Quantity and surface excluded. */
+function configFactor(product: Product, selection: Selection) {
   let factor = 1;
-  let flat = 0;
-  let extraDays = 0;
-
   for (const g of product.options) {
+    if (g.id === "delivery") continue;
     const choice = g.choices.find((c) => c.id === selection[g.id]) ?? g.choices[0]!;
     factor *= choice.factor ?? 1;
+  }
+  if (product.pageRange) {
+    const pages = Number(selection["pages"] ?? product.pageRange.default);
+    const valid =
+      Number.isInteger(pages) && pages >= product.pageRange.min && pages <= product.pageRange.max;
+    factor *= (valid ? pages : product.pageRange.default) / product.pageRange.default;
+  }
+  return factor;
+}
+
+function positive(value: string | undefined, fallback: number, spec: DimensionSpec) {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n <= 0) return fallback;
+  return Math.min(Math.max(n, spec.min), spec.max);
+}
+
+/** Printed surface in m2. Always 1 for products that are not priced by area. */
+export function selectionArea(product: Product, selection: Selection) {
+  const spec = product.dimensions;
+  if (!spec) return null;
+  const width = positive(selection["width"], spec.defaultWidth, spec);
+  const height = positive(selection["height"], spec.defaultHeight, spec);
+  return Math.round(width * height * 10000) / 10000;
+}
+
+const unitBaseCache = new Map<string, number>();
+
+/**
+ * Single calibration point: the unit price (per unit, or per m2 for area-priced
+ * products) that makes the market anchor subtotal come out exact.
+ */
+function unitBase(product: Product) {
+  const cached = unitBaseCache.get(product.slug);
+  if (cached !== undefined) return cached;
+  const anchor = product.anchor;
+  const selection: Selection = { ...defaultSelection(product), ...(anchor.selection ?? {}) };
+  const denominator =
+    anchor.quantity *
+    configFactor(product, selection) *
+    quantityFactor(product, anchor.quantity) *
+    (selectionArea(product, selection) ?? 1);
+  const value = anchor.subtotal / denominator;
+  unitBaseCache.set(product.slug, value);
+  return value;
+}
+
+export function priceQuote(product: Product, quantity: number, selection: Selection): Quote {
+  const qty = Math.max(1, Math.floor(quantity) || 1);
+  let flat = 0;
+  let extraDays = 0;
+  for (const g of product.options) {
+    const choice = g.choices.find((c) => c.id === selection[g.id]) ?? g.choices[0]!;
     flat += choice.flat ?? 0;
     extraDays += choice.days ?? 0;
   }
 
-  if (product.pageRange) {
-    const pages = Number(selection["pages"] ?? product.pageRange.default);
-    const validPages = Number.isInteger(pages) && pages >= product.pageRange.min && pages <= product.pageRange.max;
-    factor *= (validPages ? pages : product.pageRange.default) / product.pageRange.default;
-  }
-  const qFactor = quantityFactor(product, quantity);
+  const area = selectionArea(product, selection);
+  const qFactor = quantityFactor(product, qty);
+  const rawUnit = unitBase(product) * configFactor(product, selection) * qFactor * (area ?? 1);
   // Money is settled on integer centimes so subtotal + delivery always equals total.
-  const unitCents = toCents(product.unitPrice * factor * qFactor);
-  const subtotalCents = Math.round(unitCents * quantity);
+  const subtotalCents = Math.max(0, Math.round(rawUnit * 100 * qty));
   const deliveryCents = toCents(flat);
   const productionDays = Math.max(1, product.baseProductionDays + extraDays);
   const express = selection["delivery"] === "express";
+  const smallestQuantity = Math.min(...product.quantities);
+  const referenceFactor = quantityFactor(product, smallestQuantity);
+  const savings = referenceFactor > 0 ? 1 - qFactor / referenceFactor : 0;
 
   return {
-    unitPrice: fromCents(unitCents),
+    unitPrice: fromCents(subtotalCents) / qty,
     subtotal: fromCents(subtotalCents),
     delivery: fromCents(deliveryCents),
     total: fromCents(subtotalCents + deliveryCents),
     productionDays,
     deliveryMin: express ? 1 : 3,
     deliveryMax: express ? 2 : 5,
-    savingsPercent: Math.round((1 - qFactor) * 100),
+    savingsPercent: Math.max(0, Math.round(savings * 100)),
+    area,
   };
 }
 
@@ -687,13 +749,34 @@ export function selectionLabels(product: Product, selection: Selection) {
     : labels;
 }
 
+/** The genuinely cheapest configuration of a product, delivery excluded. */
+export function cheapestSelection(product: Product): Selection {
+  const selection: Selection = {};
+  for (const g of product.options) {
+    if (g.id === "delivery") {
+      selection[g.id] = g.choices[0]!.id;
+      continue;
+    }
+    const cheapest = g.choices.reduce((best, c) =>
+      (c.factor ?? 1) < (best.factor ?? 1) ? c : best,
+    );
+    selection[g.id] = cheapest.id;
+  }
+  if (product.pageRange) selection["pages"] = String(product.pageRange.min);
+  if (product.dimensions) {
+    selection["width"] = String(product.dimensions.defaultWidth);
+    selection["height"] = String(product.dimensions.defaultHeight);
+  }
+  return selection;
+}
+
 /**
  * The real basis of the "From" price: the smallest listed quantity with the
- * default (cheapest listed) option of every group. Delivery is excluded.
+ * cheapest option of every group, priced by the same engine. Delivery excluded.
  */
 export function fromPriceBasis(product: Product) {
-  const quantity = product.quantities[0]!;
-  const selection = defaultSelection(product);
+  const quantity = Math.min(...product.quantities);
+  const selection = cheapestSelection(product);
   const quote = priceQuote(product, quantity, selection);
   return {
     quantity,

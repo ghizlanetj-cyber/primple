@@ -52,9 +52,21 @@ export function Configurator({ product }: { product: Product }) {
         .replace("{min}", number(product.pageRange.min))
         .replace("{max}", number(product.pageRange.max))
     : "";
+  const dimensionValue = (key: "width" | "height", fallback: number) => {
+    const raw = selection[key];
+    return raw === undefined || raw === "" ? fallback : Number(raw);
+  };
+  const dimensionsInvalid = product.dimensions
+    ? !(
+        Number.isFinite(dimensionValue("width", product.dimensions.defaultWidth)) &&
+        dimensionValue("width", product.dimensions.defaultWidth) > 0 &&
+        Number.isFinite(dimensionValue("height", product.dimensions.defaultHeight)) &&
+        dimensionValue("height", product.dimensions.defaultHeight) > 0
+      )
+    : false;
 
   const addToCart = () => {
-    if (customQuantityInvalid || pagesInvalid || bulkQuote) return;
+    if (customQuantityInvalid || pagesInvalid || dimensionsInvalid || bulkQuote) return;
     add({
       slug: product.slug,
       name: product.name,
@@ -155,6 +167,53 @@ export function Configurator({ product }: { product: Product }) {
             </fieldset>
           )}
 
+          {product.dimensions && (
+            <fieldset className="mt-7 border-0 p-0">
+              <legend className="text-sm font-semibold">{tr("Dimensions")}</legend>
+              <p className="text-xs text-muted-foreground">
+                {tr("The price is based on the printed surface in square metres.")}
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <label className="flex items-center gap-2 text-sm" htmlFor={`width-${product.slug}`}>
+                  {tr("Width (m)")}
+                  <Input
+                    id={`width-${product.slug}`}
+                    type="text"
+                    inputMode="decimal"
+                    value={selection["width"] ?? String(product.dimensions.defaultWidth)}
+                    onChange={(e) => setSelection((s) => ({ ...s, width: e.target.value }))}
+                    aria-invalid={dimensionsInvalid}
+                    className="h-10 w-24 rounded-full text-center"
+                  />
+                </label>
+                <label className="flex items-center gap-2 text-sm" htmlFor={`height-${product.slug}`}>
+                  {tr("Height (m)")}
+                  <Input
+                    id={`height-${product.slug}`}
+                    type="text"
+                    inputMode="decimal"
+                    value={selection["height"] ?? String(product.dimensions.defaultHeight)}
+                    onChange={(e) => setSelection((s) => ({ ...s, height: e.target.value }))}
+                    aria-invalid={dimensionsInvalid}
+                    className="h-10 w-24 rounded-full text-center"
+                  />
+                </label>
+              </div>
+              {dimensionsInvalid ? (
+                <p className="mt-2 text-sm text-destructive" role="alert">
+                  {tr("Enter a width and a height greater than zero, in metres.")}
+                </p>
+              ) : (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {tr("Printed surface")}: {number(quote.area ?? 0)} m² · {madUnit(quote.unitPrice)}{" "}
+                  {tr("per unit")}
+                </p>
+              )}
+            </fieldset>
+          )}
+
+
+
           {product.options.map((group) => (
             <fieldset key={group.id} className="mt-7 border-0 p-0">
               <legend className="text-sm font-semibold">{tr(group.label)}</legend>
@@ -184,7 +243,7 @@ export function Configurator({ product }: { product: Product }) {
             <p className={cn("mt-6 text-sm", bulkQuote ? "font-semibold text-primary" : "text-muted-foreground")}>{tr("500+ copies: request a custom quote.")}</p>
           )}
           {product.pageRange && (
-            <p className="mt-3 text-sm text-muted-foreground">{tr("Base price: 55 DH for 24 pages, A5, black and white, 80g offset paper and perfect binding. Options and quantity discounts update the price.")}</p>
+            <p className="mt-3 text-sm text-muted-foreground">{tr("Base price: 45 DH for 24 pages, A5, black and white, 80g offset paper and perfect binding. Options and quantity discounts update the price.")}</p>
           )}
         </section>
 
@@ -252,7 +311,7 @@ export function Configurator({ product }: { product: Product }) {
             size="lg"
             className="mt-6 w-full rounded-full"
             onClick={addToCart}
-            disabled={customQuantityInvalid || pagesInvalid || bulkQuote}
+            disabled={customQuantityInvalid || pagesInvalid || dimensionsInvalid || bulkQuote}
           >
             {tr(bulkQuote ? "Request a custom quote" : "Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />

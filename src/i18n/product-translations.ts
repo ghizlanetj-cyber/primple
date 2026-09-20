@@ -1,6 +1,12 @@
 import type { TranslationPair } from "./translations";
 
 export const productPhrases: Record<string, TranslationPair> = {
+  Dimensions: { fr: "Dimensions", ar: "الأبعاد" },
+  "The price is based on the printed surface in square metres.": { fr: "Le prix est calculé sur la surface imprimée en mètres carrés.", ar: "يُحتسب السعر على أساس المساحة المطبوعة بالمتر المربع." },
+  "Width (m)": { fr: "Largeur (m)", ar: "العرض (م)" },
+  "Height (m)": { fr: "Hauteur (m)", ar: "الارتفاع (م)" },
+  "Enter a width and a height greater than zero, in metres.": { fr: "Saisissez une largeur et une hauteur supérieures à zéro, en mètres.", ar: "أدخل عرضًا وارتفاعًا أكبر من صفر بالمتر." },
+  "Printed surface": { fr: "Surface imprimée", ar: "المساحة المطبوعة" },
   Books: { fr: "Livres", ar: "كتب" },
   Publishing: { fr: "Édition", ar: "النشر" },
   "Print one copy or a complete edition.": { fr: "Imprimez un exemplaire ou une édition complète.", ar: "اطبع نسخة واحدة أو إصدارًا كاملًا." },
@@ -25,7 +31,7 @@ export const productPhrases: Record<string, TranslationPair> = {
   "Enter a whole number between {min} and {max} pages.": { fr: "Saisissez un nombre entier compris entre {min} et {max} pages.", ar: "أدخل عددًا صحيحًا بين {min} و{max} صفحة." },
   "500+ copies: request a custom quote.": { fr: "500 exemplaires et plus : demandez un devis personnalisé.", ar: "500 نسخة أو أكثر: اطلب عرض سعر مخصصًا." },
   "Request a custom quote": { fr: "Demander un devis personnalisé", ar: "اطلب عرض سعر مخصصًا" },
-  "Base price: 55 DH for 24 pages, A5, black and white, 80g offset paper and perfect binding. Options and quantity discounts update the price.": { fr: "Prix de base : 55 DH pour 24 pages, A5, noir et blanc, papier offset 80 g et dos carré collé. Les options et remises quantité actualisent le prix.", ar: "السعر الأساسي: 55 درهمًا لكتاب من 24 صفحة، مقاس A5، أبيض وأسود، ورق أوفست 80 غ، وتجليد بغلاف ملصق. تُحدّث الخيارات وخصومات الكمية السعر." },
+  "Base price: 45 DH for 24 pages, A5, black and white, 80g offset paper and perfect binding. Options and quantity discounts update the price.": { fr: "Prix de base : 45 DH pour 24 pages, A5, noir et blanc, papier offset 80 g et dos carré collé. Les options et remises quantité actualisent le prix.", ar: "السعر الأساسي: 45 درهمًا لكتاب من 24 صفحة، مقاس A5، أبيض وأسود، ورق أوفست 80 غ، وتجليد بغلاف ملصق. تُحدّث الخيارات وخصومات الكمية السعر." },
   "What file should I send for a book?": { fr: "Quel fichier dois-je envoyer pour un livre ?", ar: "ما الملف الذي يجب إرساله لطباعة كتاب؟" },
   "Upload the complete interior file with every page in reading order. We review it before production.": { fr: "Importez le fichier intérieur complet avec toutes les pages dans l’ordre de lecture. Nous le vérifions avant production.", ar: "ارفع ملف المحتوى الداخلي كاملًا، مع جميع الصفحات بترتيب القراءة. نراجعه قبل الإنتاج." },
   "When is saddle stitching available?": { fr: "Quand la reliure agrafée est-elle disponible ?", ar: "متى يتوفر التجليد بالتدبيس؟" },

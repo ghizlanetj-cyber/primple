@@ -131,6 +131,37 @@ export const getShopOrderStatus = createServerFn({ method: "POST" })
  * Card payment for a print order. The amount is re-read from the saved order,
  * never taken from the browser, and the caller must own the order.
  */
+type StoredOrderLine = { slug?: string; quantity?: number; selection?: Record<string, string> };
+
+/**
+ * Recomputes a print order from the shared pricing engine so the charged amount
+ * can never diverge from what the catalog says. Falls back to the stored total
+ * only when a line no longer exists in the catalog.
+ */
+async function recomputeOrderCents(order: {
+  items: unknown;
+  delivery: unknown;
+  total: unknown;
+}): Promise<number> {
+  const { getProduct, priceQuote } = await import("@/data/products");
+  const lines = Array.isArray(order.items) ? (order.items as StoredOrderLine[]) : [];
+  if (lines.length === 0) return Math.round(Number(order.total) * 100);
+
+  let subtotalCents = 0;
+  let deliveryCents = 0;
+  for (const line of lines) {
+    const product = line.slug ? getProduct(line.slug) : undefined;
+    const quantity = Number(line.quantity);
+    if (!product || !line.selection || !Number.isFinite(quantity) || quantity < 1) {
+      return Math.round(Number(order.total) * 100);
+    }
+    const quote = priceQuote(product, quantity, line.selection);
+    subtotalCents += Math.round(quote.subtotal * 100);
+    deliveryCents = Math.max(deliveryCents, Math.round(quote.delivery * 100));
+  }
+  return subtotalCents + deliveryCents;
+}
+
 export const startPrintPayment = createServerFn({ method: "POST" })
   .inputValidator((input: { orderId: string }) => {
     const orderId = String(input?.orderId ?? "").trim();
@@ -147,7 +178,7 @@ export const startPrintPayment = createServerFn({ method: "POST" })
 
     const { data: order, error } = await supabaseAdmin
       .from("orders")
-      .select("id, user_id, reference, total, email, payment_status")
+      .select("id, user_id, reference, items, subtotal, delivery, total, email, payment_status")
       .eq("id", data.orderId)
       .maybeSingle();
 
@@ -155,7 +186,8 @@ export const startPrintPayment = createServerFn({ method: "POST" })
     if (order.user_id !== userId) throw new Error("Unknown order.");
     if (order.payment_status === "paid") throw new Error("This order is already paid.");
 
-    const amountCents = Math.round(Number(order.total) * 100);
+    // Never trust the stored total: re-price every line from the catalog.
+    const amountCents = await recomputeOrderCents(order);
     if (!Number.isFinite(amountCents) || amountCents <= 0) throw new Error("The order total is invalid.");
 
     const origin = siteOrigin();
