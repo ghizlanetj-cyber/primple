@@ -143,19 +143,18 @@ async function recomputeOrderCents(order: {
   delivery: unknown;
   total: unknown;
 }): Promise<number> {
-  const { getProduct, priceQuote } = await import("@/data/products");
+  const { lineQuote } = await import("@/data/pricing");
   const lines = Array.isArray(order.items) ? (order.items as StoredOrderLine[]) : [];
   if (lines.length === 0) return Math.round(Number(order.total) * 100);
 
   let subtotalCents = 0;
   let deliveryCents = 0;
   for (const line of lines) {
-    const product = line.slug ? getProduct(line.slug) : undefined;
     const quantity = Number(line.quantity);
-    if (!product || !line.selection || !Number.isFinite(quantity) || quantity < 1) {
-      return Math.round(Number(order.total) * 100);
-    }
-    const quote = priceQuote(product, quantity, line.selection);
+    const quote = line.slug
+      ? lineQuote(line.slug, Number.isFinite(quantity) ? quantity : 1, line.selection ?? {})
+      : null;
+    if (!quote) return Math.round(Number(order.total) * 100);
     subtotalCents += Math.round(quote.subtotal * 100);
     deliveryCents = Math.max(deliveryCents, Math.round(quote.delivery * 100));
   }

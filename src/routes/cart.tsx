@@ -9,9 +9,17 @@ import { mad, madUnit } from "@/lib/format";
 import { cartTotals, useCart } from "@/store/cart";
 import { productImages } from "@/data/productImages";
 import { getProduct } from "@/data/products";
+import { isPackSlug, packSlugFromCartSlug } from "@/data/packs";
+import { DESIGN_SERVICE_SLUG } from "@/data/design-service";
 import { isBulkQuoteQuantity, parseQuantity, productQuantityLimits } from "@/lib/quantity";
 import type { CartItem } from "@/store/cart";
 import { useI18n } from "@/i18n";
+
+/** Cart lines can be a catalog product, a pack or the design service. */
+function lineImage(slug: string): string | undefined {
+  if (isPackSlug(slug)) return `/packs/${packSlugFromCartSlug(slug)}.webp`;
+  return productImages[slug];
+}
 
 const title = "Votre panier d’impression | Primple";
 const description =
@@ -74,14 +82,20 @@ function CartPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="grid gap-5 rounded-2xl border border-border bg-card p-5 sm:grid-cols-[140px_1fr]"
                 >
-                  <img
-                    src={productImages[item.slug]}
-                    alt={tr(item.name)}
-                    width={800}
-                    height={600}
-                    loading="lazy"
-                    className="h-28 w-full rounded-xl object-cover sm:h-full"
-                  />
+                  {lineImage(item.slug) ? (
+                    <img
+                      src={lineImage(item.slug)}
+                      alt={tr(item.name)}
+                      width={800}
+                      height={600}
+                      loading="lazy"
+                      className="h-28 w-full rounded-xl object-cover sm:h-full"
+                    />
+                  ) : (
+                    <div className="flex h-28 w-full items-center justify-center rounded-xl bg-secondary text-sm text-muted-foreground sm:h-full">
+                      {tr("Design service")}
+                    </div>
+                  )}
                   <div>
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -119,7 +133,13 @@ function CartPage() {
                     </div>
 
                     <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
-                      <CartQuantityInput item={item} onValidQuantity={setQuantity} />
+                      {getProduct(item.slug) ? (
+                        <CartQuantityInput item={item} onValidQuantity={setQuantity} />
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          {item.labels.map((l) => tr(l.value)).join(" · ")}
+                        </p>
+                      )}
                       <div className="text-end">
                         <p className="text-xs text-muted-foreground">
                           {madUnit(item.unitPrice)} {tr("per unit")}
@@ -128,13 +148,30 @@ function CartPage() {
                       </div>
                     </div>
 
-                    <Link
-                      to="/products/$slug"
-                      params={{ slug: item.slug }}
-                      className="mt-3 inline-flex text-sm font-semibold hover:text-primary"
-                    >
-                      {tr("Edit configuration")}
-                    </Link>
+                    {isPackSlug(item.slug) ? (
+                      <Link
+                        to="/packs/$slug"
+                        params={{ slug: packSlugFromCartSlug(item.slug) }}
+                        className="mt-3 inline-flex text-sm font-semibold hover:text-primary"
+                      >
+                        {tr("Edit this pack")}
+                      </Link>
+                    ) : item.slug === DESIGN_SERVICE_SLUG ? (
+                      <Link
+                        to="/design-services"
+                        className="mt-3 inline-flex text-sm font-semibold hover:text-primary"
+                      >
+                        {tr("Change my design hours")}
+                      </Link>
+                    ) : (
+                      <Link
+                        to="/products/$slug"
+                        params={{ slug: item.slug }}
+                        className="mt-3 inline-flex text-sm font-semibold hover:text-primary"
+                      >
+                        {tr("Edit configuration")}
+                      </Link>
+                    )}
                   </div>
                 </motion.article>
               ))}
@@ -165,6 +202,12 @@ function CartPage() {
               <p className="mt-3 text-center text-xs text-muted-foreground">
                 {tr("Secure card payment in MAD · Artwork checked before production")}
               </p>
+              <Link
+                to="/design-services"
+                className="mt-4 block rounded-xl bg-secondary/60 p-3 text-center text-xs font-semibold hover:text-primary"
+              >
+                {tr("Need a designer? 100 MAD an hour.")}
+              </Link>
             </aside>
           </div>
         )}

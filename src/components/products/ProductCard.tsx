@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
 import { fromPriceBasis, type Product } from "@/data/products";
-import { productImages } from "@/data/productImages";
+import { productImageAlt, productImages } from "@/data/productImages";
 import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
 
@@ -18,7 +18,11 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="aspect-[4/3] overflow-hidden bg-secondary/60 p-2">
         <img
           src={productImages[product.slug]}
-          alt={`${tr(product.name)} — Primple`}
+          alt={
+            productImageAlt[product.slug]
+              ? tr(productImageAlt[product.slug]!)
+              : `${tr(product.name)} — Primple`
+          }
           width={800}
           height={600}
           loading="lazy"

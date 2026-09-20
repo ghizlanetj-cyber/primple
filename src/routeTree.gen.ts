@@ -16,6 +16,7 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DesignServicesRouteImport } from './routes/design-services'
 import { Route as DesignersRouteImport } from './routes/designers'
 import { Route as EnterpriseRouteImport } from './routes/enterprise'
 import { Route as HelpRouteImport } from './routes/help'
@@ -30,6 +31,8 @@ import { Route as SignupRouteImport } from './routes/signup'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as PacksIndexRouteImport } from './routes/packs/index'
+import { Route as PacksSlugRouteImport } from './routes/packs/$slug'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProductsSlugRouteImport } from './routes/products/$slug'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
@@ -71,6 +74,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignServicesRoute = DesignServicesRouteImport.update({
+  id: '/design-services',
+  path: '/design-services',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignersRoute = DesignersRouteImport.update({
@@ -143,6 +151,16 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PacksIndexRoute = PacksIndexRouteImport.update({
+  id: '/packs/',
+  path: '/packs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PacksSlugRoute = PacksSlugRouteImport.update({
+  id: '/packs/$slug',
+  path: '/packs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsIndexRoute = ProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
@@ -193,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/design-services': typeof DesignServicesRoute
   '/designers': typeof DesignersRoute
   '/enterprise': typeof EnterpriseRoute
   '/help': typeof HelpRoute
@@ -207,10 +226,12 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/packs/$slug': typeof PacksSlugRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/confirmation': typeof ShopConfirmationRoute
+  '/packs/': typeof PacksIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
@@ -223,6 +244,7 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/design-services': typeof DesignServicesRoute
   '/designers': typeof DesignersRoute
   '/enterprise': typeof EnterpriseRoute
   '/help': typeof HelpRoute
@@ -237,10 +259,12 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/packs/$slug': typeof PacksSlugRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/confirmation': typeof ShopConfirmationRoute
+  '/packs': typeof PacksIndexRoute
   '/products': typeof ProductsIndexRoute
   '/shop': typeof ShopIndexRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
@@ -255,6 +279,7 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
+  '/design-services': typeof DesignServicesRoute
   '/designers': typeof DesignersRoute
   '/enterprise': typeof EnterpriseRoute
   '/help': typeof HelpRoute
@@ -269,10 +294,12 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/packs/$slug': typeof PacksSlugRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/confirmation': typeof ShopConfirmationRoute
+  '/packs/': typeof PacksIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/_authenticated/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
@@ -287,6 +314,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/design-services'
     | '/designers'
     | '/enterprise'
     | '/help'
@@ -301,10 +329,12 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/auth/callback'
+    | '/packs/$slug'
     | '/products/$slug'
     | '/shop/$handle'
     | '/shop/checkout'
     | '/shop/confirmation'
+    | '/packs/'
     | '/products/'
     | '/shop/'
     | '/invoice/$reference'
@@ -317,6 +347,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/design-services'
     | '/designers'
     | '/enterprise'
     | '/help'
@@ -331,10 +362,12 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/auth/callback'
+    | '/packs/$slug'
     | '/products/$slug'
     | '/shop/$handle'
     | '/shop/checkout'
     | '/shop/confirmation'
+    | '/packs'
     | '/products'
     | '/shop'
     | '/invoice/$reference'
@@ -348,6 +381,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/contact'
+    | '/design-services'
     | '/designers'
     | '/enterprise'
     | '/help'
@@ -362,10 +396,12 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/dashboard'
     | '/auth/callback'
+    | '/packs/$slug'
     | '/products/$slug'
     | '/shop/$handle'
     | '/shop/checkout'
     | '/shop/confirmation'
+    | '/packs/'
     | '/products/'
     | '/shop/'
     | '/_authenticated/invoice/$reference'
@@ -380,6 +416,7 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
+  DesignServicesRoute: typeof DesignServicesRoute
   DesignersRoute: typeof DesignersRoute
   EnterpriseRoute: typeof EnterpriseRoute
   HelpRoute: typeof HelpRoute
@@ -393,10 +430,12 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  PacksSlugRoute: typeof PacksSlugRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ShopHandleRoute: typeof ShopHandleRoute
   ShopCheckoutRoute: typeof ShopCheckoutRoute
   ShopConfirmationRoute: typeof ShopConfirmationRoute
+  PacksIndexRoute: typeof PacksIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
   ApiPublicYoucanpayWebhookRoute: typeof ApiPublicYoucanpayWebhookRoute
@@ -451,6 +490,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/design-services': {
+      id: '/design-services'
+      path: '/design-services'
+      fullPath: '/design-services'
+      preLoaderRoute: typeof DesignServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/designers': {
@@ -551,6 +597,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/packs/': {
+      id: '/packs/'
+      path: '/packs'
+      fullPath: '/packs/'
+      preLoaderRoute: typeof PacksIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/packs/$slug': {
+      id: '/packs/$slug'
+      path: '/packs/$slug'
+      fullPath: '/packs/$slug'
+      preLoaderRoute: typeof PacksSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products/': {
       id: '/products/'
       path: '/products'
@@ -631,6 +691,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
+  DesignServicesRoute: DesignServicesRoute,
   DesignersRoute: DesignersRoute,
   EnterpriseRoute: EnterpriseRoute,
   HelpRoute: HelpRoute,
@@ -644,10 +705,12 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  PacksSlugRoute: PacksSlugRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ShopHandleRoute: ShopHandleRoute,
   ShopCheckoutRoute: ShopCheckoutRoute,
   ShopConfirmationRoute: ShopConfirmationRoute,
+  PacksIndexRoute: PacksIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
   ApiPublicYoucanpayWebhookRoute: ApiPublicYoucanpayWebhookRoute,

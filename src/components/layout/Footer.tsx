@@ -19,6 +19,8 @@ const columns: { titleKey: string; links: { label: string; to: string }[] }[] = 
     titleKey: "nav.platform",
     links: [
       { label: "Platform overview", to: "/platform" },
+      { label: "Packs", to: "/packs" },
+      { label: "Design service", to: "/design-services" },
       { label: "Services", to: "/services" },
       { label: "Pricing", to: "/pricing" },
       { label: "Enterprise", to: "/enterprise" },
