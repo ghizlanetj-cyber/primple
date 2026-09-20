@@ -1,7 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { getProduct, priceQuote } from "@/data/products";
+import {
+  DELIVERY_FEE as STANDARD_DELIVERY_FEE,
+  EXPRESS_DELIVERY_FEE as EXPRESS_FEE,
+  isDigitalSlug,
+  lineQuote,
+} from "@/data/pricing";
 import { fromCents, toCents } from "@/lib/format";
 
 
@@ -33,9 +38,8 @@ type CartState = {
 
 /** Always re-price an item from the live catalog so the cart can never show a stale price. */
 function reprice(item: CartItem, quantity = item.quantity): CartItem {
-  const product = getProduct(item.slug);
-  if (!product) return { ...item, quantity, subtotal: item.unitPrice * quantity };
-  const quote = priceQuote(product, quantity, item.selection);
+  const quote = lineQuote(item.slug, quantity, item.selection);
+  if (!quote) return { ...item, quantity, subtotal: item.unitPrice * quantity };
   return {
     ...item,
     quantity,
