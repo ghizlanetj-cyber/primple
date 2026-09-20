@@ -375,15 +375,42 @@ function CheckoutPage() {
                     <Summary icon={CreditCard} label={tr("Payment method")} value={tr("Card · YouCan Pay")} />
                   </dl>
 
+                  {!user && (
+                    <div className="mt-8 rounded-2xl border border-border bg-secondary/40 p-6">
+                      <h3 className="text-lg">{tr("Create your account")}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {tr("We'll attach this order to your account once your email is confirmed.")}
+                      </p>
+                      <ul className="mt-4 grid gap-2 text-sm text-muted-foreground">
+                        <li>• {tr("Follow this order until it is delivered")}</li>
+                        <li>• {tr("Keep your files for your next orders")}</li>
+                        <li>• {tr("Find all your invoices in one place")}</li>
+                        <li>• {tr("Reorder in a couple of clicks")}</li>
+                      </ul>
+                      <p className="mt-4 text-sm">
+                        <span className="text-muted-foreground">{tr("Email")}: </span>
+                        <span className="font-semibold">{details?.email}</span>
+                      </p>
+                      <div className="mt-4 grid gap-3 sm:max-w-md">
+                        <SocialAuthButtons redirectTo="/dashboard" />
+                        <Button asChild size="lg" className="rounded-full">
+                          <Link to="/signup">{tr("Create your account")}</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-8 flex flex-wrap gap-3">
-                    <Button
-                      size="lg"
-                      className="rounded-full"
-                      onClick={() => navigate({ to: "/dashboard" })}
-                    >
-                      {tr("Track my order")}
-                    </Button>
-                    {placedOrder && (
+                    {user && (
+                      <Button
+                        size="lg"
+                        className="rounded-full"
+                        onClick={() => navigate({ to: "/dashboard" })}
+                      >
+                        {tr("Track my order")}
+                      </Button>
+                    )}
+                    {user && placedOrder && (
                       <Button asChild size="lg" variant="outline" className="rounded-full">
                         <Link
                           to="/invoice/$reference"
