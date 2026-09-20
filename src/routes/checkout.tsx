@@ -69,10 +69,6 @@ function CheckoutPage() {
 
   const handleStartPayment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!user) {
-      toast.error(tr("Please sign in above so we can save this order before you pay."));
-      return;
-    }
     if (!details) {
       toast.error(tr("Please complete your delivery details before paying."));
       setStep(1);
@@ -268,18 +264,15 @@ function CheckoutPage() {
                   />
 
                   {!user && (
-                    <p className="mt-4 text-sm text-destructive">
-                      {tr("Please sign in above so we can save this order before you pay.")}
+                    <p className="mt-4 text-sm text-muted-foreground">
+                      {tr(
+                        "No account needed to pay. You can create one right after payment to track this order.",
+                      )}
                     </p>
                   )}
 
                   {!cardReady ? (
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="mt-6 rounded-full"
-                      disabled={placing || !user}
-                    >
+                    <Button type="submit" size="lg" className="mt-6 rounded-full" disabled={placing}>
                       {placing ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (
