@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Link } from "@tanstack/react-router";
 import { CheckCircle2, FileText, Trash2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 
@@ -16,6 +15,7 @@ import {
   formatBytes,
   isAcceptedArtwork,
   uploadClientFile,
+  uploadGuestFile,
   type ClientFile,
 } from "@/lib/files-api";
 
@@ -39,10 +39,6 @@ export function ArtworkUpload({
   const [removing, setRemoving] = useState(false);
 
   const handleFile = async (file: File) => {
-    if (!user) {
-      toast.error(tr("Log in to upload your file."));
-      return;
-    }
     if (!isAcceptedArtwork(file)) {
       toast.error(tr("Accepted formats: PDF, PNG, JPG or SVG."));
       return;
@@ -53,9 +49,9 @@ export function ArtworkUpload({
     }
     setUploading(true);
     try {
-      const uploaded = await uploadClientFile(user.id, file);
+      const uploaded = user ? await uploadClientFile(user.id, file) : await uploadGuestFile(file);
       onChange(uploaded);
-      toast.success(tr("File uploaded to your account."));
+      toast.success(tr(user ? "File uploaded to your account." : "File ready for your guest order."));
     } catch {
       toast.error(tr("We couldn't upload your file. Please try again."));
     } finally {
@@ -90,15 +86,6 @@ export function ArtworkUpload({
         }}
       />
 
-      {!user && (
-        <p className="mb-3 rounded-xl bg-secondary/70 p-3 text-sm text-muted-foreground">
-          {tr("Log in to upload your file.")}{" "}
-          <Link to="/login" className="font-semibold text-foreground hover:underline">
-            {tr("Log in")}
-          </Link>
-        </p>
-      )}
-
       <AnimatePresence mode="wait">
         {!artwork ? (
           <motion.div
@@ -109,7 +96,7 @@ export function ArtworkUpload({
           >
             <button
               type="button"
-              disabled={!user || uploading}
+              disabled={uploading}
               onClick={() => inputRef.current?.click()}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -172,7 +159,11 @@ export function ArtworkUpload({
 
             <div className="mt-4 flex items-center gap-2 rounded-xl bg-success/12 px-3 py-2.5 text-sm font-medium text-success">
               <CheckCircle2 className="size-4 shrink-0" />
-              {tr("Saved to your account. You'll find it on your order in your dashboard.")}
+              {tr(
+                user
+                  ? "Saved to your account. You'll find it on your order in your dashboard."
+                  : "Ready for checkout. This file will stay private with your guest order.",
+              )}
             </div>
           </motion.div>
         )}

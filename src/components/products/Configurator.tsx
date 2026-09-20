@@ -19,6 +19,7 @@ import { isBulkQuoteQuantity, parseQuantity, productQuantityLimits } from "@/lib
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
+import { quantityChoiceDetails } from "./quantity-choice";
 
 export function Configurator({ product }: { product: Product }) {
   const { tr, number } = useI18n();
@@ -79,7 +80,13 @@ export function Configurator({ product }: { product: Product }) {
       productionDays: quote.productionDays,
       deliveryMin: quote.deliveryMin,
       deliveryMax: quote.deliveryMax,
-      ...(artwork ? { artwork: artwork.name, artworkPath: artwork.path } : {}),
+      ...(artwork
+        ? {
+            artwork: artwork.name,
+            artworkPath: artwork.path,
+            ...(artwork.guestToken ? { artworkGuestToken: artwork.guestToken } : {}),
+          }
+        : {}),
     });
     toast.success(`${number(quantity)} ${tr(product.name)} — ${tr("added to your cart.")}`);
     navigate({ to: "/cart" });
@@ -99,6 +106,7 @@ export function Configurator({ product }: { product: Product }) {
             <div className="mt-3 flex flex-wrap gap-2">
               {product.quantities.map((q) => {
                 const tierQuote = priceQuote(product, q, selection);
+                const choice = quantityChoiceDetails(number(q), tierQuote.savingsPercent);
                 return (
                   <ChipRadio
                     key={q}
@@ -111,13 +119,10 @@ export function Configurator({ product }: { product: Product }) {
                     }}
                   >
                     <span className="flex flex-col items-center leading-tight">
-                      <span>{number(q)}</span>
-                      <span className="text-xs font-normal opacity-80">
-                        {mad(tierQuote.subtotal)} · {madUnit(tierQuote.unitPrice)}
-                      </span>
-                      {tierQuote.savingsPercent > 0 && (
+                      <span>{choice.quantity}</span>
+                      {choice.savings && (
                         <span className="text-[11px] font-semibold text-success">
-                          -{tierQuote.savingsPercent}%
+                          {choice.savings}
                         </span>
                       )}
                     </span>

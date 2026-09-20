@@ -25,6 +25,7 @@ export type CartItem = {
   deliveryMax: number;
   artwork?: string;
   artworkPath?: string;
+  artworkGuestToken?: string;
   printer?: string;
 };
 

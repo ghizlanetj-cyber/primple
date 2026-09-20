@@ -49,6 +49,7 @@ export type Database = {
           bucket: string
           created_at: string
           file_name: string
+          guest_token: string | null
           id: string
           mime_type: string | null
           order_id: string | null
@@ -56,12 +57,13 @@ export type Database = {
           path: string
           size_bytes: number
           status: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           bucket?: string
           created_at?: string
           file_name: string
+          guest_token?: string | null
           id?: string
           mime_type?: string | null
           order_id?: string | null
@@ -69,12 +71,13 @@ export type Database = {
           path: string
           size_bytes?: number
           status?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           bucket?: string
           created_at?: string
           file_name?: string
+          guest_token?: string | null
           id?: string
           mime_type?: string | null
           order_id?: string | null
@@ -82,7 +85,7 @@ export type Database = {
           path?: string
           size_bytes?: number
           status?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
