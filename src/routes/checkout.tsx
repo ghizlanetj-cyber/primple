@@ -175,30 +175,6 @@ function CheckoutPage() {
           ))}
         </div>
 
-        {!user && step < 3 && (
-          <div className="mt-8 rounded-2xl border border-border bg-secondary/40 p-6">
-            <h2 className="text-lg">{tr("Sign in to finish your order")}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {tr("An account is required to confirm your order.")}{" "}
-              {tr(
-                "You can review your items now, but you'll need to log in or create an account before confirming.",
-              )}
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {tr(
-                "Your cart, configuration and prices are saved while you log in or create your account.",
-              )}
-            </p>
-            <div className="mt-4 grid gap-3 sm:max-w-md">
-              <SocialAuthButtons redirectTo="/checkout" />
-              <Button asChild variant="ghost" size="lg" className="rounded-full">
-                <Link to="/login" search={{ redirect: "/checkout" }}>
-                  {tr("Log in or create an account")}
-                </Link>
-              </Button>
-            </div>
-          </div>
-        )}
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
           <AnimatePresence mode="wait">
