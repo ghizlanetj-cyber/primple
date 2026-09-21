@@ -14,15 +14,11 @@ export const packPhrases: Record<string, TranslationPair> = {
     "Tout ce que votre activité imprime, dans un seul pack.",
     "كل ما تطبعه أعمالك في باقة واحدة.",
   ),
-  "Each pack bundles the pieces a business really needs and costs 20% less than ordering the same items one by one.":
-    p(
-      "Chaque pack réunit les supports vraiment utiles à une activité et coûte 20 % de moins que les mêmes articles commandés séparément.",
-      "تجمع كل باقة المطبوعات التي يحتاجها النشاط فعلاً وتكلّف أقل بنسبة 20% من طلب نفس العناصر بشكل منفصل.",
-    ),
-  "Ready-made packs, 20% cheaper.": p(
-    "Des packs prêts à commander, 20 % moins chers.",
-    "باقات جاهزة، أرخص بنسبة 20%.",
+  "Each pack bundles the pieces a business really needs and costs 20% less than ordering the same items one by one.": p(
+    "Chaque pack réunit les supports vraiment utiles à une activité et coûte 20 % de moins que les mêmes articles commandés séparément.",
+    "تجمع كل باقة المطبوعات التي يحتاجها النشاط فعلاً وتكلّف أقل بنسبة 20% من طلب نفس العناصر بشكل منفصل.",
   ),
+  "Ready-made packs, 20% cheaper.": p("Des packs prêts à commander, 20 % moins chers.", "باقات جاهزة، أرخص بنسبة 20%."),
   "Save 20%": p("Économisez 20 %", "وفّر 20%"),
   "See what's inside": p("Voir ce qu'il contient", "شاهد محتوى الباقة"),
   "See all packs": p("Voir tous les packs", "عرض كل الباقات"),
@@ -63,10 +59,7 @@ export const packPhrases: Record<string, TranslationPair> = {
   "New product brands": p("Nouvelles marques produit", "العلامات التجارية الجديدة"),
   "Construction and contractors": p("Construction et entreprises du BTP", "البناء والمقاولات"),
   "Restaurants and cafés": p("Restaurants et cafés", "المطاعم والمقاهي"),
-  "Openings, launches and events": p(
-    "Ouvertures, lancements et événements",
-    "الافتتاحات والإطلاقات والفعاليات",
-  ),
+  "Openings, launches and events": p("Ouvertures, lancements et événements", "الافتتاحات والإطلاقات والفعاليات"),
   "Companies and agencies": p("Entreprises et agences", "الشركات والوكالات"),
   "Shops and boutiques": p("Magasins et boutiques", "المحلات والمتاجر"),
 
@@ -226,11 +219,10 @@ export const packPhrases: Record<string, TranslationPair> = {
     "Décrivez en une ou deux phrases ce que vous voulez faire concevoir.",
     "أخبرنا في جملة أو جملتين بما تريد تصميمه.",
   ),
-  "Branding, brand strategy and logo creation are separate projects — tell us about them on the contact page.":
-    p(
-      "L'identité de marque, la stratégie et la création de logo sont des projets à part — parlez-nous-en depuis la page contact.",
-      "الهوية البصرية واستراتيجية العلامة وتصميم الشعار مشاريع منفصلة — حدّثنا عنها عبر صفحة الاتصال.",
-    ),
+  "Branding, brand strategy and logo creation are separate projects — tell us about them on the contact page.": p(
+    "L'identité de marque, la stratégie et la création de logo sont des projets à part — parlez-nous-en depuis la page contact.",
+    "الهوية البصرية واستراتيجية العلامة وتصميم الشعار مشاريع منفصلة — حدّثنا عنها عبر صفحة الاتصال.",
+  ),
   "Layout and artwork setup for printing": p(
     "Mise en page et préparation du visuel pour l'impression",
     "التنسيق وإعداد التصميم للطباعة",
@@ -254,21 +246,17 @@ export const packPhrases: Record<string, TranslationPair> = {
     "Besoin d'un designer ? 100 MAD de l'heure.",
     "تحتاج مصمماً؟ 100 درهم في الساعة.",
   ),
-  "Book a designer — 100 MAD/h": p(
-    "Réserver un designer — 100 MAD/h",
-    "احجز مصمماً — 100 درهم/ساعة",
-  ),
+  "Book a designer — 100 MAD/h": p("Réserver un designer — 100 MAD/h", "احجز مصمماً — 100 درهم/ساعة"),
   "Book design time": p("Réserver des heures de design", "احجز ساعات تصميم"),
   "No print-ready file? Book a designer for": p(
     "Pas de fichier prêt à imprimer ? Réservez un designer pour",
     "لا تملك ملفاً جاهزاً للطباعة؟ احجز مصمماً مقابل",
   ),
   "an hour.": p("de l'heure.", "في الساعة."),
-  "Layout, format adaptation and print file preparation. Logo creation and brand identity are not included.":
-    p(
-      "Mise en page, adaptation de format et préparation des fichiers d'impression. La création de logo et l'identité de marque ne sont pas incluses.",
-      "التنسيق وتكييف المقاسات وتحضير ملفات الطباعة. تصميم الشعار والهوية البصرية غير مشمولين.",
-    ),
+  "Layout, format adaptation and print file preparation. Logo creation and brand identity are not included.": p(
+    "Mise en page, adaptation de format et préparation des fichiers d'impression. La création de logo et l'identité de marque ne sont pas incluses.",
+    "التنسيق وتكييف المقاسات وتحضير ملفات الطباعة. تصميم الشعار والهوية البصرية غير مشمولين.",
+  ),
   "Change my design hours": p("Modifier mes heures de design", "تعديل ساعات التصميم"),
 
   // --- Guest checkout and success page ---
@@ -289,31 +277,24 @@ export const packPhrases: Record<string, TranslationPair> = {
     "Retrouver toutes vos factures au même endroit",
     "اعثر على كل فواتيرك في مكان واحد",
   ),
-  "Reorder in a couple of clicks": p(
-    "Recommander en deux clics",
-    "أعد الطلب بنقرتين",
-  ),
+  "Reorder in a couple of clicks": p("Recommander en deux clics", "أعد الطلب بنقرتين"),
   "We'll attach this order to your account once your email is confirmed.": p(
     "Nous rattacherons cette commande à votre compte dès que votre e-mail sera confirmé.",
     "سنربط هذا الطلب بحسابك بمجرد تأكيد بريدك الإلكتروني.",
   ),
 
   // --- Design brief estimator ---
-  "Describe what you need and see the estimated hours and price update instantly, before you order.":
-    p(
-      "Décrivez votre besoin et voyez les heures estimées et le prix se mettre à jour instantanément, avant de commander.",
-      "صف ما تحتاجه وشاهد الساعات المقدّرة والسعر يتحدثان فورًا قبل الطلب.",
-    ),
+  "Describe what you need and see the estimated hours and price update instantly, before you order.": p(
+    "Décrivez votre besoin et voyez les heures estimées et le prix se mettre à jour instantanément, avant de commander.",
+    "صف ما تحتاجه وشاهد الساعات المقدّرة والسعر يتحدثان فورًا قبل الطلب.",
+  ),
   "Tell us about your project": p("Parlez-nous de votre projet", "أخبرنا عن مشروعك"),
   "What do you need?": p("De quoi avez-vous besoin ?", "ما الذي تحتاجه؟"),
   "Adapt an existing design to a new format": p(
     "Adapter un design existant à un nouveau format",
     "تكييف تصميم موجود مع مقاس جديد",
   ),
-  "Prepare a print-ready file": p(
-    "Préparer un fichier prêt à imprimer",
-    "تحضير ملف جاهز للطباعة",
-  ),
+  "Prepare a print-ready file": p("Préparer un fichier prêt à imprimer", "تحضير ملف جاهز للطباعة"),
   "Flyer or poster": p("Flyer ou affiche", "منشور أو ملصق"),
   "Menu or price list": p("Menu ou liste de prix", "قائمة طعام أو قائمة أسعار"),
   "Brochure or catalogue": p("Brochure ou catalogue", "كتيّب أو كتالوج"),
@@ -332,10 +313,7 @@ export const packPhrases: Record<string, TranslationPair> = {
     "Plus vous donnez de détails, plus l'estimation est précise.",
     "كلما زادت التفاصيل، كان التقدير أدق.",
   ),
-  "I need it within 48 hours": p(
-    "J'en ai besoin sous 48 heures",
-    "أحتاجه خلال 48 ساعة",
-  ),
+  "I need it within 48 hours": p("J'en ai besoin sous 48 heures", "أحتاجه خلال 48 ساعة"),
   "Your instant estimate": p("Votre estimation immédiate", "تقديرك الفوري"),
   Estimated: p("Estimé", "تقديري"),
   "If your project turns out to need less time, you only pay the hours used.": p(
@@ -350,18 +328,12 @@ export const packPhrases: Record<string, TranslationPair> = {
     "تواصل مباشرة مع مصمم Primple بخصوص ملفاتك وطلبك.",
   ),
   "Loading your conversation…": p("Chargement de votre conversation…", "جارٍ تحميل محادثتك…"),
-  "The conversation could not be loaded.": p(
-    "La conversation n'a pas pu être chargée.",
-    "تعذّر تحميل المحادثة.",
-  ),
+  "The conversation could not be loaded.": p("La conversation n'a pas pu être chargée.", "تعذّر تحميل المحادثة."),
   "No messages yet. Send the first one and a designer will reply here.": p(
     "Aucun message pour l'instant. Envoyez le premier, un designer vous répondra ici.",
     "لا توجد رسائل بعد. أرسل أول رسالة وسيرد عليك مصمم هنا.",
   ),
-  "Write your message to the designer…": p(
-    "Écrivez votre message au designer…",
-    "اكتب رسالتك إلى المصمم…",
-  ),
+  "Write your message to the designer…": p("Écrivez votre message au designer…", "اكتب رسالتك إلى المصمم…"),
   "Send message": p("Envoyer le message", "إرسال الرسالة"),
   "Your message could not be sent. Please try again.": p(
     "Votre message n'a pas pu être envoyé. Réessayez.",
@@ -369,5 +341,5 @@ export const packPhrases: Record<string, TranslationPair> = {
   ),
   You: p("Vous", "أنت"),
   Designer: p("Designer", "المصمم"),
+  "We will contact you soon.": p("Nous vous contacterons bientôt.", "سنتواصل معك قريبًا."),
 };
-
