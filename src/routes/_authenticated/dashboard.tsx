@@ -9,9 +9,7 @@ import {
   LifeBuoy,
   LogOut,
   MapPin,
-  MessagesSquare,
   Package,
-
   FolderOpen,
   Receipt,
   Repeat,
@@ -25,7 +23,6 @@ import { orderStages, type OrderStage } from "@/data/orders";
 import { listMyOrders, type OrderRecord } from "@/lib/orders-api";
 import { artworkFolder, listMyFiles } from "@/lib/files-api";
 import { ClientFiles } from "@/components/dashboard/ClientFiles";
-import { DesignerChat } from "@/components/dashboard/DesignerChat";
 
 import { invoiceLabels, invoiceNumber } from "@/lib/invoice";
 import { mad } from "@/lib/format";
@@ -38,8 +35,7 @@ import { claimGuestOrder } from "@/lib/orders.functions";
 import { clearGuestClaim, readGuestClaim } from "@/lib/guest-claim";
 
 const title = "Votre espace d’impression | Primple";
-const description =
-  "Suivez chaque impression, consultez vos commandes et téléchargez vos factures au même endroit.";
+const description = "Suivez chaque impression, consultez vos commandes et téléchargez vos factures au même endroit.";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -58,7 +54,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 
-type View = "orders" | "files" | "chat" | "invoices";
+type View = "orders" | "files" | "invoices";
 
 type ViewOrder = {
   id: string;
@@ -130,10 +126,8 @@ function DashboardPage() {
   const nav: { key: View; label: string; icon: React.ElementType }[] = [
     { key: "orders", label: t("dash.nav.orders"), icon: Package },
     { key: "files", label: tr("My files"), icon: FolderOpen },
-    { key: "chat", label: tr("Designer chat"), icon: MessagesSquare },
     { key: "invoices", label: t("dash.nav.invoices"), icon: Receipt },
   ];
-
 
   return (
     <SiteShell>
@@ -146,15 +140,14 @@ function DashboardPage() {
                 {t("dash.title")} <span className="display-accent">{t("dash.titleAccent")}</span>
               </h1>
               <p className="mt-4 text-base text-muted-foreground md:text-lg">
-                {displayName
-                  ? `${tr("Welcome back")}, ${displayName}.`
-                  : tr("Welcome back to Primple.")}
+                {displayName ? `${tr("Welcome back")}, ${displayName}.` : tr("Welcome back to Primple.")}
               </p>
               {user?.email && (
                 <p className="mt-1 break-all text-sm text-muted-foreground" dir="ltr">
                   {user.email}
                 </p>
               )}
+              <p className="mt-4 text-sm font-medium text-primary">{tr("We will contact you soon.")}</p>
             </div>
             <Button asChild size="lg" className="w-full rounded-full px-7 sm:w-auto">
               <Link to="/products">
@@ -191,7 +184,7 @@ function DashboardPage() {
 
       <section className="section-shell grid gap-6 py-8 md:gap-8 md:py-12 lg:grid-cols-[16rem_1fr] lg:items-start lg:py-16">
         <aside className="surface-card p-2 sm:p-3 lg:sticky lg:top-28">
-          <nav className="grid grid-cols-2 gap-1 sm:grid-cols-4 lg:flex lg:flex-col">
+          <nav className="grid grid-cols-3 gap-1 sm:grid-cols-3 lg:flex lg:flex-col">
             {nav.map((item) => (
               <button
                 key={item.key}
@@ -237,14 +230,11 @@ function DashboardPage() {
         </aside>
 
         <div className="min-w-0">
-          {isLoading && view !== "files" && view !== "chat" && (
-            <div className="surface-card p-10 text-center text-muted-foreground">
-              {tr("Loading your orders…")}
-            </div>
+          {isLoading && view !== "files" && (
+            <div className="surface-card p-10 text-center text-muted-foreground">{tr("Loading your orders…")}</div>
           )}
 
-          {!isLoading && orders.length === 0 && view !== "files" && view !== "chat" && (
-
+          {!isLoading && orders.length === 0 && view !== "files" && (
             <div className="surface-card p-8 text-center md:p-10">
               <Package className="mx-auto size-8 text-primary" />
               <h2 className="mt-4 text-xl">{tr("No orders yet")}</h2>
@@ -277,16 +267,12 @@ function DashboardPage() {
                         <p className="mt-1 font-display font-bold">
                           {number(order.quantity)} × {tr(order.product)}
                         </p>
-                        <p className="mt-1 break-words text-sm text-muted-foreground">
-                          {tr(order.config)}
-                        </p>
+                        <p className="mt-1 break-words text-sm text-muted-foreground">{tr(order.config)}</p>
                       </div>
                       <span
                         className={cn(
                           "max-w-full justify-self-start whitespace-normal rounded-full px-3 py-1 text-start text-xs font-semibold leading-snug sm:justify-self-end",
-                          order.stage === "Delivered"
-                            ? "bg-success/15 text-success"
-                            : "bg-primary/20 text-foreground",
+                          order.stage === "Delivered" ? "bg-success/15 text-success" : "bg-primary/20 text-foreground",
                         )}
                       >
                         {tr(order.stage)}
@@ -304,17 +290,13 @@ function DashboardPage() {
                 transition={{ duration: 0.3 }}
                 className="surface-card p-4 shadow-lift sm:p-6"
               >
-                 <div className="grid min-w-0 grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-4">
+                <div className="grid min-w-0 grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-4">
                   <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">{active.id}</p>
                     <h2 className="mt-1 text-xl">{tr(active.product)}</h2>
-                    <p className="mt-1 break-words text-sm text-muted-foreground">
-                      {tr(active.config)}
-                    </p>
+                    <p className="mt-1 break-words text-sm text-muted-foreground">{tr(active.config)}</p>
                   </div>
-                   <p className="break-words font-display text-lg font-extrabold sm:text-end">
-                     {mad(active.total)}
-                   </p>
+                  <p className="break-words font-display text-lg font-extrabold sm:text-end">{mad(active.total)}</p>
                 </div>
 
                 <ol className="mt-7 space-y-4">
@@ -333,12 +315,7 @@ function DashboardPage() {
                         >
                           {done ? <CheckCircle2 className="size-3.5" /> : i + 1}
                         </span>
-                        <p
-                          className={cn(
-                            "text-sm font-semibold",
-                            !done && !current && "text-muted-foreground",
-                          )}
-                        >
+                        <p className={cn("text-sm font-semibold", !done && !current && "text-muted-foreground")}>
                           {tr(stage)}
                         </p>
                       </li>
@@ -347,24 +324,14 @@ function DashboardPage() {
                 </ol>
 
                 <dl className="mt-7 grid gap-3 border-t border-border pt-6 sm:grid-cols-2">
-                  <Detail
-                    icon={MapPin}
-                    label={t("dash.city")}
-                    value={active.city ?? tr("Not provided")}
-                  />
-                  <Detail
-                    icon={Truck}
-                    label={t("dash.expected")}
-                    value={active.expected ?? tr("Not provided")}
-                  />
+                  <Detail icon={MapPin} label={t("dash.city")} value={active.city ?? tr("Not provided")} />
+                  <Detail icon={Truck} label={t("dash.expected")} value={active.expected ?? tr("Not provided")} />
                 </dl>
 
                 {activeRecord && (
                   <ClientFiles
                     files={files.filter(
-                      (f) =>
-                        f.orderId === activeRecord.id ||
-                        f.orderReference === activeRecord.reference,
+                      (f) => f.orderId === activeRecord.id || f.orderReference === activeRecord.reference,
                     )}
                     isLoading={filesLoading}
                     isError={filesError}
@@ -413,10 +380,6 @@ function DashboardPage() {
             </div>
           )}
 
-          {view === "chat" && <DesignerChat userId={user?.id} />}
-
-
-
           {!isLoading && orders.length > 0 && view === "invoices" && (
             <>
               <div className="grid gap-3 md:grid-cols-2 lg:hidden">
@@ -459,49 +422,49 @@ function DashboardPage() {
                 ))}
               </div>
               <div className="surface-card hidden overflow-x-auto lg:block">
-              <table className="w-full min-w-[36rem] text-sm">
-                <thead className="bg-secondary/60 text-start">
-                  <tr>
-                    <th className="p-4 text-start font-semibold">{t("dash.inv.invoice")}</th>
-                    <th className="p-4 text-start font-semibold">{t("dash.inv.order")}</th>
-                    <th className="p-4 text-start font-semibold">{t("dash.inv.date")}</th>
-                    <th className="p-4 text-start font-semibold">{t("dash.inv.amount")}</th>
-                    <th className="p-4 text-start font-semibold">{t("dash.inv.status")}</th>
-                    <th className="p-4 text-start font-semibold">
-                      <span className="sr-only">{L.invoice}</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {records.map((record) => (
-                    <tr key={record.id} className="border-t border-border">
-                      <td className="p-4 font-medium">{invoiceNumber(record)}</td>
-                      <td className="p-4 text-muted-foreground">{record.reference}</td>
-                      <td className="p-4 text-muted-foreground">
-                        {new Date(record.createdAt).toLocaleDateString(
-                          lang === "fr" ? "fr-MA" : lang === "ar" ? "ar-MA" : "en-GB",
-                        )}
-                      </td>
-                      <td className="p-4">{mad(record.total)}</td>
-                      <td className="p-4">
-                        <span className="rounded-full bg-primary/20 px-2.5 py-1 text-xs font-semibold text-foreground">
-                          {record.paymentStatus === "paid" ? L.advancePaid : L.pendingPayment}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <Link
-                          to="/invoice/$reference"
-                          params={{ reference: record.reference }}
-                          className="font-semibold hover:text-primary"
-                          aria-label={`${L.invoice} ${invoiceNumber(record)}`}
-                        >
-                          {L.open}
-                        </Link>
-                      </td>
+                <table className="w-full min-w-[36rem] text-sm">
+                  <thead className="bg-secondary/60 text-start">
+                    <tr>
+                      <th className="p-4 text-start font-semibold">{t("dash.inv.invoice")}</th>
+                      <th className="p-4 text-start font-semibold">{t("dash.inv.order")}</th>
+                      <th className="p-4 text-start font-semibold">{t("dash.inv.date")}</th>
+                      <th className="p-4 text-start font-semibold">{t("dash.inv.amount")}</th>
+                      <th className="p-4 text-start font-semibold">{t("dash.inv.status")}</th>
+                      <th className="p-4 text-start font-semibold">
+                        <span className="sr-only">{L.invoice}</span>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {records.map((record) => (
+                      <tr key={record.id} className="border-t border-border">
+                        <td className="p-4 font-medium">{invoiceNumber(record)}</td>
+                        <td className="p-4 text-muted-foreground">{record.reference}</td>
+                        <td className="p-4 text-muted-foreground">
+                          {new Date(record.createdAt).toLocaleDateString(
+                            lang === "fr" ? "fr-MA" : lang === "ar" ? "ar-MA" : "en-GB",
+                          )}
+                        </td>
+                        <td className="p-4">{mad(record.total)}</td>
+                        <td className="p-4">
+                          <span className="rounded-full bg-primary/20 px-2.5 py-1 text-xs font-semibold text-foreground">
+                            {record.paymentStatus === "paid" ? L.advancePaid : L.pendingPayment}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <Link
+                            to="/invoice/$reference"
+                            params={{ reference: record.reference }}
+                            className="font-semibold hover:text-primary"
+                            aria-label={`${L.invoice} ${invoiceNumber(record)}`}
+                          >
+                            {L.open}
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </>
           )}
@@ -534,15 +497,7 @@ function Kpi({
   );
 }
 
-function Detail({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-}) {
+function Detail({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
   return (
     <div>
       <dt className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -565,9 +520,7 @@ const stageProgress: Record<string, number> = {
 
 function toViewOrder(record: OrderRecord): ViewOrder {
   const first = record.items[0];
-  const stage = (
-    orderStages.includes(record.status) ? record.status : "Order placed"
-  ) as OrderStage;
+  const stage = (orderStages.includes(record.status) ? record.status : "Order placed") as OrderStage;
   return {
     id: record.reference,
     product: first?.name ?? "Print job",
