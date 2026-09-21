@@ -3,3 +3,7 @@
 - [x] Verify responsive FR/EN/AR behavior, pricing, state isolation, tests, and types
 - [x] Simplify quantity choices to quantity and dynamic savings only
 - [x] Enable secure guest artwork upload through checkout and later account claim
+- [ ] Replace the ten pack images with the supplied mapped artwork
+- [ ] Preserve the latest signup, dashboard, role, and Google-only authentication edits
+- [ ] Diagnose and fix the current build failure
+- [ ] Verify signup, dashboard, packs, tests, types, and production build without publishing
