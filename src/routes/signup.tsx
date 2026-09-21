@@ -8,7 +8,6 @@ import { SocialAuthButtons } from "@/components/auth/SocialAuthButtons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,23 +16,11 @@ import { readGuestClaim } from "@/lib/guest-claim";
 
 const title = "Créer votre compte | Primple";
 const description =
-  "Créez votre compte Primple pour commander vos impressions, suivre la production et gérer vos factures, comme entreprise, imprimeur ou designer.";
-
-const roles = [
-  { id: "business", label: "I buy printing", copy: "Order, track and reorder for your business." },
-  {
-    id: "printer",
-    label: "I'm a printer",
-    copy: "Receive jobs and fill your production capacity.",
-  },
-  { id: "designer", label: "I'm a designer", copy: "Print client work and earn on every order." },
-];
+  "Créez votre compte Primple pour commander vos impressions, suivre la production et gérer vos factures, pour votre entreprise.";
 
 export const Route = createFileRoute("/signup")({
-  validateSearch: (search: Record<string, unknown>): { role?: string; redirect?: string } => ({
-    ...(typeof search["role"] === "string" ? { role: search["role"] } : {}),
-    ...(typeof search["redirect"] === "string" ? { redirect: search["redirect"] } : {}),
-  }),
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } =>
+    typeof search["redirect"] === "string" ? { redirect: search["redirect"] } : {},
   head: () => ({
     meta: [
       { title },
@@ -54,9 +41,6 @@ function SignupPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const { user, loading } = useAuth();
-  const [role, setRole] = useState(
-    roles.some((r) => r.id === search.role) ? (search.role as string) : "business",
-  );
   const [busy, setBusy] = useState(false);
   // A guest who just paid gets their order email filled in for them.
   const [guestEmail, setGuestEmail] = useState("");
@@ -85,7 +69,7 @@ function SignupPage() {
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`,
-          data: { full_name: fullName, company, account_type: role },
+          data: { full_name: fullName, company, account_type: "business" },
         },
       });
       if (error) throw error;
@@ -118,34 +102,10 @@ function SignupPage() {
       <section className="section-shell grid gap-10 py-16 lg:grid-cols-[1fr_1fr] lg:items-start md:py-24">
         <div>
           <p className="eyebrow text-primary">{tr("Create account")}</p>
-          <h1 className="display-xl mt-4 text-4xl sm:text-5xl">
-            {tr("Your printing account, in a minute.")}
-          </h1>
+          <h1 className="display-xl mt-4 text-4xl sm:text-5xl">{tr("Your printing account, in a minute.")}</h1>
           <p className="mt-5 max-w-lg text-lg text-muted-foreground">
-            {tr(
-              "Track every job, keep your invoices in one place and reorder past prints in one click.",
-            )}
+            {tr("Track every job, keep your invoices in one place and reorder past prints in one click.")}
           </p>
-
-          <div className="mt-8 grid gap-3">
-            {roles.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => setRole(option.id)}
-                className={cn(
-                  "rounded-2xl border p-4 text-start transition-colors",
-                  role === option.id
-                    ? "border-primary bg-primary/10"
-                    : "border-border bg-card hover:border-primary/40",
-                )}
-                aria-pressed={role === option.id}
-              >
-                <p className="font-semibold">{tr(option.label)}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{tr(option.copy)}</p>
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="surface-card p-6 md:p-8">
@@ -180,14 +140,7 @@ function SignupPage() {
             </div>
             <div>
               <Label htmlFor="password">{tr("Password")}</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-                minLength={6}
-                className="mt-1.5"
-              />
+              <Input id="password" name="password" type="password" required minLength={6} className="mt-1.5" />
             </div>
             <Button type="submit" size="lg" disabled={busy} className="mt-2 rounded-full">
               {busy ? <Loader2 className="size-4 animate-spin" /> : null}
