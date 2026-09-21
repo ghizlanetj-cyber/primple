@@ -25,6 +25,8 @@ import { orderStages, type OrderStage } from "@/data/orders";
 import { listMyOrders, type OrderRecord } from "@/lib/orders-api";
 import { artworkFolder, listMyFiles } from "@/lib/files-api";
 import { ClientFiles } from "@/components/dashboard/ClientFiles";
+import { DesignerChat } from "@/components/dashboard/DesignerChat";
+
 import { invoiceLabels, invoiceNumber } from "@/lib/invoice";
 import { mad } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -235,13 +237,14 @@ function DashboardPage() {
         </aside>
 
         <div className="min-w-0">
-          {isLoading && view !== "files" && (
+          {isLoading && view !== "files" && view !== "chat" && (
             <div className="surface-card p-10 text-center text-muted-foreground">
               {tr("Loading your orders…")}
             </div>
           )}
 
-          {!isLoading && orders.length === 0 && view !== "files" && (
+          {!isLoading && orders.length === 0 && view !== "files" && view !== "chat" && (
+
             <div className="surface-card p-8 text-center md:p-10">
               <Package className="mx-auto size-8 text-primary" />
               <h2 className="mt-4 text-xl">{tr("No orders yet")}</h2>
@@ -409,6 +412,10 @@ function DashboardPage() {
               />
             </div>
           )}
+
+          {view === "chat" && <DesignerChat userId={user?.id} />}
+
+
 
           {!isLoading && orders.length > 0 && view === "invoices" && (
             <>
