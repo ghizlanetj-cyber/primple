@@ -31,29 +31,19 @@ function GoogleMark() {
   );
 }
 
-function AppleMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-4 fill-current" aria-hidden="true">
-      <path d="M16.36 12.72c.02 2.6 2.28 3.46 2.3 3.47-.02.05-.36 1.24-1.2 2.46-.72 1.05-1.47 2.1-2.66 2.12-1.16.02-1.54-.69-2.87-.69-1.33 0-1.74.67-2.85.71-1.14.04-2-1.13-2.73-2.18-1.58-2.29-2.79-6.47-1.17-9.29.81-1.4 2.25-2.29 3.81-2.31 1.12-.02 2.18.75 2.87.75.68 0 1.97-.93 3.32-.79.57.02 2.16.21 3.18 1.56-.08.05-1.9 1.11-1.88 3.31M14.2 3.9c.61-.74 1.02-1.77.91-2.79-.88.04-1.95.59-2.58 1.32-.57.65-1.06 1.7-.93 2.7.98.08 1.99-.5 2.6-1.23" />
-    </svg>
-  );
-}
-
 export function SocialAuthButtons({ redirectTo }: { redirectTo?: string }) {
   const { tr } = useI18n();
-  const [pending, setPending] = useState<"google" | "apple" | null>(null);
+  const [pending, setPending] = useState<"google" | null>(null);
 
-  const start = async (provider: "google" | "apple") => {
-    setPending(provider);
+  const start = async () => {
+    setPending("google");
     try {
       const destination =
-        redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")
-          ? redirectTo
-          : "/dashboard";
+        redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//") ? redirectTo : "/dashboard";
       window.sessionStorage.setItem(AUTH_DESTINATION_KEY, destination);
       const callback = new URL("/auth/callback", window.location.origin);
       callback.searchParams.set("next", destination);
-      const result = await lovable.auth.signInWithOAuth(provider, {
+      const result = await lovable.auth.signInWithOAuth("google", {
         redirect_uri: callback.toString(),
       });
       if (result.error) {
@@ -77,21 +67,10 @@ export function SocialAuthButtons({ redirectTo }: { redirectTo?: string }) {
         size="lg"
         className="w-full rounded-full"
         disabled={pending !== null}
-        onClick={() => start("google")}
+        onClick={start}
       >
         <GoogleMark />
         {tr("Continue with Google")}
-      </Button>
-      <Button
-        type="button"
-        variant="outline"
-        size="lg"
-        className="w-full rounded-full"
-        disabled={pending !== null}
-        onClick={() => start("apple")}
-      >
-        <AppleMark />
-        {tr("Continue with Apple")}
       </Button>
     </div>
   );
