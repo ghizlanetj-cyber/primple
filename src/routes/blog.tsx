@@ -18,10 +18,10 @@ export const Route = createFileRoute("/blog")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/blog" },
+      { property: "og:url", content: "https://primple.ma/blog" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/blog" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/blog" }],
   }),
   component: BlogPage,
 });

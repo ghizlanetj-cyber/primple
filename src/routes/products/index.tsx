@@ -34,10 +34,10 @@ export const Route = createFileRoute("/products/")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/products" },
+      { property: "og:url", content: "https://primple.ma/products" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/products" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/products" }],
   }),
   component: ProductsPage,
 });

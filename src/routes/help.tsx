@@ -18,10 +18,10 @@ export const Route = createFileRoute("/help")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/help" },
+      { property: "og:url", content: "https://primple.ma/help" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/help" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/help" }],
   }),
   component: HelpPage,
 });

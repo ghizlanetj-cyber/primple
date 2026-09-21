@@ -19,10 +19,10 @@ export const Route = createFileRoute("/packs/")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/packs" },
+      { property: "og:url", content: "https://primple.ma/packs" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/packs" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/packs" }],
   }),
   component: PacksPage,
 });

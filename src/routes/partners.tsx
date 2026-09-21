@@ -23,10 +23,10 @@ export const Route = createFileRoute("/partners")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/partners" },
+      { property: "og:url", content: "https://primple.ma/partners" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/partners" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/partners" }],
   }),
   component: PartnersPage,
 });
