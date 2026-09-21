@@ -191,7 +191,7 @@ function DashboardPage() {
 
       <section className="section-shell grid gap-6 py-8 md:gap-8 md:py-12 lg:grid-cols-[16rem_1fr] lg:items-start lg:py-16">
         <aside className="surface-card p-2 sm:p-3 lg:sticky lg:top-28">
-          <nav className="grid grid-cols-3 gap-1 lg:flex lg:flex-col">
+          <nav className="grid grid-cols-2 gap-1 sm:grid-cols-4 lg:flex lg:flex-col">
             {nav.map((item) => (
               <button
                 key={item.key}
