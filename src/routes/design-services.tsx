@@ -10,20 +10,23 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   DESIGN_HOURLY_RATE,
-  DESIGN_MAX_HOURS,
-  DESIGN_MIN_HOURS,
   DESIGN_SERVICE_SLUG,
+  designBriefEstimate,
+  designDeliverableLabels,
+  designDeliverables,
   designServiceExcludes,
   designServiceIncludes,
-  designServiceQuote,
+  type DesignBriefInput,
+  type DesignDeliverable,
 } from "@/data/design-service";
 import { mad } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import { useCart } from "@/store/cart";
 import { useI18n } from "@/i18n";
 
 const title = "Service de design à 100 MAD / heure | Primple";
 const description =
-  "Mise en page, adaptation de format et préparation de fichiers d'impression, facturées 100 MAD par heure. Création de logo et identité de marque non incluses.";
+  "Décrivez votre besoin et obtenez une estimation immédiate en heures, facturées 100 MAD par heure. Création de logo et identité de marque non incluses.";
 
 export const Route = createFileRoute("/design-services")({
   head: () => ({
@@ -46,11 +49,19 @@ function DesignServicesPage() {
   const navigate = useNavigate();
   const add = useCart((s) => s.add);
 
-  const [hours, setHours] = useState(2);
+  const [deliverable, setDeliverable] = useState<DesignDeliverable>("adaptation");
+  const [hasSourceFile, setHasSourceFile] = useState(true);
+  const [formats, setFormats] = useState(1);
+  const [pages, setPages] = useState(1);
   const [brief, setBrief] = useState("");
   const [date, setDate] = useState("");
+  const [urgent, setUrgent] = useState(false);
 
-  const quote = useMemo(() => designServiceQuote(hours), [hours]);
+  const input: DesignBriefInput = { deliverable, hasSourceFile, formats, pages, brief, urgent };
+  const quote = useMemo(
+    () => designBriefEstimate(input),
+    [deliverable, hasSourceFile, formats, pages, brief, urgent],
+  );
 
   const addToCart = () => {
     if (brief.trim().length < 10) {
@@ -63,17 +74,27 @@ function DesignServicesPage() {
       quantity: quote.hours,
       selection: {
         hours: String(quote.hours),
+        deliverable,
+        sourceFile: hasSourceFile ? "yes" : "no",
+        formats: String(formats),
+        pages: String(pages),
+        urgent: urgent ? "yes" : "no",
         brief: brief.trim().slice(0, 1000),
         ...(date ? { date } : {}),
       },
       labels: [
-        { group: "Hours", value: `${quote.hours} h` },
+        { group: "Deliverable", value: designDeliverableLabels[deliverable] },
+        { group: "Estimated hours", value: `${quote.hours} h` },
+        { group: "Final formats", value: String(formats) },
+        { group: "Pages or sides", value: String(pages) },
+        { group: "Editable source file", value: hasSourceFile ? "Yes" : "No" },
+        ...(urgent ? [{ group: "Urgent", value: "Within 48 hours" }] : []),
         ...(date ? [{ group: "Preferred date", value: date }] : []),
       ],
       unitPrice: DESIGN_HOURLY_RATE,
       subtotal: quote.subtotal,
       delivery: 0,
-      productionDays: 2,
+      productionDays: urgent ? 1 : 2,
       deliveryMin: 1,
       deliveryMax: 3,
     });
@@ -90,7 +111,7 @@ function DesignServicesPage() {
         </h1>
         <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
           {tr(
-            "Book the exact number of hours you need. We lay out, adapt and prepare your artwork so it prints the way you expect.",
+            "Describe what you need and see the estimated hours and price update instantly, before you order.",
           )}
         </p>
       </section>
@@ -124,28 +145,80 @@ function DesignServicesPage() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-6">
-            <h2 className="text-xl">{tr("Book your design hours")}</h2>
+            <h2 className="text-xl">{tr("Tell us about your project")}</h2>
 
             <fieldset className="mt-5 border-0 p-0">
-              <legend className="text-sm font-semibold">{tr("Hours")}</legend>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {Array.from({ length: DESIGN_MAX_HOURS }, (_, i) => i + DESIGN_MIN_HOURS).map((h) => (
+              <legend className="text-sm font-semibold">{tr("What do you need?")}</legend>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {designDeliverables.map((value) => (
                   <button
-                    key={h}
+                    key={value}
                     type="button"
-                    onClick={() => setHours(h)}
-                    aria-pressed={hours === h}
-                    className={
-                      hours === h
-                        ? "rounded-full border border-primary bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-                        : "rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:border-primary/50"
-                    }
+                    onClick={() => setDeliverable(value)}
+                    aria-pressed={deliverable === value}
+                    className={cn(
+                      "rounded-xl border px-4 py-3 text-start text-sm font-medium transition-colors",
+                      deliverable === value
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background hover:border-primary/50",
+                    )}
                   >
-                    {number(h)} h
+                    {tr(designDeliverableLabels[value])}
                   </button>
                 ))}
               </div>
             </fieldset>
+
+            <fieldset className="mt-6 border-0 p-0">
+              <legend className="text-sm font-semibold">
+                {tr("Do you have an editable source file?")}
+              </legend>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[true, false].map((value) => (
+                  <button
+                    key={String(value)}
+                    type="button"
+                    onClick={() => setHasSourceFile(value)}
+                    aria-pressed={hasSourceFile === value}
+                    className={cn(
+                      "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                      hasSourceFile === value
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background hover:border-primary/50",
+                    )}
+                  >
+                    {value ? tr("Yes") : tr("No")}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
+            <div className="mt-6 grid gap-5 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="design-formats">{tr("Number of final formats")}</Label>
+                <Input
+                  id="design-formats"
+                  type="number"
+                  min={1}
+                  max={50}
+                  value={formats}
+                  onChange={(e) => setFormats(Math.max(1, Number(e.target.value) || 1))}
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="design-pages">{tr("Number of pages or sides")}</Label>
+                <Input
+                  id="design-pages"
+                  type="number"
+                  min={1}
+                  max={200}
+                  value={pages}
+                  onChange={(e) => setPages(Math.max(1, Number(e.target.value) || 1))}
+                  className="mt-1.5"
+                />
+              </div>
+            </div>
 
             <div className="mt-6">
               <Label htmlFor="design-brief">{tr("What do you need designed?")}</Label>
@@ -153,35 +226,54 @@ function DesignServicesPage() {
                 id="design-brief"
                 value={brief}
                 onChange={(e) => setBrief(e.target.value)}
-                rows={4}
+                rows={5}
                 className="mt-1.5"
                 placeholder={tr("For example: adapt my A5 flyer to A4 and prepare it for printing.")}
               />
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                {tr("The more detail you give, the more accurate the estimate.")}
+              </p>
             </div>
 
-            <div className="mt-5 max-w-xs">
-              <Label htmlFor="design-date">{tr("Preferred start date")}</Label>
-              <Input
-                id="design-date"
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="mt-1.5"
-              />
+            <div className="mt-5 grid gap-5 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="design-date">{tr("Preferred start date")}</Label>
+                <Input
+                  id="design-date"
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="mt-1.5"
+                />
+              </div>
+              <div className="flex items-end">
+                <label className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium">
+                  <input
+                    type="checkbox"
+                    checked={urgent}
+                    onChange={(e) => setUrgent(e.target.checked)}
+                    className="size-4 accent-[hsl(var(--primary))]"
+                  />
+                  {tr("I need it within 48 hours")}
+                </label>
+              </div>
             </div>
           </div>
         </div>
 
         <aside className="rounded-2xl border border-border bg-card p-6 shadow-lift lg:sticky lg:top-28">
-          <p className="eyebrow text-muted-foreground">{tr("Your price")}</p>
+          <p className="eyebrow text-muted-foreground">{tr("Your instant estimate")}</p>
           <p className="mt-2 font-display text-4xl font-extrabold tracking-tight">
             {mad(quote.total)}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {number(quote.hours)} h × {mad(DESIGN_HOURLY_RATE)}
+            {tr("Estimated")} {number(quote.hours)} h × {mad(DESIGN_HOURLY_RATE)}
           </p>
           <p className="mt-4 text-sm text-muted-foreground">
             {tr("No delivery fee: this service is delivered as files.")}
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {tr("If your project turns out to need less time, you only pay the hours used.")}
           </p>
           <Button size="lg" className="mt-6 w-full rounded-full" onClick={addToCart}>
             {tr("Add design time to my cart")}

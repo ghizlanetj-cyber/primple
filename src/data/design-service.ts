@@ -37,3 +37,76 @@ export const designServiceExcludes = [
   "Logo design",
   "Brand strategy and naming",
 ];
+
+/** What the customer needs designed. Drives the base number of hours. */
+export type DesignDeliverable =
+  | "adaptation"
+  | "print-file"
+  | "flyer"
+  | "menu"
+  | "brochure"
+  | "packaging"
+  | "presentation"
+  | "other";
+
+export const designDeliverableHours: Record<DesignDeliverable, number> = {
+  adaptation: 1,
+  "print-file": 2,
+  flyer: 2,
+  menu: 4,
+  brochure: 5,
+  packaging: 6,
+  presentation: 6,
+  other: 3,
+};
+
+export const designDeliverableLabels: Record<DesignDeliverable, string> = {
+  adaptation: "Adapt an existing design to a new format",
+  "print-file": "Prepare a print-ready file",
+  flyer: "Flyer or poster",
+  menu: "Menu or price list",
+  brochure: "Brochure or catalogue",
+  packaging: "Packaging artwork",
+  presentation: "Presentation",
+  other: "Something else",
+};
+
+export const designDeliverables = Object.keys(designDeliverableHours) as DesignDeliverable[];
+
+export type DesignBriefInput = {
+  deliverable: DesignDeliverable;
+  /** Does the customer already have an editable source file? */
+  hasSourceFile: boolean;
+  /** Number of final formats to deliver. */
+  formats: number;
+  /** Number of pages or sides in the final piece. */
+  pages: number;
+  brief: string;
+  urgent: boolean;
+};
+
+function positive(value: number, fallback = 1) {
+  const n = Math.floor(Number(value));
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+/**
+ * Transparent estimate: one rule per answer, always between 1 and 10 hours,
+ * so the customer sees exactly why the price moves.
+ */
+export function estimateDesignHours(input: DesignBriefInput): number {
+  const base = designDeliverableHours[input.deliverable] ?? designDeliverableHours.other;
+  const brief = String(input.brief ?? "");
+  const briefExtra = brief.length > 600 ? 2 : brief.length > 240 ? 1 : 0;
+  const formatExtra = Math.min(3, Math.max(0, positive(input.formats) - 1));
+  const pageExtra = Math.min(3, Math.max(0, Math.ceil((positive(input.pages) - 1) / 4)));
+  const sourceExtra = input.hasSourceFile ? 0 : 1;
+  const urgentExtra = input.urgent ? 1 : 0;
+  return clampDesignHours(base + briefExtra + formatExtra + pageExtra + sourceExtra + urgentExtra);
+}
+
+/** Estimated hours plus the matching price, at exactly 100 MAD an hour, no delivery. */
+export function designBriefEstimate(input: DesignBriefInput) {
+  return designServiceQuote(estimateDesignHours(input));
+}
+

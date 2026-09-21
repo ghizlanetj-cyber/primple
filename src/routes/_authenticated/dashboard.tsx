@@ -9,7 +9,9 @@ import {
   LifeBuoy,
   LogOut,
   MapPin,
+  MessagesSquare,
   Package,
+
   FolderOpen,
   Receipt,
   Repeat,
@@ -23,6 +25,8 @@ import { orderStages, type OrderStage } from "@/data/orders";
 import { listMyOrders, type OrderRecord } from "@/lib/orders-api";
 import { artworkFolder, listMyFiles } from "@/lib/files-api";
 import { ClientFiles } from "@/components/dashboard/ClientFiles";
+import { DesignerChat } from "@/components/dashboard/DesignerChat";
+
 import { invoiceLabels, invoiceNumber } from "@/lib/invoice";
 import { mad } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -54,7 +58,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 
-type View = "orders" | "files" | "invoices";
+type View = "orders" | "files" | "chat" | "invoices";
 
 type ViewOrder = {
   id: string;
@@ -126,8 +130,10 @@ function DashboardPage() {
   const nav: { key: View; label: string; icon: React.ElementType }[] = [
     { key: "orders", label: t("dash.nav.orders"), icon: Package },
     { key: "files", label: tr("My files"), icon: FolderOpen },
+    { key: "chat", label: tr("Designer chat"), icon: MessagesSquare },
     { key: "invoices", label: t("dash.nav.invoices"), icon: Receipt },
   ];
+
 
   return (
     <SiteShell>
@@ -185,7 +191,7 @@ function DashboardPage() {
 
       <section className="section-shell grid gap-6 py-8 md:gap-8 md:py-12 lg:grid-cols-[16rem_1fr] lg:items-start lg:py-16">
         <aside className="surface-card p-2 sm:p-3 lg:sticky lg:top-28">
-          <nav className="grid grid-cols-3 gap-1 lg:flex lg:flex-col">
+          <nav className="grid grid-cols-2 gap-1 sm:grid-cols-4 lg:flex lg:flex-col">
             {nav.map((item) => (
               <button
                 key={item.key}
@@ -231,13 +237,14 @@ function DashboardPage() {
         </aside>
 
         <div className="min-w-0">
-          {isLoading && view !== "files" && (
+          {isLoading && view !== "files" && view !== "chat" && (
             <div className="surface-card p-10 text-center text-muted-foreground">
               {tr("Loading your orders…")}
             </div>
           )}
 
-          {!isLoading && orders.length === 0 && view !== "files" && (
+          {!isLoading && orders.length === 0 && view !== "files" && view !== "chat" && (
+
             <div className="surface-card p-8 text-center md:p-10">
               <Package className="mx-auto size-8 text-primary" />
               <h2 className="mt-4 text-xl">{tr("No orders yet")}</h2>
@@ -405,6 +412,10 @@ function DashboardPage() {
               />
             </div>
           )}
+
+          {view === "chat" && <DesignerChat userId={user?.id} />}
+
+
 
           {!isLoading && orders.length > 0 && view === "invoices" && (
             <>

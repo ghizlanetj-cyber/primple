@@ -297,4 +297,77 @@ export const packPhrases: Record<string, TranslationPair> = {
     "Nous rattacherons cette commande à votre compte dès que votre e-mail sera confirmé.",
     "سنربط هذا الطلب بحسابك بمجرد تأكيد بريدك الإلكتروني.",
   ),
+
+  // --- Design brief estimator ---
+  "Describe what you need and see the estimated hours and price update instantly, before you order.":
+    p(
+      "Décrivez votre besoin et voyez les heures estimées et le prix se mettre à jour instantanément, avant de commander.",
+      "صف ما تحتاجه وشاهد الساعات المقدّرة والسعر يتحدثان فورًا قبل الطلب.",
+    ),
+  "Tell us about your project": p("Parlez-nous de votre projet", "أخبرنا عن مشروعك"),
+  "What do you need?": p("De quoi avez-vous besoin ?", "ما الذي تحتاجه؟"),
+  "Adapt an existing design to a new format": p(
+    "Adapter un design existant à un nouveau format",
+    "تكييف تصميم موجود مع مقاس جديد",
+  ),
+  "Prepare a print-ready file": p(
+    "Préparer un fichier prêt à imprimer",
+    "تحضير ملف جاهز للطباعة",
+  ),
+  "Flyer or poster": p("Flyer ou affiche", "منشور أو ملصق"),
+  "Menu or price list": p("Menu ou liste de prix", "قائمة طعام أو قائمة أسعار"),
+  "Brochure or catalogue": p("Brochure ou catalogue", "كتيّب أو كتالوج"),
+  "Packaging artwork": p("Visuel d'emballage", "تصميم التغليف"),
+  Presentation: p("Présentation", "عرض تقديمي"),
+  "Something else": p("Autre chose", "شيء آخر"),
+  "Do you have an editable source file?": p(
+    "Avez-vous un fichier source modifiable ?",
+    "هل لديك ملف مصدر قابل للتعديل؟",
+  ),
+  Yes: p("Oui", "نعم"),
+  No: p("Non", "لا"),
+  "Number of final formats": p("Nombre de formats finaux", "عدد المقاسات النهائية"),
+  "Number of pages or sides": p("Nombre de pages ou de faces", "عدد الصفحات أو الأوجه"),
+  "The more detail you give, the more accurate the estimate.": p(
+    "Plus vous donnez de détails, plus l'estimation est précise.",
+    "كلما زادت التفاصيل، كان التقدير أدق.",
+  ),
+  "I need it within 48 hours": p(
+    "J'en ai besoin sous 48 heures",
+    "أحتاجه خلال 48 ساعة",
+  ),
+  "Your instant estimate": p("Votre estimation immédiate", "تقديرك الفوري"),
+  Estimated: p("Estimé", "تقديري"),
+  "If your project turns out to need less time, you only pay the hours used.": p(
+    "Si votre projet demande moins de temps, vous ne payez que les heures utilisées.",
+    "إذا احتاج مشروعك وقتًا أقل، فلن تدفع سوى الساعات المستعملة.",
+  ),
+
+  // --- Designer chat ---
+  "Designer chat": p("Chat designer", "محادثة المصمم"),
+  "Talk directly with your Primple designer about your files and your brief.": p(
+    "Échangez directement avec votre designer Primple à propos de vos fichiers et de votre brief.",
+    "تواصل مباشرة مع مصمم Primple بخصوص ملفاتك وطلبك.",
+  ),
+  "Loading your conversation…": p("Chargement de votre conversation…", "جارٍ تحميل محادثتك…"),
+  "The conversation could not be loaded.": p(
+    "La conversation n'a pas pu être chargée.",
+    "تعذّر تحميل المحادثة.",
+  ),
+  "No messages yet. Send the first one and a designer will reply here.": p(
+    "Aucun message pour l'instant. Envoyez le premier, un designer vous répondra ici.",
+    "لا توجد رسائل بعد. أرسل أول رسالة وسيرد عليك مصمم هنا.",
+  ),
+  "Write your message to the designer…": p(
+    "Écrivez votre message au designer…",
+    "اكتب رسالتك إلى المصمم…",
+  ),
+  "Send message": p("Envoyer le message", "إرسال الرسالة"),
+  "Your message could not be sent. Please try again.": p(
+    "Votre message n'a pas pu être envoyé. Réessayez.",
+    "تعذّر إرسال رسالتك. حاول مرة أخرى.",
+  ),
+  You: p("Vous", "أنت"),
+  Designer: p("Designer", "المصمم"),
 };
+
