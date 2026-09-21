@@ -37,7 +37,7 @@ function DesignersPage() {
         subtitle="Freelancers and studios use Primple to produce client work without chasing printers, quotes or couriers."
       >
         <Button asChild size="lg" className="rounded-full px-7">
-          <Link to="/signup" search={{ role: "designer" }}>
+          <Link to="/signup">
             {tr("Create a designer account")}
             <ArrowRight className="size-4 rtl:rotate-180" />
           </Link>
@@ -104,7 +104,7 @@ function DesignersPage() {
             {tr("Create your designer account in a minute — no subscription, no minimum volume.")}
           </p>
           <Button asChild size="lg" className="mt-7 rounded-full px-7">
-            <Link to="/signup" search={{ role: "designer" }}>
+            <Link to="/signup">
               {tr("Create a designer account")}
             </Link>
           </Button>
