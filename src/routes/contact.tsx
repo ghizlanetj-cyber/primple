@@ -25,10 +25,10 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/contact" },
+      { property: "og:url", content: "https://primple.ma/contact" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/contact" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/contact" }],
   }),
   component: ContactPage,
 });

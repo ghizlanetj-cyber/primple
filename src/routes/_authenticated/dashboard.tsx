@@ -45,11 +45,11 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/dashboard" },
+      { property: "og:url", content: "https://primple.ma/dashboard" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/dashboard" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/dashboard" }],
   }),
   component: DashboardPage,
 });

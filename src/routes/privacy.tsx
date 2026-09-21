@@ -16,10 +16,10 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/privacy" },
+      { property: "og:url", content: "https://primple.ma/privacy" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/privacy" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/privacy" }],
   }),
   component: PrivacyPage,
 });

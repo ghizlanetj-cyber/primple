@@ -19,10 +19,10 @@ export const Route = createFileRoute("/designers")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/designers" },
+      { property: "og:url", content: "https://primple.ma/designers" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/designers" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/designers" }],
   }),
   component: DesignersPage,
 });

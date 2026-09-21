@@ -45,7 +45,7 @@ function siteOrigin(): string {
       /* fall through */
     }
   }
-  return "https://primple.lovable.app";
+  return "https://primple.ma";
 }
 
 /** Public key only — safe to expose, needed by yp.js in the browser. */

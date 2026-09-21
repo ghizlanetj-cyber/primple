@@ -36,10 +36,10 @@ export const Route = createFileRoute("/design-services")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/design-services" },
+      { property: "og:url", content: "https://primple.ma/design-services" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/design-services" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/design-services" }],
   }),
   component: DesignServicesPage,
 });

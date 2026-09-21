@@ -16,10 +16,10 @@ export const Route = createFileRoute("/terms")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://primple.lovable.app/terms" },
+      { property: "og:url", content: "https://primple.ma/terms" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/terms" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/terms" }],
   }),
   component: TermsPage,
 });

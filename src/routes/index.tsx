@@ -27,11 +27,11 @@ export const Route = createFileRoute("/")({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
-      { property: "og:url", content: "https://primple.lovable.app/" },
+      { property: "og:url", content: "https://primple.ma/" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://primple.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://primple.ma/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/")({
           "@type": "Organization",
           name: "Primple",
           description,
-          url: "https://primple.lovable.app/",
+          url: "https://primple.ma/",
         }),
       },
     ],
