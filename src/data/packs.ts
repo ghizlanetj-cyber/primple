@@ -4,6 +4,11 @@ import { defaultSelection, getProduct, priceQuote, type Selection } from "@/data
 /** Every pack is sold at 20% off the sum of the individual items it contains. */
 export const PACK_DISCOUNT = 0.2;
 export const PACK_SLUG_PREFIX = "pack-";
+const PACK_IMAGE_VERSION = "20260921";
+
+function packImage(slug: string) {
+  return `/packs/${slug}.webp?v=${PACK_IMAGE_VERSION}`;
+}
 
 /**
  * Items that are not sold on their own in the catalog yet. Prices are per unit,
@@ -65,7 +70,7 @@ export const packs: Pack[] = [
     name: "Primple Launch Pack",
     audience: "New businesses and startups",
     description: "Everything a new company needs on day one, printed and ready to hand out.",
-    image: "/packs/launch.webp",
+    image: packImage("launch"),
     imageAlt: "Flat lay of business cards, flyers, stickers and a roll-up banner",
     lines: [
       product("business-cards", "Business cards", 500),
@@ -80,7 +85,7 @@ export const packs: Pack[] = [
     name: "Primple Beauty Pack",
     audience: "Beauty centres, spas and nail bars",
     description: "Loyalty, appointments and service menus in one coordinated set.",
-    image: "/packs/beauty.webp",
+    image: packImage("beauty"),
     imageAlt: "Flat lay of loyalty cards, appointment cards, a service menu and gift vouchers",
     lines: [
       internal("loyalty-cards", 500),
@@ -96,7 +101,7 @@ export const packs: Pack[] = [
     name: "Primple Salon Pack",
     audience: "Hair salons and barbershops",
     description: "Front-desk essentials for a salon that books out.",
-    image: "/packs/salon.webp",
+    image: packImage("salon"),
     imageAlt: "Flat lay of loyalty cards, a price list, flyers and window stickers",
     lines: [
       internal("loyalty-cards", 500),
@@ -112,7 +117,7 @@ export const packs: Pack[] = [
     name: "Primple E-commerce Pack",
     audience: "Online shops",
     description: "Unboxing that looks like your brand, from the label to the tape.",
-    image: "/packs/ecommerce.webp",
+    image: packImage("ecommerce"),
     imageAlt: "Flat lay of thank-you cards, product labels, inserts and branded packing tape",
     lines: [
       internal("thank-you-cards", 500),
@@ -128,7 +133,7 @@ export const packs: Pack[] = [
     name: "Primple Brand Pack",
     audience: "New product brands",
     description: "Labels, sleeves and cards that make a first product run look established.",
-    image: "/packs/brand.webp",
+    image: packImage("brand"),
     imageAlt: "Flat lay of product labels, packaging sleeves, brand cards and launch flyers",
     lines: [
       product("labels", "Product labels", 1000),
@@ -144,7 +149,7 @@ export const packs: Pack[] = [
     name: "Primple BTP Pack",
     audience: "Construction and contractors",
     description: "Site-ready printing that holds up outdoors and on the road.",
-    image: "/packs/btp.webp",
+    image: packImage("btp"),
     imageAlt: "Flat lay of business cards, quotation folders, a site board and vehicle stickers",
     lines: [
       product("business-cards", "Business cards", 500),
@@ -160,7 +165,7 @@ export const packs: Pack[] = [
     name: "Primple Restaurant Pack",
     audience: "Restaurants and cafés",
     description: "From the table to the delivery bag, everything carries your name.",
-    image: "/packs/restaurant.webp",
+    image: packImage("restaurant"),
     imageAlt: "Flat lay of menus, table cards, takeaway stickers and loyalty cards",
     lines: [
       product("menus", "Menus", 50),
@@ -176,7 +181,7 @@ export const packs: Pack[] = [
     name: "Primple Event Pack",
     audience: "Openings, launches and events",
     description: "Invite, sign and guide your guests with one consistent set.",
-    image: "/packs/event.webp",
+    image: packImage("event"),
     imageAlt: "Flat lay of invitations, flyers, posters and a roll-up banner",
     lines: [
       internal("invitations", 250),
@@ -192,7 +197,7 @@ export const packs: Pack[] = [
     name: "Primple Office Pack",
     audience: "Companies and agencies",
     description: "The full stationery set for meetings, proposals and onboarding.",
-    image: "/packs/office.webp",
+    image: packImage("office"),
     imageAlt: "Flat lay of letterhead, envelopes, folders and branded notebooks",
     lines: [
       product("business-cards", "Business cards", 1000),
@@ -208,7 +213,7 @@ export const packs: Pack[] = [
     name: "Primple Retail Pack",
     audience: "Shops and boutiques",
     description: "Shelf, bag and counter printing for a store that sells.",
-    image: "/packs/retail.webp",
+    image: packImage("retail"),
     imageAlt: "Flat lay of price tags, bag stickers, loyalty cards and window stickers",
     lines: [
       internal("price-tags", 1000),
