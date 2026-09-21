@@ -9,7 +9,9 @@ import {
   LifeBuoy,
   LogOut,
   MapPin,
+  MessagesSquare,
   Package,
+
   FolderOpen,
   Receipt,
   Repeat,
@@ -54,7 +56,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 
-type View = "orders" | "files" | "invoices";
+type View = "orders" | "files" | "chat" | "invoices";
 
 type ViewOrder = {
   id: string;
@@ -126,8 +128,10 @@ function DashboardPage() {
   const nav: { key: View; label: string; icon: React.ElementType }[] = [
     { key: "orders", label: t("dash.nav.orders"), icon: Package },
     { key: "files", label: tr("My files"), icon: FolderOpen },
+    { key: "chat", label: tr("Designer chat"), icon: MessagesSquare },
     { key: "invoices", label: t("dash.nav.invoices"), icon: Receipt },
   ];
+
 
   return (
     <SiteShell>
