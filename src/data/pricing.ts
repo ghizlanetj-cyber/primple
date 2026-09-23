@@ -1,7 +1,9 @@
 import {
   DESIGN_SERVICE_SLUG,
   clampDesignHours,
+  designAddonQuote,
   designServiceQuote,
+  hasDesignAddon,
 } from "@/data/design-service";
 import {
   isPackSlug,
@@ -74,10 +76,12 @@ export function lineQuote(
   }
 
   const product = getProduct(slug);
-  if (!product) return null;
+  if (!product || product.quoteOnly) return null;
   const quote = priceQuote(product, quantity, selection);
+  // "Design by Primple" add-on: flat design hours for this product, no delivery.
+  const designCents = hasDesignAddon(selection) ? Math.round(designAddonQuote(slug).subtotal * 100) : 0;
   return {
-    subtotal: quote.subtotal,
+    subtotal: (Math.round(quote.subtotal * 100) + designCents) / 100,
     unitPrice: quote.unitPrice,
     delivery: quote.delivery,
     productionDays: quote.productionDays,
