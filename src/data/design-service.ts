@@ -110,3 +110,35 @@ export function designBriefEstimate(input: DesignBriefInput) {
   return designServiceQuote(estimateDesignHours(input));
 }
 
+
+/**
+ * "I need a design" add-on for a print product: design hours sized to the
+ * product being printed, billed at the same 100 MAD/h. Stored on the cart line
+ * as selection.design = "primple", so it can never be added twice.
+ */
+export const DESIGN_ADDON_KEY = "design";
+export const DESIGN_ADDON_VALUE = "primple";
+
+export const productDesignHours: Record<string, number> = {
+  "business-cards": 1,
+  stickers: 1,
+  labels: 2,
+  flyers: 2,
+  posters: 2,
+  "textile-printing": 2,
+  "roll-up-banners": 3,
+  "large-format": 3,
+  menus: 4,
+  brochures: 5,
+  books: 5,
+  packaging: 6,
+};
+
+export function hasDesignAddon(selection: Record<string, string> | undefined) {
+  return selection?.[DESIGN_ADDON_KEY] === DESIGN_ADDON_VALUE;
+}
+
+export function designAddonQuote(slug: string) {
+  const hours = clampDesignHours(productDesignHours[slug] ?? designDeliverableHours.other);
+  return designServiceQuote(hours);
+}

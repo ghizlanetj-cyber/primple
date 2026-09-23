@@ -15,6 +15,8 @@ import {
   type Selection,
 } from "@/data/products";
 import { mad, madUnit } from "@/lib/format";
+import { DESIGN_ADDON_KEY, DESIGN_ADDON_VALUE, designAddonQuote } from "@/data/design-service";
+import { contact } from "@/config/contact";
 import { isBulkQuoteQuantity, parseQuantity, productQuantityLimits } from "@/lib/quantity";
 import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
@@ -32,12 +34,22 @@ export function Configurator({ product }: { product: Product }) {
   const [customQuantity, setCustomQuantity] = useState("");
   const [selection, setSelection] = useState<Selection>(() => defaultSelection(product));
   const [artwork, setArtwork] = useState<ArtworkState | null>(null);
+  const [artworkMode, setArtworkMode] = useState<"file" | "design">("file");
+  const designAddon = designAddonQuote(product.slug);
+  const needsDesign = artworkMode === "design";
+  const chooseMode = (mode: "file" | "design") => {
+    // Switching always clears the other path's state: no stale file, no duplicate add-on.
+    setArtworkMode(mode);
+    if (mode === "design") setArtwork(null);
+  };
 
   const quote = useMemo(
     () => priceQuote(product, quantity, selection),
     [product, quantity, selection],
   );
-  const total = quote.total;
+  const designAmount = needsDesign ? designAddon.subtotal : 0;
+  const subtotal = Math.round((quote.subtotal + designAmount) * 100) / 100;
+  const total = Math.round((subtotal + quote.delivery) * 100) / 100;
   const parsedCustomQuantity = customQuantity === "" ? null : parseQuantity(customQuantity, limits);
   const customQuantityInvalid = customQuantity !== "" && parsedCustomQuantity === null;
   const bulkQuote = isBulkQuoteQuantity(product, quantity);
@@ -68,19 +80,28 @@ export function Configurator({ product }: { product: Product }) {
 
   const addToCart = () => {
     if (customQuantityInvalid || pagesInvalid || dimensionsInvalid || bulkQuote) return;
+    if (product.quoteOnly) {
+      window.open(quoteHref, "_blank", "noopener");
+      return;
+    }
+    const { [DESIGN_ADDON_KEY]: _stale, ...base } = selection;
+    const lineSelection: Selection = needsDesign ? { ...base, [DESIGN_ADDON_KEY]: DESIGN_ADDON_VALUE } : base;
+    const labels = selectionLabels(product, base);
     add({
       slug: product.slug,
       name: product.name,
       quantity,
-      selection,
-      labels: selectionLabels(product, selection),
+      selection: lineSelection,
+      labels: needsDesign
+        ? [...labels, { group: "Design", value: "Design by Primple — 100 MAD/h" }]
+        : labels,
       unitPrice: quote.unitPrice,
-      subtotal: quote.subtotal,
+      subtotal,
       delivery: quote.delivery,
       productionDays: quote.productionDays,
       deliveryMin: quote.deliveryMin,
       deliveryMax: quote.deliveryMax,
-      ...(artwork
+      ...(artwork && !needsDesign
         ? {
             artwork: artwork.name,
             artworkPath: artwork.path,
@@ -91,6 +112,12 @@ export function Configurator({ product }: { product: Product }) {
     toast.success(`${number(quantity)} ${tr(product.name)} — ${tr("added to your cart.")}`);
     navigate({ to: "/cart" });
   };
+
+  const quoteHref = `${contact.whatsapp}?text=${encodeURIComponent(
+    `${tr("Request a quote")} — ${tr(product.name)} · ${number(quantity)} · ${selectionLabels(product, selection)
+      .map((l) => tr(l.value))
+      .join(" · ")}${needsDesign ? ` · ${tr("Design by Primple — 100 MAD/h")}` : ""}`,
+  )}`;
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:items-start">
@@ -270,20 +297,38 @@ export function Configurator({ product }: { product: Product }) {
           <p className="mt-1 text-sm text-muted-foreground">
             {tr("We check your file before production and tell you if anything needs attention.")}
           </p>
-          <div className="mt-5">
-            <ArtworkUpload artwork={artwork} onChange={setArtwork} />
-          </div>
-          <div className="mt-4 flex flex-wrap items-start gap-3 rounded-xl bg-secondary/60 p-3 text-sm text-muted-foreground">
-            <p className="flex items-start gap-2">
-              <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
-              {tr(
-                "No file yet? Get help preparing your artwork or turning an idea into something you can print — add it later without losing this configuration.",
-              )}
-            </p>
-            <Button asChild variant="outline" size="sm" className="rounded-full">
-              <Link to="/design-services">{tr("Book a designer — 100 MAD/h")}</Link>
-            </Button>
-          </div>
+          <fieldset className="mt-5 grid gap-2 border-0 p-0 sm:grid-cols-2">
+            <legend className="sr-only">{tr("Your artwork")}</legend>
+            <ChipRadio name="artwork-mode" value="file" checked={!needsDesign} onSelect={() => chooseMode("file")}>
+              <span className="block font-semibold">{tr("I have a print-ready file")}</span>
+            </ChipRadio>
+            <ChipRadio name="artwork-mode" value="design" checked={needsDesign} onSelect={() => chooseMode("design")}>
+              <span className="block font-semibold">{tr("I need Primple to create the design")}</span>
+            </ChipRadio>
+          </fieldset>
+          {needsDesign ? (
+            <div className="mt-4 rounded-xl bg-secondary/60 p-4 text-sm">
+              <p className="flex items-start gap-2 font-semibold">
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
+                {tr("Design by Primple — 100 MAD/h")}
+              </p>
+              <p className="mt-1 text-muted-foreground">
+                {tr("{hours} h of design for this product, added to your order: {price}. No file needed — a designer contacts you after the order.")
+                  .replace("{hours}", number(designAddon.hours))
+                  .replace("{price}", mad(designAddon.subtotal))}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{tr("Branding and logo creation are not included.")}</p>
+            </div>
+          ) : (
+            <>
+              <div className="mt-5">
+                <ArtworkUpload artwork={artwork} onChange={setArtwork} />
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                <Link to="/design-services" className="underline">{tr("Book a designer — 100 MAD/h")}</Link>
+              </p>
+            </>
+          )}
         </section>
       </div>
 
@@ -299,15 +344,19 @@ export function Configurator({ product }: { product: Product }) {
               transition={{ duration: 0.22 }}
               className="mt-2 font-display text-4xl font-extrabold tracking-tight"
             >
-              {mad(total)}
+              {product.quoteOnly ? tr("Request a quote") : mad(total)}
             </motion.p>
           </AnimatePresence>
+          {!product.quoteOnly && (
           <p className="mt-1 text-sm text-muted-foreground">
             {number(quantity)} {tr("units")} · {madUnit(quote.unitPrice)} {tr("each")}
           </p>
+          )}
 
+          {!product.quoteOnly && (
           <dl className="mt-6 space-y-2.5 border-t border-border pt-5 text-sm">
             <Row label={tr("Subtotal")} value={mad(quote.subtotal)} />
+            {needsDesign && <Row label={tr("Design by Primple — 100 MAD/h")} value={mad(designAmount)} />}
             <Row
               label={tr("Delivery")}
               value={quote.delivery === 0 ? tr("Included") : mad(quote.delivery)}
@@ -317,6 +366,7 @@ export function Configurator({ product }: { product: Product }) {
               <dd>{mad(total)}</dd>
             </div>
           </dl>
+          )}
 
           <div className="mt-5 space-y-2 rounded-xl bg-secondary/60 p-4 text-sm">
             <p className="flex items-center gap-2">
@@ -336,12 +386,14 @@ export function Configurator({ product }: { product: Product }) {
             onClick={addToCart}
             disabled={customQuantityInvalid || pagesInvalid || dimensionsInvalid || bulkQuote}
           >
-            {tr(bulkQuote ? "Request a custom quote" : "Add to cart")}
+            {tr(product.quoteOnly ? "Request a quote" : bulkQuote ? "Request a custom quote" : "Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">
             {tr(
-              "Your payment is made online by card in MAD. Production starts once the payment is confirmed.",
+              product.quoteOnly
+                ? "Packaging is priced on quote: send your request and we reply with a tailored price."
+                : "Your payment is made online by card in MAD. Production starts once the payment is confirmed.",
             )}
           </p>
         </div>

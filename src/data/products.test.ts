@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  cheapestSelection,
   defaultSelection,
   fromPriceBasis,
   getProduct,
@@ -10,10 +11,37 @@ import {
   type Selection,
 } from "@/data/products";
 import { cartTotals } from "@/store/cart";
+import { lineQuote } from "@/data/pricing";
 
 function anchorSelection(product: Product): Selection {
-  return { ...defaultSelection(product), ...(product.anchor.selection ?? {}) };
+  const base = product.anchorCheapest ? cheapestSelection(product) : defaultSelection(product);
+  return { ...base, ...(product.anchor.selection ?? {}) };
 }
+
+describe("corrected prices", () => {
+  it("flyers cost 1.40 MAD per unit at every quantity", () => {
+    const flyers = getProduct("flyers")!;
+    for (const q of [250, 1000, 5000]) {
+      expect(priceQuote(flyers, q, cheapestSelection(flyers)).subtotal).toBeCloseTo(1.4 * q, 2);
+    }
+    expect(fromPriceBasis(flyers).unitPrice).toBeCloseTo(1.4, 6);
+  });
+  it("roll-ups cost 850 MAD per unit", () => {
+    const r = getProduct("roll-up-banners")!;
+    expect(priceQuote(r, 1, cheapestSelection(r)).subtotal).toBe(850);
+    expect(priceQuote(r, 5, cheapestSelection(r)).subtotal).toBe(4250);
+  });
+  it("packaging is quote only and never priced in the cart", () => {
+    expect(getProduct("packaging")!.quoteOnly).toBe(true);
+    expect(lineQuote("packaging", 100, {})).toBeNull();
+  });
+  it("design add-on is added once, without delivery", () => {
+    const plain = lineQuote("flyers", 1000, {})!;
+    const withDesign = lineQuote("flyers", 1000, { design: "primple" })!;
+    expect(withDesign.subtotal).toBeCloseTo(plain.subtotal + 200, 2);
+    expect(withDesign.delivery).toBe(plain.delivery);
+  });
+});
 
 describe("market anchors", () => {
   for (const product of products) {

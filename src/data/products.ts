@@ -57,6 +57,10 @@ export type Product = {
   reviews?: number;
   pageRange?: { min: number; max: number; default: number };
   bulkQuoteAt?: number;
+  /** Sold on quote only: no fixed price is ever shown or charged. */
+  quoteOnly?: boolean;
+  /** The anchor applies to the cheapest configuration (flat per-unit price). */
+  anchorCheapest?: boolean;
   keywords: string[];
   options: OptionGroup[];
   faqs: { q: string; a: string }[];
@@ -179,6 +183,7 @@ export const products: Product[] = [
       "Mailer boxes, folding cartons and sleeves produced by partners with die-cutting capability. Structural files and mockups reviewed before production starts.",
     quantities: [100, 250, 500, 1000],
     anchor: { quantity: 100, subtotal: 855 },
+    quoteOnly: true,
     baseProductionDays: 6,
     rating: 4.8,
     reviews: 128,
@@ -218,7 +223,10 @@ export const products: Product[] = [
     description:
       "A5, A4 and DL flyers on coated or uncoated stock, printed in as little as one working day by partners near you.",
     quantities: [250, 500, 1000, 2500, 5000],
-    anchor: { quantity: 1000, subtotal: 675, selection: { size: "a5", printing: "double" } },
+    // 1.40 MAD per flyer, flat: every quantity is 1.40 x quantity (cheapest configuration).
+    anchor: { quantity: 250, subtotal: 350 },
+    anchorCheapest: true,
+    quantityBreaks: [{ quantity: 1, factor: 1 }],
     baseProductionDays: 1,
     rating: 4.8,
     reviews: 306,
@@ -253,7 +261,10 @@ export const products: Product[] = [
     description:
       "Printed on anti-curl banner media with aluminium cassettes and a carry bag included.",
     quantities: [1, 2, 5, 10],
-    anchor: { quantity: 1, subtotal: 839, selection: { size: "80", base: "premium" } },
+    // 850 MAD per roll-up, flat: every quantity is 850 x quantity (cheapest configuration).
+    anchor: { quantity: 1, subtotal: 850 },
+    anchorCheapest: true,
+    quantityBreaks: [{ quantity: 1, factor: 1 }],
     baseProductionDays: 2,
     rating: 4.7,
     reviews: 94,
@@ -695,7 +706,10 @@ function unitBase(product: Product) {
   const cached = unitBaseCache.get(product.slug);
   if (cached !== undefined) return cached;
   const anchor = product.anchor;
-  const selection: Selection = { ...defaultSelection(product), ...(anchor.selection ?? {}) };
+  const selection: Selection = {
+    ...(product.anchorCheapest ? cheapestSelection(product) : defaultSelection(product)),
+    ...(anchor.selection ?? {}),
+  };
   const denominator =
     anchor.quantity *
     configFactor(product, selection) *
