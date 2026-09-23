@@ -59,11 +59,9 @@ export const Route = createFileRoute("/products/$slug")({
             ...(product.rating && product.reviews
               ? { aggregateRating: { "@type": "AggregateRating", ratingValue: product.rating, reviewCount: product.reviews } }
               : {}),
-            offers: {
-              "@type": "Offer",
-              price: basis.amount,
-              priceCurrency: "MAD",
-            },
+            ...(product.quoteOnly
+              ? {}
+              : { offers: { "@type": "Offer", price: basis.amount, priceCurrency: "MAD" } }),
           }),
         },
       ],
