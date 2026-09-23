@@ -342,4 +342,19 @@ export const packPhrases: Record<string, TranslationPair> = {
   You: p("Vous", "أنت"),
   Designer: p("Designer", "المصمم"),
   "We will contact you soon.": p("Nous vous contacterons bientôt.", "سنتواصل معك قريبًا."),
+
+  "Request a quote": p("Demander un devis", "اطلب عرض سعر"),
+  "I have a print-ready file": p("J'ai un fichier prêt à imprimer", "لدي ملف جاهز للطباعة"),
+  "I need Primple to create the design": p("Je veux que Primple crée le design", "أريد أن تصمم Primple التصميم"),
+  "Design by Primple — 100 MAD/h": p("Design par Primple — 100 MAD/h", "تصميم من Primple — 100 درهم/ساعة"),
+  "{hours} h of design for this product, added to your order: {price}. No file needed — a designer contacts you after the order.": p(
+    "{hours} h de design pour ce produit, ajoutées à votre commande : {price}. Aucun fichier requis — un designer vous contacte après la commande.",
+    "{hours} ساعة تصميم لهذا المنتج تضاف إلى طلبك: {price}. لا حاجة لملف — سيتواصل معك مصمم بعد الطلب.",
+  ),
+  "Branding and logo creation are not included.": p("Le branding et la création de logo ne sont pas inclus.", "الهوية البصرية وتصميم الشعار غير مشمولين."),
+  "Packaging is priced on quote: send your request and we reply with a tailored price.": p(
+    "L'emballage est sur devis : envoyez votre demande et nous vous répondons avec un prix sur mesure.",
+    "التغليف حسب عرض السعر: أرسل طلبك وسنرد عليك بسعر مخصص.",
+  ),
+  Design: p("Design", "التصميم"),
 };

@@ -113,7 +113,7 @@ export function Configurator({ product }: { product: Product }) {
     navigate({ to: "/cart" });
   };
 
-  const quoteHref = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(
+  const quoteHref = `${contact.whatsapp}?text=${encodeURIComponent(
     `${tr("Request a quote")} — ${tr(product.name)} · ${number(quantity)} · ${selectionLabels(product, selection)
       .map((l) => tr(l.value))
       .join(" · ")}${needsDesign ? ` · ${tr("Design by Primple — 100 MAD/h")}` : ""}`,
