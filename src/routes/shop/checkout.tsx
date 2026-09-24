@@ -78,7 +78,7 @@ function ShopCheckoutPage() {
 
       const yp = await loadYouCanPay();
       const locale: YouCanPayLocale = lang === "ar" ? "ar" : lang === "en" ? "en" : "fr";
-      const element = yp(config.publicKey, { locale }).elements({
+      const element = yp(config.publicKey, { locale, sandbox: config.sandbox }).elements({
         token: result.token,
         container: containerRef.current ?? "#youcanpay-form",
       });
