@@ -13,9 +13,10 @@ export const Route = createFileRoute("/api/public/youcanpay-webhook")({
     handlers: {
       POST: async ({ request }) => {
         const rawBody = await request.text();
-        const { verifyWebhookSignature } = await import("@/lib/youcanpay.server");
+        const { verifyWebhookSignature, logPaymentEvent } = await import("@/lib/youcanpay.server");
 
         if (!verifyWebhookSignature(rawBody, request.headers.get("x-youcanpay-signature"))) {
+          await logPaymentEvent({ event: "webhook_signature", ok: false, httpStatus: 401, detail: "Invalid signature" });
           return new Response("Invalid signature", { status: 401 });
         }
 
@@ -36,6 +37,14 @@ export const Route = createFileRoute("/api/public/youcanpay-webhook")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const transactionId = event.payload?.transaction?.id ?? null;
+        await logPaymentEvent({
+          reference: reference ?? null,
+          event: paid ? "confirmation_paid" : "confirmation_failed",
+          ok: paid,
+          tokenId: tokenId ?? null,
+          transactionId,
+          detail: `Verified ${event.event_name}`,
+        });
         const isPrintOrder = reference ? reference.startsWith("PRM-") : false;
 
         if (isPrintOrder) {

@@ -202,7 +202,7 @@ export const startPrintPayment = createServerFn({ method: "POST" })
       amountCents,
       currency: "MAD",
       successUrl: `${origin}/checkout?ref=${order.reference}`,
-      errorUrl: `${origin}/checkout?ref=${order.reference}&failed=1`,
+      errorUrl: `${origin}/payment/retry?ref=${order.reference}`,
       ...(order.email ? { customerEmail: order.email } : {}),
     });
 

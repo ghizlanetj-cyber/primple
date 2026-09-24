@@ -106,6 +106,41 @@ export function shopReference(): string {
   return `SHP-${Math.floor(10000 + Math.random() * 89999)}`;
 }
 
+/** Records a payment step for staff diagnostics. Never stores keys or card data. */
+export async function logPaymentEvent(entry: {
+  reference?: string | null;
+  orderKind?: "print" | "shop";
+  event: string;
+  ok: boolean;
+  tokenId?: string | null;
+  transactionId?: string | null;
+  httpStatus?: number | null;
+  detail?: string | null;
+}): Promise<void> {
+  try {
+    let environment = "unknown";
+    try {
+      environment = isSandbox() ? "sandbox" : "live";
+    } catch {
+      environment = "unconfigured";
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("payment_events").insert({
+      reference: entry.reference ?? null,
+      order_kind: entry.orderKind ?? (entry.reference?.startsWith("SHP-") ? "shop" : "print"),
+      event: entry.event,
+      environment,
+      ok: entry.ok,
+      youcanpay_token_id: entry.tokenId ?? null,
+      youcanpay_transaction_id: entry.transactionId ?? null,
+      http_status: entry.httpStatus ?? null,
+      detail: entry.detail ? entry.detail.slice(0, 500) : null,
+    });
+  } catch (error) {
+    console.error("[YouCanPay] diagnostics log failed", error);
+  }
+}
+
 export async function tokenizePayment(input: {
   reference: string;
   amountCents: number;
@@ -132,12 +167,27 @@ export async function tokenizePayment(input: {
 
   if (!response.ok || !payload?.token) {
     console.error("[YouCanPay] tokenize failed", response.status, payload?.message ?? "");
+    await logPaymentEvent({
+      reference: input.reference,
+      event: "token_create",
+      ok: false,
+      httpStatus: response.status,
+      detail: payload?.message ?? "No token in response",
+    });
     throw new Error("The payment could not be started. Please try again.");
   }
 
   const tokenId = typeof payload.token === "string" ? payload.token : (payload.token.id ?? "");
   if (!tokenId) throw new Error("The payment could not be started. Please try again.");
 
+  await logPaymentEvent({
+    reference: input.reference,
+    event: "token_create",
+    ok: true,
+    tokenId,
+    transactionId: payload.transaction_id ?? null,
+    httpStatus: response.status,
+  });
   return { tokenId, transactionId: payload.transaction_id ?? null };
 }
 
