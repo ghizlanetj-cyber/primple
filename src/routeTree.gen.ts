@@ -33,12 +33,14 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as PacksIndexRouteImport } from './routes/packs/index'
 import { Route as PacksSlugRouteImport } from './routes/packs/$slug'
+import { Route as PaymentRetryRouteImport } from './routes/payment/retry'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProductsSlugRouteImport } from './routes/products/$slug'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as ShopHandleRouteImport } from './routes/shop/$handle'
 import { Route as ShopCheckoutRouteImport } from './routes/shop/checkout'
 import { Route as ShopConfirmationRouteImport } from './routes/shop/confirmation'
+import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin.payments'
 import { Route as AuthenticatedInvoiceReferenceRouteImport } from './routes/_authenticated/invoice.$reference'
 import { Route as ApiPublicYoucanpayWebhookRouteImport } from './routes/api/public/youcanpay-webhook'
 
@@ -161,6 +163,11 @@ const PacksSlugRoute = PacksSlugRouteImport.update({
   path: '/packs/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PaymentRetryRoute = PaymentRetryRouteImport.update({
+  id: '/payment/retry',
+  path: '/payment/retry',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsIndexRoute = ProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
@@ -191,6 +198,12 @@ const ShopConfirmationRoute = ShopConfirmationRouteImport.update({
   path: '/shop/confirmation',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminPaymentsRoute =
+  AuthenticatedAdminPaymentsRouteImport.update({
+    id: '/admin/payments',
+    path: '/admin/payments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedInvoiceReferenceRoute =
   AuthenticatedInvoiceReferenceRouteImport.update({
     id: '/invoice/$reference',
@@ -227,6 +240,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/packs/$slug': typeof PacksSlugRoute
+  '/payment/retry': typeof PaymentRetryRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
   '/shop/checkout': typeof ShopCheckoutRoute
@@ -234,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/packs/': typeof PacksIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
   '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
 }
@@ -260,6 +275,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/packs/$slug': typeof PacksSlugRoute
+  '/payment/retry': typeof PaymentRetryRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
   '/shop/checkout': typeof ShopCheckoutRoute
@@ -267,6 +283,7 @@ export interface FileRoutesByTo {
   '/packs': typeof PacksIndexRoute
   '/products': typeof ProductsIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
   '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
 }
@@ -295,6 +312,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/packs/$slug': typeof PacksSlugRoute
+  '/payment/retry': typeof PaymentRetryRoute
   '/products/$slug': typeof ProductsSlugRoute
   '/shop/$handle': typeof ShopHandleRoute
   '/shop/checkout': typeof ShopCheckoutRoute
@@ -302,6 +320,7 @@ export interface FileRoutesById {
   '/packs/': typeof PacksIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/_authenticated/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
   '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
 }
@@ -330,6 +349,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/auth/callback'
     | '/packs/$slug'
+    | '/payment/retry'
     | '/products/$slug'
     | '/shop/$handle'
     | '/shop/checkout'
@@ -337,6 +357,7 @@ export interface FileRouteTypes {
     | '/packs/'
     | '/products/'
     | '/shop/'
+    | '/admin/payments'
     | '/invoice/$reference'
     | '/api/public/youcanpay-webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -363,6 +384,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/auth/callback'
     | '/packs/$slug'
+    | '/payment/retry'
     | '/products/$slug'
     | '/shop/$handle'
     | '/shop/checkout'
@@ -370,6 +392,7 @@ export interface FileRouteTypes {
     | '/packs'
     | '/products'
     | '/shop'
+    | '/admin/payments'
     | '/invoice/$reference'
     | '/api/public/youcanpay-webhook'
   id:
@@ -397,6 +420,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/auth/callback'
     | '/packs/$slug'
+    | '/payment/retry'
     | '/products/$slug'
     | '/shop/$handle'
     | '/shop/checkout'
@@ -404,6 +428,7 @@ export interface FileRouteTypes {
     | '/packs/'
     | '/products/'
     | '/shop/'
+    | '/_authenticated/admin/payments'
     | '/_authenticated/invoice/$reference'
     | '/api/public/youcanpay-webhook'
   fileRoutesById: FileRoutesById
@@ -431,6 +456,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   PacksSlugRoute: typeof PacksSlugRoute
+  PaymentRetryRoute: typeof PaymentRetryRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ShopHandleRoute: typeof ShopHandleRoute
   ShopCheckoutRoute: typeof ShopCheckoutRoute
@@ -611,6 +637,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PacksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/payment/retry': {
+      id: '/payment/retry'
+      path: '/payment/retry'
+      fullPath: '/payment/retry'
+      preLoaderRoute: typeof PaymentRetryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products/': {
       id: '/products/'
       path: '/products'
@@ -653,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopConfirmationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/payments': {
+      id: '/_authenticated/admin/payments'
+      path: '/admin/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AuthenticatedAdminPaymentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/invoice/$reference': {
       id: '/_authenticated/invoice/$reference'
       path: '/invoice/$reference'
@@ -672,11 +712,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
   AuthenticatedInvoiceReferenceRoute: typeof AuthenticatedInvoiceReferenceRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
   AuthenticatedInvoiceReferenceRoute: AuthenticatedInvoiceReferenceRoute,
 }
 
@@ -706,6 +748,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   PacksSlugRoute: PacksSlugRoute,
+  PaymentRetryRoute: PaymentRetryRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ShopHandleRoute: ShopHandleRoute,
   ShopCheckoutRoute: ShopCheckoutRoute,
