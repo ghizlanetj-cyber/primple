@@ -252,6 +252,48 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_events: {
+        Row: {
+          created_at: string
+          detail: string | null
+          environment: string
+          event: string
+          http_status: number | null
+          id: string
+          ok: boolean
+          order_kind: string
+          reference: string | null
+          youcanpay_token_id: string | null
+          youcanpay_transaction_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          environment: string
+          event: string
+          http_status?: number | null
+          id?: string
+          ok?: boolean
+          order_kind?: string
+          reference?: string | null
+          youcanpay_token_id?: string | null
+          youcanpay_transaction_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          environment?: string
+          event?: string
+          http_status?: number | null
+          id?: string
+          ok?: boolean
+          order_kind?: string
+          reference?: string | null
+          youcanpay_token_id?: string | null
+          youcanpay_transaction_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
