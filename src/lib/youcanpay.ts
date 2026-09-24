@@ -17,7 +17,7 @@ export interface YouCanPayElement {
 
 type YouCanPayFactory = (
   publicKey: string,
-  options?: { locale?: YouCanPayLocale },
+  options?: { locale?: YouCanPayLocale; sandbox?: boolean },
 ) => { elements: (options: { token: string; container: string | HTMLElement }) => YouCanPayElement };
 
 declare global {
