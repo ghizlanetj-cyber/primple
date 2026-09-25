@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { useI18n } from "@/i18n";
-import { getPaymentDiagnostics } from "@/lib/payment-support.functions";
+import { getPaymentDiagnostics, getPaymentSetupChecklist } from "@/lib/payment-support.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/admin/payments")({
@@ -35,6 +35,7 @@ function PaymentDiagnostics() {
     <SiteShell>
       <div className="section-shell py-12">
         <h1 className="text-2xl font-bold">{tr("Payment diagnostics")}</h1>
+        <SetupChecklist />
         {isLoading ? (
           <p className="mt-6 text-muted-foreground">…</p>
         ) : error ? (
@@ -76,5 +77,39 @@ function PaymentDiagnostics() {
         )}
       </div>
     </SiteShell>
+  );
+}
+
+function SetupChecklist() {
+  const { tr } = useI18n();
+  const fetchChecklist = useServerFn(getPaymentSetupChecklist);
+  const { data, refetch, isFetching } = useQuery({ queryKey: ["payment-checklist"], queryFn: () => fetchChecklist() });
+  if (!data?.allowed) return null;
+  const ready = data.checks.every((c) => c.status === "ok");
+  return (
+    <section className="mt-6 rounded-2xl border border-border bg-card p-5">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-semibold">{tr("Before publishing")}</h2>
+        <button className="text-sm text-primary underline" onClick={() => refetch()} disabled={isFetching}>
+          {isFetching ? "…" : tr("Re-check")}
+        </button>
+      </div>
+      <p className={cn("mt-1 text-sm", ready ? "text-primary" : "text-muted-foreground")}>
+        {ready ? tr("Everything is ready for payments.") : tr("Fix the items below before publishing.")}
+      </p>
+      <ul className="mt-4 space-y-2">
+        {data.checks.map((c) => (
+          <li key={c.id} className="flex gap-3 text-sm">
+            <span className={cn("font-bold", c.status === "ok" ? "text-primary" : c.status === "fail" ? "text-destructive" : "text-muted-foreground")}>
+              {c.status === "ok" ? "✓" : c.status === "fail" ? "✗" : "?"}
+            </span>
+            <span>
+              <span className="font-medium">{tr(c.label)}</span>
+              <span className="block break-all text-muted-foreground">{c.detail}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
