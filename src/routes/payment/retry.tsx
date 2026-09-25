@@ -18,7 +18,7 @@ const title = "Reprendre votre paiement | Primple";
 const description = "Votre commande Primple est conservée : réessayez le paiement par carte en toute sécurité.";
 
 export const Route = createFileRoute("/payment/retry")({
-  validateSearch: (search: Record<string, unknown>) => ({ ref: typeof search.ref === "string" ? search.ref : "" }),
+  validateSearch: (search: Record<string, unknown>) => ({ ref: typeof search["ref"] === "string" ? search["ref"] : "" }),
   head: () => ({
     meta: [
       { title },
