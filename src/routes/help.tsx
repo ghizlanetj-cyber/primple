@@ -4,6 +4,7 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { PageHero, ContentSection } from "@/components/shared/PageHero";
 import { FaqSection } from "@/components/shared/FaqSection";
 import { Button } from "@/components/ui/button";
+import { PaymentHelpAssistant } from "@/components/payment/PaymentHelpAssistant";
 import { useI18n } from "@/i18n";
 
 const title = "Aide : fichiers, délais, livraison et suivi de commande | Primple";
@@ -39,6 +40,9 @@ function HelpPage() {
           <Link to="/contact">{tr("Contact support")}</Link>
         </Button>
       </PageHero>
+      <div className="section-shell max-w-2xl py-8">
+        <PaymentHelpAssistant />
+      </div>
 
       <ContentSection
         title="Popular topics"
