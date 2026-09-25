@@ -7,3 +7,5 @@
 - [x] Preserve the latest signup, dashboard, role, and Google-only authentication edits
 - [x] Diagnose and fix the current build failure
 - [x] Verify signup, dashboard access protection, packs, tests, types, and production build without publishing
+
+- [ ] Publish with YouCan Pay keys (notification URL set by owner in YouCan Pay)
