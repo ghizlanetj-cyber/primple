@@ -2,6 +2,12 @@
 @source "../src";
 @import "tw-animate-css";
 
+/* YouCan Pay widget: hide the SDK's own SANDBOX chip from customers (display-only). */
+yp-root::part(sandbox) {
+  display: none !important;
+}
+
+
 
 /*
  * Primple premium print studio design system.
