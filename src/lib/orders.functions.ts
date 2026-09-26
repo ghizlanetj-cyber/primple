@@ -13,6 +13,7 @@ export type GuestOrderLineInput = {
 
 export type GuestOrderInput = {
   lines: GuestOrderLineInput[];
+  paymentMethod?: "card_youcanpay" | "deposit_50_cod";
   details: {
     name: string;
     company?: string;
@@ -60,6 +61,7 @@ function validateGuestOrder(input: GuestOrderInput): GuestOrderInput {
 
   return {
     lines,
+    paymentMethod: input.paymentMethod === "deposit_50_cod" ? "deposit_50_cod" : "card_youcanpay",
     details: {
       name: text(input.details?.name, 120),
       company: text(input.details?.company, 120),
@@ -82,6 +84,7 @@ export const createGuestOrder = createServerFn({ method: "POST" })
   .inputValidator(validateGuestOrder)
   .handler(async ({ data }) => {
     const { orderTotals } = await import("@/data/pricing");
+    const { onlineAmountCents } = await import("./deposit");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const totals = orderTotals(data.lines);
@@ -119,10 +122,10 @@ export const createGuestOrder = createServerFn({ method: "POST" })
         subtotal: subtotalCents / 100,
         delivery: deliveryCents / 100,
         total: totalCents / 100,
-        deposit_amount: totalCents / 100,
-        balance_amount: 0,
+        deposit_amount: onlineAmountCents(totalCents, data.paymentMethod) / 100,
+        balance_amount: (totalCents - onlineAmountCents(totalCents, data.paymentMethod)) / 100,
         deposit_paid: false,
-        payment_method: "card_youcanpay",
+        payment_method: data.paymentMethod ?? "card_youcanpay",
         contact_name: data.details.name,
         company: data.details.company || null,
         email: data.details.email,

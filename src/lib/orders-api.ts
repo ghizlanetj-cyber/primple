@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { CartItem } from "@/store/cart";
 import type { OrderStage } from "@/data/orders";
+import { CARD_METHOD, splitAmounts, type PrintPaymentMethod } from "@/lib/deposit";
 
 
 export type OrderItemRecord = {
@@ -106,10 +107,14 @@ export async function createOrder(input: {
   items: CartItem[];
   totals: { subtotal: number; delivery: number; total: number };
   details: DeliveryDetails;
+  paymentMethod?: PrintPaymentMethod;
 }): Promise<OrderRecord> {
   const reference = `PRM-${Math.floor(10000 + Math.random() * 89999)}`;
   const maxDays = input.items.reduce((m, i) => Math.max(m, i.deliveryMax || i.productionDays), 5);
   const expected = new Date(Date.now() + maxDays * 24 * 60 * 60 * 1000);
+  const method: PrintPaymentMethod = input.paymentMethod ?? CARD_METHOD;
+  // Display only: the server re-prices and rewrites these before any charge.
+  const split = splitAmounts(input.totals.total, method);
 
   const payload = {
     user_id: input.userId,
@@ -129,10 +134,10 @@ export async function createOrder(input: {
     subtotal: input.totals.subtotal,
     delivery: input.totals.delivery,
     total: input.totals.total,
-    deposit_amount: input.totals.total,
-    balance_amount: 0,
+    deposit_amount: split.dueNow,
+    balance_amount: split.balance,
     deposit_paid: false,
-    payment_method: "card_youcanpay",
+    payment_method: method,
     contact_name: input.details.name,
     company: input.details.company ?? null,
     email: input.details.email,
