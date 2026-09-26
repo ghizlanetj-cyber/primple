@@ -1,12 +1,15 @@
-/** Print orders only: 50% card deposit online, balance in cash at delivery. */
+/** Print orders only. Card = full online; COD = 50% card online + 50% cash; bank = 50% transfer + 50% cash. */
 export const DEPOSIT_METHOD = "deposit_50_cod";
 export const CARD_METHOD = "card_youcanpay";
+export const BANK_METHOD = "bank_transfer_50";
+/** Bank-transfer order waiting for staff to verify the transfer. */
+export const AWAITING_TRANSFER = "awaiting_transfer";
 
-export type PrintPaymentMethod = typeof DEPOSIT_METHOD | typeof CARD_METHOD;
+export type PrintPaymentMethod = typeof DEPOSIT_METHOD | typeof CARD_METHOD | typeof BANK_METHOD;
 
-/** Amount charged online, in centimes. Anything but the exact deposit method pays in full. */
+/** Advance due before production, in centimes. Anything unknown pays in full. */
 export function onlineAmountCents(totalCents: number, method: string | null | undefined): number {
-  if (method !== DEPOSIT_METHOD) return totalCents;
+  if (method !== DEPOSIT_METHOD && method !== BANK_METHOD) return totalCents;
   return Math.ceil(totalCents / 2);
 }
 

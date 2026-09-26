@@ -13,7 +13,7 @@ export type GuestOrderLineInput = {
 
 export type GuestOrderInput = {
   lines: GuestOrderLineInput[];
-  paymentMethod?: "card_youcanpay" | "deposit_50_cod";
+  paymentMethod?: "card_youcanpay" | "deposit_50_cod" | "bank_transfer_50";
   details: {
     name: string;
     company?: string;
@@ -61,7 +61,10 @@ function validateGuestOrder(input: GuestOrderInput): GuestOrderInput {
 
   return {
     lines,
-    paymentMethod: input.paymentMethod === "deposit_50_cod" ? "deposit_50_cod" : "card_youcanpay",
+    paymentMethod:
+      input.paymentMethod === "deposit_50_cod" || input.paymentMethod === "bank_transfer_50"
+        ? input.paymentMethod
+        : "card_youcanpay",
     details: {
       name: text(input.details?.name, 120),
       company: text(input.details?.company, 120),

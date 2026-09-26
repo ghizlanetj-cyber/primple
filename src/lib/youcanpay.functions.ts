@@ -191,6 +191,8 @@ export const startPrintPayment = createServerFn({ method: "POST" })
     });
     if (!allowed) throw new Error("Unknown order.");
     if (order.payment_status === "paid") throw new Error("This order is already paid.");
+    // Bank-transfer orders are confirmed by staff, never charged by card.
+    if (order.payment_method === "bank_transfer_50") throw new Error("This order is paid by bank transfer.");
 
     // Never trust the stored total: re-price every line from the catalog.
     const totalCents = await recomputeOrderCents(order);
