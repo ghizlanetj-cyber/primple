@@ -102,6 +102,27 @@ function CheckoutPage() {
   const split = splitAmounts(placedOrder?.total ?? totals.total, method);
   const payable = dueNow ?? split.dueNow;
 
+  // WhatsApp follow-up CTA: shown only once a real order reference exists (step 3),
+  // for manual payments and COD advances. Never for full card-only checkout.
+  const placedTotal = placedOrder?.total ?? 0;
+  const placedBalance = Math.round((placedTotal - payable) * 100) / 100;
+  const methodLabel =
+    choice === "cod"
+      ? `${tr("Cash on delivery — 50% deposit")} · ${advance === "card" ? tr("Card") : advance === "bank" ? tr("Bank transfer") : "Cash Plus"}`
+      : choice === "card"
+        ? tr("Card")
+        : manualLabel;
+  const waLines = [
+    `Commande ${orderId}`,
+    `Mode de paiement : ${methodLabel}`,
+    `Total : ${mad(placedTotal)}`,
+    `${isDeposit ? "Avance à régler" : "Montant à régler"} : ${mad(payable)}`,
+    ...(isDeposit ? [`Solde en espèces à la livraison : ${mad(placedBalance)}`] : []),
+    "Merci de m'indiquer la suite.",
+  ];
+  const waHref = `${contact.whatsapp}?text=${encodeURIComponent(waLines.join("\n"))}`;
+  const showWhatsAppCta = step === 3 && Boolean(placedOrder) && (isBank || isDeposit) && choice !== "card";
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const elementRef = useRef<YouCanPayElement | null>(null);
 
