@@ -10,5 +10,5 @@
 
 - [x] Publish with YouCan Pay keys (notification URL set by owner in YouCan Pay)
 
-- [ ] Print checkout: 50% card deposit + 50% cash at delivery (server-verified)
-- [ ] P0 copy: Primple labels, packaging quote wording, remove ratings, card delivery lines
+- [x] Print checkout: 50% card deposit + 50% cash at delivery (server-verified)
+- [x] P0 copy: Primple labels, packaging quote wording, remove ratings, card delivery lines
