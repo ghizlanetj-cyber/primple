@@ -12,7 +12,28 @@ import { attachFilesToOrder } from "@/lib/files-api";
 import { invoiceLabels } from "@/lib/invoice";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
 import { loadYouCanPay, type YouCanPayElement, type YouCanPayLocale } from "@/lib/youcanpay";
-import { BANK_METHOD, CARD_METHOD, DEPOSIT_METHOD, splitAmounts, type PrintPaymentMethod } from "@/lib/deposit";
+import {
+  BANK_ADVANCE_METHOD,
+  BANK_FULL_METHOD,
+  CARD_METHOD,
+  CASHPLUS_ADVANCE_METHOD,
+  CASHPLUS_FULL_METHOD,
+  DEPOSIT_METHOD,
+  isCashPlusMethod,
+  isHalfMethod,
+  isManualMethod,
+  splitAmounts,
+  type PrintPaymentMethod,
+} from "@/lib/deposit";
+
+type PayChoice = "card" | "bank" | "cashplus" | "cod";
+type AdvanceChoice = "card" | "bank" | "cashplus";
+function resolveMethod(choice: PayChoice, advance: AdvanceChoice): PrintPaymentMethod {
+  if (choice === "card") return CARD_METHOD;
+  if (choice === "bank") return BANK_FULL_METHOD;
+  if (choice === "cashplus") return CASHPLUS_FULL_METHOD;
+  return advance === "card" ? DEPOSIT_METHOD : advance === "bank" ? BANK_ADVANCE_METHOD : CASHPLUS_ADVANCE_METHOD;
+}
 import { requestBankTransfer } from "@/lib/bank-transfer.functions";
 import { contact } from "@/config/contact";
 
@@ -69,11 +90,15 @@ function CheckoutPage() {
   const [cardReady, setCardReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [placedOrder, setPlacedOrder] = useState<OrderRecord | null>(null);
-  const [method, setMethod] = useState<PrintPaymentMethod>(CARD_METHOD);
+  const [choice, setChoice] = useState<PayChoice>("card");
+  const [advance, setAdvance] = useState<AdvanceChoice>("card");
+  const method = resolveMethod(choice, advance);
   const [dueNow, setDueNow] = useState<number | null>(null);
   const orderId = placedOrder?.reference ?? "";
-  const isDeposit = method === DEPOSIT_METHOD;
-  const isBank = method === BANK_METHOD;
+  const isDeposit = isHalfMethod(method);
+  const isBank = isManualMethod(method);
+  const isCashPlus = isCashPlusMethod(method);
+  const manualLabel = isCashPlus ? "Cash Plus" : tr("Bank transfer");
   const split = splitAmounts(placedOrder?.total ?? totals.total, method);
   const payable = dueNow ?? split.dueNow;
 
@@ -318,31 +343,27 @@ function CheckoutPage() {
 
                   <fieldset className="mt-5 grid gap-2 border-0 p-0" disabled={placing || cardReady}>
                     <legend className="sr-only">{tr("Payment method")}</legend>
-                    {([CARD_METHOD, DEPOSIT_METHOD, BANK_METHOD] as const).map((m) => (
-                      <label
-                        key={m}
-                        className={cn(
-                          "flex cursor-pointer items-center gap-3 rounded-xl border p-4 text-sm font-medium",
-                          method === m ? "border-primary bg-primary/10" : "border-border",
-                        )}
-                      >
-                        <input
-                          type="radio"
-                          name="payment-method"
-                          value={m}
-                          checked={method === m}
-                          onChange={() => setMethod(m)}
-                          className="accent-primary"
-                        />
-                        {tr(
-                          m === CARD_METHOD
-                            ? "Card — full payment"
-                            : m === DEPOSIT_METHOD
-                              ? "Cash on delivery — 50% deposit"
-                              : "Bank transfer — 50% advance",
-                        )}
-                      </label>
+                    {(["card", "bank", "cashplus", "cod"] as const).map((c) => (
+                      <RadioCard key={c} name="payment-method" checked={choice === c} onChange={() => setChoice(c)}>
+                        {c === "card"
+                          ? tr("Card")
+                          : c === "bank"
+                            ? tr("Bank transfer")
+                            : c === "cashplus"
+                              ? "Cash Plus"
+                              : tr("Cash on delivery — 50% deposit")}
+                      </RadioCard>
                     ))}
+                    {choice === "cod" && (
+                      <div className="ms-6 mt-1 grid gap-2">
+                        <p className="text-sm font-semibold">{tr("How will you pay your advance?")}</p>
+                        {(["card", "bank", "cashplus"] as const).map((a) => (
+                          <RadioCard key={a} name="advance-method" checked={advance === a} onChange={() => setAdvance(a)}>
+                            {a === "card" ? tr("Card") : a === "bank" ? tr("Bank transfer") : "Cash Plus"}
+                          </RadioCard>
+                        ))}
+                      </div>
+                    )}
                   </fieldset>
 
                   {(isDeposit || isBank) && (
@@ -352,17 +373,19 @@ function CheckoutPage() {
                         <dd>{mad(placedOrder?.total ?? totals.total)}</dd>
                       </div>
                       <div className="flex justify-between font-semibold">
-                        <dt>{tr(isBank ? "Advance by bank transfer" : "Due now by card")}</dt>
+                        <dt>{isBank ? `${tr(isDeposit ? "Advance by" : "To pay by")} ${manualLabel}` : tr("Due now by card")}</dt>
                         <dd>{mad(payable)}</dd>
                       </div>
-                      <div className="flex justify-between">
-                        <dt className="text-muted-foreground">{tr("Balance in cash at delivery")}</dt>
-                        <dd>{mad(Math.round(((placedOrder?.total ?? totals.total) - payable) * 100) / 100)}</dd>
-                      </div>
+                      {isDeposit && (
+                        <div className="flex justify-between">
+                          <dt className="text-muted-foreground">{tr("Balance in cash at delivery")}</dt>
+                          <dd>{mad(Math.round(((placedOrder?.total ?? totals.total) - payable) * 100) / 100)}</dd>
+                        </div>
+                      )}
                       <p className="pt-1 text-xs text-muted-foreground">
                         {tr(
                           isBank
-                            ? "Production starts after the transfer is verified."
+                            ? "Production starts only after our team confirms your payment."
                             : "Production starts only once the deposit is confirmed.",
                         )}
                       </p>
@@ -429,7 +452,7 @@ function CheckoutPage() {
                     <Clock className="size-6 text-primary" />
                   </span>
                   <h2 className="mt-5 text-xl">
-                    {tr("Order")} {orderId} · {tr("Awaiting transfer verification")}
+                    {tr("Order")} {orderId} · {tr("Awaiting payment confirmation")}
                   </h2>
                   <dl className="mt-5 space-y-2 rounded-xl bg-secondary/50 p-4 text-sm">
                     <div className="flex justify-between">
@@ -437,19 +460,21 @@ function CheckoutPage() {
                       <dd>{mad(placedOrder?.total ?? 0)}</dd>
                     </div>
                     <div className="flex justify-between font-semibold">
-                      <dt>{tr("Advance by bank transfer")}</dt>
+                      <dt>{`${tr(isDeposit ? "Advance by" : "To pay by")} ${manualLabel}`}</dt>
                       <dd>{mad(payable)}</dd>
                     </div>
-                    <div className="flex justify-between">
-                      <dt className="text-muted-foreground">{tr("Balance in cash at delivery")}</dt>
-                      <dd>{mad(Math.round(((placedOrder?.total ?? 0) - payable) * 100) / 100)}</dd>
-                    </div>
+                    {isDeposit && (
+                      <div className="flex justify-between">
+                        <dt className="text-muted-foreground">{tr("Balance in cash at delivery")}</dt>
+                        <dd>{mad(Math.round(((placedOrder?.total ?? 0) - payable) * 100) / 100)}</dd>
+                      </div>
+                    )}
                   </dl>
                   <p className="mt-4 text-sm font-medium">
-                    {tr("Production starts after the transfer is verified.")}
+                    {tr("Production starts only after our team confirms your payment.")}
                   </p>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {tr("Bank transfer details are sent after order confirmation.")}{" "}
+                    {tr(isCashPlus ? "Cash Plus instructions are sent after order confirmation." : "Bank transfer details are sent after order confirmation.")}{" "}
                     <a href={contact.whatsapp} className="underline">WhatsApp {contact.phone}</a>
                     {" · "}
                     <a href={contact.mailto} className="underline">{contact.email}</a>
@@ -629,5 +654,29 @@ function Summary({
       </dt>
       <dd className="mt-1 text-sm font-semibold">{value}</dd>
     </div>
+  );
+}
+
+function RadioCard({
+  name,
+  checked,
+  onChange,
+  children,
+}: {
+  name: string;
+  checked: boolean;
+  onChange: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <label
+      className={cn(
+        "flex cursor-pointer items-center gap-3 rounded-xl border p-4 text-sm font-medium",
+        checked ? "border-primary bg-primary/10" : "border-border",
+      )}
+    >
+      <input type="radio" name={name} checked={checked} onChange={onChange} className="accent-primary" />
+      {children}
+    </label>
   );
 }
