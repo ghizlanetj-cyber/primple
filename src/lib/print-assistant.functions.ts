@@ -1,12 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { catalogueSummary, MAX_QUESTIONS, parseAssistantReply, type AssistantTurn } from "./print-assistant";
+import { askedQuestions, catalogueSummary, MAX_QUESTIONS, parseAssistantReply, type AssistantTurn } from "./print-assistant";
 
 /** Stateless print-project assistant. Advice only: never writes options, orders or payments. */
 export const askPrintAssistant = createServerFn({ method: "POST" })
   .inputValidator((input: { turns: AssistantTurn[]; lang?: string; context?: string }) => {
     const turns = (Array.isArray(input?.turns) ? input.turns : [])
-      .slice(-8)
+      .slice(-16)
       .map((t) => ({ role: t?.role === "assistant" ? "assistant" : "user", text: String(t?.text ?? "").slice(0, 600) }) as AssistantTurn)
       .filter((t) => t.text.trim());
     if (!turns.length || turns[turns.length - 1]?.role !== "user") throw new Error("Please describe your project.");
@@ -18,18 +18,19 @@ export const askPrintAssistant = createServerFn({ method: "POST" })
     const key = process.env["LOVABLE_API_KEY"];
     if (!key) throw new Error("The assistant is not available right now.");
     const language = data.lang === "ar" ? "Arabic" : data.lang === "en" ? "English" : "French";
-    const asked = data.turns.filter((t) => t.role === "assistant").length;
+    const previous = askedQuestions(data.turns);
+    const asked = previous.length;
     const mustRecommend = asked >= MAX_QUESTIONS;
 
-    const instructions = `You are "Assistant Primple" for a Moroccan print shop. Write all text in ${language}.
-Catalogue (the ONLY items you may recommend):
+    const instructions = `You are "Assistant Primple", a concise print advisor for a Moroccan print shop. Reply in the customer's language (default ${language}).
+Catalogue — the ONLY things you may recommend:
 ${catalogueSummary()}
 ${data.context ? `The customer is viewing: ${data.context}.` : ""}
-Rules: ask at most ${MAX_QUESTIONS} very short questions (one at a time, under 15 words) in total (already asked: ${asked}). ${mustRecommend ? "You MUST recommend now." : "Recommend as soon as you have enough information."}
-Never state or estimate prices, stock, availability, production or delivery dates, material specs beyond the option names above, and never create artwork. Never ask for card, bank or payment details. Packaging, boxes or anything not in the catalogue => kind "quote".
+Conversation rules: read the whole conversation. Ask only the single next useful short question (under 15 words) and only if truly needed; stop as soon as you can recommend. Never ask anything already answered or already asked: ${previous.length ? previous.map((q) => `"${q}"`).join(", ") : "none"}. ${mustRecommend ? "You MUST give the plan now." : ""}
+Advice rules: options must be copied EXACTLY from the catalogue option lists above (group and choice names); never invent or paraphrase finishes, materials or treatments. Quantity must be one of that product's listed quantities, or null. Never state prices, stock, availability, production or delivery dates, guarantees, or approve artwork. Never ask for card, bank or payment data. Packaging, special formats or anything not in the catalogue => kind "quote".
 Reply with ONLY one JSON object, no markdown:
 {"type":"question","text":"..."}
-or {"type":"recommendation","kind":"product"|"pack"|"quote","slug":"<slug from catalogue or empty>","quantity":<number from its quantities or null>,"why":"<one short sentence: why it fits>","direction":"<one short sentence: support/finish direction using option names>"}`;
+or {"type":"plan","summary":"<one short sentence>","items":[{"kind":"product"|"pack"|"service"|"quote","slug":"<catalogue slug or empty>","purpose":"<one short sentence: why it fits>","quantity":<number or null>,"options":[{"group":"<exact group>","choice":"<exact choice>"}]}]} with 1 to 4 items.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
       method: "POST",

@@ -99,6 +99,16 @@ export const productPhrases: Record<string, TranslationPair> = {
   "Awaiting payment confirmation": { fr: "En attente de confirmation du paiement", ar: "في انتظار تأكيد الدفع" },
   "Finalize on WhatsApp": { fr: "Finaliser sur WhatsApp", ar: "إتمام الطلب عبر واتساب" },
   "Assistant Primple": { fr: "Assistant Primple", ar: "مساعد Primple" },
+  "Your print plan": { fr: "Votre plan d’impression", ar: "خطة الطباعة الخاصة بك" },
+  Conversation: { fr: "Conversation", ar: "المحادثة" },
+  "Send my plan on WhatsApp": { fr: "Envoyer mon plan sur WhatsApp", ar: "أرسل خطتي عبر واتساب" },
+  "Hello, here is my print plan:": { fr: "Bonjour, voici mon plan d’impression :", ar: "مرحباً، هذه خطة الطباعة الخاصة بي:" },
+  "Add a detail or ask a question": { fr: "Ajoutez un détail ou posez une question", ar: "أضف تفصيلاً أو اطرح سؤالاً" },
+  "No payment details here. Nothing is saved.": {
+    fr: "Pas de données de paiement ici. Rien n’est enregistré.",
+    ar: "لا بيانات دفع هنا. لا يتم حفظ أي شيء.",
+  },
+  "Design service": { fr: "Service de design", ar: "خدمة التصميم" },
   "What do you want to print?": { fr: "Que voulez-vous imprimer ?", ar: "ماذا تريد أن تطبع؟" },
   "Describe your project. I'll help you choose the right product.": {
     fr: "Décrivez votre projet. Je vous aide à choisir le bon support.",
