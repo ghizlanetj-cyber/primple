@@ -18,7 +18,7 @@ export function Hero() {
   const { t } = useI18n();
 
   return (
-    <section className="relative isolate flex min-h-[640px] flex-col overflow-hidden bg-ink text-ink-foreground lg:h-[100svh] lg:min-h-[720px]">
+    <section className="relative isolate flex min-h-[640px] flex-col overflow-hidden bg-ink text-ink-foreground lg:min-h-[max(100svh,720px)]">
       <img
         src={heroStudioAsset.url}
         alt={t("hero.alt")}
