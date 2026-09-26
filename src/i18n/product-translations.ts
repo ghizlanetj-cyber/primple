@@ -97,6 +97,7 @@ export const productPhrases: Record<string, TranslationPair> = {
     ar: "تُرسل تعليمات Cash Plus بعد تأكيد الطلب.",
   },
   "Awaiting payment confirmation": { fr: "En attente de confirmation du paiement", ar: "في انتظار تأكيد الدفع" },
+  "Finalize on WhatsApp": { fr: "Finaliser sur WhatsApp", ar: "إتمام الطلب عبر واتساب" },
   "Deposit paid": { fr: "Avance payée", ar: "تم دفع العربون" },
   "Bank transfer — 50% advance": { fr: "Virement bancaire — avance de 50 %", ar: "تحويل بنكي — عربون 50%" },
   "Advance by bank transfer": { fr: "Avance par virement", ar: "العربون بالتحويل البنكي" },
