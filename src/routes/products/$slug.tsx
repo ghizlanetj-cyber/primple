@@ -3,7 +3,6 @@ import { ArrowRight, Clock, Truck } from "lucide-react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Configurator } from "@/components/products/Configurator";
-import { PrintAssistant } from "@/components/products/PrintAssistant";
 import { ProductCard } from "@/components/products/ProductCard";
 import { Reveal } from "@/components/motion/Reveal";
 import { FaqSection } from "@/components/shared/FaqSection";
@@ -134,11 +133,6 @@ function ProductPage() {
 
       <section className="section-shell py-14">
         <Configurator key={product.slug} product={product} />
-        {!product.quoteOnly && (
-          <div className="mt-8 max-w-xl">
-            <PrintAssistant key={product.slug} context={product.name} />
-          </div>
-        )}
       </section>
 
       <section className="border-y border-border bg-card/50">

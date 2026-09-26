@@ -4,6 +4,7 @@ import { ArrowRight, Gem, Leaf, Truck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
+import { DesignExpert } from "@/components/home/DesignExpert";
 import heroStudioAsset from "@/assets/primple-studio-hero-wide.png.asset.json";
 
 const benefits = [
@@ -17,7 +18,7 @@ export function Hero() {
   const { t } = useI18n();
 
   return (
-    <section className="relative isolate flex min-h-[640px] flex-col overflow-hidden bg-ink text-ink-foreground lg:h-[100svh] lg:min-h-[720px]">
+    <section className="relative isolate flex min-h-[640px] flex-col overflow-hidden bg-ink text-ink-foreground lg:min-h-[max(100svh,720px)]">
       <img
         src={heroStudioAsset.url}
         alt={t("hero.alt")}
@@ -89,6 +90,8 @@ export function Hero() {
           >
             {t("hero.note")}
           </motion.p>
+
+          <DesignExpert />
 
           <motion.ul
             initial={reduce ? false : { opacity: 0 }}

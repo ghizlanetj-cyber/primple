@@ -65,3 +65,17 @@ describe("print assistant", () => {
     expect(url).not.toMatch(/0612345678|a@b\.c/);
   });
 });
+
+describe("creative brief", () => {
+  it("derives next step from validated items", () => {
+    const b = (items: unknown[], next: string) =>
+      parseAssistantReply(JSON.stringify({ type: "plan", goal: "G", direction: "D", checklist: ["Logo", "Menu"], next, items }), 0);
+    expect(b([{ kind: "service", slug: "design-service" }], "configure")).toMatchObject({ next: "configure" });
+    expect(b([{ kind: "service", slug: "design-service" }], "design")).toMatchObject({ next: "design", checklist: ["Logo", "Menu"] });
+    expect(b([{ kind: "product", slug: "packaging" }], "design")).toMatchObject({ next: "quote" });
+    expect(b([{ kind: "service", slug: "logo-studio" }], "design")).toMatchObject({ next: "quote" });
+  });
+  it("tells the model logo/brand identity are excluded", () => {
+    expect(catalogueSummary()).toMatch(/NOT included:.*Logo design/);
+  });
+});

@@ -4,7 +4,6 @@ import { Search, X } from "lucide-react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { ProductCard } from "@/components/products/ProductCard";
-import { PrintAssistant } from "@/components/products/PrintAssistant";
 import { Reveal } from "@/components/motion/Reveal";
 import { FinalCta } from "@/components/shared/FinalCta";
 import { Button } from "@/components/ui/button";
@@ -100,9 +99,6 @@ function ProductsPage() {
             )}
           </p>
         </Reveal>
-        <div className="mt-8 max-w-xl">
-          <PrintAssistant />
-        </div>
 
         <Reveal delay={0.1} className="mt-10">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
