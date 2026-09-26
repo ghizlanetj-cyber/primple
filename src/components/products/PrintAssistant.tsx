@@ -82,7 +82,7 @@ export function PrintAssistant({ context }: { context?: string }) {
           <div className="mt-3 flex flex-wrap gap-2">
             <Button asChild size="sm">
               <Link to={result.href}>
-                {result.kind === "quote" ? tr("Request a quote") : tr("Voir le configurateur")}
+                {result.kind === "quote" ? tr("Request a quote") : tr("See the configurator")}
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
