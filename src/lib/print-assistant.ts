@@ -15,6 +15,7 @@ export type AssistantReply =
       name: string;
       quantity: number | null;
       direction: string;
+      why: string;
       href: string;
     };
 
@@ -54,19 +55,20 @@ export function parseAssistantReply(raw: string, questionsAsked: number): Assist
   const kind = obj["kind"];
   const slug = clean(obj["slug"], 60);
   const direction = clean(obj["direction"]);
+  const why = clean(obj["why"], 200);
   const qty = Number(obj["quantity"]);
   const quantity = Number.isFinite(qty) && qty > 0 && qty <= 100000 ? Math.round(qty) : null;
   if (kind === "product") {
     const prod = products.find((x) => x.slug === slug);
     if (prod && !prod.quoteOnly) {
-      return { type: "recommendation", kind: "product", slug, name: prod.name, quantity, direction, href: `/products/${slug}` };
+      return { type: "recommendation", kind: "product", slug, name: prod.name, quantity, direction, why, href: `/products/${slug}` };
     }
   }
   if (kind === "pack") {
     const pack = packs.find((x) => x.slug === slug);
     if (pack) {
-      return { type: "recommendation", kind: "pack", slug, name: pack.name, quantity: null, direction, href: `/packs/${slug}` };
+      return { type: "recommendation", kind: "pack", slug, name: pack.name, quantity: null, direction, why, href: `/packs/${slug}` };
     }
   }
-  return { type: "recommendation", kind: "quote", slug: null, name: "Custom quote", quantity: null, direction, href: "/contact" };
+  return { type: "recommendation", kind: "quote", slug: null, name: "Custom quote", quantity: null, direction, why, href: "/contact" };
 }

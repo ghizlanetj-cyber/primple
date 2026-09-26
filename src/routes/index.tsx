@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Hero } from "@/components/home/Hero";
+import { PrintAssistant } from "@/components/products/PrintAssistant";
 
 import { Stats } from "@/components/home/Stats";
 import { HowItWorks } from "@/components/home/HowItWorks";
@@ -108,6 +109,11 @@ function Home() {
         )}
       </p>
       <Hero />
+      <div className="section-shell pb-10 pt-6">
+        <div className="mx-auto max-w-2xl">
+          <PrintAssistant variant="home" />
+        </div>
+      </div>
       <Categories />
       <PacksTeaser />
       <HowItWorks />
