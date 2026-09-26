@@ -12,6 +12,7 @@ import { attachFilesToOrder } from "@/lib/files-api";
 import { invoiceLabels } from "@/lib/invoice";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
 import { loadYouCanPay, type YouCanPayElement, type YouCanPayLocale } from "@/lib/youcanpay";
+import { CARD_METHOD, DEPOSIT_METHOD, splitAmounts, type PrintPaymentMethod } from "@/lib/deposit";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
@@ -65,7 +66,12 @@ function CheckoutPage() {
   const [cardReady, setCardReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [placedOrder, setPlacedOrder] = useState<OrderRecord | null>(null);
+  const [method, setMethod] = useState<PrintPaymentMethod>(CARD_METHOD);
+  const [dueNow, setDueNow] = useState<number | null>(null);
   const orderId = placedOrder?.reference ?? "";
+  const isDeposit = method === DEPOSIT_METHOD;
+  const split = splitAmounts(placedOrder?.total ?? totals.total, method);
+  const payable = dueNow ?? split.dueNow;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const elementRef = useRef<YouCanPayElement | null>(null);
@@ -87,7 +93,7 @@ function CheckoutPage() {
       let order: OrderRecord;
       let claimToken: string | undefined;
       if (user) {
-        order = await createOrder({ userId: user.id, items, totals, details });
+        order = await createOrder({ userId: user.id, items, totals, details, paymentMethod: method });
       } else {
         // Guests order too: the server prices every line and hands back a
         // one-time token so the order can be attached to a new account later.
@@ -101,6 +107,7 @@ function CheckoutPage() {
               ...(i.artworkGuestToken ? { artworkGuestToken: i.artworkGuestToken } : {}),
             })),
             details,
+            paymentMethod: method,
           },
         });
         claimToken = guest.claimToken;
@@ -132,6 +139,7 @@ function CheckoutPage() {
       const payment = await startPayment({
         data: claimToken ? { orderId: order.id, claimToken } : { orderId: order.id },
       });
+      setDueNow(payment.amountCents / 100);
 
       const yp = await loadYouCanPay();
       const locale: YouCanPayLocale = lang === "ar" ? "ar" : lang === "en" ? "en" : "fr";
@@ -292,6 +300,49 @@ function CheckoutPage() {
                     {tr("Card details are handled by YouCan Pay. Primple never sees or stores your card.")}
                   </p>
 
+                  <fieldset className="mt-5 grid gap-2 border-0 p-0" disabled={placing || cardReady}>
+                    <legend className="sr-only">{tr("Payment method")}</legend>
+                    {([CARD_METHOD, DEPOSIT_METHOD] as const).map((m) => (
+                      <label
+                        key={m}
+                        className={cn(
+                          "flex cursor-pointer items-center gap-3 rounded-xl border p-4 text-sm font-medium",
+                          method === m ? "border-primary bg-primary/10" : "border-border",
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          name="payment-method"
+                          value={m}
+                          checked={method === m}
+                          onChange={() => setMethod(m)}
+                          className="accent-primary"
+                        />
+                        {tr(m === CARD_METHOD ? "Card — full payment" : "Cash on delivery — 50% deposit")}
+                      </label>
+                    ))}
+                  </fieldset>
+
+                  {isDeposit && (
+                    <dl className="mt-4 space-y-2 rounded-xl bg-secondary/50 p-4 text-sm">
+                      <div className="flex justify-between">
+                        <dt className="text-muted-foreground">{tr("Total")}</dt>
+                        <dd>{mad(placedOrder?.total ?? totals.total)}</dd>
+                      </div>
+                      <div className="flex justify-between font-semibold">
+                        <dt>{tr("Due now by card")}</dt>
+                        <dd>{mad(payable)}</dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-muted-foreground">{tr("Balance in cash at delivery")}</dt>
+                        <dd>{mad(Math.round(((placedOrder?.total ?? totals.total) - payable) * 100) / 100)}</dd>
+                      </div>
+                      <p className="pt-1 text-xs text-muted-foreground">
+                        {tr("Production starts only once the deposit is confirmed.")}
+                      </p>
+                    </dl>
+                  )}
+
                   <div
                     id="youcanpay-print-form"
                     ref={containerRef}
@@ -316,7 +367,7 @@ function CheckoutPage() {
                       ) : (
                         <>
                           <CreditCard className="size-4" />
-                          {`${tr("Pay by card")} · ${mad(totals.total)}`}
+                          {`${tr("Pay by card")} · ${mad(payable)}`}
                         </>
                       )}
                     </Button>
@@ -331,7 +382,7 @@ function CheckoutPage() {
                       {paying ? (
                         <Loader2 className="size-4 animate-spin" />
                       ) : (
-                        `${tr("Pay")} ${mad(placedOrder?.total ?? totals.total)}`
+                        `${tr("Pay")} ${mad(payable)}`
                       )}
                     </Button>
                   )}
@@ -350,7 +401,7 @@ function CheckoutPage() {
                     <CheckCircle2 className="size-6 text-primary" />
                   </span>
                   <h2 className="mt-5 text-xl">
-                    {tr("Order")} {orderId} · {tr("Paid")}
+                    {tr("Order")} {orderId} · {tr(isDeposit ? "Deposit paid" : "Paid")}
                   </h2>
                   <p className="mt-2 text-muted-foreground">
                     {tr(
@@ -369,12 +420,16 @@ function CheckoutPage() {
                       label={tr("Estimated delivery")}
                       value={placedOrder?.expectedAt ?? tr("Within 5 working days")}
                     />
-                    <Summary
-                      icon={Lock}
-                      label={tr("Amount paid")}
-                      value={mad(placedOrder?.total ?? totals.total)}
-                    />
-                    <Summary icon={CreditCard} label={tr("Payment method")} value={tr("Card · YouCan Pay")} />
+                    <Summary icon={Lock} label={tr("Amount paid")} value={mad(payable)} />
+                    {isDeposit ? (
+                      <Summary
+                        icon={CreditCard}
+                        label={tr("Balance in cash at delivery")}
+                        value={mad(Math.round(((placedOrder?.total ?? totals.total) - payable) * 100) / 100)}
+                      />
+                    ) : (
+                      <Summary icon={CreditCard} label={tr("Payment method")} value={tr("Card · YouCan Pay")} />
+                    )}
                   </dl>
 
                   {!user && (
