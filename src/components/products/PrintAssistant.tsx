@@ -15,7 +15,7 @@ type Plan = Extract<AssistantReply, { type: "plan" }>;
  * In-memory session shared by every assistant instance during this page
  * session (client navigation). Never written to storage; a reload clears it.
  */
-let session: { turns: AssistantTurn[]; plan: Plan | null } = { turns: [], plan: null };
+let session: { turns: AssistantTurn[]; plan: Plan | null; planIsLatest: boolean } = { turns: [], plan: null, planIsLatest: false };
 
 const CHIPS = [
   "I'm opening a café",
@@ -32,16 +32,19 @@ export function PrintAssistant({ context, variant = "compact" }: { context?: str
   const [input, setInput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [planIsLatest, setPlanIsLatest] = useState(false);
   const [showThread, setShowThread] = useState(false);
   const home = variant === "home";
 
   useEffect(() => {
     setTurns(session.turns);
     setPlan(session.plan);
+    setPlanIsLatest(session.planIsLatest);
   }, []);
 
-  const save = (t: AssistantTurn[], p: Plan | null) => {
-    session = { turns: t, plan: p };
+  const save = (t: AssistantTurn[], p: Plan | null, latest = false) => {
+    session = { turns: t, plan: p, planIsLatest: latest };
+    setPlanIsLatest(latest);
     setTurns(t);
     setPlan(p);
   };
@@ -56,7 +59,7 @@ export function PrintAssistant({ context, variant = "compact" }: { context?: str
       if (reply.type === "question") save([...next, { role: "assistant", text: reply.text }], plan);
       else {
         const note = reply.summary || reply.items.map((i) => tr(i.name)).join(", ");
-        save([...next, { role: "assistant", text: note }], reply);
+        save([...next, { role: "assistant", text: note }], reply, true);
       }
     } catch (caught) {
       setError(caught instanceof Error ? tr(caught.message) : tr("The assistant could not answer. Please try again."));
@@ -73,8 +76,8 @@ export function PrintAssistant({ context, variant = "compact" }: { context?: str
   };
 
   const last = turns[turns.length - 1];
-  const pendingQuestion = last?.role === "assistant" && (!plan || last.text !== (plan.summary || "")) ? last : null;
-  const isQuestion = pendingQuestion && !(plan && turns.length && last === turns[turns.length - 1] && plan && !pendingQuestion);
+  const isQuestion = !loading && last?.role === "assistant" && !planIsLatest;
+  const pendingQuestion = isQuestion ? last : null;
   const multi = (plan?.items.length ?? 0) > 1;
 
   return (
@@ -120,7 +123,7 @@ export function PrintAssistant({ context, variant = "compact" }: { context?: str
         </div>
       )}
 
-      {plan && !isQuestion && (
+      {plan && (
         <div className="mt-3 rounded-xl border border-border bg-background p-4 text-sm">
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             {multi ? tr("Your print plan") : plan.items[0]?.kind === "quote" ? tr("Needs a quote") : tr("Best match")}
