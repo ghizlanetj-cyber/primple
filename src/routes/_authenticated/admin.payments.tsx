@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { confirmBankTransfer, listPendingTransfers } from "@/lib/bank-transfer.functions";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 
@@ -36,6 +38,7 @@ function PaymentDiagnostics() {
       <div className="section-shell py-12">
         <h1 className="text-2xl font-bold">{tr("Payment diagnostics")}</h1>
         <SetupChecklist />
+        <PendingTransfers />
         {isLoading ? (
           <p className="mt-6 text-muted-foreground">…</p>
         ) : error ? (
@@ -77,6 +80,50 @@ function PaymentDiagnostics() {
         )}
       </div>
     </SiteShell>
+  );
+}
+
+function PendingTransfers() {
+  const { tr } = useI18n();
+  const fetchPending = useServerFn(listPendingTransfers);
+  const confirm = useServerFn(confirmBankTransfer);
+  const [busy, setBusy] = useState<string | null>(null);
+  const { data, refetch } = useQuery({ queryKey: ["pending-transfers"], queryFn: () => fetchPending() });
+  if (!data?.allowed) return null;
+  return (
+    <section className="mt-6 rounded-2xl border border-border bg-card p-5">
+      <h2 className="font-semibold">{tr("Bank transfers to verify")}</h2>
+      {data.orders.length === 0 ? (
+        <p className="mt-2 text-sm text-muted-foreground">—</p>
+      ) : (
+        <ul className="mt-3 divide-y divide-border text-sm">
+          {data.orders.map((o) => (
+            <li key={o.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+              <span>
+                <span className="font-medium">{o.reference}</span> · {o.contact_name ?? "—"} · {tr("Total")}{" "}
+                {Number(o.total).toFixed(2)} MAD · {tr("Advance by bank transfer")} {Number(o.deposit_amount).toFixed(2)} MAD
+              </span>
+              <button
+                className="rounded-full bg-primary px-4 py-1.5 text-primary-foreground disabled:opacity-50"
+                disabled={busy === o.id}
+                onClick={async () => {
+                  if (!window.confirm(`${tr("Confirm payment")} — ${o.reference} ?`)) return;
+                  setBusy(o.id);
+                  try {
+                    await confirm({ data: { orderId: o.id } });
+                  } finally {
+                    setBusy(null);
+                    refetch();
+                  }
+                }}
+              >
+                {tr("Confirm payment")}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 

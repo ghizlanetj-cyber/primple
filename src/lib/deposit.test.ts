@@ -17,3 +17,11 @@ describe("print deposit", () => {
     expect(Math.round((s.dueNow + s.balance) * 100)).toBe(17581);
   });
 });
+
+describe("bank transfer advance", () => {
+  it("is half the verified total, rounded up", async () => {
+    const { BANK_METHOD } = await import("./deposit");
+    expect(onlineAmountCents(17581, BANK_METHOD)).toBe(8791);
+    expect(splitAmounts(165, BANK_METHOD)).toEqual({ dueNow: 82.5, balance: 82.5 });
+  });
+});
