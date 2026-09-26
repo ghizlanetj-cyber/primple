@@ -109,7 +109,7 @@ function Home() {
         )}
       </p>
       <Hero />
-      <div className="section-shell -mt-4 pb-10">
+      <div className="section-shell pb-10 pt-6">
         <div className="mx-auto max-w-2xl">
           <PrintAssistant variant="home" />
         </div>
