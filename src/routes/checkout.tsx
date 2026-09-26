@@ -500,6 +500,13 @@ function CheckoutPage() {
                     {" · "}
                     <a href={contact.mailto} className="underline">{contact.email}</a>
                   </p>
+                  {showWhatsAppCta && (
+                    <Button asChild size="lg" className="mt-6 rounded-full">
+                      <a href={waHref} target="_blank" rel="noopener noreferrer">
+                        {tr("Finalize on WhatsApp")}
+                      </a>
+                    </Button>
+                  )}
                   <Button asChild size="lg" variant="ghost" className="mt-6 rounded-full">
                     <Link to="/products">{tr("Continue shopping")}</Link>
                   </Button>
