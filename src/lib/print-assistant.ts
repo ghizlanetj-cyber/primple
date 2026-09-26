@@ -1,5 +1,5 @@
 import { contact } from "@/config/contact";
-import { DESIGN_SERVICE_SLUG } from "@/data/design-service";
+import { DESIGN_SERVICE_SLUG, designServiceExcludes, designServiceIncludes } from "@/data/design-service";
 import { packs } from "@/data/packs";
 import { products } from "@/data/products";
 
@@ -24,7 +24,16 @@ export type PlanItem = {
 
 export type AssistantReply =
   | { type: "question"; text: string }
-  | { type: "plan"; summary: string; items: PlanItem[] };
+  | {
+      type: "plan";
+      summary: string;
+      /** Creative brief fields (free text, never prices/dates). */
+      goal: string;
+      direction: string;
+      checklist: string[];
+      next: "design" | "quote" | "configure";
+      items: PlanItem[];
+    };
 
 /** Catalogue context for the model: names, slugs, exact option names, quantity steps. No prices or dates. */
 export function catalogueSummary() {
@@ -38,7 +47,7 @@ export function catalogueSummary() {
     );
   const q = products.filter((x) => x.quoteOnly).map((x) => `quote-only:${x.slug} | ${x.name} (use kind "quote")`);
   const k = packs.map((x) => `pack:${x.slug} | ${x.name} | for: ${x.audience}`);
-  const s = `service:${DESIGN_SERVICE_SLUG} | Design help billed by the hour (adapting/preparing artwork; no logo creation)`;
+  const s = `service:${DESIGN_SERVICE_SLUG} | Design hours. Includes: ${designServiceIncludes.join("; ")}. NOT included: ${designServiceExcludes.join("; ")}`;
   return [...p, ...q, ...k, s].join("\n");
 }
 
@@ -104,7 +113,24 @@ export function parseAssistantReply(raw: string, questionsAsked: number): Assist
     items.push(it);
   }
   if (!items.length) items.push(toItem({}));
-  return { type: "plan", summary: clean(obj["summary"], 200), items };
+  const checklist = (Array.isArray(obj["checklist"]) ? obj["checklist"] : [])
+    .slice(0, 6)
+    .map((c) => clean(c, 80))
+    .filter(Boolean);
+  const hasQuote = items.some((i) => i.kind === "quote");
+  const hasDesign = items.some((i) => i.kind === "service");
+  const want = obj["next"];
+  // Next step is derived from validated items, never trusted blindly.
+  const next = hasQuote ? "quote" : want === "design" || (hasDesign && want !== "configure") ? "design" : "configure";
+  return {
+    type: "plan",
+    summary: clean(obj["summary"], 200),
+    goal: clean(obj["goal"], 200),
+    direction: clean(obj["direction"], 200),
+    checklist,
+    next,
+    items,
+  };
 }
 
 /** Prior assistant questions, sent back so the model never repeats them. */

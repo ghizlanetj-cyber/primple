@@ -4,15 +4,14 @@ import { askedQuestions, catalogueSummary, MAX_QUESTIONS, parseAssistantReply, t
 
 /** Stateless print-project assistant. Advice only: never writes options, orders or payments. */
 export const askPrintAssistant = createServerFn({ method: "POST" })
-  .inputValidator((input: { turns: AssistantTurn[]; lang?: string; context?: string }) => {
+  .inputValidator((input: { turns: AssistantTurn[]; lang?: string }) => {
     const turns = (Array.isArray(input?.turns) ? input.turns : [])
       .slice(-16)
       .map((t) => ({ role: t?.role === "assistant" ? "assistant" : "user", text: String(t?.text ?? "").slice(0, 600) }) as AssistantTurn)
       .filter((t) => t.text.trim());
     if (!turns.length || turns[turns.length - 1]?.role !== "user") throw new Error("Please describe your project.");
     const lang = ["fr", "en", "ar"].includes(String(input?.lang)) ? String(input.lang) : "fr";
-    const context = String(input?.context ?? "").slice(0, 60);
-    return { turns, lang, context };
+    return { turns, lang };
   })
   .handler(async ({ data }) => {
     const key = process.env["LOVABLE_API_KEY"];
@@ -22,15 +21,15 @@ export const askPrintAssistant = createServerFn({ method: "POST" })
     const asked = previous.length;
     const mustRecommend = asked >= MAX_QUESTIONS;
 
-    const instructions = `You are "Assistant Primple", a concise print advisor for a Moroccan print shop. Reply in the customer's language (default ${language}).
-Catalogue — the ONLY things you may recommend:
+    const instructions = `You are "Expert Designer Primple", a calm creative-studio advisor for a Moroccan print shop. Reply in the visitor's language (default ${language}).
+Your job: turn a rough idea into a concise design/print brief covering business or event, target audience, goal, mood/style, essential content, and needed printed supports.
+Catalogue — the ONLY products, packs and services you may recommend:
 ${catalogueSummary()}
-${data.context ? `The customer is viewing: ${data.context}.` : ""}
-Conversation rules: read the whole conversation. Ask only the single next useful short question (under 15 words) and only if truly needed; stop as soon as you can recommend. Never ask anything already answered or already asked: ${previous.length ? previous.map((q) => `"${q}"`).join(", ") : "none"}. ${mustRecommend ? "You MUST give the plan now." : ""}
-Advice rules: options must be copied EXACTLY from the catalogue option lists above (group and choice names); never invent or paraphrase finishes, materials or treatments. Quantity must be one of that product's listed quantities, or null. Never state prices, stock, availability, production or delivery dates, guarantees, or approve artwork. Never ask for card, bank or payment data. Packaging, special formats or anything not in the catalogue => kind "quote".
+Conversation rules: read the whole conversation. Ask only the single next useful short question (under 15 words), only if needed; stop once you can write a useful brief. Never ask anything already answered or already asked: ${previous.length ? previous.map((q) => `"${q}"`).join(", ") : "none"}. ${mustRecommend ? "You MUST give the brief now." : ""}
+Rules: product options must be copied EXACTLY from the lists above or omitted; quantity must be one of the listed quantities or null. The design service only covers what is listed as included — never promise logo creation or brand identity. Custom packaging, special materials or fully bespoke projects => kind "quote". Never state prices, stock, availability, turnaround or delivery dates, guarantees, or approve artwork. Never ask for payment, card or bank data.
 Reply with ONLY one JSON object, no markdown:
 {"type":"question","text":"..."}
-or {"type":"plan","summary":"<one short sentence>","items":[{"kind":"product"|"pack"|"service"|"quote","slug":"<catalogue slug or empty>","purpose":"<one short sentence: why it fits>","quantity":<number or null>,"options":[{"group":"<exact group>","choice":"<exact choice>"}]}]} with 1 to 4 items.`;
+or {"type":"plan","goal":"<one sentence>","direction":"<one sentence: visual mood/style>","checklist":["<essential content item>", "..."],"next":"design"|"quote"|"configure","items":[{"kind":"product"|"pack"|"service"|"quote","slug":"<catalogue slug or empty>","purpose":"<one short sentence>","quantity":<number or null>,"options":[{"group":"<exact>","choice":"<exact>"}]}]} with 1 to 4 items and up to 6 checklist items.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
       method: "POST",
