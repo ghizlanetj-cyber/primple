@@ -550,6 +550,14 @@ function CheckoutPage() {
                     )}
                   </dl>
 
+                  {showWhatsAppCta && (
+                    <Button asChild size="lg" className="mt-6 rounded-full">
+                      <a href={waHref} target="_blank" rel="noopener noreferrer">
+                        {tr("Finalize on WhatsApp")}
+                      </a>
+                    </Button>
+                  )}
+
                   {!user && (
                     <div className="mt-8 rounded-2xl border border-border bg-secondary/40 p-6">
                       <h3 className="text-lg">{tr("Create your account")}</h3>
