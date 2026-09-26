@@ -25,11 +25,11 @@ export const askPrintAssistant = createServerFn({ method: "POST" })
 Catalogue (the ONLY items you may recommend):
 ${catalogueSummary()}
 ${data.context ? `The customer is viewing: ${data.context}.` : ""}
-Rules: ask at most ${MAX_QUESTIONS} short questions in total (already asked: ${asked}). ${mustRecommend ? "You MUST recommend now." : "Recommend as soon as you have enough information."}
+Rules: ask at most ${MAX_QUESTIONS} very short questions (one at a time, under 15 words) in total (already asked: ${asked}). ${mustRecommend ? "You MUST recommend now." : "Recommend as soon as you have enough information."}
 Never state or estimate prices, stock, availability, production or delivery dates, material specs beyond the option names above, and never create artwork. Never ask for card, bank or payment details. Packaging, boxes or anything not in the catalogue => kind "quote".
 Reply with ONLY one JSON object, no markdown:
 {"type":"question","text":"..."}
-or {"type":"recommendation","kind":"product"|"pack"|"quote","slug":"<slug from catalogue or empty>","quantity":<number from its quantities or null>,"direction":"<one short sentence: support/finish direction using option names>"}`;
+or {"type":"recommendation","kind":"product"|"pack"|"quote","slug":"<slug from catalogue or empty>","quantity":<number from its quantities or null>,"why":"<one short sentence: why it fits>","direction":"<one short sentence: support/finish direction using option names>"}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
       method: "POST",
