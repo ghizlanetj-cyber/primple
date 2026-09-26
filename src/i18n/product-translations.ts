@@ -100,6 +100,10 @@ export const productPhrases: Record<string, TranslationPair> = {
   "Finalize on WhatsApp": { fr: "Finaliser sur WhatsApp", ar: "إتمام الطلب عبر واتساب" },
   "Assistant Primple": { fr: "Assistant Primple", ar: "مساعد Primple" },
   "Expert Designer Primple": { fr: "Expert Designer Primple", ar: "خبير التصميم Primple" },
+  "Expert designer": { fr: "Expert designer", ar: "خبير التصميم" },
+  "Let's turn your idea into a brief.": { fr: "Transformons votre idée en brief.", ar: "لنحوّل فكرتك إلى ملخص إبداعي." },
+  "No payment data · nothing saved": { fr: "Aucune donnée de paiement · rien n’est enregistré", ar: "لا بيانات دفع · لا يُحفظ شيء" },
+  Send: { fr: "Envoyer", ar: "إرسال" },
   "An idea to clarify? Describe your brand or your print piece. I'll help you prepare a creative brief.": {
     fr: "Une idée à clarifier ? Décrivez votre marque ou votre support. Je vous aide à préparer un brief créatif.",
     ar: "لديك فكرة تحتاج إلى توضيح؟ صف علامتك التجارية أو مطبوعتك، وسأساعدك في إعداد ملخص إبداعي.",
