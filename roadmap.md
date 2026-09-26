@@ -12,3 +12,4 @@
 
 - [x] Print checkout: 50% card deposit + 50% cash at delivery (server-verified)
 - [x] P0 copy: Primple labels, packaging quote wording, remove ratings, card delivery lines
+- [x] Remove the homepage Expert Designer and restore the original hero flow
