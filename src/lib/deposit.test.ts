@@ -25,3 +25,22 @@ describe("bank transfer advance", () => {
     expect(splitAmounts(165, BANK_METHOD)).toEqual({ dueNow: 82.5, balance: 82.5 });
   });
 });
+
+describe("manual payment tree", () => {
+  it("full transfer and Cash Plus are 100% manual", async () => {
+    const d = await import("./deposit");
+    for (const m of [d.BANK_FULL_METHOD, d.CASHPLUS_FULL_METHOD]) {
+      expect(d.isManualMethod(m)).toBe(true);
+      expect(d.onlineAmountCents(17581, m)).toBe(17581);
+    }
+  });
+  it("COD advances are 50% and only card advance is automatic", async () => {
+    const d = await import("./deposit");
+    expect(d.isManualMethod(d.DEPOSIT_METHOD)).toBe(false);
+    for (const m of [d.BANK_ADVANCE_METHOD, d.CASHPLUS_ADVANCE_METHOD]) {
+      expect(d.isManualMethod(m)).toBe(true);
+      expect(d.splitAmounts(175.81, m)).toEqual({ dueNow: 87.91, balance: 87.9 });
+    }
+    expect(d.isPrintMethod("cash_pickup")).toBe(false);
+  });
+});
