@@ -4,6 +4,7 @@ import { ArrowRight, Gem, Leaf, Truck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
+import { DesignExpert } from "@/components/home/DesignExpert";
 import heroStudioAsset from "@/assets/primple-studio-hero-wide.png.asset.json";
 
 const benefits = [
@@ -89,6 +90,8 @@ export function Hero() {
           >
             {t("hero.note")}
           </motion.p>
+
+          <DesignExpert />
 
           <motion.ul
             initial={reduce ? false : { opacity: 0 }}
