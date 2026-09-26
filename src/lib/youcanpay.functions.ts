@@ -177,7 +177,7 @@ export const startPrintPayment = createServerFn({ method: "POST" })
     const { data: order, error } = await supabaseAdmin
       .from("orders")
       .select(
-        "id, user_id, reference, items, subtotal, delivery, total, email, payment_status, claim_token",
+        "id, user_id, reference, items, subtotal, delivery, total, email, payment_status, claim_token, payment_method",
       )
       .eq("id", data.orderId)
       .maybeSingle();
@@ -193,8 +193,11 @@ export const startPrintPayment = createServerFn({ method: "POST" })
     if (order.payment_status === "paid") throw new Error("This order is already paid.");
 
     // Never trust the stored total: re-price every line from the catalog.
-    const amountCents = await recomputeOrderCents(order);
-    if (!Number.isFinite(amountCents) || amountCents <= 0) throw new Error("The order total is invalid.");
+    const totalCents = await recomputeOrderCents(order);
+    if (!Number.isFinite(totalCents) || totalCents <= 0) throw new Error("The order total is invalid.");
+    // Deposit mode: 50% of the full total (delivery included) online, rest in cash at delivery.
+    const { onlineAmountCents } = await import("./deposit");
+    const amountCents = onlineAmountCents(totalCents, order.payment_method);
 
     const origin = siteOrigin();
     const { tokenId, transactionId } = await tokenizePayment({
@@ -208,7 +211,13 @@ export const startPrintPayment = createServerFn({ method: "POST" })
 
     await supabaseAdmin
       .from("orders")
-      .update({ youcanpay_token_id: tokenId, youcanpay_transaction_id: transactionId })
+      .update({
+        youcanpay_token_id: tokenId,
+        youcanpay_transaction_id: transactionId,
+        total: totalCents / 100,
+        deposit_amount: amountCents / 100,
+        balance_amount: (totalCents - amountCents) / 100,
+      })
       .eq("id", order.id);
 
     return { reference: order.reference, token: tokenId, amountCents, currency: "MAD" };

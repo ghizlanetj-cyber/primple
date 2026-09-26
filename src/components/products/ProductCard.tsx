@@ -32,6 +32,11 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="flex flex-1 flex-col p-6">
         <h3 className="text-xl">{tr(product.name)}</h3>
         <p className="mt-1.5 text-sm text-muted-foreground">{tr(product.benefit)}</p>
+        {!product.quoteOnly && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            {tr("Standard delivery: 30 DH")} · {tr("Estimated total shown before payment")}
+          </p>
+        )}
         <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
           {product.quoteOnly ? (
             <span className="text-sm font-semibold">{tr("Request a quote")}</span>
