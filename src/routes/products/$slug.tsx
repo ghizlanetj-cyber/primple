@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
-import { ArrowRight, Clock, Star, Truck } from "lucide-react";
+import { ArrowRight, Clock, Truck } from "lucide-react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Configurator } from "@/components/products/Configurator";
@@ -56,9 +56,6 @@ export const Route = createFileRoute("/products/$slug")({
             "@type": "Product",
             name,
             description,
-            ...(product.rating && product.reviews
-              ? { aggregateRating: { "@type": "AggregateRating", ratingValue: product.rating, reviewCount: product.reviews } }
-              : {}),
             ...(product.quoteOnly
               ? {}
               : { offers: { "@type": "Offer", price: basis.amount, priceCurrency: "MAD" } }),
@@ -114,12 +111,6 @@ function ProductPage() {
                 <Truck className="size-4" />
                 {tr("Delivery")} 1–5 {tr("days")}
               </span>
-              {product.rating && product.reviews ? (
-                <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                  <Star className="size-4 fill-primary text-primary" />
-                  {product.rating} · {product.reviews} {tr("reviews")}
-                </span>
-              ) : null}
             </div>
             {!product.quoteOnly && <p className="mt-2 text-xs text-muted-foreground">{basisNote}</p>}
           </Reveal>
@@ -157,7 +148,7 @@ function ProductPage() {
               {[
                 "The price on screen is the price you pay",
                 "Artwork checked before production starts",
-                "Verified partners with real ratings",
+                "Standard delivery: 30 DH",
                 "Reorder the same setup in a few clicks",
               ].map((b) => (
                 <li key={b} className="flex gap-2 text-sm">

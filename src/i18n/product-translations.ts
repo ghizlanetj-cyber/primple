@@ -62,11 +62,28 @@ export const productPhrases: Record<string, TranslationPair> = {
     fr: "Des emballages qui résistent au transport et valorisent votre produit.",
     ar: "عبوات تتحمل الشحن وتبرز منتجك.",
   },
-  "Pick your box format, material and finish. Get production times and pricing without waiting for a supplier reply.":
+  "Configure your packaging in a few minutes. Receive a clear quote and a confirmed lead time within 4 business hours.":
     {
-      fr: "Choisissez le format, le matériau et la finition. Obtenez les délais et le prix sans attendre la réponse d’un fournisseur.",
-      ar: "اختر شكل العلبة والخامة والتشطيب، واحصل على مدة الإنتاج والسعر دون انتظار رد المورد.",
+      fr: "Configurez votre emballage en quelques minutes. Recevez un devis clair et un délai confirmé sous 4 heures ouvrées.",
+      ar: "اضبط عبوتك في دقائق، واحصل على عرض سعر واضح ومدة مؤكدة خلال 4 ساعات عمل.",
     },
+  "Standard delivery: 30 DH": { fr: "Livraison standard : 30 DH", ar: "التوصيل العادي: 30 درهمًا" },
+  "Estimated total shown before payment": {
+    fr: "Total estimé affiché avant paiement",
+    ar: "يظهر الإجمالي التقديري قبل الدفع",
+  },
+  "Card — full payment": { fr: "Carte bancaire — paiement intégral", ar: "بطاقة بنكية — دفع كامل" },
+  "Cash on delivery — 50% deposit": {
+    fr: "Paiement à la livraison — avance de 50 %",
+    ar: "الدفع عند التسليم — عربون 50%",
+  },
+  "Due now by card": { fr: "À payer maintenant par carte", ar: "المستحق الآن بالبطاقة" },
+  "Balance in cash at delivery": { fr: "Solde en espèces à la livraison", ar: "الباقي نقدًا عند التسليم" },
+  "Production starts only once the deposit is confirmed.": {
+    fr: "La production démarre uniquement après confirmation de l’avance.",
+    ar: "لا يبدأ الإنتاج إلا بعد تأكيد العربون.",
+  },
+  "Deposit paid": { fr: "Avance payée", ar: "تم دفع العربون" },
   "Mailer boxes, folding cartons and sleeves produced by partners with die-cutting capability. Structural files and mockups reviewed before production starts.":
     {
       fr: "Boîtes d’expédition, étuis pliants et fourreaux réalisés par des partenaires équipés pour la découpe. Les tracés techniques et maquettes sont vérifiés avant production.",

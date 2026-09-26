@@ -178,7 +178,7 @@ export const products: Product[] = [
     benefit: "Boxes your customers keep.",
     heroHeadline: "Packaging that survives shipping and sells your product.",
     heroCopy:
-      "Pick your box format, material and finish. Get production times and pricing without waiting for a supplier reply.",
+      "Configure your packaging in a few minutes. Receive a clear quote and a confirmed lead time within 4 business hours.",
     description:
       "Mailer boxes, folding cartons and sleeves produced by partners with die-cutting capability. Structural files and mockups reviewed before production starts.",
     quantities: [100, 250, 500, 1000],
