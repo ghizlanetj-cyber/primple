@@ -12,7 +12,9 @@ import { attachFilesToOrder } from "@/lib/files-api";
 import { invoiceLabels } from "@/lib/invoice";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
 import { loadYouCanPay, type YouCanPayElement, type YouCanPayLocale } from "@/lib/youcanpay";
-import { CARD_METHOD, DEPOSIT_METHOD, splitAmounts, type PrintPaymentMethod } from "@/lib/deposit";
+import { BANK_METHOD, CARD_METHOD, DEPOSIT_METHOD, splitAmounts, type PrintPaymentMethod } from "@/lib/deposit";
+import { requestBankTransfer } from "@/lib/bank-transfer.functions";
+import { contact } from "@/config/contact";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
@@ -56,6 +58,7 @@ function CheckoutPage() {
   const totals = cartTotals(items);
 
   const startPayment = useServerFn(startPrintPayment);
+  const requestTransfer = useServerFn(requestBankTransfer);
   const loadConfig = useServerFn(getYouCanPayConfig);
   const placeGuestOrder = useServerFn(createGuestOrder);
 
@@ -70,6 +73,7 @@ function CheckoutPage() {
   const [dueNow, setDueNow] = useState<number | null>(null);
   const orderId = placedOrder?.reference ?? "";
   const isDeposit = method === DEPOSIT_METHOD;
+  const isBank = method === BANK_METHOD;
   const split = splitAmounts(placedOrder?.total ?? totals.total, method);
   const payable = dueNow ?? split.dueNow;
 
@@ -87,8 +91,8 @@ function CheckoutPage() {
     setError(null);
     const snapshotItems = items;
     try {
-      const config = await loadConfig({});
-      if (!config.configured) throw new Error(tr("Card payment is not available right now."));
+      const config = isBank ? null : await loadConfig({});
+      if (config && !config.configured) throw new Error(tr("Card payment is not available right now."));
 
       let order: OrderRecord;
       let claimToken: string | undefined;
@@ -134,6 +138,18 @@ function CheckoutPage() {
         } catch {
           // The order is placed; file linking is retried by staff if it fails.
         }
+      }
+
+      if (isBank || !config) {
+        // No automatic payment: the order waits until staff verify the transfer.
+        const transfer = await requestTransfer({
+          data: claimToken ? { orderId: order.id, claimToken } : { orderId: order.id },
+        });
+        setDueNow(transfer.advance);
+        setPlacedOrder({ ...order, total: transfer.total });
+        clear();
+        setStep(3);
+        return;
       }
 
       const payment = await startPayment({
@@ -302,7 +318,7 @@ function CheckoutPage() {
 
                   <fieldset className="mt-5 grid gap-2 border-0 p-0" disabled={placing || cardReady}>
                     <legend className="sr-only">{tr("Payment method")}</legend>
-                    {([CARD_METHOD, DEPOSIT_METHOD] as const).map((m) => (
+                    {([CARD_METHOD, DEPOSIT_METHOD, BANK_METHOD] as const).map((m) => (
                       <label
                         key={m}
                         className={cn(
@@ -318,19 +334,25 @@ function CheckoutPage() {
                           onChange={() => setMethod(m)}
                           className="accent-primary"
                         />
-                        {tr(m === CARD_METHOD ? "Card — full payment" : "Cash on delivery — 50% deposit")}
+                        {tr(
+                          m === CARD_METHOD
+                            ? "Card — full payment"
+                            : m === DEPOSIT_METHOD
+                              ? "Cash on delivery — 50% deposit"
+                              : "Bank transfer — 50% advance",
+                        )}
                       </label>
                     ))}
                   </fieldset>
 
-                  {isDeposit && (
+                  {(isDeposit || isBank) && (
                     <dl className="mt-4 space-y-2 rounded-xl bg-secondary/50 p-4 text-sm">
                       <div className="flex justify-between">
                         <dt className="text-muted-foreground">{tr("Total")}</dt>
                         <dd>{mad(placedOrder?.total ?? totals.total)}</dd>
                       </div>
                       <div className="flex justify-between font-semibold">
-                        <dt>{tr("Due now by card")}</dt>
+                        <dt>{tr(isBank ? "Advance by bank transfer" : "Due now by card")}</dt>
                         <dd>{mad(payable)}</dd>
                       </div>
                       <div className="flex justify-between">
@@ -338,7 +360,11 @@ function CheckoutPage() {
                         <dd>{mad(Math.round(((placedOrder?.total ?? totals.total) - payable) * 100) / 100)}</dd>
                       </div>
                       <p className="pt-1 text-xs text-muted-foreground">
-                        {tr("Production starts only once the deposit is confirmed.")}
+                        {tr(
+                          isBank
+                            ? "Production starts after the transfer is verified."
+                            : "Production starts only once the deposit is confirmed.",
+                        )}
                       </p>
                     </dl>
                   )}
@@ -364,6 +390,8 @@ function CheckoutPage() {
                     <Button type="submit" size="lg" className="mt-6 rounded-full" disabled={placing}>
                       {placing ? (
                         <Loader2 className="size-4 animate-spin" />
+                      ) : isBank ? (
+                        tr("Confirm my order")
                       ) : (
                         <>
                           <CreditCard className="size-4" />
@@ -395,7 +423,44 @@ function CheckoutPage() {
                 </form>
               )}
 
-              {step === 3 && (
+              {step === 3 && isBank && (
+                <div>
+                  <span className="flex size-12 items-center justify-center rounded-full bg-primary/15">
+                    <Clock className="size-6 text-primary" />
+                  </span>
+                  <h2 className="mt-5 text-xl">
+                    {tr("Order")} {orderId} · {tr("Awaiting transfer verification")}
+                  </h2>
+                  <dl className="mt-5 space-y-2 rounded-xl bg-secondary/50 p-4 text-sm">
+                    <div className="flex justify-between">
+                      <dt className="text-muted-foreground">{tr("Total")}</dt>
+                      <dd>{mad(placedOrder?.total ?? 0)}</dd>
+                    </div>
+                    <div className="flex justify-between font-semibold">
+                      <dt>{tr("Advance by bank transfer")}</dt>
+                      <dd>{mad(payable)}</dd>
+                    </div>
+                    <div className="flex justify-between">
+                      <dt className="text-muted-foreground">{tr("Balance in cash at delivery")}</dt>
+                      <dd>{mad(Math.round(((placedOrder?.total ?? 0) - payable) * 100) / 100)}</dd>
+                    </div>
+                  </dl>
+                  <p className="mt-4 text-sm font-medium">
+                    {tr("Production starts after the transfer is verified.")}
+                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {tr("Bank transfer details are sent after order confirmation.")}{" "}
+                    <a href={contact.whatsapp} className="underline">WhatsApp {contact.phone}</a>
+                    {" · "}
+                    <a href={contact.mailto} className="underline">{contact.email}</a>
+                  </p>
+                  <Button asChild size="lg" variant="ghost" className="mt-6 rounded-full">
+                    <Link to="/products">{tr("Continue shopping")}</Link>
+                  </Button>
+                </div>
+              )}
+
+              {step === 3 && !isBank && (
                 <div>
                   <span className="flex size-12 items-center justify-center rounded-full bg-primary/15">
                     <CheckCircle2 className="size-6 text-primary" />

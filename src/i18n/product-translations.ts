@@ -84,6 +84,20 @@ export const productPhrases: Record<string, TranslationPair> = {
     ar: "لا يبدأ الإنتاج إلا بعد تأكيد العربون.",
   },
   "Deposit paid": { fr: "Avance payée", ar: "تم دفع العربون" },
+  "Bank transfer — 50% advance": { fr: "Virement bancaire — avance de 50 %", ar: "تحويل بنكي — عربون 50%" },
+  "Advance by bank transfer": { fr: "Avance par virement", ar: "العربون بالتحويل البنكي" },
+  "Production starts after the transfer is verified.": {
+    fr: "Production lancée après vérification du virement.",
+    ar: "يبدأ الإنتاج بعد التحقق من التحويل.",
+  },
+  "Bank transfer details are sent after order confirmation.": {
+    fr: "Coordonnées de virement communiquées après confirmation de commande.",
+    ar: "تُرسل بيانات التحويل بعد تأكيد الطلب.",
+  },
+  "Awaiting transfer verification": { fr: "En attente de vérification du virement", ar: "في انتظار التحقق من التحويل" },
+  "Confirm my order": { fr: "Confirmer ma commande", ar: "تأكيد طلبي" },
+  "Confirm payment": { fr: "Confirmer le paiement", ar: "تأكيد الدفع" },
+  "Bank transfers to verify": { fr: "Virements à vérifier", ar: "تحويلات بانتظار التحقق" },
   "Mailer boxes, folding cartons and sleeves produced by partners with die-cutting capability. Structural files and mockups reviewed before production starts.":
     {
       fr: "Boîtes d’expédition, étuis pliants et fourreaux réalisés par des partenaires équipés pour la découpe. Les tracés techniques et maquettes sont vérifiés avant production.",
