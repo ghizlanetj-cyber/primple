@@ -9,7 +9,7 @@ export const askPrintAssistant = createServerFn({ method: "POST" })
       .slice(-8)
       .map((t) => ({ role: t?.role === "assistant" ? "assistant" : "user", text: String(t?.text ?? "").slice(0, 600) }) as AssistantTurn)
       .filter((t) => t.text.trim());
-    if (!turns.length || turns[turns.length - 1].role !== "user") throw new Error("Please describe your project.");
+    if (!turns.length || turns[turns.length - 1]?.role !== "user") throw new Error("Please describe your project.");
     const lang = ["fr", "en", "ar"].includes(String(input?.lang)) ? String(input.lang) : "fr";
     const context = String(input?.context ?? "").slice(0, 60);
     return { turns, lang, context };

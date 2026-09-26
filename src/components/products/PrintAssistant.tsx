@@ -24,7 +24,7 @@ export function PrintAssistant({ context }: { context?: string }) {
     setLoading(true);
     setError(null);
     try {
-      const reply = await ask({ data: { turns: next, lang, context } });
+      const reply = await ask({ data: { turns: next, lang, context: context ?? "" } });
       setInput("");
       if (reply.type === "question") setTurns([...next, { role: "assistant", text: reply.text }]);
       else {
