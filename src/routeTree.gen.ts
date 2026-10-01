@@ -40,6 +40,7 @@ import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as ShopHandleRouteImport } from './routes/shop/$handle'
 import { Route as ShopCheckoutRouteImport } from './routes/shop/checkout'
 import { Route as ShopConfirmationRouteImport } from './routes/shop/confirmation'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin.payments'
 import { Route as AuthenticatedInvoiceReferenceRouteImport } from './routes/_authenticated/invoice.$reference'
 import { Route as ApiPublicCrmWorkerRouteImport } from './routes/api/public/crm-worker'
@@ -201,6 +202,11 @@ const ShopConfirmationRoute = ShopConfirmationRouteImport.update({
   path: '/shop/confirmation',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminPaymentsRoute =
   AuthenticatedAdminPaymentsRouteImport.update({
     id: '/admin/payments',
@@ -270,6 +276,7 @@ export interface FileRoutesByFullPath {
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
   '/api/public/crm-worker': typeof ApiPublicCrmWorkerRoute
   '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
@@ -308,6 +315,7 @@ export interface FileRoutesByTo {
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
   '/api/public/crm-worker': typeof ApiPublicCrmWorkerRoute
   '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
@@ -348,6 +356,7 @@ export interface FileRoutesById {
   '/_authenticated/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
   '/api/public/crm-worker': typeof ApiPublicCrmWorkerRoute
   '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
@@ -388,6 +397,7 @@ export interface FileRouteTypes {
     | '/invoice/$reference'
     | '/api/public/crm-worker'
     | '/api/public/youcanpay-webhook'
+    | '/admin/'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -426,6 +436,7 @@ export interface FileRouteTypes {
     | '/invoice/$reference'
     | '/api/public/crm-worker'
     | '/api/public/youcanpay-webhook'
+    | '/admin'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
   id:
@@ -465,6 +476,7 @@ export interface FileRouteTypes {
     | '/_authenticated/invoice/$reference'
     | '/api/public/crm-worker'
     | '/api/public/youcanpay-webhook'
+    | '/_authenticated/admin/'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
   fileRoutesById: FileRoutesById
@@ -725,6 +737,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopConfirmationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/payments': {
       id: '/_authenticated/admin/payments'
       path: '/admin/payments'
@@ -774,12 +793,14 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
   AuthenticatedInvoiceReferenceRoute: typeof AuthenticatedInvoiceReferenceRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
   AuthenticatedInvoiceReferenceRoute: AuthenticatedInvoiceReferenceRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
