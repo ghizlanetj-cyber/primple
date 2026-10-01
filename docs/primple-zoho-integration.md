@@ -59,30 +59,71 @@ Until all ZOHO_* secrets exist, the worker returns `pending_configuration` and d
 
 ## Setup
 1. Go to https://api-console.zoho.com (your data-centre domain) → Add Client → **Self Client** → copy the Client ID and Client Secret.
-2. In Generate Code, use scope `ZohoCRM.modules.contacts.ALL,ZohoCRM.modules.accounts.ALL,ZohoCRM.modules.deals.ALL,ZohoCRM.org.READ`, duration 10 min. Then, from a terminal, exchange it once:
+2. In Generate Code, use this scope (no DELETE, no settings access), duration 10 min:
+   `ZohoCRM.modules.contacts.READ,ZohoCRM.modules.contacts.CREATE,ZohoCRM.modules.contacts.UPDATE,ZohoCRM.modules.accounts.READ,ZohoCRM.modules.accounts.CREATE,ZohoCRM.modules.accounts.UPDATE,ZohoCRM.modules.deals.READ,ZohoCRM.modules.deals.CREATE,ZohoCRM.modules.deals.UPDATE,ZohoCRM.org.READ`
+   - READ: search Contacts/Accounts. CREATE: insert and upsert (Zoho's upsert documents ALL, WRITE or CREATE). UPDATE: PUT on existing Contacts. `org.READ`: the MAD currency check on `/crm/v8/org`.
+   - If Zoho answers `OAUTH_SCOPE_MISMATCH` when an upsert updates an existing record, replace that module's CREATE+UPDATE with `.WRITE`. That still excludes DELETE; never use `modules.ALL`.
+   Exchange the code once from a terminal:
    `curl -X POST "https://accounts.zoho.<dc>/oauth/v2/token" -d grant_type=authorization_code -d client_id=… -d client_secret=… -d code=…`
-   and keep the `refresh_token`. Never paste it into chat.
+   Keep only the `refresh_token`. Never paste it into chat, docs or logs.
 3. In Lovable → Project Settings → Secrets, add the five ZOHO_* secrets. Also add `CRM_WORKER_SECRET` with a value from `openssl rand -hex 32`.
-4. To turn on automatic sync, open Cloud → SQL editor and run (same value as `CRM_WORKER_SECRET`):
+4. **Automatic worker (not active yet — owner action).** Open Cloud → SQL editor and run the block below. Replace `<same value as CRM_WORKER_SECRET>` yourself; it is typed only into the SQL editor. The block is safe to re-run: it updates the Vault secret instead of creating a duplicate, and replaces the cron job instead of adding a second one.
 ```sql
-select vault.create_secret('<same value>', 'crm_worker_bearer');
-select cron.schedule('primple-crm-worker', '*/15 * * * *', $$
-  select net.http_post('https://primple.ma/api/public/crm-worker',
-    jsonb_build_object('Content-Type','application/json','Authorization','Bearer '||(select decrypted_secret from vault.decrypted_secrets where name='crm_worker_bearer')),
-    '{}'::jsonb)
-  where exists (select 1 from public.crm_outbox where status in ('pending','failed') and next_attempt_at <= now());
-$$);
+do $$
+declare v_id uuid;
+begin
+  select id into v_id from vault.secrets where name = 'crm_worker_bearer';
+  if v_id is null then
+    perform vault.create_secret('<same value as CRM_WORKER_SECRET>', 'crm_worker_bearer', 'Primple CRM worker bearer');
+  else
+    perform vault.update_secret(v_id, '<same value as CRM_WORKER_SECRET>');
+  end if;
+  if exists (select 1 from cron.job where jobname = 'primple-crm-worker') then
+    perform cron.unschedule('primple-crm-worker');
+  end if;
+end $$;
+
+select cron.schedule('primple-crm-worker', '*/15 * * * *', $job$
+  select net.http_post(
+    url := 'https://primple.ma/api/public/crm-worker',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'crm_worker_bearer')
+    ),
+    body := '{}'::jsonb,
+    timeout_milliseconds := 55000
+  )
+  where exists (
+    select 1 from public.crm_outbox
+    where (status in ('pending', 'failed') and next_attempt_at <= now())
+       or (status = 'processing' and lease_expires_at < now())
+  );
+$job$);
 ```
-   This runs every 15 min (96 runs a day, about a 15 min maximum delay) and only calls the site when jobs are due. It only works once the app is published.
+   - Every 15 minutes (96 checks a day; at most about 15 minutes' delay). It only calls the site when a job is due, including jobs whose lease has expired.
+   - The worker stops claiming new jobs after about 40 seconds, inside the 55-second request timeout.
+   - It only works after the app is published. Check it with `select jobname, schedule from cron.job;`.
 5. Publish, then use `/admin` → CRM Zoho → "Lancer un lot maintenant" for a first manual run against Zoho.
 
+## Worker behaviour
+- Each job is claimed with `crm_claim(owner, 1, 120)` immediately before it is processed, so no job waits on an expiring lease.
+- One Zoho client and access token are reused for the whole batch. A batch has a limit of 1–50 jobs and stops claiming after its time budget (40 s by default).
+- Outcomes go through `crm_complete`, which checks the lease owner. A lost lease writes nothing, including the extra Contact mapping that Deal jobs now store.
+- Accounts: an exact-name search with `\ ( ) ,` backslash-escaped (punctuation is never deleted). Returned names must match exactly (ignoring case and spacing).
+  - One match is linked. Several matches link nothing (no merge).
+  - No match creates the Account through `Accounts/upsert` with `duplicate_check_fields: ["Account_Name"]`, so concurrent jobs cannot create duplicates.
+- Contacts: only identity fields (Email, names, Phone, Account link when empty) are synced. `Lead_Source` and the customer-ID `Description` are written only when Zoho reports that this sync inserted the Contact, so existing sales fields are never overwritten.
+
 ## Tests
-- **Mock-Zoho unit tests:** `src/lib/crm-core.test.ts`.
+- **Mock-Zoho unit tests:** `src/lib/crm-core.test.ts` (no live CRM). They cover the Account race, punctuation, ambiguous matches, Description preservation, claiming one job at a time with a time budget, Contact mapping, and lost leases.
 - **Static security tests:** `src/lib/admin-security.test.ts`.
-- **Not run:** live Zoho tests (no runtime credentials yet), and live database tests of RLS and concurrency (no direct database connection in the build sandbox).
+- **Live database tests (rolled back, nothing sent to Zoho):**
+  - `tests/db/crm_outbox_leases.sql` → `PASS 8/8`: completion by the wrong owner, a new version arriving during processing, an expired lease reclaimed, a stale owner rejected, failure and retry, manual retry, final completion.
+  - `tests/db/order_files_guard.sql` → `PASS 11/11`.
+- **Not run:** live Zoho calls (no credentials yet).
 
 ## Live audit follow-up (2026-10-01)
-- **Currency:** the MAD check reads `GET /crm/v8/org` → `org[0].iso_code` and needs the `ZohoCRM.org.READ` scope (already in the setup scopes). Live org PRIMPLE reports `iso_code=MAD`, so amounts will sync once credentials are set. No settings/currencies permission is needed.
+- **Currency:** the MAD check reads `GET /crm/v8/org` → `org[0].iso_code` and needs the `ZohoCRM.org.READ` scope (included in the setup scope). Live org PRIMPLE reports `iso_code=MAD`, so amounts will sync once credentials are set. No settings/currencies permission is needed.
 - **Table privileges:** `0018_revoke_truncate_trigger_client_roles.sql` removes TRUNCATE and TRIGGER from anon and authenticated on every public table. `0019` removes all anon/authenticated privileges on the CRM and admin tables.
   - Verified live: TRUNCATE 0/16 and TRIGGER 0/16 tables for both roles.
   - SELECT, INSERT, UPDATE and DELETE are kept, so checkout and existing RLS behaviour are unchanged.
@@ -92,18 +133,24 @@ $$);
   - The 15-minute HTTP worker job (Setup step 4) still has to be created by the owner, because the agent can't write to Vault. No other Lovable scheduler is available to this project.
   - Until step 4 is done, Zoho delivery only happens when an admin clicks "Lancer un lot maintenant".
 
-## Admin bootstrap (run once in Cloud → SQL editor)
-`user_roles` currently has no rows. Replace the email with the verified account that should be admin; it must have signed in at least once.
+## Admin bootstrap (owner runs once in Cloud → SQL editor)
+`user_roles` has no rows. Nobody is granted admin automatically and no identity is guessed.
+- **Status 2026-10-01:** there is no account for `joecreatearts@gmail.com` yet. Sign up on primple.ma with that email and confirm it first.
+- The query only grants the explicitly typed email, and only if that email is confirmed.
 ```sql
 insert into public.user_roles (user_id, role)
-select id, 'admin'::public.app_role from auth.users
-where lower(email) = lower('owner@example.com')
+select id, 'admin'::public.app_role
+from auth.users
+where lower(email) = lower('joecreatearts@gmail.com')
+  and email_confirmed_at is not null
 on conflict (user_id, role) do nothing
 returning user_id;
 ```
-If it returns no row, that email has no account yet. Check with:
+If it returns no row, the account doesn't exist or the email isn't confirmed yet. Check with:
 ```sql
-select r.role, u.email from public.user_roles r join auth.users u on u.id = r.user_id;
+select u.email, u.email_confirmed_at is not null as confirmed, r.role
+from auth.users u left join public.user_roles r on r.user_id = u.id
+where lower(u.email) = lower('joecreatearts@gmail.com');
 ```
 
 ## Artwork file ownership guard (migration 0020)

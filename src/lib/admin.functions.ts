@@ -1,19 +1,22 @@
 import { createServerFn } from "@tanstack/react-start";
 
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 
 /**
  * Admin-only management API. Every handler checks the admin role server-side
  * before loading the service-role client. Moderators keep payment tools only.
  */
-async function requireAdmin(context: { supabase: any; userId: string }) {
+async function requireAdmin(context: { supabase: SupabaseClient<Database>; userId: string }) {
   const { data, error } = await context.supabase.rpc("has_role", {
     _user_id: context.userId,
     _role: "admin",
   });
   if (error || !data) throw new Error("Forbidden");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  return supabaseAdmin as any;
+  return supabaseAdmin;
 }
 
 const uuid = (v: unknown) => {
@@ -82,7 +85,7 @@ export const adminOrders = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: { page?: number; orderId?: string; q?: string }) => ({
     page: page(i?.page),
-    orderId: i?.orderId ? uuid(i.orderId) : null,
+    orderId: i?.orderId ? uuid(i["orderId"]) : null,
     q: String(i?.q ?? "")
       .replace(/[^\w@.\- ]/g, "")
       .slice(0, 60),
@@ -100,7 +103,7 @@ export const adminOrders = createServerFn({ method: "GET" })
         `reference.ilike.%${data.q}%,email.ilike.%${data.q}%,contact_name.ilike.%${data.q}%`,
       );
     const { data: rows, count } = await query.range(data.page * size, data.page * size + size - 1);
-    const ids = (rows ?? []).map((r: any) => r.id);
+    const ids = (rows ?? []).map((r) => r.id);
     const [ops, files, crm] = ids.length
       ? await Promise.all([
           db.from("order_ops").select("*").in("order_id", ids),
@@ -119,18 +122,19 @@ export const adminOrders = createServerFn({ method: "GET" })
     return {
       total: count ?? 0,
       pageSize: size,
-      orders: (rows ?? []).map((o: any) => ({
+      orders: (rows ?? []).map((o) => ({
         ...stripSensitive(o),
-        ops: (ops.data ?? []).find((x: any) => x.order_id === o.id) ?? null,
-        files: (files.data ?? []).filter((f: any) => f.order_id === o.id),
-        crm: (crm.data ?? []).filter((c: any) => c.source_id === o.id),
+        ops: (ops.data ?? []).find((x) => x.order_id === o.id) ?? null,
+        files: (files.data ?? []).filter((f) => f.order_id === o.id),
+        crm: (crm.data ?? []).filter((c) => c.source_id === o.id),
       })),
     };
   });
 
 export const adminUpdateOrderOps = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: any) => {
+  .inputValidator((input: unknown) => {
+    const i = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
     const { OPS_STAGES } = {
       OPS_STAGES: [
         "new",
@@ -146,17 +150,17 @@ export const adminUpdateOrderOps = createServerFn({ method: "POST" })
         "refunded",
       ],
     };
-    if (!OPS_STAGES.includes(i?.ops_stage)) throw new Error("Invalid stage");
-    const cost = i?.cost_mad === "" || i?.cost_mad == null ? null : Number(i.cost_mad);
+    if (!OPS_STAGES.includes(String(i["ops_stage"]))) throw new Error("Invalid stage");
+    const cost = i["cost_mad"] === "" || i["cost_mad"] == null ? null : Number(i["cost_mad"]);
     if (cost != null && (!Number.isFinite(cost) || cost < 0)) throw new Error("Invalid cost");
     return {
-      orderId: uuid(i.orderId),
-      ops_stage: String(i.ops_stage),
-      internal_notes: text(i.internal_notes),
-      supplier: text(i.supplier, 200),
+      orderId: uuid(i["orderId"]),
+      ops_stage: String(i["ops_stage"]),
+      internal_notes: text(i["internal_notes"]),
+      supplier: text(i["supplier"], 200),
       cost_mad: cost,
-      delivery_notes: text(i.delivery_notes),
-      production_notes: text(i.production_notes),
+      delivery_notes: text(i["delivery_notes"]),
+      production_notes: text(i["production_notes"]),
     };
   })
   .handler(async ({ data, context }) => {
@@ -223,35 +227,36 @@ export const adminMessages = createServerFn({ method: "GET" })
       .select("id, name, email, company, topic, message, created_at", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(data.page * size, data.page * size + size - 1);
-    const ids = (rows ?? []).map((r: any) => r.id);
+    const ids = (rows ?? []).map((r) => r.id);
     const { data: meta } = ids.length
       ? await db.from("message_meta").select("*").in("message_id", ids)
       : { data: [] };
     return {
       total: count ?? 0,
       pageSize: size,
-      messages: (rows ?? []).map((m: any) => ({
+      messages: (rows ?? []).map((m) => ({
         ...m,
-        meta: (meta ?? []).find((x: any) => x.message_id === m.id) ?? null,
+        meta: (meta ?? []).find((x) => x.message_id === m.id) ?? null,
       })),
     };
   });
 
 export const adminUpdateMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: any) => {
+  .inputValidator((input: unknown) => {
+    const i = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
     const cls = ["unclassified", "quote", "sales", "support", "spam"];
     const stages = ["new", "qualified", "proposal", "negotiation", "won", "lost"];
-    const out: Record<string, unknown> = { id: uuid(i?.id) };
-    if (i?.classification !== undefined) {
-      if (!cls.includes(i.classification)) throw new Error("Invalid classification");
-      out["classification"] = i.classification;
+    const out: Record<string, unknown> = { id: uuid(i["id"]) };
+    if (i["classification"] !== undefined) {
+      if (!cls.includes(String(i["classification"]))) throw new Error("Invalid classification");
+      out["classification"] = i["classification"];
     }
-    if (i?.quote_stage !== undefined) {
-      if (!stages.includes(i.quote_stage)) throw new Error("Invalid stage");
-      out["quote_stage"] = i.quote_stage;
+    if (i["quote_stage"] !== undefined) {
+      if (!stages.includes(String(i["quote_stage"]))) throw new Error("Invalid stage");
+      out["quote_stage"] = i["quote_stage"];
     }
-    if (i?.is_read !== undefined) out["is_read"] = Boolean(i.is_read);
+    if (i["is_read"] !== undefined) out["is_read"] = Boolean(i["is_read"]);
     return out as { id: string; classification?: string; quote_stage?: string; is_read?: boolean };
   })
   .handler(async ({ data, context }) => {
@@ -269,7 +274,7 @@ export const adminUpdateMessage = createServerFn({ method: "POST" })
 
 export const adminRetryCrmJob = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: { id: string }) => ({ id: uuid(i?.id) }))
+  .inputValidator((i: { id: string }) => ({ id: uuid(i["id"]) }))
   .handler(async ({ data, context }) => {
     const db = await requireAdmin(context);
     const { error } = await db.rpc("crm_retry", { _id: data.id });

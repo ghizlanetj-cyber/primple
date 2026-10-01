@@ -4,6 +4,19 @@
  */
 export type FetchLike = (url: string, init: RequestInit) => Promise<Response>;
 
+/** Loosely-shaped Zoho JSON; every field is validated where it is read. */
+export type ZohoJson = {
+  data?: unknown[];
+  org?: unknown[];
+  code?: unknown;
+  [key: string]: unknown;
+};
+type Rec = Record<string, unknown>;
+export const asRec = (v: unknown): Rec =>
+  v && typeof v === "object" && !Array.isArray(v) ? (v as Rec) : {};
+const rows = (json: ZohoJson | null | undefined): Rec[] =>
+  Array.isArray(json?.data) ? json.data.map(asRec) : [];
+
 export const ACCOUNTS_HOSTS = [
   "accounts.zoho.com",
   "accounts.zoho.eu",
@@ -168,7 +181,7 @@ export class ZohoClient {
     return this.token;
   }
 
-  async request(method: string, path: string, body?: unknown, retried = false): Promise<any> {
+  async request(method: string, path: string, body?: unknown, retried = false): Promise<ZohoJson> {
     const token = await this.accessToken();
     const res = await this.timed(`${this.apiOrigin}${path}`, {
       method,
@@ -180,13 +193,13 @@ export class ZohoClient {
       return this.request(method, path, body, true);
     }
     if (res.status === 204) return { data: [] };
-    const json = (await res.json().catch(() => null)) as any;
+    const json = asRec(await res.json().catch(() => null)) as ZohoJson;
     if (res.status === 429)
       throw new ZohoError("rate_limited", "Zoho rate limited", 429, retryAfter(res) ?? 60);
     if (res.status >= 500)
       throw new ZohoError(`http_${res.status}`, "Zoho server error", res.status);
     if (!res.ok) {
-      const code = sanitize(json?.code ?? json?.data?.[0]?.code ?? `http_${res.status}`);
+      const code = sanitize(json.code ?? rows(json)[0]?.["code"] ?? `http_${res.status}`);
       const scope = code === "OAUTH_SCOPE_MISMATCH" || res.status === 401 || res.status === 403;
       throw new ZohoError(
         code,
@@ -201,20 +214,31 @@ export class ZohoClient {
 }
 
 /** Zoho can answer HTTP 200/201/202 with a per-record failure. */
-export function recordId(json: any): string {
-  const rec = json?.data?.[0];
+export function recordResult(json: ZohoJson | null | undefined): {
+  id: string;
+  action: string | null;
+} {
+  const rec = rows(json)[0];
   if (!rec) throw new ZohoError("empty_response", "Zoho returned no record", null, null, "dead");
-  if (rec.status !== "success" || !rec.details?.id) {
-    const field = rec.details?.api_name ? ` on ${sanitize(rec.details.api_name)}` : "";
+  const details = asRec(rec["details"]);
+  if (rec["status"] !== "success" || !details["id"]) {
+    const field = details["api_name"] ? ` on ${sanitize(details["api_name"])}` : "";
     throw new ZohoError(
-      sanitize(rec.code ?? "record_error"),
+      sanitize(rec["code"] ?? "record_error"),
       `Record rejected${field}`,
       null,
       null,
       "dead",
     );
   }
-  return String(rec.details.id);
+  return {
+    id: String(details["id"]),
+    action: typeof rec["action"] === "string" ? rec["action"] : null,
+  };
+}
+
+export function recordId(json: ZohoJson | null | undefined): string {
+  return recordResult(json).id;
 }
 
 export type ContactSource = {
@@ -254,7 +278,10 @@ function splitName(name: string | null | undefined) {
   return i > 0 ? { first: n.slice(0, i), last: n.slice(i + 1) } : { first: null, last: n };
 }
 
-/** Only non-empty values: a sync never blanks an existing Zoho field. */
+/**
+ * Identity fields only, non-empty values only: a sync never blanks an existing Zoho
+ * field and never touches sales-owned fields (Description, Lead_Source, Owner…).
+ */
 export function contactFields(src: ContactSource, creating: boolean): Record<string, string> {
   const out: Record<string, string> = {};
   const email = normalizeEmail(src.email);
@@ -265,23 +292,47 @@ export function contactFields(src: ContactSource, creating: boolean): Record<str
   if (creating && !out["Last_Name"])
     out["Last_Name"] = email ? email.split("@")[0]! : "Client Primple";
   if (src.phone?.trim()) out["Phone"] = src.phone.trim();
-  if (creating) {
-    out["Lead_Source"] = "OnlineStore";
-    if (src.customerId) out["Description"] = `Primple customer ID: ${src.customerId}`;
-  }
   return out;
 }
 
-async function findOrCreateAccount(client: ZohoClient, company: string): Promise<string | null> {
-  const name = company.trim();
+/** Set once, only on a Contact this sync actually inserted. */
+export function newContactExtras(src: ContactSource): Record<string, string> {
+  const out: Record<string, string> = { Lead_Source: "OnlineStore" };
+  if (src.customerId) out["Description"] = `Primple customer ID: ${src.customerId}`;
+  return out;
+}
+
+const normName = (v: unknown) =>
+  String(v ?? "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+
+/** Zoho criteria: backslash-escape \ ( ) , instead of deleting punctuation. */
+export function escapeCriteria(value: string): string {
+  return value.replace(/[\\(),]/g, (c) => `\\${c}`);
+}
+
+/**
+ * Exact-name search, then atomic upsert keyed on Account_Name so two concurrent jobs
+ * cannot both create the Account. Several exact matches → no link (never merge).
+ */
+export async function findOrCreateAccount(
+  client: ZohoClient,
+  company: string,
+): Promise<string | null> {
+  const name = company.trim().replace(/\s+/g, " ").slice(0, 200);
   if (!name) return null;
-  const criteria = encodeURIComponent(`(Account_Name:equals:${name.replace(/[(),]/g, " ")})`);
+  const criteria = encodeURIComponent(`(Account_Name:equals:${escapeCriteria(name)})`);
   const found = await client.request("GET", `/crm/v8/Accounts/search?criteria=${criteria}`);
-  const rows = (found?.data ?? []) as Array<{ id: string }>;
-  if (rows.length === 1) return String(rows[0]!.id);
-  if (rows.length > 1) return null; // ambiguous: never merge
+  const exact = rows(found).filter((r) => normName(r["Account_Name"]) === normName(name));
+  if (exact.length === 1) return String(exact[0]!["id"]);
+  if (exact.length > 1) return null;
   return recordId(
-    await client.request("POST", "/crm/v8/Accounts", { data: [{ Account_Name: name }] }),
+    await client.request("POST", "/crm/v8/Accounts/upsert", {
+      data: [{ Account_Name: name }],
+      duplicate_check_fields: ["Account_Name"],
+    }),
   );
 }
 
@@ -292,12 +343,10 @@ export async function syncContact(
   const email = normalizeEmail(src.email);
   if (!email)
     throw new ZohoError("invalid_email", "Contact has no valid email", null, null, "dead");
-  const found = await client.request(
-    "GET",
-    `/crm/v8/Contacts/search?email=${encodeURIComponent(email)}`,
+  const found = rows(
+    await client.request("GET", `/crm/v8/Contacts/search?email=${encodeURIComponent(email)}`),
   );
-  const rows = (found?.data ?? []) as Array<{ id: string; Account_Name?: { id: string } | null }>;
-  if (rows.length > 1)
+  if (found.length > 1)
     throw new ZohoError(
       "ambiguous_contact",
       "Several Zoho contacts share this email",
@@ -305,30 +354,40 @@ export async function syncContact(
       null,
       "blocked",
     );
-  let accountId = rows[0]?.Account_Name?.id ?? null;
+  const existing = found[0];
+  const existingAccount = existing ? asRec(existing["Account_Name"])["id"] : undefined;
+  let accountId = existingAccount ? String(existingAccount) : null;
   if (!accountId && src.company) accountId = await findOrCreateAccount(client, src.company);
-  const fields: Record<string, unknown> = contactFields({ ...src, email }, rows.length === 0);
-  if (accountId && !rows[0]?.Account_Name) fields["Account_Name"] = { id: accountId };
+  const fields: Record<string, unknown> = contactFields({ ...src, email }, !existing);
+  if (accountId && !existingAccount) fields["Account_Name"] = { id: accountId };
   let contactId: string;
-  if (rows.length === 1) {
-    contactId = String(rows[0]!.id);
+  if (existing) {
+    contactId = String(existing["id"]);
     recordId(
       await client.request("PUT", "/crm/v8/Contacts", { data: [{ id: contactId, ...fields }] }),
     );
   } else {
-    contactId = recordId(
+    const r = recordResult(
       await client.request("POST", "/crm/v8/Contacts/upsert", {
         data: [fields],
         duplicate_check_fields: ["Email"],
       }),
     );
+    contactId = r.id;
+    // A concurrent job may have created it first ("update"): leave its sales fields alone.
+    if (r.action === "insert")
+      recordId(
+        await client.request("PUT", "/crm/v8/Contacts", {
+          data: [{ id: contactId, ...newContactExtras(src) }],
+        }),
+      );
   }
   return { contactId, accountId };
 }
 
 /** Amounts are only sent when Zoho's org currency is verified MAD. Fails closed otherwise. */
 export async function assertMadCurrency(client: ZohoClient): Promise<void> {
-  let org: any;
+  let org: ZohoJson;
   try {
     org = await client.request("GET", "/crm/v8/org");
   } catch (e) {
@@ -342,8 +401,8 @@ export async function assertMadCurrency(client: ZohoClient): Promise<void> {
       "blocked",
     );
   }
-  const o = org?.org?.[0] ?? {};
-  const iso = String(o.iso_code ?? o.currency ?? "").toUpperCase();
+  const o = asRec(Array.isArray(org.org) ? org.org[0] : null);
+  const iso = String(o["iso_code"] ?? o["currency"] ?? "").toUpperCase();
   if (!/\bMAD\b/.test(iso))
     throw new ZohoError(
       "currency_mismatch",
@@ -401,13 +460,13 @@ export async function processJob(client: ZohoClient, job: Job, source: SyncSourc
     if (!source.contact)
       throw new ZohoError("invalid_email", "No contact email", null, null, "dead");
     const r = await syncContact(client, source.contact);
-    return { zohoId: r.contactId, accountId: r.accountId };
+    return { zohoId: r.contactId, accountId: r.accountId, contactId: r.contactId };
   }
   if (!source.deal)
     throw new ZohoError("not_deal", "Record is not a confirmed sale", null, null, "dead");
   const c = source.contact ? await syncContact(client, source.contact) : null;
   const id = await syncDeal(client, source.deal, c?.contactId ?? null, c?.accountId ?? null);
-  return { zohoId: id, accountId: c?.accountId ?? null };
+  return { zohoId: id, accountId: c?.accountId ?? null, contactId: c?.contactId ?? null };
 }
 
 /** Strips internal/secret columns before anything reaches a browser. */

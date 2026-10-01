@@ -6,6 +6,8 @@ import {
   allowlistedOrigin,
   API_HOSTS,
   contactFields,
+  escapeCriteria,
+  findOrCreateAccount,
   processJob,
   recordId,
   sanitize,
@@ -14,7 +16,9 @@ import {
   type SyncSource,
 } from "./crm-core";
 import { customersFrom, moneyOf, summarize } from "./admin-metrics";
-import { loadSource, runCrmBatch } from "./crm-worker.server";
+import { loadSource, runCrmBatch, type Db, type DbResult } from "./crm-worker.server";
+
+type Rec = Record<string, unknown>;
 
 const cfg = {
   clientId: "cid",
@@ -26,11 +30,18 @@ const cfg = {
 
 /** In-memory mock Zoho: contacts unique by email, deals unique by Primple_External_ID. */
 function mockZoho(
-  opts: { currency?: string; outage?: number; rateLimitOnce?: boolean; recordError?: boolean } = {},
+  opts: {
+    currency?: string;
+    outage?: number;
+    rateLimitOnce?: boolean;
+    recordError?: boolean;
+    accountRows?: Rec[];
+  } = {},
 ) {
-  const contacts: Record<string, any> = {};
-  const deals: Record<string, any> = {};
-  const accounts: Record<string, any> = {};
+  const contacts: Record<string, Rec> = {};
+  const deals: Record<string, Rec> = {};
+  const accounts: Record<string, Rec> = {};
+  const criteria: string[] = [];
   let n = 0;
   let limited = false;
   const calls: string[] = [];
@@ -39,8 +50,8 @@ function mockZoho(
       status,
       headers: { "content-type": "application/json", ...headers },
     });
-  const ok = (id: string) =>
-    json(200, { data: [{ status: "success", code: "SUCCESS", details: { id } }] });
+  const ok = (id: string, action?: string) =>
+    json(200, { data: [{ status: "success", code: "SUCCESS", action, details: { id } }] });
   const fetchFn: FetchLike = async (url, init) => {
     const u = new URL(url);
     calls.push(`${init.method} ${u.pathname}`);
@@ -59,35 +70,48 @@ function mockZoho(
       return contacts[e] ? json(200, { data: [contacts[e]] }) : new Response(null, { status: 204 });
     }
     if (u.pathname === "/crm/v8/Contacts/upsert" || u.pathname === "/crm/v8/Contacts") {
-      const rec = body.data[0];
-      const existing = rec.id
-        ? Object.values(contacts).find((c: any) => c.id === rec.id)
-        : contacts[rec.Email];
-      const c = existing ?? { id: `c${++n}` };
+      const rec = body.data[0] as Rec;
+      const existing = rec["id"]
+        ? Object.values(contacts).find((c) => c["id"] === rec["id"])
+        : contacts[String(rec["Email"])];
+      const c: Rec = existing ?? { id: `c${++n}` };
       Object.assign(c, rec);
-      contacts[c.Email] = c;
-      return ok(c.id);
+      if (c["Email"]) contacts[String(c["Email"])] = c;
+      return ok(String(c["id"]), existing ? "update" : "insert");
     }
-    if (u.pathname === "/crm/v8/Accounts/search") return new Response(null, { status: 204 });
-    if (u.pathname === "/crm/v8/Accounts") {
+    if (u.pathname === "/crm/v8/Accounts/search") {
+      criteria.push(u.searchParams.get("criteria") ?? "");
+      const found = [
+        ...(opts.accountRows ?? []),
+        ...Object.entries(accounts).map(([id, a]) => ({ id, ...a })),
+      ];
+      return found.length ? json(200, { data: found }) : new Response(null, { status: 204 });
+    }
+    if (u.pathname === "/crm/v8/Accounts/upsert") {
+      const rec = body.data[0] as Rec;
+      const hit = Object.entries(accounts).find(
+        ([, a]) => a["Account_Name"] === rec["Account_Name"],
+      );
+      if (hit) return ok(hit[0], "update");
       const id = `a${++n}`;
-      accounts[id] = body.data[0];
-      return ok(id);
+      accounts[id] = rec;
+      return ok(id, "insert");
     }
     if (u.pathname === "/crm/v8/Deals/upsert") {
       if (opts.recordError)
         return json(202, {
           data: [{ status: "error", code: "INVALID_DATA", details: { api_name: "Stage" } }],
         });
-      const rec = body.data[0];
-      const d = deals[rec.Primple_External_ID] ?? { id: `d${++n}` };
+      const rec = body.data[0] as Rec;
+      const key = String(rec["Primple_External_ID"]);
+      const d: Rec = deals[key] ?? { id: `d${++n}` };
       Object.assign(d, rec);
-      deals[rec.Primple_External_ID] = d;
-      return ok(d.id);
+      deals[key] = d;
+      return ok(String(d["id"]));
     }
     return json(404, { code: "NOT_FOUND" });
   };
-  return { fetchFn, contacts, deals, accounts, calls };
+  return { fetchFn, contacts, deals, accounts, calls, criteria };
 }
 
 const orderSource = (id: string, email = "Client@Example.ma"): SyncSource => ({
@@ -119,10 +143,12 @@ describe("Zoho sync (mock Zoho, no live CRM)", () => {
       orderSource("o1"),
     );
     expect(r.zohoId).toMatch(/^d/);
-    expect(z.contacts["client@example.ma"].Last_Name).toBe("Amrani");
-    expect(z.deals["orders:o1"].Contact_Name.id).toBe(z.contacts["client@example.ma"].id);
-    expect(z.deals["orders:o1"].Primple_Source).toBe("Primple.ma");
-    expect(z.deals["orders:o1"].Amount).toBe(330);
+    expect(z.contacts["client@example.ma"]!["Last_Name"]).toBe("Amrani");
+    expect((z.deals["orders:o1"]!["Contact_Name"] as Rec)["id"]).toBe(
+      z.contacts["client@example.ma"]!["id"],
+    );
+    expect(z.deals["orders:o1"]!["Primple_Source"]).toBe("Primple.ma");
+    expect(z.deals["orders:o1"]!["Amount"]).toBe(330);
   });
 
   it("same email reuses the existing Contact and never blanks fields", async () => {
@@ -141,8 +167,8 @@ describe("Zoho sync (mock Zoho, no live CRM)", () => {
       },
     );
     expect(Object.values(z.contacts).length).toBe(1);
-    expect(z.contacts["client@example.ma"].Phone).toBe("+212600000000");
-    expect(z.contacts["client@example.ma"].Last_Name).toBe("Amrani");
+    expect(z.contacts["client@example.ma"]!["Phone"]).toBe("+212600000000");
+    expect(z.contacts["client@example.ma"]!["Last_Name"]).toBe("Amrani");
   });
 
   it("retries/concurrent runs do not duplicate the Deal", async () => {
@@ -176,8 +202,8 @@ describe("Zoho sync (mock Zoho, no live CRM)", () => {
         },
       },
     );
-    expect(z.deals["quotes:m1"].Stage).toBe("Qualification");
-    expect(z.deals["quotes:m1"].Amount).toBeUndefined();
+    expect(z.deals["quotes:m1"]!["Stage"]).toBe("Qualification");
+    expect(z.deals["quotes:m1"]!["Amount"]).toBeUndefined();
   });
 
   it("blocks amount sync when Zoho currency is not MAD (fails closed)", async () => {
@@ -252,6 +278,72 @@ describe("Zoho sync (mock Zoho, no live CRM)", () => {
     expect(row).toEqual({ id: "1", total: 1 });
   });
 
+  it("concurrent jobs for the same company create one Account (atomic upsert)", async () => {
+    const z = mockZoho();
+    const client = new ZohoClient(cfg, z.fetchFn);
+    const ids = await Promise.all([
+      findOrCreateAccount(client, "Café Atlas"),
+      findOrCreateAccount(client, "Café Atlas"),
+    ]);
+    expect(Object.keys(z.accounts)).toHaveLength(1);
+    expect(ids[0]).toBe(ids[1]);
+  });
+
+  it("escapes punctuation and never binds 'ABC(SARL)' to 'ABC SARL'", async () => {
+    expect(escapeCriteria("ABC(SARL), Inc")).toBe("ABC\\(SARL\\)\\, Inc");
+    const z = mockZoho({ accountRows: [{ id: "x1", Account_Name: "ABC SARL" }] });
+    const client = new ZohoClient(cfg, z.fetchFn);
+    const id = await findOrCreateAccount(client, "ABC(SARL)");
+    expect(id).not.toBe("x1");
+    expect(decodeURIComponent(z.criteria[0]!)).toContain("ABC\\(SARL\\)");
+  });
+
+  it("several exact Account matches are never merged or linked", async () => {
+    const z = mockZoho({
+      accountRows: [
+        { id: "x1", Account_Name: "Atlas" },
+        { id: "x2", Account_Name: "atlas" },
+      ],
+    });
+    expect(await findOrCreateAccount(new ZohoClient(cfg, z.fetchFn), "Atlas")).toBeNull();
+    expect(Object.keys(z.accounts)).toHaveLength(0);
+  });
+
+  it("never overwrites an existing Contact's Description or Lead_Source", async () => {
+    const z = mockZoho();
+    z.contacts["client@example.ma"] = {
+      id: "c0",
+      Email: "client@example.ma",
+      Last_Name: "Amrani",
+      Description: "VIP – notes commerciales",
+      Lead_Source: "Trade Show",
+    };
+    const client = new ZohoClient(cfg, z.fetchFn);
+    const r = await processJob(
+      client,
+      { id: "j", entity_type: "deal", source_table: "orders", source_id: "o1" },
+      orderSource("o1"),
+    );
+    expect(r.contactId).toBe("c0");
+    expect(z.contacts["client@example.ma"]).toMatchObject({
+      Description: "VIP – notes commerciales",
+      Lead_Source: "Trade Show",
+    });
+  });
+
+  it("a newly inserted Contact gets Lead_Source and the customer note once", async () => {
+    const z = mockZoho();
+    await processJob(
+      new ZohoClient(cfg, z.fetchFn),
+      { id: "j", entity_type: "contact", source_table: "orders", source_id: "o1" },
+      orderSource("o1"),
+    );
+    expect(z.contacts["client@example.ma"]).toMatchObject({
+      Lead_Source: "OnlineStore",
+      Description: "Primple customer ID: u1",
+    });
+  });
+
   it("contact creation always has Last_Name; updates omit blanks", () => {
     expect(contactFields({ email: "a@b.ma" }, true)["Last_Name"]).toBe("a");
     expect(contactFields({ email: "a@b.ma", name: "", phone: " " }, false)).toEqual({
@@ -260,61 +352,84 @@ describe("Zoho sync (mock Zoho, no live CRM)", () => {
   });
 });
 
+type FakeJob = Rec & {
+  id: string;
+  status: string;
+  version: number;
+  attempts: number;
+  lease_owner?: string | null;
+  claimed_version?: number;
+};
+
 /** Fake DB implementing the claim/complete contract (leases, owner tokens, version bump). */
-function fakeDb(rows: any[], sources: Record<string, any>) {
-  const jobs = rows.map((r) => ({
+function fakeDb(rows: Rec[], sources: Record<string, Rec>) {
+  const jobs: FakeJob[] = rows.map((r) => ({
+    id: String(r["id"]),
     processed_version: 0,
     attempts: 0,
     status: "pending",
     version: 1,
     ...r,
   }));
+  const mappings: Rec[] = [];
+  const claims: number[] = [];
+  const res = <T>(data: T | null): DbResult<T> => ({ data, error: null });
   const db = {
     jobs,
-    rpc: async (fn: string, a: any) => {
+    mappings,
+    claims,
+    rpc: async (fn: string, a: Rec) => {
       if (fn === "crm_claim") {
+        claims.push(Number(a["_limit"]));
         const due = jobs
           .filter((j) => j.status === "pending" || j.status === "failed")
-          .slice(0, a._limit);
+          .slice(0, Number(a["_limit"]));
         due.forEach((j) =>
           Object.assign(j, {
             status: "processing",
-            lease_owner: a._owner,
+            lease_owner: a["_owner"],
             claimed_version: j.version,
             attempts: j.attempts + 1,
           }),
         );
-        return { data: due.map((j) => ({ ...j })), error: null };
+        return res(due.map((j) => ({ ...j })));
       }
       if (fn === "crm_complete") {
         const j = jobs.find(
-          (x) => x.id === a._id && x.lease_owner === a._owner && x.status === "processing",
+          (x) => x.id === a["_id"] && x.lease_owner === a["_owner"] && x.status === "processing",
         );
-        if (!j) return { data: "lease_lost", error: null };
+        if (!j) return res("lease_lost");
         j.lease_owner = null;
-        if (a._ok) {
-          j.status = j.version > j.claimed_version ? "pending" : "done";
-          j.zoho = a._zoho_id;
+        if (a["_ok"]) {
+          j.status = j.version > (j.claimed_version ?? 0) ? "pending" : "done";
+          j["zoho"] = a["_zoho_id"];
         } else {
-          j.status = a._terminal ?? "failed";
-          j.code = a._error_code;
-          j.err = a._error;
+          j.status = String(a["_terminal"] ?? "failed");
+          j["code"] = a["_error_code"];
+          j["err"] = a["_error"];
         }
-        return { data: j.status, error: null };
+        return res(j.status);
       }
-      return { data: null, error: null };
+      return res(null);
     },
     from: (t: string) => {
-      const q: any = { _id: null };
-      q.select = () => q;
-      q.eq = (_c: string, v: string) => {
-        q._id = v;
-        return q;
+      let id = "";
+      const q = {
+        eq: (_c: string, v: string) => {
+          id = v;
+          return q;
+        },
+        maybeSingle: async () => res<Rec>(sources[`${t}:${id}`] ?? null),
       };
-      q.maybeSingle = async () => ({ data: sources[`${t}:${q._id}`] ?? null });
-      return q;
+      return {
+        select: () => q,
+        upsert: async (row: Rec) => {
+          mappings.push({ table: t, ...row });
+          return res(null);
+        },
+      };
     },
-  };
+  } satisfies Db & Rec;
   return db;
 }
 
@@ -360,7 +475,7 @@ describe("worker batch with fake outbox", () => {
     expect(await runCrmBatch({ db, fetchFn: mockZoho().fetchFn })).toMatchObject({
       status: "pending_configuration",
     });
-    expect(db.jobs[0].status).toBe("pending");
+    expect(db.jobs[0]!.status).toBe("pending");
     process.env = saved;
   });
 
@@ -372,8 +487,8 @@ describe("worker batch with fake outbox", () => {
       );
       const z = mockZoho();
       await runCrmBatch({ db: ok, fetchFn: z.fetchFn });
-      expect(ok.jobs[0].status).toBe("done");
-      expect(z.deals["orders:o1"].Description).toContain("encaissé en ligne: 100 MAD");
+      expect(ok.jobs[0]!.status).toBe("done");
+      expect(z.deals["orders:o1"]!["Description"]).toContain("encaissé en ligne: 100 MAD");
 
       const down = fakeDb(
         [{ id: "j1", entity_type: "deal", source_table: "orders", source_id: "o1" }],
@@ -381,7 +496,7 @@ describe("worker batch with fake outbox", () => {
       );
       await runCrmBatch({ db: down, fetchFn: mockZoho({ outage: 500 }).fetchFn });
       expect(down.jobs[0]).toMatchObject({ status: "failed", code: "http_500" });
-      expect(down.jobs[0].err).not.toContain("g@x.ma");
+      expect(String(down.jobs[0]!["err"])).not.toContain("g@x.ma");
     }));
 
   it("a new event during processing keeps the job pending (version protection)", () =>
@@ -392,12 +507,66 @@ describe("worker batch with fake outbox", () => {
       );
       const z = mockZoho();
       const orig = z.fetchFn;
+      let bumped = false;
       const bump: FetchLike = async (u, i) => {
-        db.jobs[0].version = 2;
+        if (!bumped) db.jobs[0]!.version = 2;
+        bumped = true;
         return orig(u, i);
       };
-      await runCrmBatch({ db, fetchFn: bump });
-      expect(db.jobs[0].status).toBe("pending");
+      // Single-job budget: the newer version must stay pending, never be marked done.
+      const first = await runCrmBatch({ db, fetchFn: bump, limit: 1 });
+      expect(first.results).toEqual({ pending: 1 });
+      expect(db.jobs[0]!.status).toBe("pending");
+      // Next run picks it up again and processes the newer version.
+      const second = await runCrmBatch({ db, fetchFn: bump, limit: 1 });
+      expect(second.results).toEqual({ done: 1 });
+    }));
+
+  it("claims one job at a time, stops at the time budget, records the Contact mapping", () =>
+    withEnv(async () => {
+      const jobs = ["o1", "o2", "o3"].map((o, i) => ({
+        id: `j${i}`,
+        entity_type: "deal",
+        source_table: "orders",
+        source_id: o,
+      }));
+      const sources = Object.fromEntries(
+        ["o1", "o2", "o3"].map((o) => [`orders:${o}`, { ...paidOrder, id: o }]),
+      );
+      const db = fakeDb(jobs, sources);
+      let t = 0;
+      const out = await runCrmBatch({
+        db,
+        fetchFn: mockZoho().fetchFn,
+        limit: 10,
+        budgetMs: 1000,
+        now: () => (t += 400),
+      });
+      expect(db.claims.every((n) => n === 1)).toBe(true);
+      expect(out.processed).toBe(2);
+      expect(db.jobs.map((j) => j.status)).toEqual(["done", "done", "pending"]);
+      expect(db.mappings).toHaveLength(2);
+      expect(db.mappings[0]).toMatchObject({
+        table: "crm_mappings",
+        entity_type: "contact",
+        source_id: "o1",
+      });
+    }));
+
+  it("a lost lease writes no Contact mapping", () =>
+    withEnv(async () => {
+      const db = fakeDb(
+        [{ id: "j1", entity_type: "deal", source_table: "orders", source_id: "o1" }],
+        { "orders:o1": paidOrder },
+      );
+      const z = mockZoho();
+      const steal: FetchLike = async (u, i) => {
+        db.jobs[0]!.lease_owner = "another-worker";
+        return z.fetchFn(u, i);
+      };
+      const out = await runCrmBatch({ db, fetchFn: steal });
+      expect(out.results).toEqual({ lease_lost: 1 });
+      expect(db.mappings).toHaveLength(0);
     }));
 
   it("unpaid orders never produce a Deal", async () => {

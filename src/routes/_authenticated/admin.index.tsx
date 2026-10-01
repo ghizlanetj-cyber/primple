@@ -23,6 +23,12 @@ import { OPS_STAGES } from "@/lib/admin-metrics";
 import { cn } from "@/lib/utils";
 
 type Search = { tab?: string; order?: string; message?: string };
+type AdminOrder = Awaited<ReturnType<typeof adminOrders>>["orders"][number];
+type AdminMessage = Awaited<ReturnType<typeof adminMessages>>["messages"][number];
+type CrmProblem = Awaited<ReturnType<typeof adminOverview>>["crm"]["problems"][number];
+type OrderItem = { quantity?: number; name?: string; config?: string; subtotal?: number };
+const orderItems = (items: unknown): OrderItem[] =>
+  Array.isArray(items) ? (items as OrderItem[]) : [];
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   validateSearch: (s: Record<string, unknown>): Search => ({
@@ -180,7 +186,7 @@ function Orders({ focusId }: { focusId: string | null }) {
       ) : (
         <>
           <div className="mt-4 space-y-3">
-            {data.orders.map((o: any) => (
+            {data.orders.map((o) => (
               <div key={o.id} className="surface-card p-4">
                 <button
                   className="flex w-full flex-wrap items-center justify-between gap-2 text-left"
@@ -212,7 +218,7 @@ function Orders({ focusId }: { focusId: string | null }) {
   );
 }
 
-function OrderDetail({ order }: { order: any }) {
+function OrderDetail({ order }: { order: AdminOrder }) {
   const qc = useQueryClient();
   const save = useServerFn(adminUpdateOrderOps);
   const sign = useServerFn(adminFileUrl);
@@ -249,7 +255,7 @@ function OrderDetail({ order }: { order: any }) {
           {order.paid_at ? ` le ${new Date(order.paid_at).toLocaleString("fr-MA")}` : ""}
         </p>
         <ul className="list-disc ps-5">
-          {(order.items ?? []).map((i: any, idx: number) => (
+          {orderItems(order.items).map((i, idx) => (
             <li key={idx}>
               {i.quantity} × {i.name} — {i.config} ({mad(Number(i.subtotal ?? 0))})
             </li>
@@ -261,7 +267,7 @@ function OrderDetail({ order }: { order: any }) {
             " aucun"
           ) : (
             <ul className="mt-1 space-y-1">
-              {order.files.map((f: any) => (
+              {order.files.map((f) => (
                 <li key={f.id}>
                   <button
                     className="text-primary hover:underline"
@@ -289,7 +295,7 @@ function OrderDetail({ order }: { order: any }) {
           {order.crm.length
             ? order.crm
                 .map(
-                  (c: any) =>
+                  (c) =>
                     `${c.entity_type} ${c.status}${c.last_error_code ? ` (${c.last_error_code})` : ""}`,
                 )
                 .join(" · ")
@@ -442,7 +448,7 @@ function Messages() {
   if (!data) return <p className="mt-6 text-muted-foreground">Chargement…</p>;
   return (
     <div className="mt-8 space-y-3">
-      {data.messages.map((m: any) => (
+      {data.messages.map((m: AdminMessage) => (
         <div key={m.id} className={cn("surface-card p-4", !m.meta?.is_read && "border-primary")}>
           <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
             <span className="font-semibold">
@@ -547,7 +553,7 @@ function Crm({ data }: { data: Awaited<ReturnType<typeof adminOverview>> }) {
           <p className="mt-2 text-sm text-muted-foreground">Aucune.</p>
         ) : (
           <ul className="mt-3 space-y-2 text-sm">
-            {data.crm.problems.map((p: any) => (
+            {data.crm.problems.map((p: CrmProblem) => (
               <li key={p.id} className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-muted px-2 py-0.5 text-xs">{p.status}</span>
                 <span>
