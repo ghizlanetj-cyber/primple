@@ -113,6 +113,20 @@
       "when": 1790385699900,
       "tag": "0015_allow_manual_payment_methods",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1790874303356,
+      "tag": "0016_crm_admin_outbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1790874450975,
+      "tag": "0017_crm_admin_outbox_schema",
+      "breakpoints": true
     }
   ]
 }

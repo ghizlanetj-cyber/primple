@@ -44,6 +44,170 @@ export type Database = {
         }
         Relationships: []
       }
+      crm_enqueue_errors: {
+        Row: {
+          at: string
+          error_code: string | null
+          id: string
+          source_id: string | null
+          source_table: string | null
+        }
+        Insert: {
+          at?: string
+          error_code?: string | null
+          id?: string
+          source_id?: string | null
+          source_table?: string | null
+        }
+        Update: {
+          at?: string
+          error_code?: string | null
+          id?: string
+          source_id?: string | null
+          source_table?: string | null
+        }
+        Relationships: []
+      }
+      crm_mappings: {
+        Row: {
+          entity_type: string
+          source_id: string
+          source_table: string
+          synced_at: string
+          zoho_account_id: string | null
+          zoho_id: string
+        }
+        Insert: {
+          entity_type: string
+          source_id: string
+          source_table: string
+          synced_at?: string
+          zoho_account_id?: string | null
+          zoho_id: string
+        }
+        Update: {
+          entity_type?: string
+          source_id?: string
+          source_table?: string
+          synced_at?: string
+          zoho_account_id?: string | null
+          zoho_id?: string
+        }
+        Relationships: []
+      }
+      crm_outbox: {
+        Row: {
+          attempts: number
+          claimed_version: number | null
+          created_at: string
+          entity_type: string
+          id: string
+          last_error: string | null
+          last_error_code: string | null
+          lease_expires_at: string | null
+          lease_owner: string | null
+          next_attempt_at: string
+          processed_version: number
+          source_id: string
+          source_table: string
+          status: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          attempts?: number
+          claimed_version?: number | null
+          created_at?: string
+          entity_type: string
+          id?: string
+          last_error?: string | null
+          last_error_code?: string | null
+          lease_expires_at?: string | null
+          lease_owner?: string | null
+          next_attempt_at?: string
+          processed_version?: number
+          source_id: string
+          source_table: string
+          status?: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          attempts?: number
+          claimed_version?: number | null
+          created_at?: string
+          entity_type?: string
+          id?: string
+          last_error?: string | null
+          last_error_code?: string | null
+          lease_expires_at?: string | null
+          lease_owner?: string | null
+          next_attempt_at?: string
+          processed_version?: number
+          source_id?: string
+          source_table?: string
+          status?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
+      crm_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      crm_sync_attempts: {
+        Row: {
+          at: string
+          error_code: string | null
+          http_status: number | null
+          id: string
+          ok: boolean
+          outbox_id: string | null
+          summary: string | null
+        }
+        Insert: {
+          at?: string
+          error_code?: string | null
+          http_status?: number | null
+          id?: string
+          ok: boolean
+          outbox_id?: string | null
+          summary?: string | null
+        }
+        Update: {
+          at?: string
+          error_code?: string | null
+          http_status?: number | null
+          id?: string
+          ok?: boolean
+          outbox_id?: string | null
+          summary?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_sync_attempts_outbox_id_fkey"
+            columns: ["outbox_id"]
+            isOneToOne: false
+            referencedRelation: "crm_outbox"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       design_conversations: {
         Row: {
           created_at: string
@@ -100,6 +264,54 @@ export type Database = {
           },
         ]
       }
+      message_meta: {
+        Row: {
+          classification: string
+          classified_by: string
+          is_read: boolean
+          message_id: string
+          quote_stage: string
+          related_order_id: string | null
+          related_user_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          classification?: string
+          classified_by?: string
+          is_read?: boolean
+          message_id: string
+          quote_stage?: string
+          related_order_id?: string | null
+          related_user_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          classification?: string
+          classified_by?: string
+          is_read?: boolean
+          message_id?: string
+          quote_stage?: string
+          related_order_id?: string | null
+          related_user_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_meta_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: true
+            referencedRelation: "contact_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_meta_related_order_id_fkey"
+            columns: ["related_order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_files: {
         Row: {
           bucket: string
@@ -148,6 +360,50 @@ export type Database = {
             foreignKeyName: "order_files_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_ops: {
+        Row: {
+          cost_mad: number | null
+          delivery_notes: string | null
+          internal_notes: string | null
+          ops_stage: string
+          order_id: string
+          production_notes: string | null
+          supplier: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          cost_mad?: number | null
+          delivery_notes?: string | null
+          internal_notes?: string | null
+          ops_stage?: string
+          order_id: string
+          production_notes?: string | null
+          supplier?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          cost_mad?: number | null
+          delivery_notes?: string | null
+          internal_notes?: string | null
+          ops_stage?: string
+          order_id?: string
+          production_notes?: string | null
+          supplier?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_ops_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
@@ -404,6 +660,54 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      crm_claim: {
+        Args: { _lease_seconds?: number; _limit?: number; _owner: string }
+        Returns: {
+          attempts: number
+          claimed_version: number | null
+          created_at: string
+          entity_type: string
+          id: string
+          last_error: string | null
+          last_error_code: string | null
+          lease_expires_at: string | null
+          lease_owner: string | null
+          next_attempt_at: string
+          processed_version: number
+          source_id: string
+          source_table: string
+          status: string
+          updated_at: string
+          version: number
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "crm_outbox"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      crm_complete: {
+        Args: {
+          _account_id?: string
+          _error?: string
+          _error_code?: string
+          _http?: number
+          _id: string
+          _ok: boolean
+          _owner: string
+          _retry_after_seconds?: number
+          _terminal?: string
+          _zoho_id?: string
+        }
+        Returns: string
+      }
+      crm_enqueue: {
+        Args: { _entity: string; _id: string; _table: string }
+        Returns: undefined
+      }
+      crm_reconcile: { Args: never; Returns: number }
+      crm_retry: { Args: { _id: string }; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
