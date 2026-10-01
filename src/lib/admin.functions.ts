@@ -163,14 +163,12 @@ export const adminUpdateOrderOps = createServerFn({ method: "POST" })
     const db = await requireAdmin(context);
     const { OPS_TO_CUSTOMER } = await import("./admin-metrics");
     const { orderId, ...fields } = data;
-    const { error } = await db
-      .from("order_ops")
-      .upsert({
-        order_id: orderId,
-        ...fields,
-        updated_by: context.userId,
-        updated_at: new Date().toISOString(),
-      });
+    const { error } = await db.from("order_ops").upsert({
+      order_id: orderId,
+      ...fields,
+      updated_by: context.userId,
+      updated_at: new Date().toISOString(),
+    });
     if (error) throw new Error("Could not save");
     const customerStage = OPS_TO_CUSTOMER[data.ops_stage];
     if (customerStage) await db.from("orders").update({ status: customerStage }).eq("id", orderId);
