@@ -80,3 +80,28 @@ $$);
 - **Mock-Zoho unit tests:** `src/lib/crm-core.test.ts`.
 - **Static security tests:** `src/lib/admin-security.test.ts`.
 - **Not run:** live Zoho tests (no runtime credentials yet), and live database tests of RLS and concurrency (no direct database connection in the build sandbox).
+
+## Live audit follow-up (2026-10-01)
+- **Currency:** the MAD check reads `GET /crm/v8/org` → `org[0].iso_code` and needs the `ZohoCRM.org.READ` scope (already in the setup scopes). Live org PRIMPLE reports `iso_code=MAD`, so amounts will sync once credentials are set. No settings/currencies permission is needed.
+- **Table privileges:** `0018_revoke_truncate_trigger_client_roles.sql` removes TRUNCATE and TRIGGER from anon and authenticated on every public table. `0019` removes all anon/authenticated privileges on the CRM and admin tables.
+  - Verified live: TRUNCATE 0/16 and TRIGGER 0/16 tables for both roles.
+  - SELECT, INSERT, UPDATE and DELETE are kept, so checkout and existing RLS behaviour are unchanged.
+  - REFERENCES is still granted; it was left on purpose because it isn't needed for this fix.
+- **Scheduler:** `pg_cron` and `pg_net` (built-in database extensions, no extra cost or project) were turned on by migration `0017`.
+  - Live job: `primple-crm-reconcile`, hourly. It only re-queues missed events.
+  - The 15-minute HTTP worker job (Setup step 4) still has to be created by the owner, because the agent can't write to Vault. No other Lovable scheduler is available to this project.
+  - Until step 4 is done, Zoho delivery only happens when an admin clicks "Lancer un lot maintenant".
+
+## Admin bootstrap (run once in Cloud → SQL editor)
+`user_roles` currently has no rows. Replace the email with the verified account that should be admin; it must have signed in at least once.
+```sql
+insert into public.user_roles (user_id, role)
+select id, 'admin'::public.app_role from auth.users
+where lower(email) = lower('owner@example.com')
+on conflict (user_id, role) do nothing
+returning user_id;
+```
+If it returns no row, that email has no account yet. Check with:
+```sql
+select r.role, u.email from public.user_roles r join auth.users u on u.id = r.user_id;
+```
