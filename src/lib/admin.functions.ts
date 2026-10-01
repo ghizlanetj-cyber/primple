@@ -7,7 +7,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * before loading the service-role client. Moderators keep payment tools only.
  */
 async function requireAdmin(context: { supabase: any; userId: string }) {
-  const { data, error } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+  const { data, error } = await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  });
   if (error || !data) throw new Error("Forbidden");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin as any;
@@ -23,7 +26,8 @@ const text = (v: unknown, max = 4000) => (v == null || v === "" ? null : String(
 
 const ORDER_COLUMNS =
   "id, reference, status, items, subtotal, delivery, total, deposit_amount, balance_amount, deposit_paid, payment_method, payment_status, paid_at, contact_name, company, email, phone, address, city, postcode, expected_at, created_at, updated_at, user_id, guest_email";
-const MONEY_COLUMNS = "total, deposit_amount, balance_amount, payment_status, deposit_paid, status, email, guest_email, user_id, created_at, contact_name";
+const MONEY_COLUMNS =
+  "total, deposit_amount, balance_amount, payment_status, deposit_paid, status, email, guest_email, user_id, created_at, contact_name";
 
 export const adminOverview = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -33,18 +37,44 @@ export const adminOverview = createServerFn({ method: "GET" })
     const { crmReadiness } = await import("./crm-worker.server");
     const [orders, unread, quotes, outbox, problems, enqueueErrors] = await Promise.all([
       db.from("orders").select(MONEY_COLUMNS).limit(5000),
-      db.from("message_meta").select("message_id", { count: "exact", head: true }).eq("is_read", false),
-      db.from("message_meta").select("message_id", { count: "exact", head: true }).in("classification", ["quote", "sales"]).not("quote_stage", "in", "(won,lost)"),
+      db
+        .from("message_meta")
+        .select("message_id", { count: "exact", head: true })
+        .eq("is_read", false),
+      db
+        .from("message_meta")
+        .select("message_id", { count: "exact", head: true })
+        .in("classification", ["quote", "sales"])
+        .not("quote_stage", "in", "(won,lost)"),
       db.from("crm_outbox").select("status"),
-      db.from("crm_outbox").select("id, entity_type, source_table, source_id, status, attempts, last_error_code, last_error, next_attempt_at, updated_at")
-        .in("status", ["failed", "dead", "blocked"]).order("updated_at", { ascending: false }).limit(25),
-      db.from("crm_enqueue_errors").select("id, at, source_table, error_code").order("at", { ascending: false }).limit(10),
+      db
+        .from("crm_outbox")
+        .select(
+          "id, entity_type, source_table, source_id, status, attempts, last_error_code, last_error, next_attempt_at, updated_at",
+        )
+        .in("status", ["failed", "dead", "blocked"])
+        .order("updated_at", { ascending: false })
+        .limit(25),
+      db
+        .from("crm_enqueue_errors")
+        .select("id, at, source_table, error_code")
+        .order("at", { ascending: false })
+        .limit(10),
     ]);
     const counts: Record<string, number> = {};
     for (const r of outbox.data ?? []) counts[r.status] = (counts[r.status] ?? 0) + 1;
     return {
-      summary: { ...summarize(orders.data ?? []), unreadMessages: unread.count ?? 0, openQuotes: quotes.count ?? 0 },
-      crm: { readiness: crmReadiness(), counts, problems: problems.data ?? [], enqueueErrors: enqueueErrors.data ?? [] },
+      summary: {
+        ...summarize(orders.data ?? []),
+        unreadMessages: unread.count ?? 0,
+        openQuotes: quotes.count ?? 0,
+      },
+      crm: {
+        readiness: crmReadiness(),
+        counts,
+        problems: problems.data ?? [],
+        enqueueErrors: enqueueErrors.data ?? [],
+      },
     };
   });
 
@@ -53,21 +83,36 @@ export const adminOrders = createServerFn({ method: "GET" })
   .inputValidator((i: { page?: number; orderId?: string; q?: string }) => ({
     page: page(i?.page),
     orderId: i?.orderId ? uuid(i.orderId) : null,
-    q: String(i?.q ?? "").replace(/[^\w@.\- ]/g, "").slice(0, 60),
+    q: String(i?.q ?? "")
+      .replace(/[^\w@.\- ]/g, "")
+      .slice(0, 60),
   }))
   .handler(async ({ data, context }) => {
     const db = await requireAdmin(context);
     const size = 20;
-    let query = db.from("orders").select(ORDER_COLUMNS, { count: "exact" }).order("created_at", { ascending: false });
+    let query = db
+      .from("orders")
+      .select(ORDER_COLUMNS, { count: "exact" })
+      .order("created_at", { ascending: false });
     if (data.orderId) query = query.eq("id", data.orderId);
-    else if (data.q) query = query.or(`reference.ilike.%${data.q}%,email.ilike.%${data.q}%,contact_name.ilike.%${data.q}%`);
+    else if (data.q)
+      query = query.or(
+        `reference.ilike.%${data.q}%,email.ilike.%${data.q}%,contact_name.ilike.%${data.q}%`,
+      );
     const { data: rows, count } = await query.range(data.page * size, data.page * size + size - 1);
     const ids = (rows ?? []).map((r: any) => r.id);
     const [ops, files, crm] = ids.length
       ? await Promise.all([
           db.from("order_ops").select("*").in("order_id", ids),
-          db.from("order_files").select("id, order_id, file_name, mime_type, size_bytes, status, created_at").in("order_id", ids),
-          db.from("crm_outbox").select("source_id, entity_type, status, last_error_code").eq("source_table", "orders").in("source_id", ids),
+          db
+            .from("order_files")
+            .select("id, order_id, file_name, mime_type, size_bytes, status, created_at")
+            .in("order_id", ids),
+          db
+            .from("crm_outbox")
+            .select("source_id, entity_type, status, last_error_code")
+            .eq("source_table", "orders")
+            .in("source_id", ids),
         ])
       : [{ data: [] }, { data: [] }, { data: [] }];
     const { stripSensitive } = await import("./crm-core");
@@ -86,7 +131,21 @@ export const adminOrders = createServerFn({ method: "GET" })
 export const adminUpdateOrderOps = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: any) => {
-    const { OPS_STAGES } = { OPS_STAGES: ["new", "payment_confirmed", "file_verification", "bat_approved", "in_production", "finishing", "ready", "shipped", "delivered", "cancelled", "refunded"] };
+    const { OPS_STAGES } = {
+      OPS_STAGES: [
+        "new",
+        "payment_confirmed",
+        "file_verification",
+        "bat_approved",
+        "in_production",
+        "finishing",
+        "ready",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "refunded",
+      ],
+    };
     if (!OPS_STAGES.includes(i?.ops_stage)) throw new Error("Invalid stage");
     const cost = i?.cost_mad === "" || i?.cost_mad == null ? null : Number(i.cost_mad);
     if (cost != null && (!Number.isFinite(cost) || cost < 0)) throw new Error("Invalid cost");
@@ -104,7 +163,14 @@ export const adminUpdateOrderOps = createServerFn({ method: "POST" })
     const db = await requireAdmin(context);
     const { OPS_TO_CUSTOMER } = await import("./admin-metrics");
     const { orderId, ...fields } = data;
-    const { error } = await db.from("order_ops").upsert({ order_id: orderId, ...fields, updated_by: context.userId, updated_at: new Date().toISOString() });
+    const { error } = await db
+      .from("order_ops")
+      .upsert({
+        order_id: orderId,
+        ...fields,
+        updated_by: context.userId,
+        updated_at: new Date().toISOString(),
+      });
     if (error) throw new Error("Could not save");
     const customerStage = OPS_TO_CUSTOMER[data.ops_stage];
     if (customerStage) await db.from("orders").update({ status: customerStage }).eq("id", orderId);
@@ -116,9 +182,15 @@ export const adminFileUrl = createServerFn({ method: "POST" })
   .inputValidator((i: { fileId: string }) => ({ fileId: uuid(i?.fileId) }))
   .handler(async ({ data, context }) => {
     const db = await requireAdmin(context);
-    const { data: f } = await db.from("order_files").select("bucket, path, order_id").eq("id", data.fileId).maybeSingle();
+    const { data: f } = await db
+      .from("order_files")
+      .select("bucket, path, order_id")
+      .eq("id", data.fileId)
+      .maybeSingle();
     if (!f || f.bucket !== "client-artwork") throw new Error("Unknown file");
-    const { data: signed, error } = await db.storage.from("client-artwork").createSignedUrl(f.path, 300);
+    const { data: signed, error } = await db.storage
+      .from("client-artwork")
+      .createSignedUrl(f.path, 300);
     if (error) throw new Error("Could not sign");
     return { url: signed.signedUrl as string };
   });
@@ -137,7 +209,9 @@ export const adminCustomers = createServerFn({ method: "GET" })
       const e = String(m.email ?? "").toLowerCase();
       msgCount.set(e, (msgCount.get(e) ?? 0) + 1);
     }
-    return customersFrom(orders.data ?? []).slice(0, 200).map((c) => ({ ...c, messages: c.email ? msgCount.get(c.email) ?? 0 : 0 }));
+    return customersFrom(orders.data ?? [])
+      .slice(0, 200)
+      .map((c) => ({ ...c, messages: c.email ? (msgCount.get(c.email) ?? 0) : 0 }));
   });
 
 export const adminMessages = createServerFn({ method: "GET" })
@@ -152,11 +226,16 @@ export const adminMessages = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .range(data.page * size, data.page * size + size - 1);
     const ids = (rows ?? []).map((r: any) => r.id);
-    const { data: meta } = ids.length ? await db.from("message_meta").select("*").in("message_id", ids) : { data: [] };
+    const { data: meta } = ids.length
+      ? await db.from("message_meta").select("*").in("message_id", ids)
+      : { data: [] };
     return {
       total: count ?? 0,
       pageSize: size,
-      messages: (rows ?? []).map((m: any) => ({ ...m, meta: (meta ?? []).find((x: any) => x.message_id === m.id) ?? null })),
+      messages: (rows ?? []).map((m: any) => ({
+        ...m,
+        meta: (meta ?? []).find((x: any) => x.message_id === m.id) ?? null,
+      })),
     };
   });
 
@@ -181,7 +260,10 @@ export const adminUpdateMessage = createServerFn({ method: "POST" })
     const db = await requireAdmin(context);
     const { id, ...fields } = data;
     const { error } = await db.from("message_meta").upsert({
-      message_id: id, ...fields, ...(fields.classification ? { classified_by: "admin" } : {}), updated_at: new Date().toISOString(),
+      message_id: id,
+      ...fields,
+      ...(fields.classification ? { classified_by: "admin" } : {}),
+      updated_at: new Date().toISOString(),
     });
     if (error) throw new Error("Could not save");
     return { ok: true };

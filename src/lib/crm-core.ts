@@ -5,17 +5,38 @@
 export type FetchLike = (url: string, init: RequestInit) => Promise<Response>;
 
 export const ACCOUNTS_HOSTS = [
-  "accounts.zoho.com", "accounts.zoho.eu", "accounts.zoho.in", "accounts.zoho.com.au",
-  "accounts.zoho.jp", "accounts.zohocloud.ca", "accounts.zoho.sa", "accounts.zoho.uk", "accounts.zoho.com.cn",
+  "accounts.zoho.com",
+  "accounts.zoho.eu",
+  "accounts.zoho.in",
+  "accounts.zoho.com.au",
+  "accounts.zoho.jp",
+  "accounts.zohocloud.ca",
+  "accounts.zoho.sa",
+  "accounts.zoho.uk",
+  "accounts.zoho.com.cn",
 ];
 export const API_HOSTS = [
-  "www.zohoapis.com", "www.zohoapis.eu", "www.zohoapis.in", "www.zohoapis.com.au",
-  "www.zohoapis.jp", "www.zohoapis.ca", "www.zohoapis.sa", "www.zohoapis.uk", "www.zohoapis.com.cn",
+  "www.zohoapis.com",
+  "www.zohoapis.eu",
+  "www.zohoapis.in",
+  "www.zohoapis.com.au",
+  "www.zohoapis.jp",
+  "www.zohoapis.ca",
+  "www.zohoapis.sa",
+  "www.zohoapis.uk",
+  "www.zohoapis.com.cn",
 ];
 
 export const ZOHO_STAGES = [
-  "Qualification", "Needs Analysis", "Value Proposition", "Id. Decision Makers", "Proposal/Price Quote",
-  "Negotiation/Review", "Closed Won", "Closed Lost", "Closed Lost to Competition",
+  "Qualification",
+  "Needs Analysis",
+  "Value Proposition",
+  "Id. Decision Makers",
+  "Proposal/Price Quote",
+  "Negotiation/Review",
+  "Closed Won",
+  "Closed Lost",
+  "Closed Lost to Competition",
 ] as const;
 export type ZohoStage = (typeof ZOHO_STAGES)[number];
 
@@ -58,7 +79,8 @@ export function allowlistedOrigin(input: string | undefined, hosts: string[]): s
   } catch {
     throw new ZohoError("bad_domain", "Zoho domain invalid", null, null, "blocked");
   }
-  if (!hosts.includes(host)) throw new ZohoError("bad_domain", "Zoho domain not allowlisted", null, null, "blocked");
+  if (!hosts.includes(host))
+    throw new ZohoError("bad_domain", "Zoho domain not allowlisted", null, null, "blocked");
   return `https://${host}`;
 }
 
@@ -78,7 +100,9 @@ function retryAfter(res: Response): number | null {
   const n = Number(v);
   if (Number.isFinite(n)) return Math.min(Math.max(Math.round(n), 1), 3600);
   const t = Date.parse(v);
-  return Number.isFinite(t) ? Math.min(Math.max(Math.round((t - Date.now()) / 1000), 1), 3600) : null;
+  return Number.isFinite(t)
+    ? Math.min(Math.max(Math.round((t - Date.now()) / 1000), 1), 3600)
+    : null;
 }
 
 export class ZohoClient {
@@ -87,7 +111,11 @@ export class ZohoClient {
   private apiOrigin: string;
   private accountsOrigin: string;
 
-  constructor(private cfg: ZohoConfig, private fetchFn: FetchLike, private timeoutMs = 10000) {
+  constructor(
+    private cfg: ZohoConfig,
+    private fetchFn: FetchLike,
+    private timeoutMs = 10000,
+  ) {
     this.accountsOrigin = allowlistedOrigin(cfg.accountsDomain, ACCOUNTS_HOSTS);
     this.apiOrigin = allowlistedOrigin(cfg.apiDomain, API_HOSTS);
   }
@@ -117,10 +145,22 @@ export class ZohoClient {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
     });
-    const json = (await res.json().catch(() => null)) as { access_token?: string; expires_in?: number; api_domain?: string; error?: string } | null;
+    const json = (await res.json().catch(() => null)) as {
+      access_token?: string;
+      expires_in?: number;
+      api_domain?: string;
+      error?: string;
+    } | null;
     if (!res.ok || !json?.access_token) {
-      if (res.status === 429) throw new ZohoError("rate_limited", "Zoho token rate limited", 429, retryAfter(res));
-      throw new ZohoError("auth_failed", `Token refresh failed: ${sanitize(json?.error ?? res.status)}`, res.status, null, "blocked");
+      if (res.status === 429)
+        throw new ZohoError("rate_limited", "Zoho token rate limited", 429, retryAfter(res));
+      throw new ZohoError(
+        "auth_failed",
+        `Token refresh failed: ${sanitize(json?.error ?? res.status)}`,
+        res.status,
+        null,
+        "blocked",
+      );
     }
     if (json.api_domain) this.apiOrigin = allowlistedOrigin(json.api_domain, API_HOSTS);
     this.token = json.access_token;
@@ -141,12 +181,20 @@ export class ZohoClient {
     }
     if (res.status === 204) return { data: [] };
     const json = (await res.json().catch(() => null)) as any;
-    if (res.status === 429) throw new ZohoError("rate_limited", "Zoho rate limited", 429, retryAfter(res) ?? 60);
-    if (res.status >= 500) throw new ZohoError(`http_${res.status}`, "Zoho server error", res.status);
+    if (res.status === 429)
+      throw new ZohoError("rate_limited", "Zoho rate limited", 429, retryAfter(res) ?? 60);
+    if (res.status >= 500)
+      throw new ZohoError(`http_${res.status}`, "Zoho server error", res.status);
     if (!res.ok) {
       const code = sanitize(json?.code ?? json?.data?.[0]?.code ?? `http_${res.status}`);
       const scope = code === "OAUTH_SCOPE_MISMATCH" || res.status === 401 || res.status === 403;
-      throw new ZohoError(code, `Zoho rejected request (${res.status})`, res.status, null, scope ? "blocked" : "dead");
+      throw new ZohoError(
+        code,
+        `Zoho rejected request (${res.status})`,
+        res.status,
+        null,
+        scope ? "blocked" : "dead",
+      );
     }
     return json;
   }
@@ -158,7 +206,13 @@ export function recordId(json: any): string {
   if (!rec) throw new ZohoError("empty_response", "Zoho returned no record", null, null, "dead");
   if (rec.status !== "success" || !rec.details?.id) {
     const field = rec.details?.api_name ? ` on ${sanitize(rec.details.api_name)}` : "";
-    throw new ZohoError(sanitize(rec.code ?? "record_error"), `Record rejected${field}`, null, null, "dead");
+    throw new ZohoError(
+      sanitize(rec.code ?? "record_error"),
+      `Record rejected${field}`,
+      null,
+      null,
+      "dead",
+    );
   }
   return String(rec.details.id);
 }
@@ -185,12 +239,16 @@ export type DealSource = {
 export type SyncSource = { contact: ContactSource | null; deal?: DealSource | null };
 
 export function normalizeEmail(email: unknown): string | null {
-  const e = String(email ?? "").trim().toLowerCase();
+  const e = String(email ?? "")
+    .trim()
+    .toLowerCase();
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) ? e : null;
 }
 
 function splitName(name: string | null | undefined) {
-  const n = String(name ?? "").trim().replace(/\s+/g, " ");
+  const n = String(name ?? "")
+    .trim()
+    .replace(/\s+/g, " ");
   if (!n) return { first: null, last: null };
   const i = n.lastIndexOf(" ");
   return i > 0 ? { first: n.slice(0, i), last: n.slice(i + 1) } : { first: null, last: n };
@@ -204,7 +262,8 @@ export function contactFields(src: ContactSource, creating: boolean): Record<str
   const { first, last } = splitName(src.name);
   if (last) out["Last_Name"] = last;
   if (first) out["First_Name"] = first;
-  if (creating && !out["Last_Name"]) out["Last_Name"] = email ? email.split("@")[0]! : "Client Primple";
+  if (creating && !out["Last_Name"])
+    out["Last_Name"] = email ? email.split("@")[0]! : "Client Primple";
   if (src.phone?.trim()) out["Phone"] = src.phone.trim();
   if (creating) {
     out["Lead_Source"] = "OnlineStore";
@@ -221,15 +280,31 @@ async function findOrCreateAccount(client: ZohoClient, company: string): Promise
   const rows = (found?.data ?? []) as Array<{ id: string }>;
   if (rows.length === 1) return String(rows[0]!.id);
   if (rows.length > 1) return null; // ambiguous: never merge
-  return recordId(await client.request("POST", "/crm/v8/Accounts", { data: [{ Account_Name: name }] }));
+  return recordId(
+    await client.request("POST", "/crm/v8/Accounts", { data: [{ Account_Name: name }] }),
+  );
 }
 
-export async function syncContact(client: ZohoClient, src: ContactSource): Promise<{ contactId: string; accountId: string | null }> {
+export async function syncContact(
+  client: ZohoClient,
+  src: ContactSource,
+): Promise<{ contactId: string; accountId: string | null }> {
   const email = normalizeEmail(src.email);
-  if (!email) throw new ZohoError("invalid_email", "Contact has no valid email", null, null, "dead");
-  const found = await client.request("GET", `/crm/v8/Contacts/search?email=${encodeURIComponent(email)}`);
+  if (!email)
+    throw new ZohoError("invalid_email", "Contact has no valid email", null, null, "dead");
+  const found = await client.request(
+    "GET",
+    `/crm/v8/Contacts/search?email=${encodeURIComponent(email)}`,
+  );
   const rows = (found?.data ?? []) as Array<{ id: string; Account_Name?: { id: string } | null }>;
-  if (rows.length > 1) throw new ZohoError("ambiguous_contact", "Several Zoho contacts share this email", null, null, "blocked");
+  if (rows.length > 1)
+    throw new ZohoError(
+      "ambiguous_contact",
+      "Several Zoho contacts share this email",
+      null,
+      null,
+      "blocked",
+    );
   let accountId = rows[0]?.Account_Name?.id ?? null;
   if (!accountId && src.company) accountId = await findOrCreateAccount(client, src.company);
   const fields: Record<string, unknown> = contactFields({ ...src, email }, rows.length === 0);
@@ -237,10 +312,15 @@ export async function syncContact(client: ZohoClient, src: ContactSource): Promi
   let contactId: string;
   if (rows.length === 1) {
     contactId = String(rows[0]!.id);
-    recordId(await client.request("PUT", "/crm/v8/Contacts", { data: [{ id: contactId, ...fields }] }));
+    recordId(
+      await client.request("PUT", "/crm/v8/Contacts", { data: [{ id: contactId, ...fields }] }),
+    );
   } else {
     contactId = recordId(
-      await client.request("POST", "/crm/v8/Contacts/upsert", { data: [fields], duplicate_check_fields: ["Email"] }),
+      await client.request("POST", "/crm/v8/Contacts/upsert", {
+        data: [fields],
+        duplicate_check_fields: ["Email"],
+      }),
     );
   }
   return { contactId, accountId };
@@ -254,11 +334,24 @@ export async function assertMadCurrency(client: ZohoClient): Promise<void> {
   } catch (e) {
     const code = e instanceof ZohoError ? e.code : "unknown";
     if (e instanceof ZohoError && !e.terminal) throw e;
-    throw new ZohoError("currency_unverified", `Org currency could not be read (${code})`, null, null, "blocked");
+    throw new ZohoError(
+      "currency_unverified",
+      `Org currency could not be read (${code})`,
+      null,
+      null,
+      "blocked",
+    );
   }
   const o = org?.org?.[0] ?? {};
   const iso = String(o.iso_code ?? o.currency ?? "").toUpperCase();
-  if (!/\bMAD\b/.test(iso)) throw new ZohoError("currency_mismatch", "Zoho base currency is not MAD", null, null, "blocked");
+  if (!/\bMAD\b/.test(iso))
+    throw new ZohoError(
+      "currency_mismatch",
+      "Zoho base currency is not MAD",
+      null,
+      null,
+      "blocked",
+    );
 }
 
 export function dealFields(deal: DealSource, contactId: string | null, accountId: string | null) {
@@ -278,8 +371,14 @@ export function dealFields(deal: DealSource, contactId: string | null, accountId
   return out;
 }
 
-export async function syncDeal(client: ZohoClient, deal: DealSource, contactId: string | null, accountId: string | null) {
-  if (!ZOHO_STAGES.includes(deal.stage)) throw new ZohoError("bad_stage", "Unknown stage", null, null, "dead");
+export async function syncDeal(
+  client: ZohoClient,
+  deal: DealSource,
+  contactId: string | null,
+  accountId: string | null,
+) {
+  if (!ZOHO_STAGES.includes(deal.stage))
+    throw new ZohoError("bad_stage", "Unknown stage", null, null, "dead");
   if (deal.amountMad != null) await assertMadCurrency(client);
   return recordId(
     await client.request("POST", "/crm/v8/Deals/upsert", {
@@ -289,23 +388,36 @@ export async function syncDeal(client: ZohoClient, deal: DealSource, contactId: 
   );
 }
 
-export type Job = { id: string; entity_type: "contact" | "deal"; source_table: string; source_id: string };
+export type Job = {
+  id: string;
+  entity_type: "contact" | "deal";
+  source_table: string;
+  source_id: string;
+};
 
 export async function processJob(client: ZohoClient, job: Job, source: SyncSource | null) {
   if (!source) throw new ZohoError("source_missing", "Source record not found", null, null, "dead");
   if (job.entity_type === "contact") {
-    if (!source.contact) throw new ZohoError("invalid_email", "No contact email", null, null, "dead");
+    if (!source.contact)
+      throw new ZohoError("invalid_email", "No contact email", null, null, "dead");
     const r = await syncContact(client, source.contact);
     return { zohoId: r.contactId, accountId: r.accountId };
   }
-  if (!source.deal) throw new ZohoError("not_deal", "Record is not a confirmed sale", null, null, "dead");
+  if (!source.deal)
+    throw new ZohoError("not_deal", "Record is not a confirmed sale", null, null, "dead");
   const c = source.contact ? await syncContact(client, source.contact) : null;
   const id = await syncDeal(client, source.deal, c?.contactId ?? null, c?.accountId ?? null);
   return { zohoId: id, accountId: c?.accountId ?? null };
 }
 
 /** Strips internal/secret columns before anything reaches a browser. */
-const SECRET_KEYS = ["claim_token", "youcanpay_token_id", "youcanpay_transaction_id", "guest_token", "lease_owner"];
+const SECRET_KEYS = [
+  "claim_token",
+  "youcanpay_token_id",
+  "youcanpay_transaction_id",
+  "guest_token",
+  "lease_owner",
+];
 export function stripSensitive<T extends Record<string, unknown>>(row: T): Omit<T, "claim_token"> {
   const copy: Record<string, unknown> = { ...row };
   for (const k of SECRET_KEYS) delete copy[k];

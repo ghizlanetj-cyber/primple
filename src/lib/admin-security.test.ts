@@ -21,16 +21,28 @@ describe("admin and worker security", () => {
   });
 
   it("worker route authenticates before importing the worker / admin client", () => {
-    expect(route.indexOf("authenticateCronRequest(request)")).toBeLessThan(route.indexOf('import("@/lib/crm-worker.server")'));
+    expect(route.indexOf("authenticateCronRequest(request)")).toBeLessThan(
+      route.indexOf('import("@/lib/crm-worker.server")'),
+    );
     expect(route).not.toContain("client.server");
   });
 
   it("migration locks sidecars and RPCs to the service role", () => {
-    for (const t of ["order_ops", "message_meta", "crm_outbox", "crm_mappings", "crm_sync_attempts"]) {
+    for (const t of [
+      "order_ops",
+      "message_meta",
+      "crm_outbox",
+      "crm_mappings",
+      "crm_sync_attempts",
+    ]) {
       expect(sql).toContain(`ALTER TABLE public.${t} ENABLE ROW LEVEL SECURITY`);
-      expect(sql).not.toMatch(new RegExp(`GRANT [A-Z, ]+ ON public\\.${t} TO (anon|authenticated)`));
+      expect(sql).not.toMatch(
+        new RegExp(`GRANT [A-Z, ]+ ON public\\.${t} TO (anon|authenticated)`),
+      );
     }
-    expect(sql).toMatch(/REVOKE ALL ON FUNCTION public\.crm_claim[^;]+FROM PUBLIC, anon, authenticated/);
+    expect(sql).toMatch(
+      /REVOKE ALL ON FUNCTION public\.crm_claim[^;]+FROM PUBLIC, anon, authenticated/,
+    );
     expect(sql).toContain("FOR UPDATE SKIP LOCKED");
   });
 

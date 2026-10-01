@@ -31,7 +31,16 @@ export function moneyOf(o: OrderMoney) {
 }
 
 export function summarize(orders: OrderMoney[]) {
-  const s = { orders: orders.length, confirmed: 0, orderValue: 0, collected: 0, balanceDue: 0, pendingPayment: 0, inProduction: 0, completed: 0 };
+  const s = {
+    orders: orders.length,
+    confirmed: 0,
+    orderValue: 0,
+    collected: 0,
+    balanceDue: 0,
+    pendingPayment: 0,
+    inProduction: 0,
+    completed: 0,
+  };
   for (const o of orders) {
     const m = moneyOf(o);
     s.orderValue += m.orderValue;
@@ -42,17 +51,39 @@ export function summarize(orders: OrderMoney[]) {
     if (["Artwork approved", "In production", "Quality check"].includes(o.status)) s.inProduction++;
     if (["Shipped", "Delivered"].includes(o.status)) s.completed++;
   }
-  for (const k of ["orderValue", "collected", "balanceDue"] as const) s[k] = Math.round(s[k] * 100) / 100;
+  for (const k of ["orderValue", "collected", "balanceDue"] as const)
+    s[k] = Math.round(s[k] * 100) / 100;
   return s;
 }
 
 /** Groups orders by normalized email (falls back to user id), including guest orders. */
 export function customersFrom(orders: (OrderMoney & { contact_name?: string | null })[]) {
-  const map = new Map<string, { key: string; email: string | null; name: string | null; userIds: Set<string>; orders: number; value: number; collected: number; last: string }>();
+  const map = new Map<
+    string,
+    {
+      key: string;
+      email: string | null;
+      name: string | null;
+      userIds: Set<string>;
+      orders: number;
+      value: number;
+      collected: number;
+      last: string;
+    }
+  >();
   for (const o of orders) {
     const email = (o.email ?? o.guest_email ?? "").trim().toLowerCase() || null;
     const key = email ?? `user:${o.user_id ?? "unknown"}`;
-    const c = map.get(key) ?? { key, email, name: o.contact_name ?? null, userIds: new Set<string>(), orders: 0, value: 0, collected: 0, last: o.created_at };
+    const c = map.get(key) ?? {
+      key,
+      email,
+      name: o.contact_name ?? null,
+      userIds: new Set<string>(),
+      orders: 0,
+      value: 0,
+      collected: 0,
+      last: o.created_at,
+    };
     if (o.user_id) c.userIds.add(o.user_id);
     c.orders++;
     const m = moneyOf(o);
