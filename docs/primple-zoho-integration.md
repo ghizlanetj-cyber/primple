@@ -105,3 +105,12 @@ If it returns no row, that email has no account yet. Check with:
 ```sql
 select r.role, u.email from public.user_roles r join auth.users u on u.id = r.user_id;
 ```
+
+## Artwork file ownership guard (migration 0020)
+`guard_order_files` (BEFORE INSERT/UPDATE on `order_files`) applies to signed-in and anonymous customer requests. Server-side code (guest upload, guest claim, admin) is exempt.
+- **New rows:** `user_id` must be the caller, `bucket` must be `client-artwork`, `path` must start with `<caller uuid>/` (no `..`), and `guest_token` is forced to null.
+- **After insert:** `user_id`, `path`, `bucket` and `guest_token` cannot be changed.
+- **Order linking:** `order_id` must be an order the caller owns. If `order_reference` is also set, it must be that order's reference. A reference without an order must also belong to the caller.
+- **Still works:** linking an uploaded file to the customer's own order, guest checkout files and account claim (both server-side). Claimed guest files keep their `guest/...` path and stay readable by their verified owner.
+- **Live regression test:** `tests/db/order_files_guard.sql` runs in one transaction and rolls back. Live result: `PASS 11/11`. It covers a forged path to another customer's file, a forged guest path, a wrong bucket, linking to another customer's order, a mismatched reference (with and without an order), path rewrite, a valid attach, a claim_token change, and the server-side exemption.
+- **Admin APIs:** they never select or return `claim_token`, `guest_token` or YouCan Pay token or transaction IDs. This is checked by `src/lib/admin-security.test.ts` and `stripSensitive`.
