@@ -127,6 +127,13 @@
       "when": 1790874450975,
       "tag": "0017_crm_admin_outbox_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1790877988995,
+      "tag": "0018_revoke_truncate_trigger_client_roles",
+      "breakpoints": true
     }
   ]
 }
