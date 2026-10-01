@@ -419,7 +419,7 @@ function fakeDb(rows: Rec[], sources: Record<string, Rec>) {
           id = v;
           return q;
         },
-        maybeSingle: async () => res(sources[`${t}:${id}`] ?? null),
+        maybeSingle: async () => res<Rec>(sources[`${t}:${id}`] ?? null),
       };
       return {
         select: () => q,
@@ -507,12 +507,19 @@ describe("worker batch with fake outbox", () => {
       );
       const z = mockZoho();
       const orig = z.fetchFn;
+      let bumped = false;
       const bump: FetchLike = async (u, i) => {
-        db.jobs[0]!.version = 2;
+        if (!bumped) db.jobs[0]!.version = 2;
+        bumped = true;
         return orig(u, i);
       };
-      await runCrmBatch({ db, fetchFn: bump });
+      // Single-job budget: the newer version must stay pending, never be marked done.
+      const first = await runCrmBatch({ db, fetchFn: bump, limit: 1 });
+      expect(first.results).toEqual({ pending: 1 });
       expect(db.jobs[0]!.status).toBe("pending");
+      // Next run picks it up again and processes the newer version.
+      const second = await runCrmBatch({ db, fetchFn: bump, limit: 1 });
+      expect(second.results).toEqual({ done: 1 });
     }));
 
   it("claims one job at a time, stops at the time budget, records the Contact mapping", () =>
