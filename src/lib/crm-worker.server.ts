@@ -109,7 +109,10 @@ export async function loadSource(db: Db, table: string, id: string): Promise<Syn
             adminUrl: `${ADMIN_BASE}?order=${String(o["id"])}`,
             description:
               items
-                .map((i) => `${String(i.quantity ?? "")} × ${String(i.name ?? "")}${i.config ? ` (${String(i.config)})` : ""}`)
+                .map(
+                  (i) =>
+                    `${String(i.quantity ?? "")} × ${String(i.name ?? "")}${i.config ? ` (${String(i.config)})` : ""}`,
+                )
                 .join("\n") +
               `\nPaiement: ${String(o["payment_method"])}; encaissé en ligne: ${Number(o["deposit_amount"])} MAD`,
           }
@@ -192,7 +195,13 @@ export async function loadSource(db: Db, table: string, id: string): Promise<Syn
  * crm_complete, which checks the lease owner; a lost lease writes nothing.
  */
 export async function runCrmBatch(
-  opts: { db?: Db; fetchFn?: FetchLike; limit?: number; budgetMs?: number; now?: () => number } = {},
+  opts: {
+    db?: Db;
+    fetchFn?: FetchLike;
+    limit?: number;
+    budgetMs?: number;
+    now?: () => number;
+  } = {},
 ) {
   const cfg = zohoConfig();
   if (!cfg) return { status: "pending_configuration" as const, processed: 0 };

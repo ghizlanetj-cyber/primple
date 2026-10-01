@@ -181,12 +181,7 @@ export class ZohoClient {
     return this.token;
   }
 
-  async request(
-    method: string,
-    path: string,
-    body?: unknown,
-    retried = false,
-  ): Promise<ZohoJson> {
+  async request(method: string, path: string, body?: unknown, retried = false): Promise<ZohoJson> {
     const token = await this.accessToken();
     const res = await this.timed(`${this.apiOrigin}${path}`, {
       method,
@@ -219,7 +214,10 @@ export class ZohoClient {
 }
 
 /** Zoho can answer HTTP 200/201/202 with a per-record failure. */
-export function recordResult(json: ZohoJson | null | undefined): { id: string; action: string | null } {
+export function recordResult(json: ZohoJson | null | undefined): {
+  id: string;
+  action: string | null;
+} {
   const rec = rows(json)[0];
   if (!rec) throw new ZohoError("empty_response", "Zoho returned no record", null, null, "dead");
   const details = asRec(rec["details"]);
@@ -304,7 +302,11 @@ export function newContactExtras(src: ContactSource): Record<string, string> {
   return out;
 }
 
-const normName = (v: unknown) => String(v ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+const normName = (v: unknown) =>
+  String(v ?? "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
 
 /** Zoho criteria: backslash-escape \ ( ) , instead of deleting punctuation. */
 export function escapeCriteria(value: string): string {
