@@ -1,0 +1,1 @@
+REVOKE ALL ON public.crm_settings, public.order_ops, public.message_meta, public.crm_outbox, public.crm_mappings, public.crm_sync_attempts, public.crm_enqueue_errors FROM anon, authenticated;
