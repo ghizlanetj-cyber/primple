@@ -373,7 +373,7 @@ function fakeDb(rows: Rec[], sources: Record<string, Rec>) {
   }));
   const mappings: Rec[] = [];
   const claims: number[] = [];
-  const res = <T>(data: T): DbResult<T> => ({ data, error: null });
+  const res = <T>(data: T | null): DbResult<T> => ({ data, error: null });
   const db = {
     jobs,
     mappings,
