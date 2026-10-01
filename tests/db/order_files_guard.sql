@@ -5,7 +5,6 @@
 DO $$
 DECLARE
   a uuid; b uuid; order_a uuid; order_b uuid; file_a uuid; ok int := 0;
-  PROCEDURE_DUMMY int;
 BEGIN
   SELECT id INTO a FROM auth.users ORDER BY created_at LIMIT 1;
   SELECT id INTO b FROM auth.users WHERE id <> a ORDER BY created_at LIMIT 1;
@@ -79,16 +78,16 @@ BEGIN
 
   -- 9. Customer cannot reassign order ownership / claim identity.
   BEGIN
-    UPDATE public.orders SET user_id = a WHERE id = order_a AND false; -- no-op sanity
     UPDATE public.orders SET claim_token = 'x' WHERE id = order_a;
     RAISE EXCEPTION 'ORDER_FILES_GUARD_TEST FAIL: claim_token change accepted';
   EXCEPTION WHEN raise_exception THEN
     IF SQLERRM LIKE 'ORDER_FILES_GUARD_TEST%' THEN RAISE; END IF; ok := ok + 1;
   END;
 
-  PERFORM set_config('role', 'postgres', true);
-  -- 10. Service role path (guard-exempt) still works for guest claims.
+  -- 10. Server (non-client) path is guard-exempt, as used by guest claim.
   RESET ROLE;
+  PERFORM set_config('request.jwt.claims', '', true);
+  PERFORM set_config('request.jwt.claim.sub', '', true);
   UPDATE public.order_files SET user_id = b WHERE id = file_a;
   ok := ok + 1;
 
