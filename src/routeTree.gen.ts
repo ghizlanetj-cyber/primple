@@ -40,8 +40,10 @@ import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as ShopHandleRouteImport } from './routes/shop/$handle'
 import { Route as ShopCheckoutRouteImport } from './routes/shop/checkout'
 import { Route as ShopConfirmationRouteImport } from './routes/shop/confirmation'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin.payments'
 import { Route as AuthenticatedInvoiceReferenceRouteImport } from './routes/_authenticated/invoice.$reference'
+import { Route as ApiPublicCrmWorkerRouteImport } from './routes/api/public/crm-worker'
 import { Route as ApiPublicYoucanpayWebhookRouteImport } from './routes/api/public/youcanpay-webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
@@ -200,6 +202,11 @@ const ShopConfirmationRoute = ShopConfirmationRouteImport.update({
   path: '/shop/confirmation',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminPaymentsRoute =
   AuthenticatedAdminPaymentsRouteImport.update({
     id: '/admin/payments',
@@ -212,6 +219,11 @@ const AuthenticatedInvoiceReferenceRoute =
     path: '/invoice/$reference',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicCrmWorkerRoute = ApiPublicCrmWorkerRouteImport.update({
+  id: '/api/public/crm-worker',
+  path: '/api/public/crm-worker',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicYoucanpayWebhookRoute =
   ApiPublicYoucanpayWebhookRouteImport.update({
     id: '/api/public/youcanpay-webhook',
@@ -262,7 +274,9 @@ export interface FileRoutesByFullPath {
   '/shop/': typeof ShopIndexRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
+  '/api/public/crm-worker': typeof ApiPublicCrmWorkerRoute
   '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
@@ -299,7 +313,9 @@ export interface FileRoutesByTo {
   '/shop': typeof ShopIndexRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
+  '/api/public/crm-worker': typeof ApiPublicCrmWorkerRoute
   '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
@@ -338,7 +354,9 @@ export interface FileRoutesById {
   '/shop/': typeof ShopIndexRoute
   '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
   '/_authenticated/invoice/$reference': typeof AuthenticatedInvoiceReferenceRoute
+  '/api/public/crm-worker': typeof ApiPublicCrmWorkerRoute
   '/api/public/youcanpay-webhook': typeof ApiPublicYoucanpayWebhookRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
@@ -377,7 +395,9 @@ export interface FileRouteTypes {
     | '/shop/'
     | '/admin/payments'
     | '/invoice/$reference'
+    | '/api/public/crm-worker'
     | '/api/public/youcanpay-webhook'
+    | '/admin/'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -414,7 +434,9 @@ export interface FileRouteTypes {
     | '/shop'
     | '/admin/payments'
     | '/invoice/$reference'
+    | '/api/public/crm-worker'
     | '/api/public/youcanpay-webhook'
+    | '/admin'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
   id:
@@ -452,7 +474,9 @@ export interface FileRouteTypes {
     | '/shop/'
     | '/_authenticated/admin/payments'
     | '/_authenticated/invoice/$reference'
+    | '/api/public/crm-worker'
     | '/api/public/youcanpay-webhook'
+    | '/_authenticated/admin/'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
   fileRoutesById: FileRoutesById
@@ -488,6 +512,7 @@ export interface RootRouteChildren {
   PacksIndexRoute: typeof PacksIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   ShopIndexRoute: typeof ShopIndexRoute
+  ApiPublicCrmWorkerRoute: typeof ApiPublicCrmWorkerRoute
   ApiPublicYoucanpayWebhookRoute: typeof ApiPublicYoucanpayWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -712,6 +737,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopConfirmationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/payments': {
       id: '/_authenticated/admin/payments'
       path: '/admin/payments'
@@ -725,6 +757,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/invoice/$reference'
       preLoaderRoute: typeof AuthenticatedInvoiceReferenceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/crm-worker': {
+      id: '/api/public/crm-worker'
+      path: '/api/public/crm-worker'
+      fullPath: '/api/public/crm-worker'
+      preLoaderRoute: typeof ApiPublicCrmWorkerRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/youcanpay-webhook': {
       id: '/api/public/youcanpay-webhook'
@@ -754,12 +793,14 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
   AuthenticatedInvoiceReferenceRoute: typeof AuthenticatedInvoiceReferenceRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
   AuthenticatedInvoiceReferenceRoute: AuthenticatedInvoiceReferenceRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -796,6 +837,7 @@ const rootRouteChildren: RootRouteChildren = {
   PacksIndexRoute: PacksIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   ShopIndexRoute: ShopIndexRoute,
+  ApiPublicCrmWorkerRoute: ApiPublicCrmWorkerRoute,
   ApiPublicYoucanpayWebhookRoute: ApiPublicYoucanpayWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
