@@ -3,7 +3,7 @@
 -- Calls only database functions; nothing is sent to Zoho.
 -- Fixture jobs use random source ids and next_attempt_at in the past so they are
 -- claimed before any real job (claims use _limit 1).
--- Last live run (2026-10-01): ORDER_FILES-independent, result 'CRM_OUTBOX_TEST PASS 8/8'.
+-- Last live run (2026-10-01): 'CRM_OUTBOX_TEST PASS 8/8 (rolled back)'.
 DO $$
 DECLARE
   src uuid := gen_random_uuid(); job uuid; w1 uuid := gen_random_uuid(); w2 uuid := gen_random_uuid();
