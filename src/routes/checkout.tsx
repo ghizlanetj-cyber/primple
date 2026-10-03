@@ -227,6 +227,7 @@ function CheckoutPage() {
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : tr("The payment could not be started."));
     } finally {
+      inFlight.current = false;
       setPlacing(false);
     }
   };
