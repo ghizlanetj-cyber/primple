@@ -125,7 +125,7 @@ function CheckoutPage() {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inFlight = useRef(false);
-  const placedRef = useRef<{ order: OrderRecord; claimToken?: string; method: string } | null>(null);
+  const placedRef = useRef<{ order: OrderRecord; claimToken: string | undefined; method: string } | null>(null);
   const elementRef = useRef<YouCanPayElement | null>(null);
 
   const handleStartPayment = async (event: React.FormEvent<HTMLFormElement>) => {

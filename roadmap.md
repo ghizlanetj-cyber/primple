@@ -14,3 +14,4 @@
 - [x] P0 copy: Primple labels, packaging quote wording, remove ratings, card delivery lines
 - [x] Remove the homepage Expert Designer and restore the original hero flow
 - [x] Admin dashboard + Zoho CRM outbox (awaiting Zoho runtime secrets + worker schedule step)
+- [ ] Change phone/WhatsApp to +212708877006
