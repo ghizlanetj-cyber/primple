@@ -9,11 +9,11 @@ type StoredLine = { slug?: string; quantity?: number; selection?: Record<string,
 async function verifiedTotalCents(order: { items: unknown; total: unknown }): Promise<number> {
   const { orderTotals } = await import("@/data/pricing");
   const lines = Array.isArray(order.items) ? (order.items as StoredLine[]) : [];
-  if (lines.length === 0 || lines.some((l) => !l.slug)) return Math.round(Number(order.total) * 100);
   const totals = orderTotals(
     lines.map((l) => ({ slug: String(l.slug), quantity: Number(l.quantity), selection: l.selection ?? {} })),
   );
-  return totals ? totals.totalCents : Math.round(Number(order.total) * 100);
+  if (!totals) throw new Error("This order can no longer be priced. Please contact Primple.");
+  return totals.totalCents;
 }
 
 async function isStaff(context: { supabase: any; userId: string }) {
