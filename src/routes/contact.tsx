@@ -1,3 +1,5 @@
+import { useServerFn } from "@tanstack/react-start";
+import { submitContactMessage } from "@/lib/contact.functions";
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
@@ -10,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { contact } from "@/config/contact";
-import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/i18n";
 
 const title = "Contact | Parlez de votre projet d'impression avec Primple";
@@ -37,20 +38,23 @@ function ContactPage() {
   const { tr } = useI18n();
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+  const submitContact = useServerFn(submitContactMessage);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     setBusy(true);
     try {
-      const { error } = await supabase.from("contact_messages").insert({
-        name: String(form.get("name") ?? ""),
-        email: String(form.get("email") ?? ""),
-        company: String(form.get("company") ?? ""),
-        topic: String(form.get("topic") ?? ""),
-        message: String(form.get("message") ?? ""),
+      await submitContact({
+        data: {
+          name: String(form.get("name") ?? ""),
+          email: String(form.get("email") ?? ""),
+          company: String(form.get("company") ?? ""),
+          topic: String(form.get("topic") ?? "other"),
+          message: String(form.get("message") ?? ""),
+          website: String(form.get("website") ?? ""),
+        },
       });
-      if (error) throw error;
       setSent(true);
       toast.success(tr("Message sent. We reply within one working day."));
     } catch {
@@ -93,12 +97,19 @@ function ContactPage() {
               </div>
               <div>
                 <Label htmlFor="topic">{tr("What is it about?")}</Label>
-                <Input
+                <select
                   id="topic"
                   name="topic"
-                  placeholder={tr("Quote, order, partnership…")}
-                  className="mt-1.5"
-                />
+                  defaultValue="quote"
+                  className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="quote">{tr("Quote request")}</option>
+                  <option value="order">{tr("Existing order")}</option>
+                  <option value="artwork">{tr("Artwork question")}</option>
+                  <option value="partnership">{tr("Partnership")}</option>
+                  <option value="other">{tr("Other")}</option>
+                </select>
+                <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
               </div>
               <div className="sm:col-span-2">
                 <Label htmlFor="message">{tr("Message")}</Label>

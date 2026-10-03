@@ -124,6 +124,8 @@ function CheckoutPage() {
   const showWhatsAppCta = step === 3 && Boolean(placedOrder) && (isBank || isDeposit) && choice !== "card";
 
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const inFlight = useRef(false);
+  const placedRef = useRef<{ order: OrderRecord; claimToken: string | undefined; method: string } | null>(null);
   const elementRef = useRef<YouCanPayElement | null>(null);
 
   const handleStartPayment = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -133,6 +135,9 @@ function CheckoutPage() {
       setStep(1);
       return;
     }
+    // Double-click guard: only one order attempt at a time.
+    if (inFlight.current) return;
+    inFlight.current = true;
     setPlacing(true);
     setError(null);
     const snapshotItems = items;
@@ -142,7 +147,12 @@ function CheckoutPage() {
 
       let order: OrderRecord;
       let claimToken: string | undefined;
-      if (user) {
+      const reuse = placedRef.current;
+      if (reuse && reuse.method === method) {
+        // Retry after a failed payment step: reuse the unpaid order, never duplicate it.
+        order = reuse.order;
+        claimToken = reuse.claimToken;
+      } else if (user) {
         order = await createOrder({ userId: user.id, items, totals, details, paymentMethod: method });
       } else {
         // Guests order too: the server prices every line and hands back a
@@ -173,12 +183,14 @@ function CheckoutPage() {
           email: details.email,
         });
       }
+      const isNewOrder = placedRef.current?.order.id !== order.id;
+      placedRef.current = { order, claimToken, method };
       setPlacedOrder(order);
 
       const artworkPaths = snapshotItems
         .map((i) => i.artworkPath)
         .filter((p): p is string => Boolean(p));
-      if (user) {
+      if (user && isNewOrder) {
         try {
           await attachFilesToOrder(artworkPaths, order.id, order.reference);
         } catch {
@@ -215,6 +227,7 @@ function CheckoutPage() {
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : tr("The payment could not be started."));
     } finally {
+      inFlight.current = false;
       setPlacing(false);
     }
   };
