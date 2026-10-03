@@ -362,6 +362,7 @@ export const phrases: Record<string, TranslationPair> = {
   "Existing order": { fr: "Commande existante", ar: "طلب قائم" },
   "Artwork question": { fr: "Question sur le fichier", ar: "سؤال حول التصميم" },
   "Partnership": { fr: "Partenariat", ar: "شراكة" },
+  "Other": { fr: "Autre", ar: "أخرى" },
   "Estimated arrival": { fr: "Arrivée estimée", ar: "الوصول المتوقع" },
   "working days": { fr: "jours ouvrés", ar: "أيام عمل" },
   "Production starts after payment and artwork approval. Weekends are not counted.": { fr: "La production démarre après le paiement et la validation du fichier. Les week-ends ne sont pas comptés.", ar: "يبدأ الإنتاج بعد الدفع والموافقة على التصميم. لا تُحتسب عطلات نهاية الأسبوع." },
