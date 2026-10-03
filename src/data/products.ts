@@ -37,6 +37,10 @@ export type DimensionSpec = {
 export type QuantityBreak = { quantity: number; factor: number };
 
 
+/**
+ * Page-priced products: share of the reference price that does not scale with the
+ * page count (cover, binding, setup). The rest scales linearly with interior pages.
+ */
 export type Product = {
   slug: string;
   name: string;
@@ -56,6 +60,8 @@ export type Product = {
   rating?: number;
   reviews?: number;
   pageRange?: { min: number; max: number; default: number };
+  /** 0–1: part of the price that is fixed per copy regardless of interior pages. */
+  pageFixedShare?: number;
   bulkQuoteAt?: number;
   /** Sold on quote only: no fixed price is ever shown or charged. */
   quoteOnly?: boolean;
@@ -109,6 +115,28 @@ const size: OptionGroup = {
   ],
 };
 
+/** Business cards: the standard is double-sided with matte lamination included. */
+const cardSides: OptionGroup = {
+  id: "printing",
+  label: "Printing",
+  choices: [
+    { id: "double", label: "Double-sided", factor: 1 },
+    { id: "single", label: "Single-sided", note: "Same price as double-sided", factor: 1 },
+  ],
+};
+
+const cardFinish: OptionGroup = {
+  id: "finish",
+  label: "Finish",
+  help: "Matte lamination is included in the standard price.",
+  choices: [
+    { id: "matte", label: "Matte lamination", note: "Included", factor: 1 },
+    { id: "gloss", label: "Gloss lamination", factor: 1.05 },
+    { id: "soft-touch", label: "Soft touch", factor: 1.22, days: 1 },
+    { id: "spot-uv", label: "Spot UV", factor: 1.35, days: 2 },
+  ],
+};
+
 const corners: OptionGroup = {
   id: "corners",
   label: "Corners",
@@ -145,21 +173,16 @@ export const products: Product[] = [
       "Printed by verified partners on premium stock, checked before production and delivered with tracking. Order 100 cards for a new hire or 5,000 for the whole team — the price is on screen before you commit.",
 
     quantities: [100, 250, 500, 1000, 2500, 5000],
-    // Large runs are cut by ~30% so 1,000 double-sided rounded cards land on 850 MAD.
+    // Approved standard: 0.60 MAD per finished card at every quantity (no volume curve).
     quantityBreaks: [
       { quantity: 100, factor: 1 },
-      { quantity: 250, factor: 0.8646 },
-      { quantity: 500, factor: 0.7737 },
-      { quantity: 1000, factor: 85000 / 170775 },
-      { quantity: 2500, factor: 0.419 },
-      { quantity: 5000, factor: 0.375 },
+      { quantity: 5000, factor: 1 },
     ],
-    anchor: { quantity: 100, subtotal: 135 },
+    // Standard 85 × 55 mm, standard paper, double-sided, matte lamination included.
+    anchor: { quantity: 100, subtotal: 60 },
     baseProductionDays: 2,
-    rating: 4.9,
-    reviews: 412,
     keywords: ["business card printing", "premium business cards", "print business cards Morocco"],
-    options: [size, paper, finish, sides, corners, deliveryGroup],
+    options: [size, paper, cardFinish, cardSides, corners, deliveryGroup],
     faqs: [
       {
         q: "Can I print two different card designs in one order?",
@@ -376,7 +399,8 @@ export const products: Product[] = [
     benefit: "Print one copy or a complete edition.",
     heroHeadline: "Books made for reading, sharing and keeping.",
     heroCopy: "Choose the page count, format, print, paper and binding. Your price updates instantly.",
-    description: "Books from 24 to 400 pages, printed in black and white or colour with file review before production.",
+    description:
+      "Books from 24 to 400 interior pages, printed in black and white or colour with a 350g laminated cover and file review before production. Reference: 1 A5 book, 132 interior pages (66 double-sided sheets), black and white on 80g offset, 350g laminated cover, perfect bound — 73 MAD before delivery.",
     quantities: [1, 5, 10, 25, 50, 100, 250],
     // The two largest runs are cut by 30% against the previous curve.
     quantityBreaks: [
@@ -388,8 +412,12 @@ export const products: Product[] = [
       { quantity: 100, factor: 0.525 },
       { quantity: 250, factor: 0.49 },
     ],
-    anchor: { quantity: 1, subtotal: 45 },
-    pageRange: { min: 24, max: 400, default: 24 },
+    // Approved reference: 1 copy, 132 interior pages (cover not counted), A5, black and
+    // white, 80g offset, double-sided, 350g laminated cover, perfect bound = 73 MAD.
+    anchor: { quantity: 1, subtotal: 73 },
+    pageRange: { min: 24, max: 400, default: 132 },
+    // Assumption: 30% of the reference covers the cover, binding and setup.
+    pageFixedShare: 0.3,
     bulkQuoteAt: 500,
     baseProductionDays: 5,
     keywords: ["book printing", "print books Morocco", "livres", "impression livre", "كتب", "طباعة الكتب"],
@@ -408,6 +436,12 @@ export const products: Product[] = [
         { id: "offset-90", label: "90g offset", factor: 1.08 },
         { id: "coated-135", label: "135g coated", factor: 1.35 },
       ]),
+      group(
+        "cover",
+        "Cover",
+        [{ id: "350-laminated", label: "350g laminated cover", note: "Included, not counted as interior pages", factor: 1 }],
+        "Send the cover as a separate file from the interior PDF.",
+      ),
       group("binding", "Binding", [
         { id: "perfect-bound", label: "Perfect bound", factor: 1 },
         { id: "hardcover", label: "Hardcover", factor: 1.8, days: 2 },
@@ -420,7 +454,7 @@ export const products: Product[] = [
     faqs: [
       {
         q: "What file should I send for a book?",
-        a: "Upload the complete interior file with every page in reading order. We review it before production.",
+        a: "Send two files: the interior PDF with every interior page in reading order, and a separate cover file (front, spine and back). We review both before production.",
       },
       {
         q: "When is saddle stitching available?",
@@ -676,7 +710,9 @@ function configFactor(product: Product, selection: Selection) {
     const pages = Number(selection["pages"] ?? product.pageRange.default);
     const valid =
       Number.isInteger(pages) && pages >= product.pageRange.min && pages <= product.pageRange.max;
-    factor *= (valid ? pages : product.pageRange.default) / product.pageRange.default;
+    const ratio = (valid ? pages : product.pageRange.default) / product.pageRange.default;
+    const fixed = product.pageFixedShare ?? 0;
+    factor *= fixed + (1 - fixed) * ratio;
   }
   return factor;
 }
@@ -753,6 +789,17 @@ export function priceQuote(product: Product, quantity: number, selection: Select
     savingsPercent: Math.max(0, Math.round(savings * 100)),
     area,
   };
+}
+
+/** Binding/page rules shared by the configurator and the server quotation. */
+export function bindingError(product: Product, selection: Selection): string | null {
+  if (!product.pageRange) return null;
+  const pages = Number(selection["pages"] ?? product.pageRange.default);
+  if (!Number.isInteger(pages) || pages < product.pageRange.min || pages > product.pageRange.max)
+    return "Unsupported page count";
+  if (selection["binding"] === "saddle-stitched" && (pages > 64 || pages % 4 !== 0))
+    return "Saddle stitching needs 24–64 pages in multiples of 4";
+  return null;
 }
 
 export function selectionLabels(product: Product, selection: Selection) {
