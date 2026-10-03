@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   defaultSelection,
+  bindingError,
   priceQuote,
   selectionLabels,
   type Product,
@@ -65,6 +66,7 @@ export function Configurator({ product }: { product: Product }) {
         .replace("{min}", number(product.pageRange.min))
         .replace("{max}", number(product.pageRange.max))
     : "";
+  const bindingInvalid = Boolean(bindingError(product, selection)) && !pagesInvalid;
   const dimensionValue = (key: "width" | "height", fallback: number) => {
     const raw = selection[key];
     return raw === undefined || raw === "" ? fallback : Number(raw);
@@ -79,7 +81,7 @@ export function Configurator({ product }: { product: Product }) {
     : false;
 
   const addToCart = () => {
-    if (customQuantityInvalid || pagesInvalid || dimensionsInvalid || bulkQuote) return;
+    if (customQuantityInvalid || pagesInvalid || bindingInvalid || dimensionsInvalid || bulkQuote) return;
     if (product.quoteOnly) {
       window.open(quoteHref, "_blank", "noopener");
       return;
@@ -285,10 +287,17 @@ export function Configurator({ product }: { product: Product }) {
             </fieldset>
           ))}
           {product.bulkQuoteAt && (
-            <p className={cn("mt-6 text-sm", bulkQuote ? "font-semibold text-primary" : "text-muted-foreground")}>{tr("500+ copies: request a custom quote.")}</p>
+            <p className={cn("mt-6 text-sm", bulkQuote ? "font-semibold text-primary" : "text-muted-foreground")}>
+              <a href={quoteHref} target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-primary">
+                {tr("500+ copies: request a custom quote.")}
+              </a>
+            </p>
           )}
           {product.pageRange && (
-            <p className="mt-3 text-sm text-muted-foreground">{tr("Base price: 45 DH for 24 pages, A5, black and white, 80g offset paper and perfect binding. Options and quantity discounts update the price.")}</p>
+            <p className="mt-3 text-sm text-muted-foreground">{tr("Reference: 73 DH for 1 A5 book, 132 interior pages (66 double-sided sheets), black and white on 80g offset, 350g laminated cover, perfect binding. Delivery not included. Page count, options and quantity update the price.")}</p>
+          )}
+          {bindingInvalid && (
+            <p role="alert" className="mt-3 text-sm font-semibold text-destructive">{tr("Saddle stitching needs 24–64 pages in multiples of 4.")}</p>
           )}
         </section>
 
@@ -378,13 +387,19 @@ export function Configurator({ product }: { product: Product }) {
               <Truck className="size-4 text-muted-foreground" />
               {tr("Delivery")}: {quote.deliveryMin}–{quote.deliveryMax} {tr("days")}
             </p>
+            <p className="font-semibold">
+              {tr("Estimated arrival")}: {quote.productionDays + quote.deliveryMin}–{quote.productionDays + quote.deliveryMax} {tr("working days")}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {tr("Production starts after payment and artwork approval. Weekends are not counted.")}
+            </p>
           </div>
 
           <Button
             size="lg"
             className="mt-6 w-full rounded-full"
             onClick={addToCart}
-            disabled={customQuantityInvalid || pagesInvalid || dimensionsInvalid || bulkQuote}
+            disabled={customQuantityInvalid || pagesInvalid || bindingInvalid || dimensionsInvalid || bulkQuote}
           >
             {tr(product.quoteOnly ? "Request a quote" : bulkQuote ? "Request a custom quote" : "Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
