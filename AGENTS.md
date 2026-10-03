@@ -11,3 +11,4 @@
 - Zoho CRM sync uses a DB outbox (triggers enqueue only) drained by /api/public/crm-worker; never call Zoho from checkout or triggers — keeps payments independent of CRM uptime.
 - /admin management functions require the admin role server-side before loading the service client; moderators only get /admin/payments.
 - CRM worker claims one outbox job at a time (crm_claim limit 1) inside a time-budgeted batch and writes results only via lease-checked crm_complete — prevents stale leases and lost updates.
+- Order creation and payment always reprice lines via orderTotals and reject unpriceable carts; never fall back to stored or browser totals — prevents tampered amounts.
