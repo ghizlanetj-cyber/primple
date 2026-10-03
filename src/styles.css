@@ -2,9 +2,6 @@
 @source "../src";
 @import "tw-animate-css";
 
-/* YouCan Pay widget: hide the SDK's own SANDBOX chip from customers (display-only). */
-  display: none !important;
-}
 
 
 
