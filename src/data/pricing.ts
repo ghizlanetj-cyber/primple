@@ -11,7 +11,7 @@ import {
   packSlugFromCartSlug,
   parsePackLines,
 } from "@/data/packs";
-import { getProduct, priceQuote, type Selection } from "@/data/products";
+import { bindingError, getProduct, priceQuote, type Selection } from "@/data/products";
 
 export type LineQuote = {
   subtotal: number;
@@ -77,6 +77,8 @@ export function lineQuote(
 
   const product = getProduct(slug);
   if (!product || product.quoteOnly) return null;
+  // Invalid page/binding combinations are rejected, never silently repriced.
+  if (bindingError(product, selection)) return null;
   const quote = priceQuote(product, quantity, selection);
   // "Design by Primple" add-on: flat design hours for this product, no delivery.
   const designCents = hasDesignAddon(selection) ? Math.round(designAddonQuote(slug).subtotal * 100) : 0;

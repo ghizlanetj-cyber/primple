@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   cheapestSelection,
+  bindingError,
   defaultSelection,
   fromPriceBasis,
   getProduct,
@@ -88,15 +89,30 @@ describe("quantity behaviour", () => {
   }
 });
 
-describe("savings", () => {
-  it("are zero at the smallest quantity and grow with volume", () => {
+describe("approved business card price", () => {
+  it("is 0.60 MAD per card at every quantity, double-sided with matte included", () => {
     const cards = getProduct("business-cards")!;
     const selection = defaultSelection(cards);
-    expect(priceQuote(cards, 100, selection).savingsPercent).toBe(0);
-    expect(priceQuote(cards, 2500, selection).savingsPercent).toBeGreaterThan(0);
-    expect(priceQuote(cards, 2500, selection).savingsPercent).toBeGreaterThan(
-      priceQuote(cards, 500, selection).savingsPercent,
-    );
+    expect(selection).toMatchObject({ printing: "double", finish: "matte", size: "standard" });
+    const expected: Record<number, number> = { 100: 60, 250: 150, 500: 300, 1000: 600, 2500: 1500, 5000: 3000 };
+    for (const [q, total] of Object.entries(expected))
+      expect(priceQuote(cards, Number(q), selection).subtotal).toBe(total);
+    expect(priceQuote(cards, 1000, { ...selection, corners: "rounded" }).subtotal).toBeGreaterThan(600);
+  });
+});
+
+describe("book reference price", () => {
+  const book = getProduct("books")!;
+  it("1 A5 book, 132 B&W interior pages, 350g laminated cover, perfect bound = 73 MAD", () => {
+    const selection = defaultSelection(book);
+    expect(selection).toMatchObject({ pages: "132", format: "a5", colour: "black-white", binding: "perfect-bound" });
+    expect(priceQuote(book, 1, selection).subtotal).toBe(73);
+    expect(priceQuote(book, 1, { ...selection, pages: "24" }).subtotal).toBeLessThan(73);
+    expect(priceQuote(book, 1, { ...selection, pages: "300" }).subtotal).toBeGreaterThan(73);
+  });
+  it("rejects saddle stitching above 64 pages", () => {
+    expect(bindingError(book, { ...defaultSelection(book), binding: "saddle-stitched" })).not.toBeNull();
+    expect(bindingError(book, { ...defaultSelection(book), binding: "saddle-stitched", pages: "48" })).toBeNull();
   });
 });
 
