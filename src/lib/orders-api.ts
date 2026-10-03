@@ -1,3 +1,4 @@
+import { orderTotals } from "@/data/pricing";
 import { supabase } from "@/integrations/supabase/client";
 import type { CartItem } from "@/store/cart";
 import type { OrderStage } from "@/data/orders";
@@ -113,27 +114,37 @@ export async function createOrder(input: {
   const maxDays = input.items.reduce((m, i) => Math.max(m, i.deliveryMax || i.productionDays), 5);
   const expected = new Date(Date.now() + maxDays * 24 * 60 * 60 * 1000);
   const method: PrintPaymentMethod = input.paymentMethod ?? CARD_METHOD;
+  // Reprice from the catalog; browser-held totals are never saved as-is.
+  const priced = orderTotals(
+    input.items.map((i) => ({ slug: i.slug, quantity: i.quantity, selection: i.selection })),
+  );
+  if (!priced) throw new Error("One of the items can no longer be ordered. Please review your cart.");
+  const totals = {
+    subtotal: priced.subtotalCents / 100,
+    delivery: priced.deliveryCents / 100,
+    total: priced.totalCents / 100,
+  };
   // Display only: the server re-prices and rewrites these before any charge.
-  const split = splitAmounts(input.totals.total, method);
+  const split = splitAmounts(totals.total, method);
 
   const payload = {
     user_id: input.userId,
     reference,
     status: "Order placed",
-    items: input.items.map<OrderItemRecord>((i) => ({
+    items: input.items.map<OrderItemRecord>((i, index) => ({
       slug: i.slug,
       name: i.name,
       quantity: i.quantity,
       config: itemConfigLabel(i),
       selection: i.selection,
-      unitPrice: i.unitPrice,
-      subtotal: i.subtotal,
+      unitPrice: priced.quotes[index]!.unitPrice,
+      subtotal: priced.quotes[index]!.subtotal,
       printer: PRIMPLE_PRODUCTION,
       productionDays: i.productionDays,
     })),
-    subtotal: input.totals.subtotal,
-    delivery: input.totals.delivery,
-    total: input.totals.total,
+    subtotal: totals.subtotal,
+    delivery: totals.delivery,
+    total: totals.total,
     deposit_amount: split.dueNow,
     balance_amount: split.balance,
     deposit_paid: false,
