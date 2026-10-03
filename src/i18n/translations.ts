@@ -359,7 +359,6 @@ export const phrases: Record<string, TranslationPair> = {
   "Same price as double-sided": { fr: "Même prix que le recto verso", ar: "نفس سعر الطباعة على الوجهين" },
   "Matte lamination": { fr: "Pelliculage mat", ar: "تغليف مطفي" },
   "Gloss lamination": { fr: "Pelliculage brillant", ar: "تغليف لامع" },
-  "Included": { fr: "Inclus", ar: "مشمول" },
   "Matte lamination is included in the standard price.": { fr: "Le pelliculage mat est inclus dans le prix standard.", ar: "التغليف المطفي مشمول في السعر القياسي." },
   "Cover": { fr: "Couverture", ar: "الغلاف" },
   "350g laminated cover": { fr: "Couverture 350 g pelliculée", ar: "غلاف 350 غ مغلف" },
