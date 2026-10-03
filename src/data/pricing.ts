@@ -127,14 +127,13 @@ export function orderTotals(lines: OrderLineInput[]): OrderTotals | null {
   let productionDays = 0;
   let deliveryMax = 0;
   const quotes: LineQuote[] = [];
+  // Empty carts and invalid quantities are rejected, never defaulted.
+  if (!Array.isArray(lines) || lines.length === 0) return null;
 
   for (const line of lines) {
     const quantity = Number(line.quantity);
-    const quote = lineQuote(
-      line.slug,
-      Number.isFinite(quantity) && quantity > 0 ? quantity : 1,
-      line.selection ?? {},
-    );
+    if (!line?.slug || !Number.isInteger(quantity) || quantity < 1) return null;
+    const quote = lineQuote(line.slug, quantity, line.selection ?? {});
     if (!quote) return null;
     quotes.push(quote);
     subtotalCents += Math.round(quote.subtotal * 100);

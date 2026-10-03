@@ -135,8 +135,8 @@ type StoredOrderLine = { slug?: string; quantity?: number; selection?: Record<st
 
 /**
  * Recomputes a print order from the shared pricing engine so the charged amount
- * can never diverge from what the catalog says. Falls back to the stored total
- * only when a line no longer exists in the catalog.
+ * can never diverge from what the catalog says. Orders that can no longer be
+ * repriced are rejected; the stored total is never trusted.
  */
 async function recomputeOrderCents(order: {
   items: unknown;
@@ -145,9 +145,6 @@ async function recomputeOrderCents(order: {
 }): Promise<number> {
   const { orderTotals } = await import("@/data/pricing");
   const lines = Array.isArray(order.items) ? (order.items as StoredOrderLine[]) : [];
-  if (lines.length === 0 || lines.some((line) => !line.slug)) {
-    return Math.round(Number(order.total) * 100);
-  }
 
   const totals = orderTotals(
     lines.map((line) => ({
@@ -156,7 +153,7 @@ async function recomputeOrderCents(order: {
       selection: line.selection ?? {},
     })),
   );
-  if (!totals) return Math.round(Number(order.total) * 100);
+  if (!totals) throw new Error("This order can no longer be priced. Please contact Primple.");
   return totals.totalCents;
 }
 
