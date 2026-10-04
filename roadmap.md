@@ -15,3 +15,10 @@
 - [x] Remove the homepage Expert Designer and restore the original hero flow
 - [x] Admin dashboard + Zoho CRM outbox (awaiting Zoho runtime secrets + worker schedule step)
 - [x] Change phone/WhatsApp to +212708877006
+- [x] Brief pass: strict repricing, pack minimums, return-URL allowlist, quote form → CRM, duplicate-order guard
+- [x] Truthful invoice/dashboard payment status, production+delivery working-day estimates, live order updates
+- [x] Admin: record cash balance collected / remitted
+- [ ] Team workspace (brief §9)
+- [ ] Separate interior/cover uploads, file type/size checks, BAT gating
+- [ ] Shop orders in admin list; admin revenue to include collected balances
+- [ ] SEO/accessibility review
