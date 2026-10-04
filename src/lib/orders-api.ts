@@ -1,4 +1,5 @@
 import { orderTotals } from "@/data/pricing";
+import { estimatedArrival } from "@/lib/delivery";
 import { supabase } from "@/integrations/supabase/client";
 import type { CartItem } from "@/store/cart";
 import type { OrderStage } from "@/data/orders";
@@ -111,8 +112,6 @@ export async function createOrder(input: {
   paymentMethod?: PrintPaymentMethod;
 }): Promise<OrderRecord> {
   const reference = `PRM-${Math.floor(10000 + Math.random() * 89999)}`;
-  const maxDays = input.items.reduce((m, i) => Math.max(m, i.deliveryMax || i.productionDays), 5);
-  const expected = new Date(Date.now() + maxDays * 24 * 60 * 60 * 1000);
   const method: PrintPaymentMethod = input.paymentMethod ?? CARD_METHOD;
   // Reprice from the catalog; browser-held totals are never saved as-is.
   const priced = orderTotals(
@@ -157,7 +156,7 @@ export async function createOrder(input: {
     city: input.details.city,
     postcode: input.details.postcode,
     printer: PRIMPLE_PRODUCTION,
-    expected_at: expected.toISOString().slice(0, 10),
+    expected_at: estimatedArrival(new Date(), priced.productionDays, priced.deliveryMax),
   };
 
   const { data, error } = await supabase.from("orders").insert(payload).select("*").single();

@@ -92,7 +92,6 @@ export const createGuestOrder = createServerFn({ method: "POST" })
     const totals = orderTotals(data.lines);
     if (!totals) throw new Error("One of the items is no longer available.");
     const { subtotalCents, deliveryCents, totalCents } = totals;
-    const maxDays = Math.max(3, totals.deliveryMax);
     const items = data.lines.map((line, index) => {
       const quote = totals.quotes[index]!;
       return {
@@ -112,7 +111,8 @@ export const createGuestOrder = createServerFn({ method: "POST" })
 
     const reference = `PRM-${Math.floor(10000 + Math.random() * 89999)}`;
     const claimToken = crypto.randomUUID();
-    const expected = new Date(Date.now() + maxDays * 24 * 60 * 60 * 1000);
+    const { estimatedArrival } = await import("./delivery");
+    const expectedAt = estimatedArrival(new Date(), totals.productionDays, totals.deliveryMax);
 
     const { data: order, error } = await supabaseAdmin
       .from("orders")
@@ -138,7 +138,7 @@ export const createGuestOrder = createServerFn({ method: "POST" })
         city: data.details.city,
         postcode: data.details.postcode,
         printer: "Primple",
-        expected_at: expected.toISOString().slice(0, 10),
+        expected_at: expectedAt,
       })
       .select("id, reference, total, expected_at")
       .single();
