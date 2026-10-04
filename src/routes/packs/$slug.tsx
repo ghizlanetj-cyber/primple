@@ -63,6 +63,7 @@ function PackPage() {
     [pack, quantities],
   );
   const quote = useMemo(() => packQuote(lines), [lines]);
+  const belowMinimum = lines.some((l) => l.quantity < packLineMinimum(pack.slug, l.ref));
 
   const addToCart = () => {
     add({
@@ -143,11 +144,19 @@ function PackPage() {
                     inputMode="numeric"
                     value={String(quantities[line.ref] ?? line.quantity)}
                     onChange={(e) => {
-                      const next = Math.max(1, Math.floor(Number(e.target.value) || 1));
+                      const next = Math.max(0, Math.floor(Number(e.target.value) || 0));
                       setQuantities((q) => ({ ...q, [line.ref]: next }));
                     }}
+                    onBlur={() => {
+                      const min = packLineMinimum(pack.slug, line.ref);
+                      setQuantities((q) => ({ ...q, [line.ref]: Math.max(min, q[line.ref] ?? min) }));
+                    }}
+                    aria-describedby={`min-${line.ref}`}
                     className="h-9 w-24 rounded-full text-center"
                   />
+                  <span id={`min-${line.ref}`} className="text-xs text-muted-foreground">
+                    {tr("Min.")} {number(packLineMinimum(pack.slug, line.ref))}
+                  </span>
                 </label>
               </li>
             ))}
@@ -167,7 +176,7 @@ function PackPage() {
               number(quote.lines.length),
             )}
           </p>
-          <Button size="lg" className="mt-6 w-full rounded-full" onClick={addToCart}>
+          <Button size="lg" className="mt-6 w-full rounded-full" onClick={addToCart} disabled={belowMinimum}>
             {tr("Add the pack to my cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
           </Button>

@@ -248,6 +248,21 @@ function clampQuantity(quantity: number) {
   return Math.min(99999, n);
 }
 
+/**
+ * Smallest quantity a pack line accepts: the catalogue minimum for products,
+ * the pack's own quantity for items not sold separately. Prevents a single
+ * unit from getting a bulk-production price.
+ */
+export function packLineMinimum(packSlug: string, ref: string): number {
+  const base = getPack(packSlug)?.lines.find((l) => l.ref === ref);
+  if (!base) return 1;
+  if (base.kind === "product") {
+    const catalogProduct = getProduct(base.ref);
+    return catalogProduct ? Math.min(...catalogProduct.quantities) : base.quantity;
+  }
+  return base.quantity;
+}
+
 /** Price of one pack line at the individual (undiscounted) catalog price. */
 export function packLineSubtotal(line: PackLine): number {
   const quantity = clampQuantity(line.quantity);
@@ -298,16 +313,17 @@ export function parsePackLines(packSlug: string, raw: string | undefined): PackL
   try {
     parsed = JSON.parse(raw);
   } catch {
-    return pack.lines;
+    return null;
   }
-  if (!Array.isArray(parsed)) return pack.lines;
+  if (!Array.isArray(parsed)) return null;
   const quantities = new Map<string, number>();
   for (const entry of parsed) {
     const ref = (entry as { ref?: unknown })?.ref;
-    const quantity = (entry as { quantity?: unknown })?.quantity;
-    if (typeof ref === "string" && Number.isFinite(Number(quantity))) {
-      quantities.set(ref, clampQuantity(Number(quantity)));
-    }
+    const quantity = Number((entry as { quantity?: unknown })?.quantity);
+    if (typeof ref !== "string" || !pack.lines.some((l) => l.ref === ref)) return null;
+    // Invalid or below-minimum quantities are rejected, never clamped.
+    if (!Number.isInteger(quantity) || quantity < packLineMinimum(packSlug, ref) || quantity > 99999) return null;
+    quantities.set(ref, quantity);
   }
   // Only quantities are customer-editable; refs and prices stay server-defined.
   return pack.lines.map((line) => ({ ...line, quantity: quantities.get(line.ref) ?? line.quantity }));
