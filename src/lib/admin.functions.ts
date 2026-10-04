@@ -104,7 +104,7 @@ export const adminOrders = createServerFn({ method: "GET" })
       );
     const { data: rows, count } = await query.range(data.page * size, data.page * size + size - 1);
     const ids = (rows ?? []).map((r) => r.id);
-    const [ops, files, crm] = ids.length
+    const [ops, files, crm, balances] = ids.length
       ? await Promise.all([
           db.from("order_ops").select("*").in("order_id", ids),
           db
@@ -116,8 +116,9 @@ export const adminOrders = createServerFn({ method: "GET" })
             .select("source_id, entity_type, status, last_error_code")
             .eq("source_table", "orders")
             .in("source_id", ids),
+          db.from("balance_collections").select("order_id, amount, remitted, recorded_at").in("order_id", ids),
         ])
-      : [{ data: [] }, { data: [] }, { data: [] }];
+      : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }];
     const { stripSensitive } = await import("./crm-core");
     return {
       total: count ?? 0,
@@ -127,6 +128,7 @@ export const adminOrders = createServerFn({ method: "GET" })
         ops: (ops.data ?? []).find((x) => x.order_id === o.id) ?? null,
         files: (files.data ?? []).filter((f) => f.order_id === o.id),
         crm: (crm.data ?? []).filter((c) => c.source_id === o.id),
+        balance: (balances.data ?? []).find((b) => b.order_id === o.id) ?? null,
       })),
     };
   });
@@ -177,6 +179,39 @@ export const adminUpdateOrderOps = createServerFn({ method: "POST" })
     const customerStage = OPS_TO_CUSTOMER[data.ops_stage];
     if (customerStage) await db.from("orders").update({ status: customerStage }).eq("id", orderId);
     return { ok: true };
+  });
+
+/**
+ * Records the cash balance actually collected at delivery. Idempotent per
+ * order; the amount is the stored server-verified balance, never a free value.
+ */
+export const adminRecordBalance = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => {
+    const i = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
+    return { orderId: uuid(i["orderId"]), remitted: i["remitted"] === true, note: text(i["note"], 500) };
+  })
+  .handler(async ({ data, context }) => {
+    const db = await requireAdmin(context);
+    const { data: order } = await db
+      .from("orders")
+      .select("id, balance_amount, deposit_paid")
+      .eq("id", data.orderId)
+      .maybeSingle();
+    if (!order) throw new Error("Unknown order");
+    if (!order.deposit_paid) throw new Error("Advance not confirmed yet");
+    const amount = Number(order.balance_amount);
+    if (!(amount > 0)) throw new Error("No cash balance on this order");
+    const { error } = await db.from("balance_collections").upsert({
+      order_id: order.id,
+      amount,
+      remitted: data.remitted,
+      note: data.note,
+      recorded_by: context.userId,
+      recorded_at: new Date().toISOString(),
+    });
+    if (error) throw new Error("Could not save");
+    return { ok: true, amount };
   });
 
 export const adminFileUrl = createServerFn({ method: "POST" })

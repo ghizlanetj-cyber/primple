@@ -15,6 +15,7 @@ import {
   adminOrders,
   adminOverview,
   adminRetryCrmJob,
+  adminRecordBalance,
   adminRunCrmWorker,
   adminUpdateMessage,
   adminUpdateOrderOps,
@@ -222,6 +223,15 @@ function OrderDetail({ order }: { order: AdminOrder }) {
   const qc = useQueryClient();
   const save = useServerFn(adminUpdateOrderOps);
   const sign = useServerFn(adminFileUrl);
+  const recordBalance = useServerFn(adminRecordBalance);
+  const balanceMutation = useMutation({
+    mutationFn: (remitted: boolean) => recordBalance({ data: { orderId: order.id, remitted } }),
+    onSuccess: () => {
+      toast.success("Encaissement enregistré");
+      qc.invalidateQueries({ queryKey: ["admin"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Échec"),
+  });
   const [form, setForm] = useState({
     ops_stage: order.ops?.ops_stage ?? "new",
     internal_notes: order.ops?.internal_notes ?? "",
@@ -254,6 +264,28 @@ function OrderDetail({ order }: { order: AdminOrder }) {
           {order.payment_status}
           {order.paid_at ? ` le ${new Date(order.paid_at).toLocaleString("fr-MA")}` : ""}
         </p>
+        {Number(order.balance_amount) > 0 && order.deposit_paid && (
+          <div className="rounded-lg border border-border p-3">
+            <p>
+              <b>Solde espèces :</b>{" "}
+              {order.balance
+                ? `${mad(Number(order.balance.amount))} encaissé le ${new Date(order.balance.recorded_at).toLocaleDateString("fr-MA")} · ${order.balance.remitted ? "reversé par le livreur" : "pas encore reversé par le livreur"}`
+                : "non encaissé (« Livré » ne signifie pas que l'argent a été reversé)"}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {!order.balance && (
+                <Button size="sm" variant="outline" disabled={balanceMutation.isPending} onClick={() => balanceMutation.mutate(false)}>
+                  Solde encaissé par le livreur
+                </Button>
+              )}
+              {!order.balance?.remitted && (
+                <Button size="sm" disabled={balanceMutation.isPending} onClick={() => balanceMutation.mutate(true)}>
+                  Solde reversé à Primple
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
         <ul className="list-disc ps-5">
           {orderItems(order.items).map((i, idx) => (
             <li key={idx}>
