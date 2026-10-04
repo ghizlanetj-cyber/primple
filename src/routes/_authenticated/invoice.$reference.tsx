@@ -6,7 +6,8 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { mad } from "@/lib/format";
 import { listMyOrders } from "@/lib/orders-api";
-import { invoiceLabels, invoiceNumber, missingInvoiceFields } from "@/lib/invoice";
+import { invoiceLabels, invoiceNumber,
+  paymentSummary, missingInvoiceFields } from "@/lib/invoice";
 import { contact } from "@/config/contact";
 import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/i18n";
@@ -65,7 +66,7 @@ function InvoicePage() {
     );
   }
 
-  const paid = order.paymentStatus === "paid" ? L.advancePaid : L.pendingPayment;
+  const pay = paymentSummary(order, lang);
   const missingFields = missingInvoiceFields(order);
   const created = new Date(order.createdAt).toLocaleDateString(
     lang === "fr" ? "fr-MA" : lang === "ar" ? "ar-MA" : "en-GB",
@@ -156,7 +157,10 @@ function InvoicePage() {
               <h2 className="mt-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {L.paymentStatus}
               </h2>
-              <p className="mt-2 text-sm">{paid}</p>
+              <p className="mt-2 text-sm font-semibold">{pay.label}</p>
+              <p className="text-sm text-muted-foreground">
+                {pay.labels.method} : {pay.method}
+              </p>
             </div>
           </div>
 
@@ -189,10 +193,12 @@ function InvoicePage() {
             <Row label={L.subtotal} value={mad(order.subtotal)} />
             <Row label={L.delivery} value={mad(order.delivery)} />
             <Row label={L.total} value={mad(order.total)} strong />
+            <Row label={pay.labels.received} value={mad(pay.received)} />
+            {pay.balance > 0 && <Row label={pay.balanceLabel} value={mad(pay.balance)} />}
           </dl>
 
           <p className="mt-8 border-t border-border pt-4 text-xs text-muted-foreground">
-            {L.terms}
+            {pay.terms}
           </p>
         </article>
       </section>

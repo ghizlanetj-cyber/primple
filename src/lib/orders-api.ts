@@ -31,6 +31,7 @@ export type OrderRecord = {
   balanceAmount: number;
   depositPaid: boolean;
   paymentStatus: "unpaid" | "paid" | "failed";
+  paymentMethod: string;
   city: string | null;
   /** Kept for backend compatibility with a future printer-selection update. */
   printer: string | null;
@@ -74,6 +75,7 @@ function toRecord(row: Record<string, unknown>): OrderRecord {
     balanceAmount: Number(row["balance_amount"] ?? 0),
     depositPaid: Boolean(row["deposit_paid"]),
     paymentStatus: (row["payment_status"] as "unpaid" | "paid" | "failed") ?? "unpaid",
+    paymentMethod: String(row["payment_method"] ?? "card_youcanpay"),
     city: (row["city"] as string) ?? null,
     printer: (row["printer"] as string) ?? null,
     expectedAt: (row["expected_at"] as string) ?? null,
