@@ -21,6 +21,14 @@ export const submitContactMessage = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => contactSchema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Simple abuse limit: at most 3 messages per email every 10 minutes.
+    const since = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const { count } = await supabaseAdmin
+      .from("contact_messages")
+      .select("id", { count: "exact", head: true })
+      .eq("email", data.email.toLowerCase())
+      .gte("created_at", since);
+    if ((count ?? 0) >= 3) throw new Error("Too many messages. Please try again in a few minutes.");
     const { data: row, error } = await supabaseAdmin
       .from("contact_messages")
       .insert({

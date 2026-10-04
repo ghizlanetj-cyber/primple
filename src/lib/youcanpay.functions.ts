@@ -33,19 +33,33 @@ function validateStartPayment(input: StartPaymentInput): StartPaymentInput {
   };
 }
 
+/** Payment return URLs only ever point at approved Primple origins. */
+export function approvedOrigin(candidate: string | null | undefined): string {
+  const fallback = "https://primple.ma";
+  if (!candidate) return fallback;
+  let url: URL;
+  try {
+    url = new URL(candidate);
+  } catch {
+    return fallback;
+  }
+  const host = url.hostname;
+  const ok =
+    (url.protocol === "https:" &&
+      (host === "primple.ma" ||
+        host === "www.primple.ma" ||
+        host === "primple.lovable.app" ||
+        host.endsWith(".lovable.app") ||
+        host.endsWith(".lovableproject.com"))) ||
+    (url.protocol === "http:" && host === "localhost");
+  return ok ? url.origin : fallback;
+}
+
 function siteOrigin(): string {
   const request = getRequest();
   const origin = request?.headers.get("origin");
-  if (origin) return origin;
-  const referer = request?.headers.get("referer");
-  if (referer) {
-    try {
-      return new URL(referer).origin;
-    } catch {
-      /* fall through */
-    }
-  }
-  return "https://primple.ma";
+  if (origin) return approvedOrigin(origin);
+  return approvedOrigin(request?.headers.get("referer"));
 }
 
 /** Public key only — safe to expose, needed by yp.js in the browser. */
@@ -221,21 +235,4 @@ export const startPrintPayment = createServerFn({ method: "POST" })
       .eq("id", order.id);
 
     return { reference: order.reference, token: tokenId, amountCents, currency: "MAD" };
-  });
-
-/** Payment status of a print order, read from the database. */
-export const getPrintOrderStatus = createServerFn({ method: "POST" })
-  .inputValidator((input: { reference: string }) => {
-    const reference = String(input?.reference ?? "").trim();
-    if (!/^PRM-\d{4,8}$/.test(reference)) throw new Error("Unknown order.");
-    return { reference };
-  })
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: order } = await supabaseAdmin
-      .from("orders")
-      .select("reference, payment_status, total, paid_at, status")
-      .eq("reference", data.reference)
-      .maybeSingle();
-    return order ?? null;
   });

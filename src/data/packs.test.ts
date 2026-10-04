@@ -57,13 +57,14 @@ describe("packs", () => {
     expect(fromCart.digital).toBe(false);
   });
 
-  it("ignores injected refs and prices so a pack cannot be discounted client-side", () => {
+  it("rejects injected refs, malformed data and below-minimum quantities", () => {
     const pack = packs[1]!;
-    const parsed = parsePackLines(
-      pack.slug,
-      JSON.stringify([{ ref: "free-stuff", quantity: 1, unitPrice: 0 }]),
-    )!;
-    expect(packQuote(parsed).packPrice).toBe(packQuote(pack.lines).packPrice);
+    expect(parsePackLines(pack.slug, JSON.stringify([{ ref: "free-stuff", quantity: 1, unitPrice: 0 }]))).toBeNull();
+    expect(parsePackLines(pack.slug, "not json")).toBeNull();
+    const first = pack.lines[0]!;
+    expect(parsePackLines(pack.slug, JSON.stringify([{ ref: first.ref, quantity: 1 }]))).toBeNull();
+    const ok = parsePackLines(pack.slug, JSON.stringify([{ ref: first.ref, quantity: first.quantity }]))!;
+    expect(packQuote(ok).packPrice).toBe(packQuote(pack.lines).packPrice);
   });
 });
 

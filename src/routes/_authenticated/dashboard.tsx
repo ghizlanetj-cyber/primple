@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
@@ -24,7 +25,7 @@ import { listMyOrders, type OrderRecord } from "@/lib/orders-api";
 import { artworkFolder, listMyFiles } from "@/lib/files-api";
 import { ClientFiles } from "@/components/dashboard/ClientFiles";
 
-import { invoiceLabels, invoiceNumber } from "@/lib/invoice";
+import { invoiceLabels, invoiceNumber, paymentSummary } from "@/lib/invoice";
 import { mad } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
@@ -81,6 +82,8 @@ function DashboardPage() {
     queryKey: ["orders", user?.id],
     queryFn: listMyOrders,
     enabled: Boolean(user),
+    // Fallback when live updates are unavailable: refresh every minute.
+    refetchInterval: 60_000,
   });
 
   // An order paid before signing up is attached here, once the email is verified.
@@ -103,6 +106,22 @@ function DashboardPage() {
       cancelled = true;
     };
   }, [user, claimOrder, queryClient]);
+
+  // Live updates: RLS limits these events to the customer's own orders.
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`orders-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "orders", filter: `user_id=eq.${user.id}` },
+        () => void queryClient.invalidateQueries({ queryKey: ["orders", user.id] }),
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
 
   const {
     data: files = [],
@@ -391,7 +410,7 @@ function DashboardPage() {
                         <p className="mt-1 truncate text-xs text-muted-foreground">{record.reference}</p>
                       </div>
                       <span className="shrink-0 rounded-full bg-primary/20 px-2.5 py-1 text-xs font-semibold text-foreground">
-                        {record.paymentStatus === "paid" ? L.advancePaid : L.pendingPayment}
+                        {paymentSummary(record, lang).label}
                       </span>
                     </div>
                     <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-border pt-4 text-sm">
@@ -448,7 +467,7 @@ function DashboardPage() {
                         <td className="p-4">{mad(record.total)}</td>
                         <td className="p-4">
                           <span className="rounded-full bg-primary/20 px-2.5 py-1 text-xs font-semibold text-foreground">
-                            {record.paymentStatus === "paid" ? L.advancePaid : L.pendingPayment}
+                            {paymentSummary(record, lang).label}
                           </span>
                         </td>
                         <td className="p-4">

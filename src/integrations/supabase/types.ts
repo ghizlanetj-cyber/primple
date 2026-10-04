@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      balance_collections: {
+        Row: {
+          amount: number
+          collected_by: string
+          note: string | null
+          order_id: string
+          recorded_at: string
+          recorded_by: string
+          remitted: boolean
+        }
+        Insert: {
+          amount: number
+          collected_by?: string
+          note?: string | null
+          order_id: string
+          recorded_at?: string
+          recorded_by: string
+          remitted?: boolean
+        }
+        Update: {
+          amount?: number
+          collected_by?: string
+          note?: string | null
+          order_id?: string
+          recorded_at?: string
+          recorded_by?: string
+          remitted?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "balance_collections_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_messages: {
         Row: {
           company: string | null
