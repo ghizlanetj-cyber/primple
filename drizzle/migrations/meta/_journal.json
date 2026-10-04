@@ -155,6 +155,13 @@
       "when": 1791141681093,
       "tag": "0021_balance_collections",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1791141737823,
+      "tag": "0022_orders_realtime",
+      "breakpoints": true
     }
   ]
 }

@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
@@ -81,6 +82,8 @@ function DashboardPage() {
     queryKey: ["orders", user?.id],
     queryFn: listMyOrders,
     enabled: Boolean(user),
+    // Fallback when live updates are unavailable: refresh every minute.
+    refetchInterval: 60_000,
   });
 
   // An order paid before signing up is attached here, once the email is verified.
@@ -103,6 +106,22 @@ function DashboardPage() {
       cancelled = true;
     };
   }, [user, claimOrder, queryClient]);
+
+  // Live updates: RLS limits these events to the customer's own orders.
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`orders-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "orders", filter: `user_id=eq.${user.id}` },
+        () => void queryClient.invalidateQueries({ queryKey: ["orders", user.id] }),
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
 
   const {
     data: files = [],
