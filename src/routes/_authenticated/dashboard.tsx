@@ -24,7 +24,7 @@ import { listMyOrders, type OrderRecord } from "@/lib/orders-api";
 import { artworkFolder, listMyFiles } from "@/lib/files-api";
 import { ClientFiles } from "@/components/dashboard/ClientFiles";
 
-import { invoiceLabels, invoiceNumber } from "@/lib/invoice";
+import { invoiceLabels, invoiceNumber, paymentSummary } from "@/lib/invoice";
 import { mad } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
