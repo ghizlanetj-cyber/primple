@@ -12,3 +12,5 @@
 - /admin management functions require the admin role server-side before loading the service client; moderators only get /admin/payments.
 - CRM worker claims one outbox job at a time (crm_claim limit 1) inside a time-budgeted batch and writes results only via lease-checked crm_complete — prevents stale leases and lost updates.
 - Order creation and payment always reprice lines via orderTotals and reject unpriceable carts; never fall back to stored or browser totals — prevents tampered amounts.
+- Cash balances collected at delivery are recorded only in balance_collections via an admin server function; "Delivered" status never implies money was collected or remitted.
+- Payment/invoice wording comes from paymentSummary in src/lib/invoice.ts so dashboard and invoice never disagree.
