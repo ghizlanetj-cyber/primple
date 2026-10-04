@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { paymentSummary } from "@/lib/invoice";
 
-const base = { paymentStatus: "unpaid" as const, depositPaid: false, depositAmount: 0, total: 200, status: "Order placed" };
+const base = { paymentStatus: "unpaid" as const, depositPaid: false, depositAmount: 0, total: 200, status: "Order placed" as const };
 
 describe("paymentSummary", () => {
   it("never calls a 50% advance a full payment", () => {
