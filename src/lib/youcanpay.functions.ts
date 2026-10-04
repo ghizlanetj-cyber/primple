@@ -222,20 +222,3 @@ export const startPrintPayment = createServerFn({ method: "POST" })
 
     return { reference: order.reference, token: tokenId, amountCents, currency: "MAD" };
   });
-
-/** Payment status of a print order, read from the database. */
-export const getPrintOrderStatus = createServerFn({ method: "POST" })
-  .inputValidator((input: { reference: string }) => {
-    const reference = String(input?.reference ?? "").trim();
-    if (!/^PRM-\d{4,8}$/.test(reference)) throw new Error("Unknown order.");
-    return { reference };
-  })
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: order } = await supabaseAdmin
-      .from("orders")
-      .select("reference, payment_status, total, paid_at, status")
-      .eq("reference", data.reference)
-      .maybeSingle();
-    return order ?? null;
-  });
