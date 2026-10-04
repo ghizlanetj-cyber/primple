@@ -33,19 +33,33 @@ function validateStartPayment(input: StartPaymentInput): StartPaymentInput {
   };
 }
 
+/** Payment return URLs only ever point at approved Primple origins. */
+export function approvedOrigin(candidate: string | null | undefined): string {
+  const fallback = "https://primple.ma";
+  if (!candidate) return fallback;
+  let url: URL;
+  try {
+    url = new URL(candidate);
+  } catch {
+    return fallback;
+  }
+  const host = url.hostname;
+  const ok =
+    (url.protocol === "https:" &&
+      (host === "primple.ma" ||
+        host === "www.primple.ma" ||
+        host === "primple.lovable.app" ||
+        host.endsWith(".lovable.app") ||
+        host.endsWith(".lovableproject.com"))) ||
+    (url.protocol === "http:" && host === "localhost");
+  return ok ? url.origin : fallback;
+}
+
 function siteOrigin(): string {
   const request = getRequest();
   const origin = request?.headers.get("origin");
-  if (origin) return origin;
-  const referer = request?.headers.get("referer");
-  if (referer) {
-    try {
-      return new URL(referer).origin;
-    } catch {
-      /* fall through */
-    }
-  }
-  return "https://primple.ma";
+  if (origin) return approvedOrigin(origin);
+  return approvedOrigin(request?.headers.get("referer"));
 }
 
 /** Public key only — safe to expose, needed by yp.js in the browser. */
