@@ -162,6 +162,13 @@
       "when": 1791141737823,
       "tag": "0022_orders_realtime",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1791204771699,
+      "tag": "0023_team_dashboard",
+      "breakpoints": true
     }
   ]
 }
