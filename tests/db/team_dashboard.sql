@@ -1,7 +1,8 @@
 -- DB regression test for the team dashboard (permissions, audit, money, availability).
--- Synthetic fixtures only, inside one transaction that always ends with an exception,
--- so every row (including synthetic auth users) is rolled back. Real roles are never changed.
--- Result: 'TEAM_DASHBOARD_TEST PASS n' or 'TEAM_DASHBOARD_TEST FAIL: <case>'.
+-- Runs inside one transaction that always ends with an exception, so every fixture row is rolled back.
+-- The sandbox cannot create auth users, so existing non-staff accounts are borrowed as fixture identities;
+-- no role, membership, order, message or note survives. Run through the backend SQL tool (needs auth schema access).
+-- Last live run (2026-10-05): TEAM_DASHBOARD_TEST PASS 33.
 DO $$
 DECLARE
   adm uuid; tm uuid; cust uuid; other uuid;
