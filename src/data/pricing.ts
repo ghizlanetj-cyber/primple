@@ -12,6 +12,7 @@ import {
   parsePackLines,
 } from "@/data/packs";
 import { bindingError, getProduct, priceQuote, type Selection } from "@/data/products";
+import { isBulkQuoteQuantity } from "@/lib/quantity";
 
 export type LineQuote = {
   subtotal: number;
@@ -77,6 +78,8 @@ export function lineQuote(
 
   const product = getProduct(slug);
   if (!product || product.quoteOnly) return null;
+  // Below the minimum, or beyond the verified price range (quote request instead).
+  if (quantity < Math.min(...product.quantities) || isBulkQuoteQuantity(product, quantity)) return null;
   // Invalid page/binding combinations are rejected, never silently repriced.
   if (bindingError(product, selection)) return null;
   const quote = priceQuote(product, quantity, selection);

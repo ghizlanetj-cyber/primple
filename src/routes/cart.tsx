@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { mad, madUnit } from "@/lib/format";
+import { contact } from "@/config/contact";
 import { cartTotals, useCart } from "@/store/cart";
 import { productImages } from "@/data/productImages";
 import { getProduct } from "@/data/products";
@@ -238,16 +239,18 @@ function CartQuantityInput({
   const { tr, number } = useI18n();
   const [value, setValue] = useState(String(item.quantity));
   const product = getProduct(item.slug);
-  const limits = product ? productQuantityLimits(product) : { min: 1, max: Number.MAX_SAFE_INTEGER };
+  const limits = product ? productQuantityLimits(product) : { min: 1 };
   const parsed = parseQuantity(value, limits);
-  const invalid = parsed === null || (product ? isBulkQuoteQuantity(product, parsed) : false);
+  const needsQuote = parsed !== null && product ? isBulkQuoteQuantity(product, parsed) : false;
+  const invalid = parsed === null || needsQuote;
   const errorId = `cart-quantity-error-${item.id}`;
 
   useEffect(() => setValue(String(item.quantity)), [item.quantity]);
 
-  const error = tr("Enter a whole number between {min} and {max}.")
-    .replace("{min}", number(limits.min))
-    .replace("{max}", number(limits.max));
+  const error = tr("Enter a whole number of at least {min}.").replace("{min}", number(limits.min));
+  const quoteHref = `${contact.whatsapp}?text=${encodeURIComponent(
+    `${tr("Request a quote")} — ${tr(item.name)} · ${parsed ?? ""}`,
+  )}`;
 
   return (
     <div>
@@ -271,7 +274,13 @@ function CartQuantityInput({
       </label>
       {invalid && (
         <p id={errorId} className="mt-2 max-w-xs text-xs text-destructive" role="alert">
-          {error}
+          {needsQuote ? (
+            <a href={quoteHref} target="_blank" rel="noopener" className="font-semibold text-primary underline underline-offset-2">
+              {tr("{quantity} units is beyond our listed prices. Send your request and we confirm a price.").replace("{quantity}", number(parsed ?? 0))}
+            </a>
+          ) : (
+            error
+          )}
         </p>
       )}
     </div>

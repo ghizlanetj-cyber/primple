@@ -9,6 +9,15 @@ const p = (fr: string, ar: string): TranslationPair => ({ fr, ar });
 export const packPhrases: Record<string, TranslationPair> = {
   // --- Packs: listing and teaser ---
   Packs: p("Packs", "الباقات"),
+  "These quantities are beyond our listed prices. Send your request and we confirm a price.": p(
+    "Ces quantités dépassent nos prix affichés. Envoyez votre demande, nous vous confirmons un prix.",
+    "هذه الكميات تتجاوز أسعارنا المعروضة. أرسل طلبك وسنؤكد لك السعر.",
+  ),
+  "Enter a whole number of at least {min}.": p("Saisissez un nombre entier d'au moins {min}.", "أدخل عددًا صحيحًا لا يقل عن {min}."),
+  "{quantity} units is beyond our listed prices. Send your request and we confirm a price.": p(
+    "{quantity} unités dépassent nos prix affichés. Envoyez votre demande, nous vous confirmons un prix.",
+    "{quantity} وحدة تتجاوز أسعارنا المعروضة. أرسل طلبك وسنؤكد لك السعر.",
+  ),
   "Labels & stickers": p("Étiquettes & stickers", "الملصقات والإستيكرات"),
   "Delivery labels": p("Étiquettes de livraison", "ملصقات التوصيل"),
   "See packs": p("Voir les packs", "عرض الباقات"),

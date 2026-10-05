@@ -14,3 +14,4 @@
 - Order creation and payment always reprice lines via orderTotals and reject unpriceable carts; never fall back to stored or browser totals — prevents tampered amounts.
 - Cash balances collected at delivery are recorded only in balance_collections via an admin server function; "Delivered" status never implies money was collected or remitted.
 - Payment/invoice wording comes from paymentSummary in src/lib/invoice.ts so dashboard and invoice never disagree.
+- Quantities have only a minimum; above a product's largest preset quantity (or bulkQuoteAt) lineQuote/parsePackLines return null and the UI offers a quote request — never extrapolate prices.
