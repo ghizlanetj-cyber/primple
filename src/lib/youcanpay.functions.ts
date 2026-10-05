@@ -168,6 +168,11 @@ async function recomputeOrderCents(order: {
     })),
   );
   if (!totals) throw new Error("This order can no longer be priced. Please contact Primple.");
+  // Items the team switched off cannot be paid for, even on an existing order.
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const off = await supabaseAdmin.rpc("catalog_unavailable", { _items: lines as never });
+  if (off.error) throw new Error("Availability check failed. Please try again.");
+  if ((off.data ?? []).length) throw new Error("One of the items is temporarily unavailable. Please contact Primple.");
   return totals.totalCents;
 }
 
