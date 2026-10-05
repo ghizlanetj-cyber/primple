@@ -35,7 +35,13 @@ type CartState = {
   remove: (id: string) => void;
   setQuantity: (id: string, quantity: number) => void;
   clear: () => void;
+  /** True when retired items were dropped from a saved cart; checkout waits for a cart review. */
+  removedNotice: boolean;
+  acknowledgeRemoved: () => void;
 };
+
+/** Products no longer offered; saved carts containing them are cleaned on load. */
+const RETIRED_SLUGS = new Set(["packaging", "corporate-gifts"]);
 
 /** Always re-price an item from the live catalog so the cart can never show a stale price. */
 function reprice(item: CartItem, quantity = item.quantity): CartItem {
@@ -57,6 +63,8 @@ export const useCart = create<CartState>()(
   persist(
     (set) => ({
       items: [],
+      removedNotice: false,
+      acknowledgeRemoved: () => set({ removedNotice: false }),
       add: (item) =>
         set((state) => ({
           items: [...state.items, reprice({ ...item, id: `${item.slug}-${Date.now()}` })],
@@ -70,8 +78,12 @@ export const useCart = create<CartState>()(
     }),
     {
       name: "primpel-cart",
+      partialize: (state) => ({ items: state.items }),
       onRehydrateStorage: () => (state) => {
-        if (state) state.items = state.items.map((i) => reprice(i));
+        if (!state) return;
+        const kept = state.items.filter((i) => !RETIRED_SLUGS.has(i.slug));
+        if (kept.length !== state.items.length) useCart.setState({ removedNotice: true });
+        state.items = kept.map((i) => reprice(i));
       },
     },
   ),

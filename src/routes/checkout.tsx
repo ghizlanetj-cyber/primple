@@ -75,6 +75,10 @@ function CheckoutPage() {
   const { tr, number, lang } = useI18n();
   const navigate = useNavigate();
   const { items, clear } = useCart();
+  const removedNotice = useCart((s) => s.removedNotice);
+  useEffect(() => {
+    if (removedNotice) void navigate({ to: "/cart" });
+  }, [removedNotice, navigate]);
   const { user } = useAuth();
   const totals = cartTotals(items);
 
