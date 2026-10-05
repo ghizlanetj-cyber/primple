@@ -44,8 +44,15 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { tr, number } = useI18n();
-  const { items, remove, setQuantity } = useCart();
+  const { items, remove, setQuantity, removedNotice, acknowledgeRemoved } = useCart();
   const totals = cartTotals(items);
+  const [showRemoved, setShowRemoved] = useState(false);
+  useEffect(() => {
+    if (removedNotice) {
+      setShowRemoved(true);
+      acknowledgeRemoved();
+    }
+  }, [removedNotice, acknowledgeRemoved]);
 
   return (
     <SiteShell>
@@ -54,6 +61,11 @@ function CartPage() {
         <p className="mt-4 text-lg text-muted-foreground">
           {tr("Check the setup, then review and confirm your order. Prices include everything you see here.")}
         </p>
+        {showRemoved && (
+          <p role="alert" className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-foreground">
+            {tr("Some items are no longer available and were removed from your cart. Please review your cart before checkout.")}
+          </p>
+        )}
 
         {items.length === 0 ? (
           <div className="mt-14 rounded-3xl border border-border bg-card p-12 text-center">

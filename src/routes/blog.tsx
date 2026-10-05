@@ -55,12 +55,6 @@ const posts = [
     read: "7 min read",
   },
   {
-    tag: "Packaging",
-    title: "Packaging that survives Moroccan delivery routes",
-    excerpt: "Board thickness, lamination and structural choices for products that ship well.",
-    read: "5 min read",
-  },
-  {
     tag: "Retail",
     title: "Signage that still looks new after a season outdoors",
     excerpt: "Materials, inks and mounting options for shopfronts and events.",

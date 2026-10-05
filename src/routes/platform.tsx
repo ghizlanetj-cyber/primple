@@ -112,7 +112,7 @@ function PlatformPage() {
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="rounded-full px-7">
-                <Link to="/pricing">{tr("See pricing")}</Link>
+                <Link to="/packs">{tr("See packs")}</Link>
               </Button>
             </div>
           </Reveal>

@@ -195,48 +195,6 @@ export const products: Product[] = [
     ],
   },
   {
-    slug: "packaging",
-    name: "Packaging",
-    category: "Packaging",
-    benefit: "Boxes your customers keep.",
-    heroHeadline: "Packaging that survives shipping and sells your product.",
-    heroCopy:
-      "Configure your packaging in a few minutes. Receive a clear quote and a confirmed lead time within 4 business hours.",
-    description:
-      "Mailer boxes, folding cartons and sleeves produced by partners with die-cutting capability. Structural files and mockups reviewed before production starts.",
-    quantities: [100, 250, 500, 1000],
-    anchor: { quantity: 100, subtotal: 855 },
-    quoteOnly: true,
-    baseProductionDays: 6,
-    rating: 4.8,
-    reviews: 128,
-    keywords: ["custom packaging printing", "mailer boxes", "folding cartons"],
-    options: [
-      group("format", "Format", [
-        { id: "mailer", label: "Mailer box", factor: 1 },
-        { id: "carton", label: "Folding carton", factor: 0.85 },
-        { id: "sleeve", label: "Sleeve", factor: 0.62 },
-      ]),
-      group("material", "Material", [
-        { id: "kraft", label: "Kraft", factor: 1 },
-        { id: "white", label: "White board", factor: 1.12 },
-        { id: "rigid", label: "Rigid board", factor: 1.6, days: 3 },
-      ]),
-      finish,
-      deliveryGroup,
-    ],
-    faqs: [
-      {
-        q: "Do you provide a dieline?",
-        a: "Yes. Choose your format and we send the dieline template before you upload artwork.",
-      },
-      {
-        q: "Can I order a sample first?",
-        a: "Most packaging partners produce a single physical sample before the full run. Request it in the quote.",
-      },
-    ],
-  },
-  {
     slug: "flyers",
     name: "Flyers",
     category: "Marketing",
@@ -318,7 +276,7 @@ export const products: Product[] = [
   {
     slug: "labels",
     name: "Labels",
-    category: "Packaging",
+    category: "Labels & stickers",
     benefit: "Label every batch on time.",
     heroHeadline: "Labels that stay on the product.",
     heroCopy: "Choose shape, material and quantity — pricing and production time update as you go.",
@@ -502,7 +460,7 @@ export const products: Product[] = [
   {
     slug: "stickers",
     name: "Stickers",
-    category: "Packaging",
+    category: "Labels & stickers",
     benefit: "Brand every box and bag.",
     heroHeadline: "Stickers cut to whatever shape you need.",
     heroCopy: "Choose material, shape and quantity — the price updates as you choose.",

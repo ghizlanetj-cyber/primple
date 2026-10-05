@@ -407,7 +407,7 @@ export function Configurator({ product }: { product: Product }) {
           <p className="mt-3 text-center text-xs text-muted-foreground">
             {tr(
               product.quoteOnly
-                ? "Configure your packaging in a few minutes. Receive a clear quote and a confirmed lead time within 4 business hours."
+                ? "Configure your print in a few minutes. Receive a clear quote and a confirmed lead time within 4 business hours."
                 : "Your payment is made online by card in MAD. Production starts once the payment is confirmed.",
             )}
           </p>

@@ -25,7 +25,7 @@ describe("packs", () => {
   it("has the ten expected packs with an image and lines", () => {
     expect(packs).toHaveLength(10);
     for (const pack of packs) {
-      expect(pack.lines.length).toBeGreaterThan(3);
+      expect(pack.lines.length).toBeGreaterThanOrEqual(3);
       expect(pack.image).toMatch(/^\/packs\/.+\.webp\?v=\d+$/);
     }
   });

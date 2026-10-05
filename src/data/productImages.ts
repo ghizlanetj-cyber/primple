@@ -1,5 +1,4 @@
 import businessCardsAsset from "@/assets/insert-card-modern-outpaint.png.asset.json";
-import packagingAsset from "@/assets/rigid-product-boxes-outpaint.png.asset.json";
 import flyersAsset from "@/assets/flyer-your-brand-outpaint.png.asset.json";
 import rollupAsset from "@/assets/rollup-your-brand-outpaint.png.asset.json";
 import labelsAsset from "@/assets/label-your-brand-outpaint.png.asset.json";
@@ -13,7 +12,6 @@ import books from "@/assets/product-books.jpg";
 
 export const productImages: Record<string, string> = {
   "business-cards": labelsAsset.url,
-  packaging: packagingAsset.url,
   flyers: flyersAsset.url,
   "roll-up-banners": rollupAsset.url,
   labels: businessCardsAsset.url,

@@ -36,20 +36,17 @@ export function Header() {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "primple-glass fixed left-1/2 top-2 z-50 w-[calc(100%-1.5rem)] max-w-[1390px] -translate-x-1/2 rounded-full border transition-opacity duration-300 sm:w-[calc(100%-2.5rem)] lg:top-3 lg:w-[calc(100%-4rem)]",
-      )}
-    >
-      <div className="relative grid h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 sm:px-4 lg:h-[60px] lg:px-5">
+    <header className="fixed inset-x-0 top-2 z-50 lg:top-3">
+      <div className="mx-auto flex w-[calc(100%-1.5rem)] max-w-[1390px] items-center gap-3 sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)]">
+        <div className="primple-glass flex h-14 shrink-0 items-center rounded-full border px-4 lg:h-[60px] lg:px-6">
+          <Logo invert className="h-6 lg:h-7" />
+        </div>
+      <div className="primple-glass relative ms-auto grid h-14 min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border px-3 transition-opacity duration-300 sm:px-4 lg:h-[60px] lg:px-5">
         <div className="flex min-w-0 items-center gap-4 xl:gap-6">
-          <Logo invert className="h-[18px] shrink-0 lg:h-5" />
-          <nav className="hidden min-w-0 items-center gap-x-4 xl:flex 2xl:gap-x-5" aria-label={tr("Primary navigation")}>
+          <nav className="hidden min-w-0 items-center gap-x-5 md:flex" aria-label={tr("Primary navigation")}>
             <NavLink to="/products">{t("nav.products")}</NavLink>
-            <NavLink to="/services">{t("nav.solutions")}</NavLink>
-            <NavLink to="/platform">{tr("How it works")}</NavLink>
-            <NavLink to="/pricing">{t("nav.pricing")}</NavLink>
-            <NavLink to="/help">{tr("Help")}</NavLink>
+            <NavLink to="/packs">{t("nav.packs")}</NavLink>
+            <NavLink to="/contact">{t("nav.contact")}</NavLink>
           </nav>
         </div>
 
@@ -108,7 +105,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="min-h-11 min-w-11 text-ink-foreground xl:hidden"
+                className="min-h-11 min-w-11 text-ink-foreground md:hidden"
                 aria-label={t("cta.menu")}
                 aria-expanded={mobileOpen}
               >
@@ -130,10 +127,8 @@ export function Header() {
               <nav className="flex flex-col px-6 pb-8 pt-4" aria-label={tr("Primary navigation")}>
                 {[
                   { to: "/products", label: t("nav.products") },
-                  { to: "/services", label: t("nav.solutions") },
-                  { to: "/platform", label: tr("How it works") },
-                  { to: "/pricing", label: t("nav.pricing") },
-                  { to: "/help", label: tr("Help") },
+                  { to: "/packs", label: t("nav.packs") },
+                  { to: "/contact", label: t("nav.contact") },
                 ].map((link) => (
                   <SheetClose asChild key={link.to}>
                     <Link
@@ -189,6 +184,7 @@ export function Header() {
             </SheetContent>
           </Sheet>
         </div>
+      </div>
       </div>
     </header>
   );

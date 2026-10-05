@@ -10,7 +10,7 @@ import { fromPriceBasis, getProduct, products } from "@/data/products";
 import { productImageAlt, productImages } from "@/data/productImages";
 
 /** Slugs we no longer sell; they redirect to the catalog. */
-const retiredProducts = new Set(["corporate-gifts"]);
+const retiredProducts = new Set(["corporate-gifts", "packaging"]);
 import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
 import { productPhrases } from "@/i18n/product-translations";

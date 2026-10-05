@@ -18,7 +18,7 @@ import { useI18n } from "@/i18n";
 
 const title = "Impression professionnelle et personnalisée au Maroc | Primple";
 const description =
-  "Cartes de visite, flyers, brochures, packaging, étiquettes : configurez votre impression, voyez le prix et le délai avant de commander, et suivez la production jusqu'à la livraison.";
+  "Cartes de visite, flyers, brochures, étiquettes : configurez votre impression, voyez le prix et le délai avant de commander, et suivez la production jusqu'à la livraison.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -87,7 +87,7 @@ function Home() {
       lang === "en" ? "Professional and custom printing in Morocco | Primple" : title;
     const localizedDescription =
       lang === "en"
-        ? "Business cards, flyers, brochures, packaging and labels: configure your print, see the price and lead time, and track production through delivery."
+        ? "Business cards, flyers, brochures and labels: configure your print, see the price and lead time, and track production through delivery."
         : description;
 
     document.title = localizedTitle;

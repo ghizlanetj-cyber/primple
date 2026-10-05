@@ -32,8 +32,8 @@ describe("corrected prices", () => {
     expect(priceQuote(r, 1, cheapestSelection(r)).subtotal).toBe(850);
     expect(priceQuote(r, 5, cheapestSelection(r)).subtotal).toBe(4250);
   });
-  it("packaging is quote only and never priced in the cart", () => {
-    expect(getProduct("packaging")!.quoteOnly).toBe(true);
+  it("packaging is no longer offered", () => {
+    expect(getProduct("packaging")).toBeUndefined();
     expect(lineQuote("packaging", 100, {})).toBeNull();
   });
   it("design add-on is added once, without delivery", () => {
