@@ -7,7 +7,10 @@ import { toast } from "sonner";
 
 import { createOrder, type DeliveryDetails, type OrderRecord } from "@/lib/orders-api";
 import { createGuestOrder } from "@/lib/orders.functions";
-import { saveGuestClaim } from "@/lib/guest-claim";
+import { readGuestClaim, saveGuestClaim } from "@/lib/guest-claim";
+import { PaymentVerification } from "@/components/payment/PaymentVerification";
+import { dashboardOrderPath, PRINT_REFERENCE } from "@/lib/payment-status";
+import { useQueryClient } from "@tanstack/react-query";
 import { attachFilesToOrder } from "@/lib/files-api";
 import { invoiceLabels } from "@/lib/invoice";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
@@ -52,7 +55,28 @@ const title = "Payer votre commande par carte | Primple";
 const description =
   "Réglez votre commande d'impression Primple en ligne par carte bancaire, en dirhams, avec YouCan Pay.";
 
+const PENDING_KEY = "primple-pending-checkout";
+type PendingCheckout = { order: OrderRecord; claimToken?: string; method: string; cart: string };
+function readPending(): PendingCheckout | null {
+  try {
+    const raw = window.sessionStorage.getItem(PENDING_KEY);
+    return raw ? (JSON.parse(raw) as PendingCheckout) : null;
+  } catch {
+    return null;
+  }
+}
+function writePending(value: PendingCheckout | null) {
+  try {
+    if (value) window.sessionStorage.setItem(PENDING_KEY, JSON.stringify(value));
+    else window.sessionStorage.removeItem(PENDING_KEY);
+  } catch {
+    /* storage unavailable */
+  }
+}
+
 export const Route = createFileRoute("/checkout")({
+  validateSearch: (search: Record<string, unknown>): { ref?: string } =>
+    typeof search["ref"] === "string" && PRINT_REFERENCE.test(search["ref"]) ? { ref: search["ref"] } : {},
   head: () => ({
     meta: [
       { title },
@@ -81,6 +105,16 @@ function CheckoutPage() {
   }, [removedNotice, navigate]);
   const { user } = useAuth();
   const totals = cartTotals(items);
+  const search = Route.useSearch();
+  const queryClient = useQueryClient();
+  // Set once the card step reports success, or when returning from YouCan Pay / refreshing.
+  const [verify, setVerify] = useState<{ reference: string; claimToken: string } | null>(null);
+  useEffect(() => {
+    if (!search.ref) return;
+    const claim = readGuestClaim();
+    setVerify({ reference: search.ref, claimToken: claim?.reference === search.ref ? claim.claimToken : "" });
+  }, [search.ref]);
+  const cartSignature = JSON.stringify(items.map((i) => [i.slug, i.quantity, i.selection]));
 
   const startPayment = useServerFn(startPrintPayment);
   const requestTransfer = useServerFn(requestBankTransfer);
@@ -151,7 +185,9 @@ function CheckoutPage() {
 
       let order: OrderRecord;
       let claimToken: string | undefined;
-      const reuse = placedRef.current;
+      const stored = placedRef.current ? null : readPending();
+      const reuse =
+        placedRef.current ?? (stored && stored.cart === cartSignature ? { order: stored.order, claimToken: stored.claimToken, method: stored.method } : null);
       if (reuse && reuse.method === method) {
         // Retry after a failed payment step: reuse the unpaid order, never duplicate it.
         order = reuse.order;
@@ -189,6 +225,8 @@ function CheckoutPage() {
       }
       const isNewOrder = placedRef.current?.order.id !== order.id;
       placedRef.current = { order, claimToken, method };
+      // Survives a refresh so the same unpaid order is reused, never duplicated.
+      writePending({ order, claimToken, method, cart: cartSignature });
       setPlacedOrder(order);
 
       const artworkPaths = snapshotItems
@@ -210,6 +248,7 @@ function CheckoutPage() {
         setDueNow(transfer.advance);
         setPlacedOrder({ ...order, total: transfer.total });
         clear();
+        writePending(null);
         setStep(3);
         return;
       }
@@ -242,10 +281,11 @@ function CheckoutPage() {
     setError(null);
     try {
       const result = await elementRef.current.confirm();
-      if (result.status === "succeeded") {
-        setStep(3);
-        clear();
-        toast.success(tr("Payment received. Your order is confirmed."));
+      if (result.status === "succeeded" && placedRef.current) {
+        // The widget result is not proof of payment: wait for the server status.
+        const reference = placedRef.current.order.reference;
+        setVerify({ reference, claimToken: placedRef.current.claimToken ?? "" });
+        void navigate({ to: "/checkout", search: { ref: reference }, replace: true });
       } else {
         setError(result.error?.message ?? tr("The payment was declined."));
       }
@@ -255,6 +295,32 @@ function CheckoutPage() {
       setPaying(false);
     }
   };
+
+  if (verify) {
+    return (
+      <SiteShell>
+        <section className="section-shell max-w-2xl pb-14 pt-24 md:py-20">
+          <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
+            <PaymentVerification
+              reference={verify.reference}
+              claimToken={verify.claimToken}
+              signedIn={Boolean(user)}
+              onConfirmed={(order) => {
+                // Only now is the purchase final: clear the cart and the pending order.
+                clear();
+                writePending(null);
+                placedRef.current = null;
+                if (user) {
+                  void queryClient.invalidateQueries({ queryKey: ["orders", user.id] });
+                  setTimeout(() => void navigate({ href: dashboardOrderPath(order.reference), replace: true }), 1200);
+                }
+              }}
+            />
+          </div>
+        </section>
+      </SiteShell>
+    );
+  }
 
   if (items.length === 0 && step < 3) {
     return (
