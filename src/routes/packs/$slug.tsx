@@ -11,10 +11,12 @@ import {
   packCartSlug,
   packLineMinimum,
   packQuote,
+  packLineNeedsQuote,
   serializePackLines,
   type PackLine,
 } from "@/data/packs";
 import { mad } from "@/lib/format";
+import { contact } from "@/config/contact";
 import { useCart } from "@/store/cart";
 import { useI18n } from "@/i18n";
 
@@ -65,6 +67,10 @@ function PackPage() {
   );
   const quote = useMemo(() => packQuote(lines), [lines]);
   const belowMinimum = lines.some((l) => l.quantity < packLineMinimum(pack.slug, l.ref));
+  const needsQuote = lines.some(packLineNeedsQuote);
+  const quoteHref = `${contact.whatsapp}?text=${encodeURIComponent(
+    `${tr("Request a quote")} — ${tr(pack.name)} · ${lines.map((l) => `${tr(l.label)} × ${l.quantity}`).join(" · ")}`,
+  )}`;
 
   const addToCart = () => {
     add({
@@ -177,8 +183,18 @@ function PackPage() {
               number(quote.lines.length),
             )}
           </p>
-          <Button size="lg" className="mt-6 w-full rounded-full" onClick={addToCart} disabled={belowMinimum}>
-            {tr("Add the pack to my cart")}
+          {needsQuote && (
+            <p className="mt-4 text-sm font-semibold text-primary">
+              {tr("These quantities are beyond our listed prices. Send your request and we confirm a price.")}
+            </p>
+          )}
+          <Button
+            size="lg"
+            className="mt-6 w-full rounded-full"
+            onClick={needsQuote ? () => window.open(quoteHref, "_blank", "noopener") : addToCart}
+            disabled={belowMinimum}
+          >
+            {tr(needsQuote ? "Request a quote" : "Add the pack to my cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">

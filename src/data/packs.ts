@@ -297,6 +297,13 @@ export function packQuote(lines: PackLine[]): PackQuote {
  * Rebuilds pack lines from a cart/order selection so the server can re-price a
  * pack without trusting any amount sent by the browser.
  */
+/** Product lines above the verified price table need a quote; internal items have a fixed unit price. */
+export function packLineNeedsQuote(line: PackLine) {
+  if (line.kind !== "product") return false;
+  const product = getProduct(line.ref);
+  return !product || line.quantity > Math.max(...product.quantities);
+}
+
 export function parsePackLines(packSlug: string, raw: string | undefined): PackLine[] | null {
   const pack = getPack(packSlug);
   if (!pack) return null;
@@ -314,11 +321,13 @@ export function parsePackLines(packSlug: string, raw: string | undefined): PackL
     const quantity = Number((entry as { quantity?: unknown })?.quantity);
     if (typeof ref !== "string" || !pack.lines.some((l) => l.ref === ref)) return null;
     // Invalid or below-minimum quantities are rejected, never clamped.
-    if (!Number.isInteger(quantity) || quantity < packLineMinimum(packSlug, ref) || quantity > 99999) return null;
+    if (!Number.isInteger(quantity) || quantity < packLineMinimum(packSlug, ref) || !Number.isSafeInteger(quantity)) return null;
     quantities.set(ref, quantity);
   }
   // Only quantities are customer-editable; refs and prices stay server-defined.
-  return pack.lines.map((line) => ({ ...line, quantity: quantities.get(line.ref) ?? line.quantity }));
+  const lines = pack.lines.map((line) => ({ ...line, quantity: quantities.get(line.ref) ?? line.quantity }));
+  // Beyond the verified price range: quote request, never an extrapolated price.
+  return lines.some(packLineNeedsQuote) ? null : lines;
 }
 
 export function serializePackLines(lines: PackLine[]) {
