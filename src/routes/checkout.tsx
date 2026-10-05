@@ -56,7 +56,7 @@ const description =
   "Réglez votre commande d'impression Primple en ligne par carte bancaire, en dirhams, avec YouCan Pay.";
 
 const PENDING_KEY = "primple-pending-checkout";
-type PendingCheckout = { order: OrderRecord; claimToken?: string; method: string; cart: string };
+type PendingCheckout = { order: OrderRecord; claimToken?: string | undefined; method: string; cart: string };
 function readPending(): PendingCheckout | null {
   try {
     const raw = window.sessionStorage.getItem(PENDING_KEY);
