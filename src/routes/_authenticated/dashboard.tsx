@@ -90,7 +90,8 @@ function DashboardPage() {
     enabled: Boolean(user),
     // Fallback when live updates are unavailable: refresh every minute.
     // Poll faster right after a payment so the order shows without waiting.
-    refetchInterval: justPaid ? 5_000 : 60_000,
+    refetchInterval: (query) =>
+      justPaid && !(query.state.data ?? []).some((r) => r.reference === justPaid) ? 3_000 : 60_000,
   });
 
   // An order paid before signing up is attached here, once the email is verified.
@@ -174,6 +175,19 @@ function DashboardPage() {
                 </p>
               )}
               <p className="mt-4 text-sm font-medium text-primary">{tr("We will contact you soon.")}</p>
+              {justPaid && (
+                <p
+                  role="status"
+                  className="mt-4 flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 text-sm font-medium"
+                >
+                  <CheckCircle2 className="size-4 shrink-0 text-primary" />
+                  {lang === "fr"
+                    ? `Paiement confirmé pour la commande ${justPaid}. Suivez son avancement ci-dessous.`
+                    : lang === "ar"
+                      ? `تم تأكيد الدفع للطلب ${justPaid}. تابع تقدمه أدناه.`
+                      : `Payment confirmed for order ${justPaid}. Follow its progress below.`}
+                </p>
+              )}
             </div>
             <Button asChild size="lg" className="w-full rounded-full px-7 sm:w-auto">
               <Link to="/products">
