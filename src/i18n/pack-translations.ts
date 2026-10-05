@@ -9,6 +9,33 @@ const p = (fr: string, ar: string): TranslationPair => ({ fr, ar });
 export const packPhrases: Record<string, TranslationPair> = {
   // --- Packs: listing and teaser ---
   Packs: p("Packs", "الباقات"),
+  "Labels & stickers": p("Étiquettes & stickers", "الملصقات والإستيكرات"),
+  "Delivery labels": p("Étiquettes de livraison", "ملصقات التوصيل"),
+  "See packs": p("Voir les packs", "عرض الباقات"),
+  "Thank-you cards, stickers and labels that make every order look like your brand.": p(
+    "Cartes de remerciement, stickers et étiquettes : chaque commande porte votre marque.",
+    "بطاقات شكر وملصقات وإستيكرات تجعل كل طلب يحمل علامتك.",
+  ),
+  "Flat lay of thank-you cards, logo stickers and product labels": p(
+    "Mise à plat de cartes de remerciement, stickers logo et étiquettes produit",
+    "عرض مسطح لبطاقات الشكر وملصقات الشعار وملصقات المنتجات",
+  ),
+  "Labels, stickers and cards that make a first product run look established.": p(
+    "Étiquettes, stickers et cartes pour qu'une première série de produits paraisse déjà installée.",
+    "ملصقات وإستيكرات وبطاقات تمنح أول دفعة من منتجاتك مظهر علامة راسخة.",
+  ),
+  "Flat lay of product labels, stickers, brand cards and launch flyers": p(
+    "Mise à plat d'étiquettes produit, stickers, cartes de marque et flyers de lancement",
+    "عرض مسطح لملصقات المنتجات والإستيكرات وبطاقات العلامة ومطويات الإطلاق",
+  ),
+  "Configure your print in a few minutes. Receive a clear quote and a confirmed lead time within 4 business hours.": p(
+    "Configurez votre impression en quelques minutes. Recevez un devis clair et un délai confirmé sous 4 heures ouvrées.",
+    "اضبط طباعتك في دقائق. احصل على عرض سعر واضح وموعد مؤكد خلال 4 ساعات عمل.",
+  ),
+  "Some items are no longer available and were removed from your cart. Please review your cart before checkout.": p(
+    "Certains articles ne sont plus disponibles et ont été retirés de votre panier. Vérifiez votre panier avant de payer.",
+    "بعض المنتجات لم تعد متوفرة وتمت إزالتها من سلتك. يرجى مراجعة السلة قبل الدفع.",
+  ),
   "New — Packs": p("Nouveau — Packs", "جديد — الباقات"),
   "Everything your business prints, in one pack.": p(
     "Tout ce que votre activité imprime, dans un seul pack.",
