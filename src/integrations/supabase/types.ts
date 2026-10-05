@@ -835,6 +835,21 @@ export type Database = {
         Args: { _actor: string; _body: string; _key: string; _type: string }
         Returns: string
       }
+      admin_confirm_manual_payment: {
+        Args: { _actor: string; _methods: string[]; _order: string }
+        Returns: string
+      }
+      admin_crm_counts: { Args: never; Returns: Json }
+      admin_customer_orders: {
+        Args: { _key: string; _limit: number; _offset: number }
+        Returns: {
+          created_at: string
+          id: string
+          kind: string
+          total_count: number
+        }[]
+      }
+      admin_customer_summary: { Args: { _key: string }; Returns: Json }
       admin_customers: {
         Args: { _limit: number; _offset: number; _q: string }
         Returns: {
@@ -850,6 +865,26 @@ export type Database = {
           outstanding: number
           phone: string
           quotes: number
+          total_count: number
+          user_id: string
+        }[]
+      }
+      admin_customers_v2: {
+        Args: { _limit: number; _offset: number; _q: string }
+        Returns: {
+          collected: number
+          company: string
+          customer_key: string
+          last_activity: string
+          messages: number
+          name: string
+          order_value: number
+          orders: number
+          outstanding: number
+          phone: string
+          quotes: number
+          shop_orders: number
+          shop_value: number
           total_count: number
           user_id: string
         }[]
@@ -872,6 +907,15 @@ export type Database = {
         Returns: {
           message_id: string
           total_count: number
+        }[]
+      }
+      admin_order_customer_keys: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          k: string
+          kind: string
         }[]
       }
       admin_order_money: {
@@ -927,6 +971,13 @@ export type Database = {
           _slug: string
         }
         Returns: undefined
+      }
+      admin_shop_orders_page: {
+        Args: { _limit: number; _offset: number; _q: string; _status: string }
+        Returns: {
+          shop_order_id: string
+          total_count: number
+        }[]
       }
       admin_staff_directory: {
         Args: never

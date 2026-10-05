@@ -98,23 +98,22 @@ export const confirmBankTransfer = createServerFn({ method: "POST" })
     if (!(await isStaff(context))) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { logPaymentEvent } = await import("./youcanpay.server");
-    const { AWAITING_TRANSFER, MANUAL_METHODS } = await import("./deposit");
+    const { MANUAL_METHODS } = await import("./deposit");
 
-    const { data: updated } = await supabaseAdmin
-      .from("orders")
-      .update({ payment_status: "paid", deposit_paid: true, paid_at: new Date().toISOString() })
-      .eq("id", data.orderId)
-      .in("payment_method", [...MANUAL_METHODS])
-      .eq("payment_status", AWAITING_TRANSFER)
-      .select("reference, deposit_amount")
-      .maybeSingle();
-
+    // Status change and audit entry happen in one transaction; team members are refused in SQL.
+    const { data: reference, error } = await supabaseAdmin.rpc("admin_confirm_manual_payment", {
+      _actor: context.userId,
+      _order: data.orderId,
+      _methods: [...MANUAL_METHODS],
+    });
+    if (error) throw new Error("Confirmation impossible");
+    const updated = reference ? { reference: reference as string, deposit_amount: "" } : null;
     if (!updated) return { confirmed: false as const, reason: "already_confirmed_or_not_pending" };
     await logPaymentEvent({
       reference: updated.reference,
       event: "bank_transfer_confirmed",
       ok: true,
-      detail: `Manual payment ${updated.deposit_amount} MAD confirmed by staff ${context.userId}`,
+      detail: `Manual payment confirmed by staff ${context.userId}`,
     });
     return { confirmed: true as const, reference: updated.reference };
   });

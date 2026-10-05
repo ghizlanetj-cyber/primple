@@ -139,7 +139,7 @@ export function can(role: string | null | undefined, cap: Capability) {
 /** CSV cell safe for spreadsheets: quotes always, neutralizes formula prefixes (= + - @ tab CR). */
 export function csvCell(v: unknown) {
   let s = v == null ? "" : String(v);
-  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+  if (/^[\s]*[=+\-@]/.test(s) || /^[\t\r\n]/.test(s)) s = `'${s}`;
   return `"${s.replace(/"/g, '""')}"`;
 }
 export function toCsv(rows: unknown[][]) {
