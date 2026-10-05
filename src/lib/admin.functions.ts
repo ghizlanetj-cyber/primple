@@ -555,13 +555,12 @@ export const adminCrm = createServerFn({ method: "GET" })
     const { db } = await requireStaff(context, "crm_actions");
     const { crmReadiness } = await import("./crm-worker.server");
     const [counts, problems, enqueueErrors, attempts] = await Promise.all([
-      db.from("crm_outbox").select("status"),
+      db.rpc("admin_crm_counts"),
       db.from("crm_outbox").select("id, entity_type, source_table, source_id, status, attempts, last_error_code, last_error, next_attempt_at, updated_at").in("status", ["failed", "dead", "blocked"]).order("updated_at", { ascending: false }).limit(50),
       db.from("crm_enqueue_errors").select("id, at, source_table, error_code").order("at", { ascending: false }).limit(20),
       db.from("crm_sync_attempts").select("id, at, ok, http_status, error_code, summary").order("at", { ascending: false }).limit(20),
     ]);
-    const c: Record<string, number> = {};
-    for (const r of must(counts) ?? []) c[r.status] = (c[r.status] ?? 0) + 1;
+    const c = (must(counts) ?? {}) as Record<string, number>;
     return { readiness: crmReadiness(), counts: c, problems: must(problems) ?? [], enqueueErrors: must(enqueueErrors) ?? [], attempts: must(attempts) ?? [] };
   });
 

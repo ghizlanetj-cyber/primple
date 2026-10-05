@@ -62,3 +62,9 @@ describe("csv and ranges", () => {
     expect(() => dateRange("2020-01-01", "2026-01-01")).toThrow();
   });
 });
+
+describe("csv whitespace formulas", () => {
+  it("neutralizes whitespace or newline prefixed formulas", () => {
+    for (const v of [" =1+1", "\n=1", "\t+1", "  @SUM(A1)"]) expect(csvCell(v).startsWith(`"'`)).toBe(true);
+  });
+});

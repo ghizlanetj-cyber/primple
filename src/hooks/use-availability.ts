@@ -7,7 +7,7 @@ export function useUnavailable(kind: "product" | "pack", slug: string) {
   const { data } = useQuery({
     queryKey: ["catalog-availability"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("catalog_availability").select("kind, slug, available, note").eq("available", false);
+      const { data, error } = await supabase.from("catalog_availability").select("kind, slug, available").eq("available", false);
       if (error) return [];
       return data ?? [];
     },
