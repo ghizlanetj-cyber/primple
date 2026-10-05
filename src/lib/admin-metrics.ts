@@ -133,7 +133,7 @@ const MATRIX: Record<StaffRole, Capability[]> = {
   moderator: ["payments"],
 };
 export function can(role: string | null | undefined, cap: Capability) {
-  return Boolean(role && role in MATRIX && MATRIX[role as StaffRole].includes(cap));
+  return Boolean(role && Object.hasOwn(MATRIX, role) && MATRIX[role as StaffRole].includes(cap));
 }
 
 /** CSV cell safe for spreadsheets: quotes always, neutralizes formula prefixes (= + - @ tab CR). */
