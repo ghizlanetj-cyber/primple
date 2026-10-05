@@ -34,14 +34,14 @@ export const STATUS_LABELS: Record<string, string> = {
 };
 export const ROLE_LABELS: Record<string, string> = { admin: "Administrateur", team: "Équipe", moderator: "Paiements" };
 export const ACTION_LABELS: Record<string, string> = {
-  update_order_ops: "Production mise à jour",
-  update_message: "Message mis à jour",
-  add_note: "Note ajoutée",
-  record_balance: "Solde espèces enregistré",
-  set_availability: "Disponibilité modifiée",
-  grant_member: "Accès accordé",
-  revoke_member: "Accès retiré",
-  confirm_transfer: "Virement confirmé",
+  "order.ops_update": "Production mise à jour",
+  "message.update": "Message mis à jour",
+  "note.add": "Note ajoutée",
+  "balance.collected": "Solde encaissé par le livreur",
+  "balance.remitted": "Solde reversé à Primple",
+  "catalog.availability": "Disponibilité modifiée",
+  "team.grant": "Accès accordé",
+  "team.revoke": "Accès retiré",
 };
 
 export function Pill({ children, tone = "muted" }: { children: ReactNode; tone?: "muted" | "good" | "warn" | "bad" | "primary" }) {
