@@ -18,6 +18,7 @@ import {
 import { mad } from "@/lib/format";
 import { contact } from "@/config/contact";
 import { useCart } from "@/store/cart";
+import { useUnavailable } from "@/hooks/use-availability";
 import { useI18n } from "@/i18n";
 
 export const Route = createFileRoute("/packs/$slug")({
@@ -68,6 +69,7 @@ function PackPage() {
   const quote = useMemo(() => packQuote(lines), [lines]);
   const belowMinimum = lines.some((l) => l.quantity < packLineMinimum(pack.slug, l.ref));
   const needsQuote = lines.some(packLineNeedsQuote);
+  const unavailable = useUnavailable("pack", pack.slug);
   const quoteHref = `${contact.whatsapp}?text=${encodeURIComponent(
     `${tr("Request a quote")} — ${tr(pack.name)} · ${lines.map((l) => `${tr(l.label)} × ${l.quantity}`).join(" · ")}`,
   )}`;
@@ -188,11 +190,16 @@ function PackPage() {
               {tr("These quantities are beyond our listed prices. Send your request and we confirm a price.")}
             </p>
           )}
+          {unavailable && (
+            <p className="mt-6 rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive" role="status">
+              {tr("This pack is temporarily unavailable.")}
+            </p>
+          )}
           <Button
             size="lg"
             className="mt-6 w-full rounded-full"
             onClick={needsQuote ? () => window.open(quoteHref, "_blank", "noopener") : addToCart}
-            disabled={belowMinimum}
+            disabled={belowMinimum || Boolean(unavailable)}
           >
             {tr(needsQuote ? "Request a quote" : "Add the pack to my cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />

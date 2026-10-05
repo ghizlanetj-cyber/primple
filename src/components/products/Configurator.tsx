@@ -23,6 +23,7 @@ import { useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 import { quantityChoiceDetails } from "./quantity-choice";
+import { useUnavailable } from "@/hooks/use-availability";
 
 export function Configurator({ product }: { product: Product }) {
   const { tr, number } = useI18n();
@@ -38,6 +39,7 @@ export function Configurator({ product }: { product: Product }) {
   const [artworkMode, setArtworkMode] = useState<"file" | "design">("file");
   const designAddon = designAddonQuote(product.slug);
   const needsDesign = artworkMode === "design";
+  const unavailable = useUnavailable("product", product.slug);
   const chooseMode = (mode: "file" | "design") => {
     // Switching always clears the other path's state: no stale file, no duplicate add-on.
     setArtworkMode(mode);
@@ -398,11 +400,16 @@ export function Configurator({ product }: { product: Product }) {
             </p>
           </div>
 
+          {unavailable && (
+            <p className="mt-6 rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive" role="status">
+              {tr("This product is temporarily unavailable.")}
+            </p>
+          )}
           <Button
             size="lg"
             className="mt-6 w-full rounded-full"
             onClick={addToCart}
-            disabled={customQuantityInvalid || pagesInvalid || bindingInvalid || dimensionsInvalid}
+            disabled={Boolean(unavailable) || customQuantityInvalid || pagesInvalid || bindingInvalid || dimensionsInvalid}
           >
             {tr(product.quoteOnly ? "Request a quote" : bulkQuote ? "Request a custom quote" : "Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />
