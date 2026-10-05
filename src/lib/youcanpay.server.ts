@@ -5,6 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 
 import type { Database } from "@/integrations/supabase/types";
 
+import { pairEnvironment } from "./youcanpay-env";
+
 const SHOPIFY_API_VERSION = "2025-07";
 const SHOPIFY_STORE_PERMANENT_DOMAIN = "primple-3rpv2-bk0jbkjy.myshopify.com";
 const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
@@ -51,8 +53,9 @@ export function youCanPayPublicKey(): string {
   return key;
 }
 
+/** Mode comes from both keys; a mixed pair throws so no token or widget is created. */
 export function isSandbox(): boolean {
-  return privateKey().startsWith("pri_sandbox_");
+  return pairEnvironment(process.env["YOUCANPAY_PUBLIC_KEY"], process.env["YOUCANPAY_PRIVATE_KEY"]) === "sandbox";
 }
 
 function tokenizeUrl(): string {
