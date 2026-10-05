@@ -15,7 +15,7 @@ import {
   type FetchLike,
   type SyncSource,
 } from "./crm-core";
-import { customersFrom, moneyOf, summarize } from "./admin-metrics";
+import { identityOf, moneyOf, summarize } from "./admin-metrics";
 import { loadSource, runCrmBatch, type Db, type DbResult } from "./crm-worker.server";
 
 type Rec = Record<string, unknown>;
@@ -612,7 +612,7 @@ describe("admin metrics", () => {
       payment_status: "unpaid",
       status: "Order placed",
     };
-    expect(moneyOf(deposit)).toEqual({ orderValue: 200, collected: 100, balanceDue: 100 });
+    expect(moneyOf(deposit)).toEqual({ orderValue: 200, collected: 100, courierHeld: 0, balanceDue: 100 });
     const s = summarize([deposit, card, unpaid]);
     expect(s).toMatchObject({
       orderValue: 350,
@@ -621,6 +621,6 @@ describe("admin metrics", () => {
       pendingPayment: 1,
       inProduction: 1,
     });
-    expect(customersFrom([deposit, card, { ...unpaid, email: "A@B.ma" }])).toHaveLength(1);
+    expect(identityOf(" A@B.ma ")).toBe("a@b.ma");
   });
 });
