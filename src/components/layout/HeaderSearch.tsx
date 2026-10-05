@@ -13,7 +13,7 @@ type SearchResult = {
   id: string;
   label: string;
   description: string;
-  to: "/products/$slug" | "/services" | "/help" | "/blog";
+  to: "/products/$slug" | "/help" | "/blog";
   slug?: string;
   kind: "product" | "service" | "faq" | "blog";
   category: string;
@@ -23,7 +23,6 @@ type SearchResult = {
 
 const popularProductSlugs = [
   "business-cards",
-  "packaging",
   "flyers",
   "labels",
   "brochures",
@@ -36,7 +35,7 @@ const searchCategories = [
   { label: "All", value: "All" },
   { label: "Products", value: "Products" },
   { label: "Stationery", value: "Stationery" },
-  { label: "Packaging", value: "Packaging" },
+  { label: "Labels & stickers", value: "Labels & stickers" },
   { label: "Flyers / Marketing", value: "Marketing" },
   { label: "Publishing", value: "Publishing" },
   { label: "Large Format", value: "Large Format" },
@@ -55,7 +54,6 @@ const blogLabels = [
   "Artwork",
   "Finishes",
   "Budgets",
-  "Packaging",
   "Retail",
 ];
 
@@ -109,8 +107,8 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
     const services = serviceLabels.map((label, itemIndex) => ({
       id: `service-${itemIndex}`,
       label: tr(label),
-      description: tr("Services"),
-      to: "/services" as const,
+      description: tr("Help"),
+      to: "/help" as const,
       kind: "service" as const,
       category: "Services",
       searchText: label,
@@ -282,7 +280,7 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
               const Icon = result.kind === "product" ? Sparkles : result.kind === "faq" ? HelpCircle : FileText;
               const linkProps = result.slug
                 ? { to: result.to as "/products/$slug", params: { slug: result.slug } }
-                : { to: result.to as "/services" | "/help" | "/blog" };
+                : { to: result.to as "/help" | "/blog" };
               return (
                 <Link
                   {...linkProps}

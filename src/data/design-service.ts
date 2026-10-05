@@ -45,7 +45,6 @@ export type DesignDeliverable =
   | "flyer"
   | "menu"
   | "brochure"
-  | "packaging"
   | "presentation"
   | "other";
 
@@ -55,7 +54,6 @@ export const designDeliverableHours: Record<DesignDeliverable, number> = {
   flyer: 2,
   menu: 4,
   brochure: 5,
-  packaging: 6,
   presentation: 6,
   other: 3,
 };
@@ -66,7 +64,6 @@ export const designDeliverableLabels: Record<DesignDeliverable, string> = {
   flyer: "Flyer or poster",
   menu: "Menu or price list",
   brochure: "Brochure or catalogue",
-  packaging: "Packaging artwork",
   presentation: "Presentation",
   other: "Something else",
 };
@@ -131,7 +128,6 @@ export const productDesignHours: Record<string, number> = {
   menus: 4,
   brochures: 5,
   books: 5,
-  packaging: 6,
 };
 
 export function hasDesignAddon(selection: Record<string, string> | undefined) {

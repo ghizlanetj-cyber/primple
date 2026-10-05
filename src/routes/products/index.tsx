@@ -22,7 +22,7 @@ function normalize(value: string) {
     .trim();
 }
 
-const title = "Produits d'impression : cartes de visite, flyers, packaging | Primple";
+const title = "Produits d'impression : cartes de visite, flyers, étiquettes | Primple";
 const description =
   "Tous les produits imprimés par Primple. Choisissez le format, le papier et la finition, voyez le prix immédiatement et lancez votre commande.";
 
@@ -172,7 +172,7 @@ function ProductsPage() {
       <FinalCta
         title="Not sure which product fits?"
         copy="Tell us what you need printed and we'll suggest the right format, material and quantity."
-        primary={{ label: "Get a printing price", to: "/pricing" }}
+        primary={{ label: "Get a printing price", to: "/products/business-cards" }}
         secondary={{ label: "Talk to our team", to: "/contact" }}
       />
     </SiteShell>

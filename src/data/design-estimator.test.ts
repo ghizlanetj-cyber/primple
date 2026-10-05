@@ -49,7 +49,7 @@ describe("design estimator", () => {
   it("always clamps between 1 and 10 hours", () => {
     expect(
       estimateDesignHours({
-        deliverable: "packaging",
+        deliverable: "presentation",
         hasSourceFile: false,
         formats: 10,
         pages: 40,

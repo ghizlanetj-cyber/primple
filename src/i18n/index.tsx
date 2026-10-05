@@ -29,6 +29,8 @@ type Dict = Record<string, string>;
 
 const en: Dict = {
   "nav.products": "Products",
+  "nav.packs": "Packs",
+  "nav.contact": "Contact",
   "nav.solutions": "Services",
   "nav.why": "Why Primple",
   "nav.work": "Platform",
@@ -119,6 +121,8 @@ const en: Dict = {
 
 const fr: Dict = {
   "nav.products": "Produits",
+  "nav.packs": "Packs",
+  "nav.contact": "Contact",
   "nav.solutions": "Services",
   "nav.why": "Pourquoi Primple",
   "nav.work": "Plateforme",
@@ -209,6 +213,8 @@ const fr: Dict = {
 
 const ar: Dict = {
   "nav.products": "المنتجات",
+  "nav.packs": "الباقات",
+  "nav.contact": "تواصل معنا",
   "nav.solutions": "الحلول",
   "nav.why": "لماذا Primple",
   "nav.work": "أعمالنا",
