@@ -15,3 +15,6 @@
 - Cash balances collected at delivery are recorded only in balance_collections via an admin server function; "Delivered" status never implies money was collected or remitted.
 - Payment/invoice wording comes from paymentSummary in src/lib/invoice.ts so dashboard and invoice never disagree.
 - Quantities have only a minimum; above a product's largest preset quantity (or bulkQuoteAt) lineQuote/parsePackLines return null and the UI offers a quote request — never extrapolate prices.
+- /admin access goes through my_staff_role() and the capability matrix in admin-metrics.ts before the service client; team members live in team_members (operational only), roles never come from user_metadata. Keeps least privilege in one checked place.
+- Admin mutations go through audited, versioned SQL functions (admin_update_order_ops, admin_update_message, admin_record_balance, etc.); never write sidecar tables directly from TypeScript. Prevents lost updates and unaudited changes.
+- Catalog availability overrides live in catalog_availability and are enforced by the orders insert trigger and payment start; prices stay in src/data. Prevents ordering switched-off items.
