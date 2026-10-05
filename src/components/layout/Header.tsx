@@ -38,7 +38,9 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-2 z-50 lg:top-3">
       <div className="mx-auto flex w-[calc(100%-1.5rem)] max-w-[1390px] items-center gap-3 sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)]">
-        <Logo className="h-8 shrink-0 drop-shadow-sm md:h-10" />
+        <div className="primple-glass flex h-14 shrink-0 items-center rounded-full border px-4 lg:h-[60px] lg:px-6">
+          <Logo invert className="h-6 lg:h-7" />
+        </div>
       <div className="primple-glass relative ms-auto grid h-14 min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border px-3 transition-opacity duration-300 sm:px-4 lg:h-[60px] lg:px-5">
         <div className="flex min-w-0 items-center gap-4 xl:gap-6">
           <nav className="hidden min-w-0 items-center gap-x-5 md:flex" aria-label={tr("Primary navigation")}>
