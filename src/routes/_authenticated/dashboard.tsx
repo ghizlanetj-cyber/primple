@@ -39,6 +39,10 @@ const title = "Votre espace d’impression | Primple";
 const description = "Suivez chaque impression, consultez vos commandes et téléchargez vos factures au même endroit.";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
+  validateSearch: (search: Record<string, unknown>): { order?: string; paid?: string } => ({
+    ...(typeof search["order"] === "string" && /^PRM-\d{4,8}$/.test(search["order"]) ? { order: search["order"] } : {}),
+    ...(search["paid"] === "1" || search["paid"] === 1 ? { paid: "1" } : {}),
+  }),
   head: () => ({
     meta: [
       { title },
@@ -75,7 +79,9 @@ function DashboardPage() {
   const { user, displayName, signOut } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState<View>("orders");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const search = Route.useSearch();
+  const [selectedId, setSelectedId] = useState<string | null>(search.order ?? null);
+  const justPaid = search.paid === "1" && search.order ? search.order : null;
   const L = invoiceLabels[lang];
 
   const { data: records = [], isLoading } = useQuery({
@@ -83,7 +89,9 @@ function DashboardPage() {
     queryFn: listMyOrders,
     enabled: Boolean(user),
     // Fallback when live updates are unavailable: refresh every minute.
-    refetchInterval: 60_000,
+    // Poll faster right after a payment so the order shows without waiting.
+    refetchInterval: (query) =>
+      justPaid && !(query.state.data ?? []).some((r) => r.reference === justPaid) ? 3_000 : 60_000,
   });
 
   // An order paid before signing up is attached here, once the email is verified.
@@ -167,6 +175,19 @@ function DashboardPage() {
                 </p>
               )}
               <p className="mt-4 text-sm font-medium text-primary">{tr("We will contact you soon.")}</p>
+              {justPaid && (
+                <p
+                  role="status"
+                  className="mt-4 flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 text-sm font-medium"
+                >
+                  <CheckCircle2 className="size-4 shrink-0 text-primary" />
+                  {lang === "fr"
+                    ? `Paiement confirmé pour la commande ${justPaid}. Suivez son avancement ci-dessous.`
+                    : lang === "ar"
+                      ? `تم تأكيد الدفع للطلب ${justPaid}. تابع تقدمه أدناه.`
+                      : `Payment confirmed for order ${justPaid}. Follow its progress below.`}
+                </p>
+              )}
             </div>
             <Button asChild size="lg" className="w-full rounded-full px-7 sm:w-auto">
               <Link to="/products">

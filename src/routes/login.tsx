@@ -1,3 +1,4 @@
+import { safeInternalPath } from "@/lib/payment-status";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Loader2 } from "lucide-react";
@@ -43,10 +44,10 @@ function LoginPage() {
   const { user, loading } = useAuth();
   const [busy, setBusy] = useState(false);
 
-  const destination = redirect && redirect.startsWith("/") ? redirect : "/dashboard";
+  const destination = safeInternalPath(redirect);
 
   useEffect(() => {
-    if (user) navigate({ to: destination });
+    if (user) navigate({ href: destination });
   }, [user, destination, navigate]);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -60,7 +61,7 @@ function LoginPage() {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       toast.success(tr("Welcome back to Primple."));
-      navigate({ to: destination });
+      navigate({ href: destination });
     } catch (error) {
       toast.error(tr(authErrorPhrase(error)));
     } finally {

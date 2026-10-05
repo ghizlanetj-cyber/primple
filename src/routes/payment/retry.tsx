@@ -13,6 +13,10 @@ import { getRetryableOrder } from "@/lib/payment-support.functions";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
 import { loadYouCanPay, type YouCanPayElement, type YouCanPayLocale } from "@/lib/youcanpay";
 import { useCart } from "@/store/cart";
+import { PaymentVerification } from "@/components/payment/PaymentVerification";
+import { useAuth } from "@/hooks/useAuth";
+import { dashboardOrderPath } from "@/lib/payment-status";
+import { useNavigate } from "@tanstack/react-router";
 
 const title = "Reprendre votre paiement | Primple";
 const description = "Votre commande Primple est conservée : réessayez le paiement par carte en toute sécurité.";
@@ -52,6 +56,11 @@ function RetryPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const elementRef = useRef<YouCanPayElement | null>(null);
   const claimToken = useRef<string>("");
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  // "pending" orders are verified first; retry is offered only once the server says failed,
+  // or the status stays unknown after the timeout following the provider's error redirect.
+  const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
     const claim = readGuestClaim();
@@ -60,6 +69,7 @@ function RetryPage() {
       .then((result) => {
         setOrder(result);
         if (result?.paymentStatus === "paid") setPaid(true);
+        else if (result && result.paymentStatus !== "failed") setVerifying(true);
       })
       .catch(() => setOrder(null))
       .finally(() => setLoading(false));
@@ -98,8 +108,9 @@ function RetryPage() {
     try {
       const result = await elementRef.current.confirm();
       if (result.status === "succeeded") {
-        setPaid(true);
-        clear();
+        // Widget success is not proof: confirm from the server status.
+        setCardReady(false);
+        setVerifying(true);
       } else setError(result.error?.message ?? tr("The payment was declined."));
     } catch {
       setError(tr("The payment was declined."));
@@ -122,6 +133,21 @@ function RetryPage() {
             <Button asChild className="mt-6">
               <Link to="/login">{tr("Sign in")}</Link>
             </Button>
+          </div>
+        ) : verifying ? (
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <PaymentVerification
+              reference={order.reference}
+              claimToken={claimToken.current}
+              signedIn={Boolean(user)}
+              onConfirmed={(confirmed) => {
+                clear();
+                if (user) setTimeout(() => void navigate({ href: dashboardOrderPath(confirmed.reference), replace: true }), 1200);
+              }}
+              onDelayed={() => {
+                if (!elementRef.current) setVerifying(false);
+              }}
+            />
           </div>
         ) : paid ? (
           <div className="text-center">

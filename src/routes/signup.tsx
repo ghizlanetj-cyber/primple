@@ -1,3 +1,4 @@
+import { safeInternalPath } from "@/lib/payment-status";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Loader2 } from "lucide-react";
@@ -48,10 +49,10 @@ function SignupPage() {
     setGuestEmail(readGuestClaim()?.email ?? "");
   }, []);
 
-  const destination = search.redirect?.startsWith("/") ? search.redirect : "/dashboard";
+  const destination = safeInternalPath(search.redirect);
 
   useEffect(() => {
-    if (user) navigate({ to: destination });
+    if (user) navigate({ href: destination });
   }, [user, destination, navigate]);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -75,7 +76,7 @@ function SignupPage() {
       if (error) throw error;
       if (data.session) {
         toast.success(tr("Welcome to Primple."));
-        navigate({ to: destination });
+        navigate({ href: destination });
       } else {
         toast.success(tr("Check your inbox to confirm your email address."));
       }
