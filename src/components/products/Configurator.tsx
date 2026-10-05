@@ -54,9 +54,7 @@ export function Configurator({ product }: { product: Product }) {
   const parsedCustomQuantity = customQuantity === "" ? null : parseQuantity(customQuantity, limits);
   const customQuantityInvalid = customQuantity !== "" && parsedCustomQuantity === null;
   const bulkQuote = isBulkQuoteQuantity(product, quantity);
-  const quantityError = tr("Enter a whole number between {min} and {max}.")
-    .replace("{min}", number(limits.min))
-    .replace("{max}", number(limits.max));
+  const quantityError = tr("Enter a whole number of at least {min}.").replace("{min}", number(limits.min));
   const pages = product.pageRange ? Number(selection["pages"] ?? product.pageRange.default) : null;
   const pagesInvalid = product.pageRange
     ? !Number.isInteger(pages) || pages === null || pages < product.pageRange.min || pages > product.pageRange.max
@@ -81,8 +79,8 @@ export function Configurator({ product }: { product: Product }) {
     : false;
 
   const addToCart = () => {
-    if (customQuantityInvalid || pagesInvalid || bindingInvalid || dimensionsInvalid || bulkQuote) return;
-    if (product.quoteOnly) {
+    if (customQuantityInvalid || pagesInvalid || bindingInvalid || dimensionsInvalid) return;
+    if (product.quoteOnly || bulkQuote) {
       window.open(quoteHref, "_blank", "noopener");
       return;
     }
@@ -353,16 +351,21 @@ export function Configurator({ product }: { product: Product }) {
               transition={{ duration: 0.22 }}
               className="mt-2 font-display text-4xl font-extrabold tracking-tight"
             >
-              {product.quoteOnly ? tr("Request a quote") : mad(total)}
+              {product.quoteOnly || bulkQuote ? tr("Request a quote") : mad(total)}
             </motion.p>
           </AnimatePresence>
-          {!product.quoteOnly && (
+          {bulkQuote && !product.quoteOnly && (
+            <p className="mt-1 text-sm text-muted-foreground">
+              {tr("{quantity} units is beyond our listed prices. Send your request and we confirm a price.").replace("{quantity}", number(quantity))}
+            </p>
+          )}
+          {!product.quoteOnly && !bulkQuote && (
           <p className="mt-1 text-sm text-muted-foreground">
             {number(quantity)} {tr("units")} · {madUnit(quote.unitPrice)} {tr("each")}
           </p>
           )}
 
-          {!product.quoteOnly && (
+          {!product.quoteOnly && !bulkQuote && (
           <dl className="mt-6 space-y-2.5 border-t border-border pt-5 text-sm">
             <Row label={tr("Subtotal")} value={mad(quote.subtotal)} />
             {needsDesign && <Row label={tr("Design by Primple — 100 MAD/h")} value={mad(designAmount)} />}
@@ -399,7 +402,7 @@ export function Configurator({ product }: { product: Product }) {
             size="lg"
             className="mt-6 w-full rounded-full"
             onClick={addToCart}
-            disabled={customQuantityInvalid || pagesInvalid || bindingInvalid || dimensionsInvalid || bulkQuote}
+            disabled={customQuantityInvalid || pagesInvalid || bindingInvalid || dimensionsInvalid}
           >
             {tr(product.quoteOnly ? "Request a quote" : bulkQuote ? "Request a custom quote" : "Add to cart")}
             <ArrowRight className="size-4 rtl:rotate-180" />

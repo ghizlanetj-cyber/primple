@@ -1,21 +1,24 @@
 import type { Product } from "@/data/products";
 
-export type QuantityLimits = { min: number; max: number };
+/** Only a minimum is enforced; `verifiedMax` is the end of the verified price table. */
+export type QuantityLimits = { min: number; verifiedMax: number };
 
 export function productQuantityLimits(product: Pick<Product, "quantities">): QuantityLimits {
   return {
     min: Math.min(...product.quantities),
-    max: Math.max(...product.quantities),
+    verifiedMax: Math.max(...product.quantities),
   };
 }
 
-export function isBulkQuoteQuantity(product: Pick<Product, "bulkQuoteAt">, quantity: number) {
-  return product.bulkQuoteAt !== undefined && quantity >= product.bulkQuoteAt;
+/** Quantities we cannot price from verified data go to a quote request — never an invented price. */
+export function isBulkQuoteQuantity(product: Pick<Product, "bulkQuoteAt" | "quantities">, quantity: number) {
+  if (product.bulkQuoteAt !== undefined && quantity >= product.bulkQuoteAt) return true;
+  return quantity > Math.max(...product.quantities);
 }
 
-export function parseQuantity(value: string, limits: QuantityLimits): number | null {
-  if (!/^[1-9]\d*$/.test(value)) return null;
-  const quantity = Number(value);
-  if (!Number.isSafeInteger(quantity) || quantity < limits.min || quantity > limits.max) return null;
+export function parseQuantity(value: string, limits: Pick<QuantityLimits, "min">): number | null {
+  if (!/^[1-9]\d*$/.test(value.trim())) return null;
+  const quantity = Number(value.trim());
+  if (!Number.isSafeInteger(quantity) || quantity < limits.min) return null;
   return quantity;
 }
