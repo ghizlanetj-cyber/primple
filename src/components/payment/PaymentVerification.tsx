@@ -89,11 +89,14 @@ export function PaymentVerification({
   claimToken,
   signedIn,
   onConfirmed,
+  onDelayed,
 }: {
   reference: string;
   claimToken: string;
   signedIn: boolean;
   onConfirmed: (order: VerifiedOrder) => void;
+  /** Called once if the status is still pending after the timeout. */
+  onDelayed?: () => void;
 }) {
   const { lang } = useI18n();
   const c = COPY[lang];
@@ -149,6 +152,15 @@ export function PaymentVerification({
   useEffect(() => {
     if (view === "confirmed" && order) onConfirmedRef.current(order);
   }, [view, order]);
+  const onDelayedRef = useRef(onDelayed);
+  onDelayedRef.current = onDelayed;
+  const delayedFired = useRef(false);
+  useEffect(() => {
+    if (view === "delayed" && !delayedFired.current) {
+      delayedFired.current = true;
+      onDelayedRef.current?.();
+    }
+  }, [view]);
 
   if (missing) {
     return (

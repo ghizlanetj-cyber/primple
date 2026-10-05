@@ -39,6 +39,10 @@ const title = "Votre espace d’impression | Primple";
 const description = "Suivez chaque impression, consultez vos commandes et téléchargez vos factures au même endroit.";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
+  validateSearch: (search: Record<string, unknown>): { order?: string; paid?: string } => ({
+    ...(typeof search["order"] === "string" && /^PRM-\d{4,8}$/.test(search["order"]) ? { order: search["order"] } : {}),
+    ...(search["paid"] === "1" || search["paid"] === 1 ? { paid: "1" } : {}),
+  }),
   head: () => ({
     meta: [
       { title },
@@ -75,7 +79,9 @@ function DashboardPage() {
   const { user, displayName, signOut } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState<View>("orders");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const search = Route.useSearch();
+  const [selectedId, setSelectedId] = useState<string | null>(search.order ?? null);
+  const justPaid = search.paid === "1" && search.order ? search.order : null;
   const L = invoiceLabels[lang];
 
   const { data: records = [], isLoading } = useQuery({
@@ -83,7 +89,8 @@ function DashboardPage() {
     queryFn: listMyOrders,
     enabled: Boolean(user),
     // Fallback when live updates are unavailable: refresh every minute.
-    refetchInterval: 60_000,
+    // Poll faster right after a payment so the order shows without waiting.
+    refetchInterval: justPaid ? 5_000 : 60_000,
   });
 
   // An order paid before signing up is attached here, once the email is verified.
