@@ -241,3 +241,39 @@ export const startPrintPayment = createServerFn({ method: "POST" })
 
     return { reference: order.reference, token: tokenId, amountCents, currency: "MAD" };
   });
+
+/**
+ * Payment status of a print order, read from the database only. The status is
+ * set by the signature-verified webhook, so the browser can poll this safely.
+ * Only the signed-in owner or the guest holding the claim token may read it.
+ */
+export const getPrintPaymentStatus = createServerFn({ method: "POST" })
+  .inputValidator((input: { reference: string; claimToken?: string }) => {
+    const reference = String(input?.reference ?? "").trim();
+    if (!/^PRM-\d{4,8}$/.test(reference)) throw new Error("Unknown order.");
+    const claimToken = String(input?.claimToken ?? "").trim().slice(0, 200);
+    return { reference, claimToken };
+  })
+  .handler(async ({ data }) => {
+    const { optionalUserId } = await import("./youcanpay.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { canPayOrder } = await import("./order-access");
+    const userId = await optionalUserId(getRequest()?.headers.get("authorization") ?? null);
+
+    const { data: order, error } = await supabaseAdmin
+      .from("orders")
+      .select("user_id, claim_token, reference, total, deposit_amount, balance_amount, payment_status, payment_method, status")
+      .eq("reference", data.reference)
+      .maybeSingle();
+    if (error || !order || !canPayOrder(order, { userId, claimToken: data.claimToken || null })) return null;
+    return {
+      reference: order.reference,
+      paymentStatus: order.payment_status,
+      paymentMethod: order.payment_method,
+      orderStatus: order.status,
+      total: Number(order.total),
+      amountPaid: order.payment_status === "paid" ? Number(order.deposit_amount) : 0,
+      balance: Number(order.balance_amount),
+      isGuest: !order.user_id,
+    };
+  });
