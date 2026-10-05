@@ -4,15 +4,15 @@
 -- Result: 'TEAM_DASHBOARD_TEST PASS n' or 'TEAM_DASHBOARD_TEST FAIL: <case>'.
 DO $$
 DECLARE
-  adm uuid := gen_random_uuid(); tm uuid := gen_random_uuid(); cust uuid := gen_random_uuid(); other uuid := gen_random_uuid(); unconf uuid := gen_random_uuid();
+  adm uuid; tm uuid; cust uuid; other uuid;
   o1 uuid; o2 uuid; msg uuid; v int; ok int := 0; n int; m record; real_admin uuid; tag text := substr(gen_random_uuid()::text, 1, 8);
 BEGIN
-  INSERT INTO auth.users (id, instance_id, aud, role, email, email_confirmed_at, created_at, updated_at)
-  VALUES (adm, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'adm-' || tag || '@test.invalid', now(), now(), now()),
-         (tm, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'tm-' || tag || '@test.invalid', now(), now(), now()),
-         (cust, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'cu-' || tag || '@test.invalid', now(), now(), now()),
-         (other, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'ot-' || tag || '@test.invalid', now(), now(), now()),
-         (unconf, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'un-' || tag || '@test.invalid', NULL, now(), now());
+  -- The sandbox cannot create auth users, so existing non-staff accounts are borrowed as
+  -- fixture identities. Everything below is rolled back; no real role survives.
+  SELECT id INTO adm FROM public.profiles p WHERE NOT EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = p.id) ORDER BY created_at LIMIT 1;
+  SELECT id INTO cust FROM public.profiles p WHERE id <> adm AND NOT EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = p.id) ORDER BY created_at LIMIT 1;
+  SELECT id INTO other FROM public.profiles p WHERE id NOT IN (adm, cust) AND NOT EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = p.id) ORDER BY created_at LIMIT 1;
+  IF other IS NULL THEN RAISE EXCEPTION 'TEAM_DASHBOARD_TEST SKIP: need four accounts'; END IF;
   INSERT INTO public.user_roles (user_id, role) VALUES (adm, 'admin');
   INSERT INTO public.orders (user_id, reference, email, payment_method, total, deposit_amount, balance_amount, deposit_paid, payment_status, status)
     VALUES (cust, 'TST-' || tag || '-1', 'cu-' || tag || '@test.invalid', 'deposit_50_cod', 200, 100, 100, true, 'paid', 'Delivered') RETURNING id INTO o1;
@@ -21,15 +21,20 @@ BEGIN
   INSERT INTO public.message_meta (message_id, classification) VALUES (msg, 'quote') ON CONFLICT (message_id) DO UPDATE SET classification = 'quote';
 
   -- 1. Admin grants team to a confirmed user; unconfirmed and bad roles fail.
-  PERFORM public.admin_grant_member(adm, 'TM-' || tag || '@test.invalid', 'team', 'Team T');
+  tm := NULL;
+  FOR m IN SELECT id, email FROM public.profiles p WHERE id NOT IN (adm, cust, other) AND coalesce(email,'') <> '' AND NOT EXISTS (SELECT 1 FROM public.user_roles r WHERE r.user_id = p.id) AND NOT EXISTS (SELECT 1 FROM public.team_members t WHERE t.user_id = p.id) LOOP
+    BEGIN tm := public.admin_grant_member(adm, upper(m.email), 'team', 'Team T'); EXIT;
+    EXCEPTION WHEN raise_exception THEN tm := NULL; END;
+  END LOOP;
+  IF tm IS NULL THEN RAISE EXCEPTION 'TEAM_DASHBOARD_TEST SKIP: no confirmed account for team grant'; END IF;
   IF public.staff_role_of(tm) <> 'team' THEN RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: grant team'; END IF; ok := ok + 1;
-  BEGIN PERFORM public.admin_grant_member(adm, 'un-' || tag || '@test.invalid', 'team', NULL); RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: unconfirmed granted';
+  BEGIN PERFORM public.admin_grant_member(adm, 'nobody-' || tag || '@test.invalid', 'team', NULL); RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: unconfirmed granted';
   EXCEPTION WHEN raise_exception THEN IF SQLERRM LIKE 'TEAM_DASHBOARD_TEST%' THEN RAISE; END IF; ok := ok + 1; END;
-  BEGIN PERFORM public.admin_grant_member(adm, 'cu-' || tag || '@test.invalid', 'moderator', NULL); RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: moderator via team mgmt';
+  BEGIN PERFORM public.admin_grant_member(adm, 'x@test.invalid', 'moderator', NULL); RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: moderator via team mgmt';
   EXCEPTION WHEN raise_exception THEN IF SQLERRM LIKE 'TEAM_DASHBOARD_TEST%' THEN RAISE; END IF; ok := ok + 1; END;
 
   -- 2. Team cannot escalate, change availability, record money.
-  BEGIN PERFORM public.admin_grant_member(tm, 'tm-' || tag || '@test.invalid', 'admin', NULL); RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: team self-admin';
+  BEGIN PERFORM public.admin_grant_member(tm, 'x@test.invalid', 'admin', NULL); RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: team self-admin';
   EXCEPTION WHEN raise_exception THEN IF SQLERRM LIKE 'TEAM_DASHBOARD_TEST%' THEN RAISE; END IF; ok := ok + 1; END;
   BEGIN PERFORM public.admin_set_availability(tm, 'product', 'flyers', false, NULL); RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: team availability';
   EXCEPTION WHEN raise_exception THEN IF SQLERRM LIKE 'TEAM_DASHBOARD_TEST%' THEN RAISE; END IF; ok := ok + 1; END;
