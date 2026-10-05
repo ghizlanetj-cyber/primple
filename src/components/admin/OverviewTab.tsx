@@ -115,9 +115,9 @@ export function OverviewTab({ go }: { go: (t: AdminTab, extra?: { order?: string
           )}
         </Card>
         <Card title="Activité récente de l'équipe">
-          {activity.error ? <ErrorBox error={activity.error} /> : !activity.data ? <Loading /> : activity.data.audit.length === 0 ? <Empty>Aucune action pour l'instant.</Empty> : (
+          {activity.error ? <ErrorBox error={activity.error} /> : !activity.data ? <Loading /> : (activity.data.audit ?? []).length === 0 ? <Empty>Aucune action pour l'instant.</Empty> : (
             <ul className="space-y-2 text-sm">
-              {activity.data.audit.map((a) => (
+              {(activity.data.audit ?? []).map((a) => (
                 <li key={a.id} className="flex flex-wrap gap-x-2">
                   <span>{ACTION_LABELS[a.action] ?? a.action}</span>
                   <span className="text-muted-foreground">par {nameOf(a.actor_id)} · {fmtDate(a.at, true)}</span>

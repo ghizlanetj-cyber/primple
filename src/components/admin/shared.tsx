@@ -65,7 +65,7 @@ export function paymentTone(s: string) {
   return s === "paid" ? "good" : s === "failed" ? "bad" : s === "awaiting_transfer" ? "warn" : "muted";
 }
 
-export function Stat({ label, value, hint, tone }: { label: string; value: ReactNode; hint?: string; tone?: "warn" }) {
+export function Stat({ label, value, hint, tone }: { label: string; value: ReactNode; hint?: string | undefined; tone?: "warn" | undefined }) {
   return (
     <div className={cn("rounded-xl border bg-card p-4", tone === "warn" && "border-destructive/40")}>
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
