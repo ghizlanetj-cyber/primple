@@ -17,3 +17,4 @@
 - /admin access (moderators only get /admin/payments) goes through my_staff_role() and the capability matrix in admin-metrics.ts before the service client; team members live in team_members (operational only), roles never come from user_metadata. Keeps least privilege in one checked place.
 - Admin mutations go through audited, versioned SQL functions (admin_update_order_ops, admin_update_message, admin_record_balance, etc.); never write sidecar tables directly from TypeScript. Prevents lost updates and unaudited changes.
 - Catalog availability overrides live in catalog_availability and are enforced by the orders insert trigger and payment start; prices stay in src/data. Prevents ordering switched-off items.
+- Card payment success is shown only after the server order status reads "paid" (set by the signed webhook), via getPrintPaymentStatus polling; the widget result never confirms payment or clears the cart. Prevents false confirmations and double charges.

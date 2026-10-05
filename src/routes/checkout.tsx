@@ -299,7 +299,7 @@ function CheckoutPage() {
   if (verify) {
     return (
       <SiteShell>
-        <section className="section-shell max-w-2xl pb-14 pt-24 md:py-20">
+        <section className="section-shell max-w-2xl pb-14 pt-28 md:pb-20 md:pt-36">
           <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
             <PaymentVerification
               reference={verify.reference}
