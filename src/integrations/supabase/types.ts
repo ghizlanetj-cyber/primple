@@ -136,6 +136,21 @@ export type Database = {
         }
         Relationships: []
       }
+      catalog_pack_products: {
+        Row: {
+          pack_slug: string
+          product_slug: string
+        }
+        Insert: {
+          pack_slug: string
+          product_slug: string
+        }
+        Update: {
+          pack_slug?: string
+          product_slug?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           company: string | null
@@ -714,6 +729,47 @@ export type Database = {
         }
         Relationships: []
       }
+      shop_order_ops: {
+        Row: {
+          assigned_to: string | null
+          delivery_notes: string | null
+          expected_at: string | null
+          ops_stage: string
+          order_id: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+        }
+        Insert: {
+          assigned_to?: string | null
+          delivery_notes?: string | null
+          expected_at?: string | null
+          ops_stage?: string
+          order_id: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Update: {
+          assigned_to?: string | null
+          delivery_notes?: string | null
+          expected_at?: string | null
+          ops_stage?: string
+          order_id?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shop_order_ops_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "shop_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shop_orders: {
         Row: {
           amount_cents: number
@@ -827,7 +883,25 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_customer_records: {
+        Row: {
+          collected: number | null
+          company: string | null
+          customer_key: string | null
+          last_activity: string | null
+          messages: number | null
+          name: string | null
+          order_value: number | null
+          orders: number | null
+          outstanding: number | null
+          phone: string | null
+          quotes: number | null
+          shop_orders: number | null
+          shop_value: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       admin_action_queue: { Args: never; Returns: Json }
@@ -840,6 +914,13 @@ export type Database = {
         Returns: string
       }
       admin_crm_counts: { Args: never; Returns: Json }
+      admin_customer_messages: {
+        Args: { _key: string; _limit: number; _offset: number }
+        Returns: {
+          id: string
+          total_count: number
+        }[]
+      }
       admin_customer_orders: {
         Args: { _key: string; _limit: number; _offset: number }
         Returns: {
@@ -996,6 +1077,10 @@ export type Database = {
         Returns: number
       }
       admin_update_order_ops: {
+        Args: { _actor: string; _expected: number; _f: Json; _order: string }
+        Returns: number
+      }
+      admin_update_shop_ops: {
         Args: { _actor: string; _expected: number; _f: Json; _order: string }
         Returns: number
       }
