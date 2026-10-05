@@ -858,6 +858,22 @@ export type Database = {
         Args: { _actor: string; _email: string; _name: string; _role: string }
         Returns: string
       }
+      admin_messages_page: {
+        Args: {
+          _assignee: string
+          _classification: string
+          _limit: number
+          _offset: number
+          _q: string
+          _quotes: boolean
+          _stage: string
+          _unread: boolean
+        }
+        Returns: {
+          message_id: string
+          total_count: number
+        }[]
+      }
       admin_order_money: {
         Args: never
         Returns: {
@@ -870,6 +886,24 @@ export type Database = {
           outstanding: number
         }[]
       }
+      admin_orders_page: {
+        Args: {
+          _assignee: string
+          _from: string
+          _limit: number
+          _offset: number
+          _payment: string
+          _q: string
+          _stage: string
+          _status: string
+          _to: string
+        }
+        Returns: {
+          order_id: string
+          total_count: number
+        }[]
+      }
+      admin_quote_stage_counts: { Args: never; Returns: Json }
       admin_record_balance: {
         Args: {
           _actor: string
@@ -893,6 +927,18 @@ export type Database = {
           _slug: string
         }
         Returns: undefined
+      }
+      admin_staff_directory: {
+        Args: never
+        Returns: {
+          active: boolean
+          display_name: string
+          email: string
+          granted_at: string
+          revoked_at: string
+          role: string
+          user_id: string
+        }[]
       }
       admin_update_message: {
         Args: { _actor: string; _expected: number; _f: Json; _msg: string }
