@@ -12,8 +12,7 @@ import { getPrintPaymentStatus } from "@/lib/youcanpay.functions";
 
 export type VerifiedOrder = NonNullable<Awaited<ReturnType<typeof getPrintPaymentStatus>>>;
 
-const COPY: Record<Lang, Record<string, string>> = {
-  fr: {
+const FR = {
     verifying: "Vérification du paiement…",
     verifyingBody: "Nous attendons la confirmation de YouCan Pay. Gardez cette page ouverte et ne relancez pas le paiement.",
     delayed: "La confirmation prend plus de temps que prévu",
@@ -34,7 +33,10 @@ const COPY: Record<Lang, Record<string, string>> = {
     notFoundBody: "Connectez-vous avec le compte de la commande, ou contactez-nous avec votre référence.",
     signin: "Se connecter",
     redirecting: "Redirection vers votre espace…",
-  },
+};
+type Copy = Record<keyof typeof FR, string>;
+const COPY: Record<Lang, Copy> = {
+  fr: FR,
   en: {
     verifying: "Verifying your payment…",
     verifyingBody: "We are waiting for YouCan Pay to confirm. Keep this page open and do not pay again.",
