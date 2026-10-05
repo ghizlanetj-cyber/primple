@@ -61,6 +61,7 @@ export const packPhrases: Record<string, TranslationPair> = {
   "What's in this pack": p("Ce que contient ce pack", "محتويات هذه الباقة"),
   "Pack price": p("Prix du pack", "سعر الباقة"),
   "Sold separately": p("Prix séparé", "السعر منفصلاً"),
+  "This pack is temporarily unavailable.": p("Ce pack est momentanément indisponible.", "هذه الباقة غير متوفرة مؤقتاً."),
   "Add the pack to my cart": p("Ajouter le pack à mon panier", "أضف الباقة إلى سلتي"),
   "Edit this pack": p("Modifier ce pack", "تعديل هذه الباقة"),
   "Change any quantity — the pack price follows immediately.": p(

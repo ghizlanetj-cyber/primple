@@ -320,6 +320,7 @@ export const copyPhrases: Record<string, TranslationPair> = {
 
   // Catalog search + configurator
   "Add to cart": p("Ajouter au panier", "أضف إلى السلة"),
+  "This product is temporarily unavailable.": p("Ce produit est momentanément indisponible.", "هذا المنتج غير متوفر مؤقتاً."),
   "Clear search": p("Effacer la recherche", "مسح البحث"),
   "Clear the search": p("Effacer la recherche", "مسح البحث"),
   "Choose a quantity": p("Choisissez une quantité", "اختر الكمية"),

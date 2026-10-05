@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_id: string
+          at: string
+          changes: Json
+          entity_key: string
+          entity_type: string
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          at?: string
+          changes?: Json
+          entity_key: string
+          entity_type: string
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          at?: string
+          changes?: Json
+          entity_key?: string
+          entity_type?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      admin_notes: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          entity_key: string
+          entity_type: string
+          id: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          entity_key: string
+          entity_type: string
+          id?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          entity_key?: string
+          entity_type?: string
+          id?: string
+        }
+        Relationships: []
+      }
       balance_collections: {
         Row: {
           amount: number
@@ -51,6 +108,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      catalog_availability: {
+        Row: {
+          available: boolean
+          kind: string
+          note: string | null
+          slug: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          available?: boolean
+          kind: string
+          note?: string | null
+          slug: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          available?: boolean
+          kind?: string
+          note?: string | null
+          slug?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       contact_messages: {
         Row: {
@@ -304,6 +388,7 @@ export type Database = {
       }
       message_meta: {
         Row: {
+          assigned_to: string | null
           classification: string
           classified_by: string
           is_read: boolean
@@ -311,9 +396,12 @@ export type Database = {
           quote_stage: string
           related_order_id: string | null
           related_user_id: string | null
+          stage_changed_at: string | null
           updated_at: string
+          version: number
         }
         Insert: {
+          assigned_to?: string | null
           classification?: string
           classified_by?: string
           is_read?: boolean
@@ -321,9 +409,12 @@ export type Database = {
           quote_stage?: string
           related_order_id?: string | null
           related_user_id?: string | null
+          stage_changed_at?: string | null
           updated_at?: string
+          version?: number
         }
         Update: {
+          assigned_to?: string | null
           classification?: string
           classified_by?: string
           is_read?: boolean
@@ -331,7 +422,9 @@ export type Database = {
           quote_stage?: string
           related_order_id?: string | null
           related_user_id?: string | null
+          stage_changed_at?: string | null
           updated_at?: string
+          version?: number
         }
         Relationships: [
           {
@@ -405,6 +498,7 @@ export type Database = {
       }
       order_ops: {
         Row: {
+          assigned_to: string | null
           cost_mad: number | null
           delivery_notes: string | null
           internal_notes: string | null
@@ -414,8 +508,10 @@ export type Database = {
           supplier: string | null
           updated_at: string
           updated_by: string | null
+          version: number
         }
         Insert: {
+          assigned_to?: string | null
           cost_mad?: number | null
           delivery_notes?: string | null
           internal_notes?: string | null
@@ -425,8 +521,10 @@ export type Database = {
           supplier?: string | null
           updated_at?: string
           updated_by?: string | null
+          version?: number
         }
         Update: {
+          assigned_to?: string | null
           cost_mad?: number | null
           delivery_notes?: string | null
           internal_notes?: string | null
@@ -436,6 +534,7 @@ export type Database = {
           supplier?: string | null
           updated_at?: string
           updated_by?: string | null
+          version?: number
         }
         Relationships: [
           {
@@ -672,6 +771,39 @@ export type Database = {
         }
         Relationships: []
       }
+      team_members: {
+        Row: {
+          active: boolean
+          display_name: string | null
+          email: string
+          granted_at: string
+          granted_by: string | null
+          revoked_at: string | null
+          revoked_by: string | null
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          display_name?: string | null
+          email: string
+          granted_at?: string
+          granted_by?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          display_name?: string | null
+          email?: string
+          granted_at?: string
+          granted_by?: string | null
+          revoked_at?: string | null
+          revoked_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -698,6 +830,125 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_action_queue: { Args: never; Returns: Json }
+      admin_add_note: {
+        Args: { _actor: string; _body: string; _key: string; _type: string }
+        Returns: string
+      }
+      admin_customers: {
+        Args: { _limit: number; _offset: number; _q: string }
+        Returns: {
+          collected: number
+          company: string
+          customer_key: string
+          email: string
+          last_activity: string
+          messages: number
+          name: string
+          order_value: number
+          orders: number
+          outstanding: number
+          phone: string
+          quotes: number
+          total_count: number
+          user_id: string
+        }[]
+      }
+      admin_grant_member: {
+        Args: { _actor: string; _email: string; _name: string; _role: string }
+        Returns: string
+      }
+      admin_messages_page: {
+        Args: {
+          _assignee: string
+          _classification: string
+          _limit: number
+          _offset: number
+          _q: string
+          _quotes: boolean
+          _stage: string
+          _unread: boolean
+        }
+        Returns: {
+          message_id: string
+          total_count: number
+        }[]
+      }
+      admin_order_money: {
+        Args: never
+        Returns: {
+          collected: number
+          confirmed: boolean
+          courier_held: number
+          created_at: string
+          order_id: string
+          order_value: number
+          outstanding: number
+        }[]
+      }
+      admin_orders_page: {
+        Args: {
+          _assignee: string
+          _from: string
+          _limit: number
+          _offset: number
+          _payment: string
+          _q: string
+          _stage: string
+          _status: string
+          _to: string
+        }
+        Returns: {
+          order_id: string
+          total_count: number
+        }[]
+      }
+      admin_quote_stage_counts: { Args: never; Returns: Json }
+      admin_record_balance: {
+        Args: {
+          _actor: string
+          _note: string
+          _order: string
+          _remitted: boolean
+        }
+        Returns: number
+      }
+      admin_report: { Args: { _from: string; _to: string }; Returns: Json }
+      admin_revoke_member: {
+        Args: { _actor: string; _role: string; _target: string }
+        Returns: undefined
+      }
+      admin_set_availability: {
+        Args: {
+          _actor: string
+          _available: boolean
+          _kind: string
+          _note: string
+          _slug: string
+        }
+        Returns: undefined
+      }
+      admin_staff_directory: {
+        Args: never
+        Returns: {
+          active: boolean
+          display_name: string
+          email: string
+          granted_at: string
+          revoked_at: string
+          role: string
+          user_id: string
+        }[]
+      }
+      admin_update_message: {
+        Args: { _actor: string; _expected: number; _f: Json; _msg: string }
+        Returns: number
+      }
+      admin_update_order_ops: {
+        Args: { _actor: string; _expected: number; _f: Json; _order: string }
+        Returns: number
+      }
+      catalog_unavailable: { Args: { _items: Json }; Returns: string[] }
       crm_claim: {
         Args: { _lease_seconds?: number; _limit?: number; _owner: string }
         Returns: {
@@ -753,6 +1004,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      my_staff_role: { Args: never; Returns: string }
+      staff_role_of: { Args: { _uid: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
