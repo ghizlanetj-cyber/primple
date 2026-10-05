@@ -50,7 +50,7 @@ export function AdminShell({
   email: string | null;
   tab: AdminTab;
   onTab: (t: AdminTab) => void;
-  badges?: Partial<Record<AdminTab, number>>;
+  badges?: Partial<Record<AdminTab, number>> | undefined;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);

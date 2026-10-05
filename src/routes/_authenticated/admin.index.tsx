@@ -13,7 +13,6 @@ import { adminMe, adminQueue } from "@/lib/admin.functions";
 import { can } from "@/lib/admin-metrics";
 
 type Search = { tab?: string; order?: string; message?: string };
-const TAB_IDS = NAV.map((n) => n.id) as string[];
 const LEGACY: Record<string, AdminTab> = { messages: "inbox" };
 
 export const Route = createFileRoute("/_authenticated/admin/")({
@@ -87,7 +86,6 @@ function AdminPage() {
       {tab === "reports" ? <ReportsTab /> : null}
       {tab === "team" ? <TeamTab /> : null}
       {tab === "crm" ? <CrmTab /> : null}
-      {TAB_IDS.length === 0 ? null : null}
     </AdminShell>
   );
 }
