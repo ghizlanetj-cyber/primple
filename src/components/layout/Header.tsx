@@ -40,7 +40,7 @@ export function Header() {
       <div dir="ltr" className="relative mx-auto flex w-[calc(100%-1.5rem)] max-w-[1390px] items-center gap-3 sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)]">
         <div className="flex h-14 shrink-0 items-center lg:h-[60px]">
           <Link to="/" className="inline-flex items-center" aria-label={tr("Primple home")}>
-            <img src={originalLogo.url} alt="Primple" className="h-6 w-auto lg:h-7" />
+            <img src={originalLogo} alt="Primple" className="h-[22px] w-auto lg:h-7" />
           </Link>
         </div>
         <nav dir={lang === "ar" ? "rtl" : "ltr"} className="absolute left-1/2 z-10 hidden -translate-x-1/2 items-center gap-x-5 md:flex" aria-label={tr("Primary navigation")}>
@@ -120,7 +120,7 @@ export function Header() {
             >
               <SheetHeader className="flex-row items-center justify-between space-y-0 border-b border-white/10 px-6 py-4 text-start">
                 <Link to="/" className="inline-flex items-center" aria-label={tr("Primple home")}>
-                  <img src={originalLogo.url} alt="Primple" className="h-5 w-auto" />
+                  <img src={originalLogo} alt="Primple" className="h-[22px] w-auto" />
                 </Link>
                 <SheetTitle className="sr-only">{t("cta.menu")}</SheetTitle>
                 <SheetDescription className="sr-only">
