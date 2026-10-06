@@ -40,10 +40,10 @@ export function Header() {
       <div dir="ltr" className="relative mx-auto flex w-[calc(100%-1.5rem)] max-w-[1390px] items-center gap-3 sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)]">
         <div className="flex h-14 shrink-0 items-center lg:h-[60px]">
           <Link to="/" className="inline-flex items-center" aria-label={tr("Primple home")}>
-            <img src={originalLogo} alt="Primple" className="h-[22px] w-auto lg:h-7" />
+            <img src={originalLogo} alt="Primple" className="h-5 w-auto lg:h-[25px]" />
           </Link>
         </div>
-        <nav dir={lang === "ar" ? "rtl" : "ltr"} className="absolute left-1/2 z-10 hidden -translate-x-1/2 items-center gap-x-5 md:flex" aria-label={tr("Primary navigation")}>
+        <nav dir={lang === "ar" ? "rtl" : "ltr"} className="absolute left-1/2 z-10 hidden -translate-x-1/2 items-center gap-x-7 lg:gap-x-10 md:flex" aria-label={tr("Primary navigation")}>
           <NavLink to="/products">{t("nav.products")}</NavLink>
           <NavLink to="/packs">{t("nav.packs")}</NavLink>
           <NavLink to="/contact">{t("nav.contact")}</NavLink>
