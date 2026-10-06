@@ -4,7 +4,7 @@ import { LogOut, Menu, ShoppingBag } from "lucide-react";
 
 import { LanguageSelect } from "@/components/layout/LanguageSelect";
 import { HeaderSearch } from "@/components/layout/HeaderSearch";
-import originalLogo from "@/assets/primple-logo-new.png.asset.json";
+import originalLogo from "@/assets/primple-logo-12.png";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
