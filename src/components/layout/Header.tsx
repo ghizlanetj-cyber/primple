@@ -4,7 +4,7 @@ import { LogOut, Menu, ShoppingBag } from "lucide-react";
 
 import { LanguageSelect } from "@/components/layout/LanguageSelect";
 import { HeaderSearch } from "@/components/layout/HeaderSearch";
-import { Logo } from "@/components/brand/Logo";
+import originalLogo from "@/assets/primple-logo-dark-purple.png.asset.json";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -37,20 +37,21 @@ export function Header() {
 
   return (
     <header className="fixed inset-x-0 top-2 z-50 lg:top-3">
-      <div className="mx-auto flex w-[calc(100%-1.5rem)] max-w-[1390px] items-center gap-3 sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)]">
-        <div className="primple-glass flex h-14 shrink-0 items-center rounded-full border px-4 lg:h-[60px] lg:px-6">
-          <Logo invert className="h-6 lg:h-7" />
+      <div dir="ltr" className="relative mx-auto flex w-[calc(100%-1.5rem)] max-w-[1390px] items-center gap-3 sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)]">
+        <div className="flex h-14 shrink-0 items-center lg:h-[60px]">
+          <Link to="/" className="inline-flex items-center" aria-label={tr("Primple home")}>
+            <img src={originalLogo.url} alt="Primple" className="h-6 w-auto lg:h-7" />
+          </Link>
         </div>
-      <div className="primple-glass relative ms-auto grid h-14 min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border px-3 transition-opacity duration-300 sm:px-4 lg:h-[60px] lg:px-5">
-        <div className="flex min-w-0 items-center gap-4 xl:gap-6">
-          <nav className="hidden min-w-0 items-center gap-x-5 md:flex" aria-label={tr("Primary navigation")}>
-            <NavLink to="/products">{t("nav.products")}</NavLink>
-            <NavLink to="/packs">{t("nav.packs")}</NavLink>
-            <NavLink to="/contact">{t("nav.contact")}</NavLink>
-          </nav>
-        </div>
+        <nav dir={lang === "ar" ? "rtl" : "ltr"} className="absolute left-1/2 z-10 hidden -translate-x-1/2 items-center gap-x-5 md:flex" aria-label={tr("Primary navigation")}>
+          <NavLink to="/products">{t("nav.products")}</NavLink>
+          <NavLink to="/packs">{t("nav.packs")}</NavLink>
+          <NavLink to="/contact">{t("nav.contact")}</NavLink>
+        </nav>
+      <div className="primple-glass ms-auto grid h-14 min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border px-3 transition-opacity duration-300 sm:px-4 lg:h-[60px] lg:px-5">
+        <div aria-hidden="true" />
 
-        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
+        <div dir={lang === "ar" ? "rtl" : "ltr"} className="flex shrink-0 items-center gap-0.5 sm:gap-1">
           <LanguageSelect variant="header" id="header-language" className="hidden lg:flex" />
           <HeaderSearch />
           <Button
@@ -118,7 +119,9 @@ export function Header() {
               className="w-[min(92vw,24rem)] overflow-y-auto border-white/10 bg-ink p-0 text-ink-foreground"
             >
               <SheetHeader className="flex-row items-center justify-between space-y-0 border-b border-white/10 px-6 py-4 text-start">
-                <Logo invert className="h-5" />
+                <Link to="/" className="inline-flex items-center" aria-label={tr("Primple home")}>
+                  <img src={originalLogo.url} alt="Primple" className="h-5 w-auto" />
+                </Link>
                 <SheetTitle className="sr-only">{t("cta.menu")}</SheetTitle>
                 <SheetDescription className="sr-only">
                   {tr("Primary navigation and account actions")}
