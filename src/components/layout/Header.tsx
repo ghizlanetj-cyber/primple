@@ -4,7 +4,7 @@ import { LogOut, Menu, ShoppingBag } from "lucide-react";
 
 import { LanguageSelect } from "@/components/layout/LanguageSelect";
 import { HeaderSearch } from "@/components/layout/HeaderSearch";
-import originalLogo from "@/assets/primpel-logo.png.asset.json";
+import originalLogo from "@/assets/primple-logo-dark-purple.png.asset.json";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -43,14 +43,13 @@ export function Header() {
             <img src={originalLogo.url} alt="Primple" className="h-6 w-auto lg:h-7" />
           </Link>
         </div>
+        <nav dir={lang === "ar" ? "rtl" : "ltr"} className="absolute left-1/2 z-10 hidden -translate-x-1/2 items-center gap-x-5 md:flex" aria-label={tr("Primary navigation")}>
+          <NavLink to="/products">{t("nav.products")}</NavLink>
+          <NavLink to="/packs">{t("nav.packs")}</NavLink>
+          <NavLink to="/contact">{t("nav.contact")}</NavLink>
+        </nav>
       <div className="primple-glass ms-auto grid h-14 min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border px-3 transition-opacity duration-300 sm:px-4 lg:h-[60px] lg:px-5">
-        <div className="flex min-w-0 items-center gap-4 xl:gap-6">
-          <nav dir={lang === "ar" ? "rtl" : "ltr"} className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-x-5 md:flex" aria-label={tr("Primary navigation")}>
-            <NavLink to="/products">{t("nav.products")}</NavLink>
-            <NavLink to="/packs">{t("nav.packs")}</NavLink>
-            <NavLink to="/contact">{t("nav.contact")}</NavLink>
-          </nav>
-        </div>
+        <div aria-hidden="true" />
 
         <div dir={lang === "ar" ? "rtl" : "ltr"} className="flex shrink-0 items-center gap-0.5 sm:gap-1">
           <LanguageSelect variant="header" id="header-language" className="hidden lg:flex" />
