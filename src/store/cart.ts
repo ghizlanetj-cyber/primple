@@ -8,6 +8,7 @@ import {
   lineQuote,
 } from "@/data/pricing";
 import { fromCents, toCents } from "@/lib/format";
+import type { Catalog } from "@/data/catalog-config";
 
 
 export type CartItem = {
@@ -38,14 +39,29 @@ type CartState = {
   /** True when retired items were dropped from a saved cart; checkout waits for a cart review. */
   removedNotice: boolean;
   acknowledgeRemoved: () => void;
+  /** Live prices loaded. Adding and checkout wait for it; no default price is ever used meanwhile. */
+  pricingReady: boolean;
+  /** Key of the live price set the cart is priced with. */
+  pricingKey: string | null;
+  /** True when a saved item's price changed; checkout waits for a cart review. */
+  priceNotice: boolean;
+  acknowledgePrice: () => void;
+  applyCatalog: (catalog: Catalog) => void;
 };
+
+/** Browser-only: the live catalogue the cart prices with (set by PricingSync). */
+let activeCatalog: Catalog | null = null;
+export function getActiveCatalog() {
+  return activeCatalog;
+}
 
 /** Products no longer offered; saved carts containing them are cleaned on load. */
 const RETIRED_SLUGS = new Set(["packaging", "corporate-gifts"]);
 
 /** Always re-price an item from the live catalog so the cart can never show a stale price. */
-function reprice(item: CartItem, quantity = item.quantity): CartItem {
-  const quote = lineQuote(item.slug, quantity, item.selection);
+function reprice(item: CartItem, quantity = item.quantity, catalog: Catalog | null = activeCatalog): CartItem {
+  if (!catalog) return { ...item, quantity };
+  const quote = lineQuote(item.slug, quantity, item.selection, catalog);
   if (!quote) return { ...item, quantity, subtotal: item.unitPrice * quantity };
   return {
     ...item,
@@ -65,10 +81,25 @@ export const useCart = create<CartState>()(
       items: [],
       removedNotice: false,
       acknowledgeRemoved: () => set({ removedNotice: false }),
-      add: (item) =>
+      pricingReady: false,
+      pricingKey: null,
+      priceNotice: false,
+      acknowledgePrice: () => set({ priceNotice: false }),
+      applyCatalog: (catalog) => {
+        activeCatalog = catalog;
+        set((state) => {
+          const next = state.items.map((i) => reprice(i, i.quantity, catalog));
+          const changed = next.some((n, idx) => toCents(n.subtotal) !== toCents(state.items[idx]!.subtotal));
+          return { items: next, pricingReady: true, pricingKey: catalog.key, priceNotice: state.priceNotice || changed };
+        });
+      },
+      add: (item) => {
+        // Never price a new item without the live catalogue.
+        if (!activeCatalog) return;
         set((state) => ({
           items: [...state.items, reprice({ ...item, id: `${item.slug}-${Date.now()}` })],
-        })),
+        }));
+      },
       remove: (id) => set((state) => ({ items: state.items.filter((i) => i.id !== id) })),
       setQuantity: (id, quantity) =>
         set((state) => ({
@@ -83,7 +114,8 @@ export const useCart = create<CartState>()(
         if (!state) return;
         const kept = state.items.filter((i) => !RETIRED_SLUGS.has(i.slug));
         if (kept.length !== state.items.length) useCart.setState({ removedNotice: true });
-        state.items = kept.map((i) => reprice(i));
+        // Repriced once live prices load (applyCatalog), never with source defaults.
+        state.items = activeCatalog ? kept.map((i) => reprice(i)) : kept;
       },
     },
   ),
