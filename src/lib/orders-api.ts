@@ -1,4 +1,5 @@
 import { orderTotals } from "@/data/pricing";
+import type { Catalog } from "@/data/catalog-config";
 import { estimatedArrival } from "@/lib/delivery";
 import { supabase } from "@/integrations/supabase/client";
 import type { CartItem } from "@/store/cart";
@@ -112,12 +113,15 @@ export async function createOrder(input: {
   totals: { subtotal: number; delivery: number; total: number };
   details: DeliveryDetails;
   paymentMethod?: PrintPaymentMethod;
+  /** Live catalogue loaded in the browser; the server re-checks it before any charge. */
+  catalog: Catalog;
 }): Promise<OrderRecord> {
   const reference = `PRM-${Math.floor(10000 + Math.random() * 89999)}`;
   const method: PrintPaymentMethod = input.paymentMethod ?? CARD_METHOD;
   // Reprice from the catalog; browser-held totals are never saved as-is.
   const priced = orderTotals(
     input.items.map((i) => ({ slug: i.slug, quantity: i.quantity, selection: i.selection })),
+    input.catalog,
   );
   if (!priced) throw new Error("One of the items can no longer be ordered. Please review your cart.");
   const totals = {
