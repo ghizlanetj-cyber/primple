@@ -15,14 +15,25 @@ import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
 import { productPhrases } from "@/i18n/product-translations";
 import { phrases } from "@/i18n/translations";
+import { buildCatalog } from "@/data/catalog-config";
+import { useLivePricing } from "@/hooks/use-pricing";
+import { fetchPublicPricing } from "@/lib/pricing.functions";
 
 export const Route = createFileRoute("/products/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     // Retired products keep their old URL working.
     if (retiredProducts.has(params.slug)) throw redirect({ to: "/products" });
     const product = getProduct(params.slug);
     if (!product) throw notFound();
-    return { product };
+    // Live "from" price for page metadata only; omitted when pricing cannot be read.
+    let fromAmount: number | null = null;
+    try {
+      const live = buildCatalog(await fetchPublicPricing()).getProduct(params.slug);
+      if (live && !live.quoteOnly) fromAmount = fromPriceBasis(live).amount;
+    } catch {
+      fromAmount = null;
+    }
+    return { product, fromAmount };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
@@ -30,12 +41,13 @@ export const Route = createFileRoute("/products/$slug")({
         meta: [{ title: "Produit introuvable — Primple" }, { name: "robots", content: "noindex" }],
       };
     }
-    const { product } = loaderData;
-    const basis = fromPriceBasis(product);
+    const { product, fromAmount } = loaderData;
     const name = productPhrases[product.name]?.fr ?? phrases[product.name]?.fr ?? product.name;
     const title = product.quoteOnly
       ? `Impression ${name.toLowerCase()} sur mesure — sur devis | Primple`
-      : `Impression ${name.toLowerCase()} sur mesure — à partir de ${mad(basis.amount)} | Primple`;
+      : fromAmount === null
+        ? `Impression ${name.toLowerCase()} sur mesure | Primple`
+        : `Impression ${name.toLowerCase()} sur mesure — à partir de ${mad(fromAmount)} | Primple`;
     const description = `${name} sur mesure : formats, papiers, finitions et quantités au choix. Prix et délai affichés avant la commande, production suivie jusqu'à la livraison.`;
     return {
       meta: [
@@ -56,9 +68,9 @@ export const Route = createFileRoute("/products/$slug")({
             "@type": "Product",
             name,
             description,
-            ...(product.quoteOnly
+            ...(product.quoteOnly || fromAmount === null
               ? {}
-              : { offers: { "@type": "Offer", price: basis.amount, priceCurrency: "MAD" } }),
+              : { offers: { "@type": "Offer", price: fromAmount, priceCurrency: "MAD" } }),
           }),
         },
       ],
@@ -70,7 +82,11 @@ export const Route = createFileRoute("/products/$slug")({
 
 function ProductPage() {
   const { tr, number } = useI18n();
-  const { product } = Route.useLoaderData();
+  const { product: sourceProduct } = Route.useLoaderData();
+  const live = useLivePricing();
+  // Prices, quantities and options come from the live catalogue only.
+  const liveProduct = live.catalog?.getProduct(sourceProduct.slug) ?? null;
+  const product = liveProduct ?? sourceProduct;
   const related = products.filter((p) => p.slug !== product.slug).slice(0, 3);
   const basis = fromPriceBasis(product);
   const basisNote = tr(
@@ -100,7 +116,7 @@ function ProductPage() {
 
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
               <span className="font-display text-lg font-extrabold">
-                {product.quoteOnly ? tr("Request a quote") : `${tr("From")} ${mad(basis.amount)}`}
+                {product.quoteOnly ? tr("Request a quote") : liveProduct ? `${tr("From")} ${mad(basis.amount)}` : "…"}
               </span>
               <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                 <Clock className="size-4" />
@@ -112,7 +128,7 @@ function ProductPage() {
                 {tr("Delivery")} 1–5 {tr("days")}
               </span>
             </div>
-            {!product.quoteOnly && <p className="mt-2 text-xs text-muted-foreground">{basisNote}</p>}
+            {!product.quoteOnly && liveProduct && <p className="mt-2 text-xs text-muted-foreground">{basisNote}</p>}
           </Reveal>
 
           <Reveal delay={0.1}>
@@ -132,7 +148,15 @@ function ProductPage() {
       </section>
 
       <section className="section-shell py-14">
-        <Configurator key={product.slug} product={product} />
+        {liveProduct && live.catalog ? (
+          <Configurator key={`${product.slug}:${live.catalog.key}`} product={liveProduct} />
+        ) : (
+          <p role="status" className="rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
+            {live.status === "error"
+              ? tr("Prices are temporarily unavailable. Please try again in a moment.")
+              : tr("Loading current prices…")}
+          </p>
+        )}
       </section>
 
       <section className="border-y border-border bg-card/50">
