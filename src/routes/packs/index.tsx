@@ -32,6 +32,7 @@ export const Route = createFileRoute("/packs/")({
 
 function PacksPage() {
   const { tr } = useI18n();
+  const live = useLivePricing();
   const availability = useCatalogAvailability();
   return (
     <SiteShell>

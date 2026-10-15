@@ -10,6 +10,7 @@ import { useLivePricing } from "@/hooks/use-pricing";
 
 export function PacksTeaser() {
   const { tr } = useI18n();
+  const live = useLivePricing();
   const featured = packs.slice(0, 4);
 
   return (
