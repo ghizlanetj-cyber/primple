@@ -77,7 +77,7 @@ function PackPage() {
         <section className="section-shell py-24">
           <h1 className="text-4xl md:text-5xl">{tr(sourcePack.name)}</h1>
           <p role="status" className="mt-6 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
-            {live.status === "error"
+            {live.status !== "loading"
               ? tr("Prices are temporarily unavailable. Please try again in a moment.")
               : tr("Loading current prices…")}
           </p>

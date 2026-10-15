@@ -326,7 +326,6 @@ function PackForm({ pack, row, rows, onClose }: { pack: Pack; row: PricingRow | 
       return defaultPackPricing(pack);
     }
   })() : defaultPackPricing(pack);
-  void validatePackPricing; const _unused = row && others ? validatePackPricing(row.config, pack, others.getProduct) : defaultPackPricing(pack);
   const [discount, setDiscount] = useState(String(start.discountPercent));
   const [lines, setLines] = useState<Record<string, string>>(() =>
     Object.fromEntries(Object.entries(start.lines).map(([k, v]) => [k, String(v)])),
