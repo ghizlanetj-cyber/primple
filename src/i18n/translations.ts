@@ -1,6 +1,21 @@
 export type TranslationPair = { fr: string; ar: string };
 
 export const phrases: Record<string, TranslationPair> = {
+  "Loading current prices…": { fr: "Chargement des prix actuels…", ar: "جارٍ تحميل الأسعار الحالية…" },
+  "Prices are temporarily unavailable. Please try again in a moment.": {
+    fr: "Les prix sont momentanément indisponibles. Réessayez dans un instant.",
+    ar: "الأسعار غير متاحة مؤقتًا. حاول مرة أخرى بعد قليل.",
+  },
+  "Price shown on the product page": { fr: "Prix affiché sur la page du produit", ar: "السعر معروض في صفحة المنتج" },
+  "Save {percent}%": { fr: "Économisez {percent} %", ar: "وفّر {percent}%" },
+  "Some prices changed since you added these items. The amounts below are up to date. Please review them before checkout.": {
+    fr: "Certains prix ont changé depuis l'ajout de ces articles. Les montants ci-dessous sont à jour. Vérifiez-les avant de commander.",
+    ar: "تغيّرت بعض الأسعار منذ إضافة هذه المنتجات. المبالغ أدناه محدّثة. راجعها قبل إتمام الطلب.",
+  },
+  "The price of this order has changed since it was placed. Please review your cart and place a new order. Nothing was charged.": {
+    fr: "Le prix de cette commande a changé depuis sa création. Vérifiez votre panier et passez une nouvelle commande. Aucun montant n'a été débité.",
+    ar: "تغيّر سعر هذا الطلب منذ إنشائه. راجع سلتك وقدّم طلبًا جديدًا. لم يتم خصم أي مبلغ.",
+  },
   "Contact us on WhatsApp": { fr: "Nous contacter sur WhatsApp", ar: "تواصل معنا عبر واتساب" },
   Products: { fr: "Produits", ar: "المنتجات" },
   Platform: { fr: "Plateforme", ar: "المنصة" },

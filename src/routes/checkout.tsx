@@ -276,7 +276,7 @@ function CheckoutPage() {
       await element.mount();
       setCardReady(true);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : tr("The payment could not be started."));
+      setError(caught instanceof Error ? tr(caught.message) : tr("The payment could not be started."));
     } finally {
       inFlight.current = false;
       setPlacing(false);
