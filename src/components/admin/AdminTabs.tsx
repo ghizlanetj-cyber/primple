@@ -1,15 +1,18 @@
 import { ProductionPanel } from "./ProductionPanel";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { packs } from "@/data/packs";
-import { products } from "@/data/products";
+import { internalPackItems, packQuote } from "@/data/packs";
+import { fromPriceBasis } from "@/data/products";
+import { buildCatalog, sourcePack, sourceProduct, type PricingRow } from "@/data/catalog-config";
+import { PricingDialog, fr, type EditTarget } from "./PricingEditor";
 import {
   adminCatalogAvailability,
+  adminCatalogPricing,
   adminCrm,
   adminGrantMember,
   adminRetryCrmJob,
@@ -17,15 +20,19 @@ import {
   adminRunCrmWorker,
   adminSetAvailability,
 } from "@/lib/admin.functions";
-import { Card, Empty, ErrorBox, Loading, Pill, ROLE_LABELS, Stat, errText, fmtDate, useStaff } from "./shared";
+import { Card, Empty, ErrorBox, Loading, Pill, ROLE_LABELS, Stat, errText, fmtDate, mad, useStaff } from "./shared";
 
 /* ---------- catalogue ---------- */
 
 export function CatalogTab({ canManage }: { canManage: boolean }) {
   const qc = useQueryClient();
   const fetchAvail = useServerFn(adminCatalogAvailability);
+  const fetchPricing = useServerFn(adminCatalogPricing);
   const setAvail = useServerFn(adminSetAvailability);
   const a = useQuery({ queryKey: ["admin", "catalog"], queryFn: () => fetchAvail() });
+  const pr = useQuery({ queryKey: ["admin", "pricing"], queryFn: () => fetchPricing() });
+  const [q, setQ] = useState("");
+  const [edit, setEdit] = useState<EditTarget | null>(null);
   const m = useMutation({
     mutationFn: (v: { kind: "product" | "pack"; slug: string; available: boolean }) => setAvail({ data: v }),
     onSuccess: () => {
@@ -35,39 +42,111 @@ export function CatalogTab({ canManage }: { canManage: boolean }) {
     },
     onError: (e) => toast.error(errText(e)),
   });
+  const rows = useMemo(() => (pr.data ?? []) as PricingRow[], [pr.data]);
+  const built = useMemo(() => {
+    if (!pr.data) return null;
+    try {
+      return { catalog: buildCatalog(rows), error: null };
+    } catch (e) {
+      return { catalog: null, error: errText(e) };
+    }
+  }, [pr.data, rows]);
   const isOn = (kind: string, slug: string) => !(a.data ?? []).some((r) => r.kind === kind && r.slug === slug && !r.available);
-  const Row = ({ kind, slug, name, sub }: { kind: "product" | "pack"; slug: string; name: string; sub: string }) => {
-    const on = isOn(kind, slug);
+  const version = (kind: string, slug: string) => rows.find((r) => r.kind === kind && r.slug === slug)?.version;
+  const match = (...t: string[]) => {
+    const s = q.trim().toLowerCase();
+    return !s || t.some((x) => x.toLowerCase().includes(s));
+  };
+
+  const Row = ({ kind, slug, name, sub, price, onEdit }: { kind: "product" | "pack" | "internal"; slug: string; name: string; sub: string; price: string; onEdit: () => void }) => {
+    const on = kind === "internal" ? true : isOn(kind, slug);
+    const v = version(kind, slug);
     return (
-      <li className="flex items-center justify-between gap-3 py-2 text-sm">
-        <div><p className="font-medium">{name}</p><p className="text-xs text-muted-foreground">{sub}</p></div>
-        <div className="flex items-center gap-2">
-          <Pill tone={on ? "good" : "bad"}>{on ? "Disponible" : "Indisponible"}</Pill>
+      <li className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+        <div className="min-w-0">
+          <p className="font-medium">{name}</p>
+          <p className="text-xs text-muted-foreground">{sub} · {price}</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Pill tone={v ? "primary" : "muted"}>{v ? `Prix modifiés v${v}` : "Prix du site"}</Pill>
+          {kind !== "internal" ? <Pill tone={on ? "good" : "bad"}>{on ? "Disponible" : "Indisponible"}</Pill> : null}
           {canManage ? (
-            <Button size="sm" variant="outline" disabled={m.isPending} onClick={() => m.mutate({ kind, slug, available: !on })}>
-              {on ? "Désactiver" : "Réactiver"}
-            </Button>
+            <>
+              <Button size="sm" variant="outline" onClick={onEdit} disabled={!built?.catalog}>Modifier les prix</Button>
+              {kind !== "internal" ? (
+                <Button size="sm" variant="ghost" disabled={m.isPending} onClick={() => m.mutate({ kind, slug, available: !on })}>
+                  {on ? "Désactiver" : "Réactiver"}
+                </Button>
+              ) : null}
+            </>
           ) : null}
         </div>
       </li>
     );
   };
+
+  const cat = built?.catalog ?? null;
+  const productList = (cat?.products ?? []).filter((p) => match(p.name, fr(p.name), p.slug, fr(p.category)));
+  const packList = (cat?.packs ?? []).filter((p) => match(p.name, fr(p.name), p.slug));
+  const internalList = Object.entries(internalPackItems).filter(([ref, it]) => match(ref, it.label, fr(it.label)));
+
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Les prix et options viennent du catalogue du site. Ici on suspend un article : il ne peut plus être ajouté, commandé ni payé.
-        {canManage ? "" : " Seuls les administrateurs peuvent modifier la disponibilité."}
+        Modifiez ici les prix, quantités, délais et remises. Les changements s'appliquent au site, au panier et au paiement. Les commandes payées gardent leur montant.
+        {canManage ? "" : " Seuls les administrateurs peuvent modifier les prix et la disponibilité."}
       </p>
-      {a.error ? <ErrorBox error={a.error} /> : !a.data ? <Loading /> : (
-        <div className="grid gap-5 lg:grid-cols-2">
-          <Card title={`Produits (${products.length})`}>
-            <ul className="divide-y">{products.map((p) => <Row key={p.slug} kind="product" slug={p.slug} name={p.name} sub={p.category} />)}</ul>
+      <Input aria-label="Rechercher un article" placeholder="Rechercher un produit, un pack ou un article…" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-md" />
+      {a.error || pr.error ? <ErrorBox error={a.error ?? pr.error} /> : !a.data || !built ? <Loading /> : built.error ? (
+        <p role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+          Configuration de prix illisible : {built.error}. Le paiement est bloqué tant qu'elle n'est pas corrigée.
+        </p>
+      ) : cat ? (
+        <div className="grid gap-5 xl:grid-cols-2">
+          <Card title={`Produits (${productList.length})`}>
+            {productList.length ? (
+              <ul className="divide-y">
+                {productList.map((p) => {
+                  const b = fromPriceBasis(p);
+                  return (
+                    <Row key={p.slug} kind="product" slug={p.slug} name={fr(p.name)} sub={fr(p.category)}
+                      price={p.quoteOnly ? "Sur devis" : `dès ${mad(b.amount)} · min. ${p.quantities[0]} · prix auto jusqu'à ${p.quantities[p.quantities.length - 1]}`}
+                      onEdit={() => setEdit({ kind: "product", product: sourceProduct(p.slug)! })} />
+                  );
+                })}
+              </ul>
+            ) : <Empty text="Aucun produit" />}
           </Card>
-          <Card title={`Packs (${packs.length})`}>
-            <ul className="divide-y">{packs.map((p) => <Row key={p.slug} kind="pack" slug={p.slug} name={p.name} sub={p.audience} />)}</ul>
-          </Card>
+          <div className="space-y-5">
+            <Card title={`Packs (${packList.length})`}>
+              {packList.length ? (
+                <ul className="divide-y">
+                  {packList.map((p) => {
+                    const quote = packQuote(p.lines, cat, p.slug);
+                    return (
+                      <Row key={p.slug} kind="pack" slug={p.slug} name={fr(p.name)} sub={fr(p.audience)}
+                        price={`${mad(quote.packPrice)} · remise ${quote.discountPercent} %`}
+                        onEdit={() => setEdit({ kind: "pack", pack: sourcePack(p.slug)! })} />
+                    );
+                  })}
+                </ul>
+              ) : <Empty text="Aucun pack" />}
+            </Card>
+            <Card title={`Articles internes aux packs (${internalList.length})`}>
+              {internalList.length ? (
+                <ul className="divide-y">
+                  {internalList.map(([ref, it]) => (
+                    <Row key={ref} kind="internal" slug={ref} name={fr(it.label)} sub="Vendu en pack uniquement"
+                      price={`${mad(cat.internalUnitPrice(ref) ?? 0)} / unité`}
+                      onEdit={() => setEdit({ kind: "internal", ref })} />
+                  ))}
+                </ul>
+              ) : <Empty text="Aucun article" />}
+            </Card>
+          </div>
         </div>
-      )}
+      ) : null}
+      {cat && canManage ? <PricingDialog target={edit} rows={rows} catalog={cat} onClose={() => setEdit(null)} /> : null}
     </div>
   );
 }
