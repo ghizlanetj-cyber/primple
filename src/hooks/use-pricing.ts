@@ -9,7 +9,7 @@ import { useCart } from "@/store/cart";
 export const PRICING_QUERY_KEY = ["catalog-pricing"] as const;
 
 export function pricingQuery(fetcher: () => ReturnType<typeof fetchPublicPricing>) {
-  return queryOptions({ queryKey: PRICING_QUERY_KEY, queryFn: () => fetcher(), staleTime: 30_000, refetchOnWindowFocus: true });
+  return queryOptions({ queryKey: PRICING_QUERY_KEY, queryFn: () => fetcher(), staleTime: 30_000, refetchOnWindowFocus: true, refetchInterval: 60_000 });
 }
 
 export type LivePricing =
@@ -25,6 +25,8 @@ export function useLivePricing(): LivePricing {
   const fetcher = useServerFn(fetchPublicPricing);
   const q = useQuery(pricingQuery(() => fetcher()));
   return useMemo<LivePricing>(() => {
+    // A failed refresh never keeps offering cached prices.
+    if (q.isError) return { status: "error", catalog: null };
     if (q.data) {
       try {
         return { status: "ready", catalog: buildCatalog(q.data) };
@@ -32,7 +34,7 @@ export function useLivePricing(): LivePricing {
         return { status: "error", catalog: null };
       }
     }
-    return q.isError ? { status: "error", catalog: null } : { status: "loading", catalog: null };
+    return { status: "loading", catalog: null };
   }, [q.data, q.isError]);
 }
 
@@ -40,8 +42,10 @@ export function useLivePricing(): LivePricing {
 export function PricingSync() {
   const live = useLivePricing();
   const apply = useCart((s) => s.applyCatalog);
+  const clear = useCart((s) => s.clearCatalog);
   useEffect(() => {
     if (live.catalog) apply(live.catalog);
-  }, [live.catalog, apply]);
+    else clear();
+  }, [live.catalog, apply, clear]);
   return null;
 }

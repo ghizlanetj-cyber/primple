@@ -28,6 +28,8 @@ export type CartItem = {
   artworkPath?: string;
   artworkGuestToken?: string;
   printer?: string;
+  /** Live catalogue cannot price this line (quote range, retired option): no amount is shown or charged. */
+  unpriced?: boolean;
 };
 
 type CartState = {
@@ -47,6 +49,8 @@ type CartState = {
   priceNotice: boolean;
   acknowledgePrice: () => void;
   applyCatalog: (catalog: Catalog) => void;
+  /** Live prices unavailable: hide amounts and block checkout, keep items. */
+  clearCatalog: () => void;
 };
 
 /** Browser-only: the live catalogue the cart prices with (set by PricingSync). */
@@ -62,9 +66,10 @@ const RETIRED_SLUGS = new Set(["packaging", "corporate-gifts"]);
 function reprice(item: CartItem, quantity = item.quantity, catalog: Catalog | null = activeCatalog): CartItem {
   if (!catalog) return { ...item, quantity };
   const quote = lineQuote(item.slug, quantity, item.selection, catalog);
-  if (!quote) return { ...item, quantity, subtotal: item.unitPrice * quantity };
+  if (!quote) return { ...item, quantity, unpriced: true };
   return {
     ...item,
+    unpriced: false,
     quantity,
     unitPrice: quote.unitPrice,
     subtotal: quote.subtotal,
@@ -85,11 +90,17 @@ export const useCart = create<CartState>()(
       pricingKey: null,
       priceNotice: false,
       acknowledgePrice: () => set({ priceNotice: false }),
+      clearCatalog: () => {
+        activeCatalog = null;
+        set({ pricingReady: false, pricingKey: null });
+      },
       applyCatalog: (catalog) => {
         activeCatalog = catalog;
         set((state) => {
           const next = state.items.map((i) => reprice(i, i.quantity, catalog));
-          const changed = next.some((n, idx) => toCents(n.subtotal) !== toCents(state.items[idx]!.subtotal));
+          const changed = next.some(
+            (n, idx) => toCents(n.subtotal) !== toCents(state.items[idx]!.subtotal) || Boolean(n.unpriced) !== Boolean(state.items[idx]!.unpriced),
+          );
           return { items: next, pricingReady: true, pricingKey: catalog.key, priceNotice: state.priceNotice || changed };
         });
       },
@@ -126,6 +137,11 @@ export const useCart = create<CartState>()(
 export const DELIVERY_FEE = STANDARD_DELIVERY_FEE;
 /** Fixed express delivery fee in MAD, charged once per order. */
 export const EXPRESS_DELIVERY_FEE = EXPRESS_FEE;
+
+/** True when any line needs a quote or review: totals are hidden and checkout is blocked. */
+export function hasUnpriced(items: CartItem[]) {
+  return items.some((i) => i.unpriced);
+}
 
 export function cartTotals(items: CartItem[]) {
   // Summed on integer centimes so total always equals subtotal + delivery.
