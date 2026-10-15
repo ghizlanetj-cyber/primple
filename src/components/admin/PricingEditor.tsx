@@ -11,6 +11,7 @@ import {
   buildCatalog,
   defaultPackPricing,
   defaultProductPricing,
+  isOverride,
   validateInternalPricing,
   validatePackPricing,
   validateProductPricing,
@@ -85,7 +86,7 @@ export function PricingDialog({
         <DialogHeader>
           <DialogTitle>Prix : {title}</DialogTitle>
           <DialogDescription>
-            {row ? `Prix modifiés (version ${row.version}).` : "Prix du site par défaut."} Les commandes déjà payées gardent leur montant.
+            {row && isOverride(row.config) ? `Prix modifiés (version ${row.version}).` : "Prix du site par défaut."} Les commandes déjà payées gardent leur montant.
             Un panier ou une commande non payée au mauvais prix doit être revu par le client avant paiement.
           </DialogDescription>
         </DialogHeader>
@@ -145,7 +146,7 @@ function Actions({
 }
 
 function ProductForm({ product, row, onClose }: { product: Product; row: PricingRow | null; onClose: () => void }) {
-  const start: ProductPricing = row ? validateProductPricing(row.config, product) : defaultProductPricing(product);
+  const start: ProductPricing = row && isOverride(row.config) ? validateProductPricing(row.config, product) : defaultProductPricing(product);
   const [anchor, setAnchor] = useState(centsText(start.anchorCents));
   const [anchorQty, setAnchorQty] = useState(String(start.anchorQuantity));
   const [presets, setPresets] = useState(start.quantities.join(", "));
@@ -301,7 +302,7 @@ function ProductForm({ product, row, onClose }: { product: Product; row: Pricing
       <Actions
         pending={save.isPending}
         canSave={draft.ok}
-        hasOverride={Boolean(row)}
+        hasOverride={Boolean(row && isOverride(row.config))}
         onClose={onClose}
         onSave={() => draft.ok && save.mutate({ kind: "product", slug: product.slug, version: row?.version ?? 0, config: draft.clean })}
         onReset={() => save.mutate({ kind: "product", slug: product.slug, version: row?.version ?? 0, config: null })}
@@ -318,7 +319,14 @@ function PackForm({ pack, row, rows, onClose }: { pack: Pack; row: PricingRow | 
       return null;
     }
   }, [rows, pack.slug]);
-  const start = row && others ? validatePackPricing(row.config, pack, others.getProduct) : defaultPackPricing(pack);
+  const start = row && others && isOverride(row.config) ? (() => {
+    try {
+      return validatePackPricing(row.config, pack, others.getProduct);
+    } catch {
+      return defaultPackPricing(pack);
+    }
+  })() : defaultPackPricing(pack);
+  void validatePackPricing; const _unused = row && others ? validatePackPricing(row.config, pack, others.getProduct) : defaultPackPricing(pack);
   const [discount, setDiscount] = useState(String(start.discountPercent));
   const [lines, setLines] = useState<Record<string, string>>(() =>
     Object.fromEntries(Object.entries(start.lines).map(([k, v]) => [k, String(v)])),
@@ -377,7 +385,7 @@ function PackForm({ pack, row, rows, onClose }: { pack: Pack; row: PricingRow | 
       <Actions
         pending={save.isPending}
         canSave={draft.ok}
-        hasOverride={Boolean(row)}
+        hasOverride={Boolean(row && isOverride(row.config))}
         onClose={onClose}
         onSave={() => draft.ok && save.mutate({ kind: "pack", slug: pack.slug, version: row?.version ?? 0, config: draft.clean })}
         onReset={() => save.mutate({ kind: "pack", slug: pack.slug, version: row?.version ?? 0, config: null })}
@@ -388,7 +396,7 @@ function PackForm({ pack, row, rows, onClose }: { pack: Pack; row: PricingRow | 
 
 function InternalForm({ slug, row, onClose }: { slug: string; row: PricingRow | null; onClose: () => void }) {
   const base = internalPackItems[slug]!;
-  const startCents = row ? validateInternalPricing(row.config).unitPriceCents : Math.round(base.unitPrice * 100);
+  const startCents = row && isOverride(row.config) ? validateInternalPricing(row.config).unitPriceCents : Math.round(base.unitPrice * 100);
   const [price, setPrice] = useState(centsText(startCents));
   const cents = madToCents(price);
   const save = useSave(onClose);
@@ -401,7 +409,7 @@ function InternalForm({ slug, row, onClose }: { slug: string; row: PricingRow | 
       <Actions
         pending={save.isPending}
         canSave={cents !== null}
-        hasOverride={Boolean(row)}
+        hasOverride={Boolean(row && isOverride(row.config))}
         onClose={onClose}
         onSave={() => cents !== null && save.mutate({ kind: "internal", slug, version: row?.version ?? 0, config: { unitPriceCents: cents } })}
         onReset={() => save.mutate({ kind: "internal", slug, version: row?.version ?? 0, config: null })}
