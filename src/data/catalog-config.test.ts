@@ -5,6 +5,7 @@ import {
   buildCatalog,
   defaultPackPricing,
   defaultProductPricing,
+  validatePackPricing,
   validateProductPricing,
   type PricingRow,
 } from "@/data/catalog-config";
@@ -114,14 +115,57 @@ describe("pack overrides", () => {
   });
   it("rejects pack quantities outside the product's automatic range", () => {
     const d = defaultPackPricing(pack);
-    expect(() => buildCatalog([row("pack", "launch", { ...d, lines: { ...d.lines, flyers: 1 } })])).toThrow();
-    expect(() => buildCatalog([row("pack", "launch", { ...d, lines: { ...d.lines, flyers: 10_000_000 } })])).toThrow();
-    expect(() => buildCatalog([row("pack", "launch", { ...d, discountPercent: 95 })])).toThrow();
+    const getP = (slug: string) => getProduct(slug);
+    expect(() => validatePackPricing({ ...d, lines: { ...d.lines, flyers: 1 } }, pack, getP)).toThrow();
+    expect(() => validatePackPricing({ ...d, lines: { ...d.lines, flyers: 10_000_000 } }, pack, getP)).toThrow();
+    expect(() => validatePackPricing({ ...d, discountPercent: 95 }, pack, getP)).toThrow();
+    expect(buildCatalog([row("pack", "launch", { ...d, discountPercent: 95 })]).packsNeedingReview).toEqual(["launch"]);
   });
   it("customer pack quantities still respect the live product minimum", () => {
     const fb = defaultProductPricing(getProduct("flyers")!);
     const c = buildCatalog([row("product", "flyers", { ...fb, quantities: [fb.quantities[1]!, ...fb.quantities.slice(2)], anchorQuantity: fb.quantities[1]! })]);
     const raw = JSON.stringify([{ ref: "flyers", quantity: fb.quantities[0] }]);
     expect(parsePackLines("launch", raw, c)).toBeNull();
+  });
+});
+
+describe("review corrections", () => {
+  const pack = getPack("launch")!;
+  it("treats a reset tombstone as source defaults", () => {
+    const c = buildCatalog([row("product", "flyers", {}, 3), row("pack", "launch", {}, 2)]);
+    expect(lineQuote("flyers", flyers.quantities[0]!, {}, c)).toEqual(lineQuote("flyers", flyers.quantities[0]!, {}));
+    expect(c.versions["product:flyers"]).toBe(3);
+  });
+  it("prices large internal pack quantities in full, never capped", () => {
+    const lines = pack.lines.map((l) => (l.ref === "letterhead" ? { ...l, quantity: 250000 } : l));
+    const q = packQuote(lines, SOURCE_CATALOG, "launch");
+    const letter = q.lines.find((x) => x.line.ref === "letterhead")!;
+    expect(letter.subtotal).toBe(1.6 * 250000);
+    const live = lineQuote("pack-launch", 1, { lines: serializePackLines(lines) })!;
+    expect(live.subtotal).toBe(q.packPrice);
+  });
+  it("rejects unsafe or overflowing pack quantities", () => {
+    expect(parsePackLines("launch", JSON.stringify([{ ref: "letterhead", quantity: Number.MAX_SAFE_INTEGER + 1 }]))).toBeNull();
+    expect(lineQuote("pack-launch", 1, { lines: JSON.stringify([{ ref: "letterhead", quantity: Number.MAX_SAFE_INTEGER }]) })).toBeNull();
+  });
+  it("rejects default and omitted lines that fall below a raised product minimum", () => {
+    const fb = defaultProductPricing(getProduct("flyers")!);
+    const raised = [fb.quantities.at(-1)! ];
+    const c = buildCatalog([row("product", "flyers", { ...fb, quantities: raised, anchorQuantity: raised[0], breaks: null })]);
+    expect(parsePackLines("launch", undefined, c)).toBeNull();
+    expect(parsePackLines("launch", JSON.stringify([{ ref: "letterhead", quantity: 250 }]), c)).toBeNull();
+  });
+  it("a stale pack override does not break the whole catalogue", () => {
+    const fb = defaultProductPricing(getProduct("flyers")!);
+    const d = defaultPackPricing(pack);
+    const raised = [fb.quantities.at(-1)!];
+    const c = buildCatalog([
+      row("pack", "launch", { ...d, discountPercent: 30 }),
+      row("product", "flyers", { ...fb, quantities: raised, anchorQuantity: raised[0], breaks: null }),
+    ]);
+    expect(c.packsNeedingReview).toContain("launch");
+    expect(c.getPack("launch")).toBeUndefined();
+    expect(lineQuote("pack-launch", 1, {}, c)).toBeNull();
+    expect(c.getProduct("business-cards")).toBeDefined();
   });
 });

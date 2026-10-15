@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { internalPackItems, packQuote } from "@/data/packs";
 import { fromPriceBasis } from "@/data/products";
-import { buildCatalog, sourcePack, sourceProduct, type PricingRow } from "@/data/catalog-config";
+import { buildCatalog, isOverride, sourcePack, sourceProduct, type PricingRow } from "@/data/catalog-config";
 import { PricingDialog, fr, type EditTarget } from "./PricingEditor";
 import {
   adminCatalogAvailability,
@@ -52,7 +52,10 @@ export function CatalogTab({ canManage }: { canManage: boolean }) {
     }
   }, [pr.data, rows]);
   const isOn = (kind: string, slug: string) => !(a.data ?? []).some((r) => r.kind === kind && r.slug === slug && !r.available);
-  const version = (kind: string, slug: string) => rows.find((r) => r.kind === kind && r.slug === slug)?.version;
+  const version = (kind: string, slug: string) => {
+    const r = rows.find((x) => x.kind === kind && x.slug === slug);
+    return r && isOverride(r.config) ? r.version : undefined;
+  };
   const match = (...t: string[]) => {
     const s = q.trim().toLowerCase();
     return !s || t.some((x) => x.toLowerCase().includes(s));
@@ -102,6 +105,12 @@ export function CatalogTab({ canManage }: { canManage: boolean }) {
           Configuration de prix illisible : {built.error}. Le paiement est bloqué tant qu'elle n'est pas corrigée.
         </p>
       ) : cat ? (
+        <>
+        {cat.packsNeedingReview.length ? (
+          <p role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+            Packs à revoir, non vendus en attendant : {cat.packsNeedingReview.map((s) => fr(sourcePack(s)?.name ?? s)).join(", ")}.
+          </p>
+        ) : null}
         <div className="grid gap-5 xl:grid-cols-2">
           <Card title={`Produits (${productList.length})`}>
             {productList.length ? (
@@ -145,6 +154,7 @@ export function CatalogTab({ canManage }: { canManage: boolean }) {
             </Card>
           </div>
         </div>
+        </>
       ) : null}
       {cat && canManage ? <PricingDialog target={edit} rows={rows} catalog={cat} onClose={() => setEdit(null)} /> : null}
     </div>

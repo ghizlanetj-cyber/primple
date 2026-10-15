@@ -883,14 +883,31 @@ export const adminSetPricing = createServerFn({ method: "POST" })
       }
     }
     // The whole catalogue must still price with this change (packs depend on product ranges).
-    const rows = (must(await db.from("catalog_pricing").select("kind, slug, config, version")) ?? []).filter(
-      (r) => !(r.kind === data.kind && r.slug === data.slug),
-    );
+    const current = must(await db.from("catalog_pricing").select("kind, slug, config, version")) ?? [];
+    const rows = current.filter((r) => !(r.kind === data.kind && r.slug === data.slug));
     if (clean !== null) rows.push({ kind: data.kind, slug: data.slug, config: clean as never, version: data.version + 1 });
+    let before: string[] = [];
     try {
-      cfg.buildCatalog(rows as never);
+      before = cfg.buildCatalog(current as never).packsNeedingReview;
+    } catch {
+      before = [];
+    }
+    let after: string[];
+    try {
+      after = cfg.buildCatalog(rows as never).packsNeedingReview;
     } catch (e) {
       throw new Error(e instanceof Error ? e.message : "Configuration de prix invalide");
+    }
+    if (data.kind === "pack" && after.includes(data.slug)) {
+      // Re-run the pack validation to surface its exact message.
+      const pack = cfg.sourcePack(data.slug)!;
+      const others = cfg.buildCatalog(current.filter((r) => !(r.kind === "pack" && r.slug === data.slug)) as never);
+      cfg.validatePackPricing(clean, pack, others.getProduct);
+    }
+    const broken = after.filter((slug) => !before.includes(slug));
+    if (broken.length) {
+      const names = broken.map((slug) => cfg.sourcePack(slug)?.name ?? slug).join(", ");
+      throw new Error(`Ce changement rend invalides les quantités modifiées de : ${names}. Ajustez d'abord ces packs ou rétablissez leurs prix du site.`);
     }
     const r = await db.rpc("admin_set_pricing", {
       _actor: context.userId,

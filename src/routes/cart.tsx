@@ -7,7 +7,7 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { mad, madUnit } from "@/lib/format";
 import { contact } from "@/config/contact";
-import { cartTotals, getActiveCatalog, useCart } from "@/store/cart";
+import { cartTotals, getActiveCatalog, hasUnpriced, useCart } from "@/store/cart";
 import { productImages } from "@/data/productImages";
 import { getProduct } from "@/data/products";
 import { getPack, isPackSlug, packSlugFromCartSlug } from "@/data/packs";
@@ -62,7 +62,8 @@ function CartPage() {
       acknowledgePrice();
     }
   }, [priceNotice, acknowledgePrice]);
-  const money = (n: number) => (pricingReady ? mad(n) : "…");
+  const blocked = hasUnpriced(items);
+  const money = (n: number) => (pricingReady && !blocked ? mad(n) : "…");
 
   return (
     <SiteShell>
@@ -169,9 +170,20 @@ function CartPage() {
                       )}
                       <div className="text-end">
                         <p className="text-xs text-muted-foreground">
-                          {pricingReady ? madUnit(item.unitPrice) : "…"} {tr("per unit")}
+                          {pricingReady && !item.unpriced ? `${madUnit(item.unitPrice)} ${tr("per unit")}` : ""}
                         </p>
-                        <p className="font-display text-lg font-extrabold">{money(item.subtotal)}</p>
+                        {item.unpriced ? (
+                          <a
+                            href={`${contact.whatsapp}?text=${encodeURIComponent(`${tr("Request a quote")} — ${tr(item.name)} · ${item.quantity}`)}`}
+                            target="_blank"
+                            rel="noopener"
+                            className="text-sm font-semibold text-primary underline underline-offset-2"
+                          >
+                            {tr("Quote required: request a quote or change this item")}
+                          </a>
+                        ) : (
+                          <p className="font-display text-lg font-extrabold">{pricingReady ? mad(item.subtotal) : "…"}</p>
+                        )}
                       </div>
                     </div>
 
@@ -220,7 +232,11 @@ function CartPage() {
                   <dd>{money(totals.total)}</dd>
                 </div>
               </dl>
-              {pricingReady ? (
+              {blocked ? (
+                <p role="alert" className="mt-6 rounded-xl border border-primary/40 bg-primary/10 p-3 text-sm">
+                  {tr("One item needs a quote. Request a quote for it or remove it to continue to checkout.")}
+                </p>
+              ) : pricingReady ? (
                 <Button asChild size="lg" className="mt-6 w-full rounded-full">
                   <Link to="/checkout">
                     {tr("Review order")}
