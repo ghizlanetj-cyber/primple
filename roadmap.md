@@ -22,3 +22,10 @@
 - [ ] Separate interior/cover uploads, file type/size checks, BAT gating
 - [ ] Shop orders in admin list; admin revenue to include collected balances
 - [ ] SEO/accessibility review
+
+## Catalogue pricing + primple.team (2026-10-15)
+- [x] Live pricing overrides, admin editor, server repricing, price-change review
+- [x] Private artwork backup (13 objects)
+- [ ] Review fixes: ABA versioning, pricing error state, pack caps/min, unpriceable cart lines, pack dependency on product saves
+- [ ] Delete 13 original artwork files after SHA256 check
+- [ ] primple.team connection (owner must connect domain + DNS)
