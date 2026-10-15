@@ -7,7 +7,7 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { mad, madUnit } from "@/lib/format";
 import { contact } from "@/config/contact";
-import { cartTotals, useCart } from "@/store/cart";
+import { cartTotals, getActiveCatalog, useCart } from "@/store/cart";
 import { productImages } from "@/data/productImages";
 import { getProduct } from "@/data/products";
 import { getPack, isPackSlug, packSlugFromCartSlug } from "@/data/packs";
@@ -45,15 +45,24 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { tr, number } = useI18n();
-  const { items, remove, setQuantity, removedNotice, acknowledgeRemoved } = useCart();
+  const { items, remove, setQuantity, removedNotice, acknowledgeRemoved, pricingReady, priceNotice, acknowledgePrice } = useCart();
   const totals = cartTotals(items);
   const [showRemoved, setShowRemoved] = useState(false);
+  const [showPriceChange, setShowPriceChange] = useState(false);
   useEffect(() => {
     if (removedNotice) {
       setShowRemoved(true);
       acknowledgeRemoved();
     }
   }, [removedNotice, acknowledgeRemoved]);
+  useEffect(() => {
+    // Seeing the cart with the new prices is the review the checkout waits for.
+    if (priceNotice) {
+      setShowPriceChange(true);
+      acknowledgePrice();
+    }
+  }, [priceNotice, acknowledgePrice]);
+  const money = (n: number) => (pricingReady ? mad(n) : "…");
 
   return (
     <SiteShell>
@@ -62,6 +71,11 @@ function CartPage() {
         <p className="mt-4 text-lg text-muted-foreground">
           {tr("Check the setup, then review and confirm your order. Prices include everything you see here.")}
         </p>
+        {showPriceChange && (
+          <p role="alert" className="mt-6 rounded-2xl border border-primary/40 bg-primary/10 p-4 text-sm text-foreground">
+            {tr("Some prices changed since you added these items. The amounts below are up to date. Please review them before checkout.")}
+          </p>
+        )}
         {showRemoved && (
           <p role="alert" className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-sm text-foreground">
             {tr("Some items are no longer available and were removed from your cart. Please review your cart before checkout.")}
@@ -155,9 +169,9 @@ function CartPage() {
                       )}
                       <div className="text-end">
                         <p className="text-xs text-muted-foreground">
-                          {madUnit(item.unitPrice)} {tr("per unit")}
+                          {pricingReady ? madUnit(item.unitPrice) : "…"} {tr("per unit")}
                         </p>
-                        <p className="font-display text-lg font-extrabold">{mad(item.subtotal)}</p>
+                        <p className="font-display text-lg font-extrabold">{money(item.subtotal)}</p>
                       </div>
                     </div>
 
@@ -195,23 +209,29 @@ function CartPage() {
               <dl className="mt-5 space-y-2.5 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">{tr("Subtotal")}</dt>
-                  <dd>{mad(totals.subtotal)}</dd>
+                  <dd>{money(totals.subtotal)}</dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">{tr("Delivery")}</dt>
-                  <dd>{mad(totals.delivery)}</dd>
+                  <dd>{money(totals.delivery)}</dd>
                 </div>
                 <div className="flex justify-between border-t border-border pt-3 font-semibold">
                   <dt>{tr("Total")}</dt>
-                  <dd>{mad(totals.total)}</dd>
+                  <dd>{money(totals.total)}</dd>
                 </div>
               </dl>
-              <Button asChild size="lg" className="mt-6 w-full rounded-full">
-                <Link to="/checkout">
-                  {tr("Review order")}
-                  <ArrowRight className="size-4 rtl:rotate-180" />
-                </Link>
-              </Button>
+              {pricingReady ? (
+                <Button asChild size="lg" className="mt-6 w-full rounded-full">
+                  <Link to="/checkout">
+                    {tr("Review order")}
+                    <ArrowRight className="size-4 rtl:rotate-180" />
+                  </Link>
+                </Button>
+              ) : (
+                <Button size="lg" className="mt-6 w-full rounded-full" disabled>
+                  {tr("Loading current prices…")}
+                </Button>
+              )}
               <p className="mt-3 text-center text-xs text-muted-foreground">
                 {tr("Secure card payment in MAD · Artwork checked before production")}
               </p>
@@ -238,7 +258,8 @@ function CartQuantityInput({
 }) {
   const { tr, number } = useI18n();
   const [value, setValue] = useState(String(item.quantity));
-  const product = getProduct(item.slug);
+  useCart((s) => s.pricingKey); // re-render when live prices change
+  const product = getActiveCatalog()?.getProduct(item.slug) ?? getProduct(item.slug);
   const limits = product ? productQuantityLimits(product) : { min: 1 };
   const parsed = parseQuantity(value, limits);
   const needsQuote = parsed !== null && product ? isBulkQuoteQuantity(product, parsed) : false;
