@@ -35,6 +35,7 @@ const ERRORS: Record<string, string> = {
   no_confirmed_user: "Aucun compte confirmé avec cet e-mail",
   invalid_role: "Rôle invalide",
   last_admin: "Impossible de retirer le dernier administrateur",
+  invalid_pricing: "Configuration de prix invalide",
 };
 function fail(error: { message?: string } | null, fallback = "Erreur de base de données"): never {
   const key = Object.keys(ERRORS).find((k) => error?.message?.includes(k));
@@ -840,6 +841,66 @@ export const adminSetAvailability = createServerFn({ method: "POST" })
     });
     if (r.error) fail(r.error);
     return { ok: true };
+  });
+
+/* ---------- catalog pricing (admin writes only) ---------- */
+
+export const adminCatalogPricing = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { db } = await requireStaff(context, "read_ops");
+    const rows = must(await db.from("catalog_pricing").select("kind, slug, config, version, updated_at")) ?? [];
+    return rows.map((r) => ({ kind: r.kind, slug: r.slug, config: r.config as unknown, version: r.version, updated_at: r.updated_at }));
+  });
+
+export const adminSetPricing = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => {
+    const i = obj(input);
+    const kind = oneOf(i["kind"], ["product", "pack", "internal"] as const);
+    const slug = String(i["slug"] ?? "");
+    if (!kind || !/^[a-z0-9-]{1,60}$/.test(slug)) throw new Error("Article invalide");
+    const expected = Math.floor(Number(i["version"]));
+    if (!Number.isSafeInteger(expected) || expected < 0) throw new Error("Version invalide");
+    return { kind, slug, version: expected, config: i["config"] === null ? null : i["config"] };
+  })
+  .handler(async ({ data, context }) => {
+    const { db } = await requireStaff(context, "manage_catalog");
+    const cfg = await import("@/data/catalog-config");
+    let clean: unknown = null;
+    if (data.config !== null) {
+      if (data.kind === "product") {
+        const p = cfg.sourceProduct(data.slug);
+        if (!p) throw new Error("Article inconnu");
+        clean = cfg.validateProductPricing(data.config, p);
+      } else if (data.kind === "pack") {
+        if (!cfg.sourcePack(data.slug)) throw new Error("Article inconnu");
+        clean = data.config;
+      } else {
+        const { internalPackItems } = await import("@/data/packs");
+        if (!internalPackItems[data.slug]) throw new Error("Article inconnu");
+        clean = cfg.validateInternalPricing(data.config);
+      }
+    }
+    // The whole catalogue must still price with this change (packs depend on product ranges).
+    const rows = (must(await db.from("catalog_pricing").select("kind, slug, config, version")) ?? []).filter(
+      (r) => !(r.kind === data.kind && r.slug === data.slug),
+    );
+    if (clean !== null) rows.push({ kind: data.kind, slug: data.slug, config: clean as never, version: data.version + 1 });
+    try {
+      cfg.buildCatalog(rows as never);
+    } catch (e) {
+      throw new Error(e instanceof Error ? e.message : "Configuration de prix invalide");
+    }
+    const r = await db.rpc("admin_set_pricing", {
+      _actor: context.userId,
+      _kind: data.kind,
+      _slug: data.slug,
+      _expected: data.version,
+      _config: clean as never,
+    });
+    if (r.error) fail(r.error, "Enregistrement impossible");
+    return { ok: true, version: r.data as number };
   });
 
 /* ---------- CRM (admin only) ---------- */
