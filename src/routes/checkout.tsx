@@ -45,7 +45,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { mad } from "@/lib/format";
-import { cartTotals, getActiveCatalog, useCart } from "@/store/cart";
+import { cartTotals, getActiveCatalog, hasUnpriced, useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
@@ -106,8 +106,8 @@ function CheckoutPage() {
   const returningFromPayment = Boolean(Route.useSearch().ref);
   useEffect(() => {
     // Changed prices or removed items need a cart review first; a payment in progress is left alone.
-    if ((removedNotice || priceNotice) && !returningFromPayment) void navigate({ to: "/cart" });
-  }, [removedNotice, priceNotice, returningFromPayment, navigate]);
+    if ((removedNotice || priceNotice || hasUnpriced(items)) && !returningFromPayment) void navigate({ to: "/cart" });
+  }, [removedNotice, priceNotice, items, returningFromPayment, navigate]);
   const { user } = useAuth();
   const totals = cartTotals(items);
   const search = Route.useSearch();

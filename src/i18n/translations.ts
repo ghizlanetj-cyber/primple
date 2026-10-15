@@ -1,6 +1,14 @@
 export type TranslationPair = { fr: string; ar: string };
 
 export const phrases: Record<string, TranslationPair> = {
+  "Quote required: request a quote or change this item": {
+    fr: "Devis requis : demandez un devis ou modifiez cet article",
+    ar: "يتطلب عرض سعر: اطلب عرض سعر أو عدّل هذا المنتج",
+  },
+  "One item needs a quote. Request a quote for it or remove it to continue to checkout.": {
+    fr: "Un article nécessite un devis. Demandez un devis ou retirez-le pour continuer la commande.",
+    ar: "أحد المنتجات يتطلب عرض سعر. اطلب عرض سعر أو احذفه لمتابعة الطلب.",
+  },
   "Loading current prices…": { fr: "Chargement des prix actuels…", ar: "جارٍ تحميل الأسعار الحالية…" },
   "Prices are temporarily unavailable. Please try again in a moment.": {
     fr: "Les prix sont momentanément indisponibles. Réessayez dans un instant.",
