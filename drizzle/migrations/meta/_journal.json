@@ -211,6 +211,13 @@
       "when": 1791208641311,
       "tag": "0029_finish_team_dashboard",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1792082158978,
+      "tag": "0030_catalog_pricing",
+      "breakpoints": true
     }
   ]
 }

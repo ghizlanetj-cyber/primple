@@ -151,6 +151,33 @@ export type Database = {
         }
         Relationships: []
       }
+      catalog_pricing: {
+        Row: {
+          config: Json
+          kind: string
+          slug: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+        }
+        Insert: {
+          config: Json
+          kind: string
+          slug: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Update: {
+          config?: Json
+          kind?: string
+          slug?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           company: string | null
@@ -1052,6 +1079,16 @@ export type Database = {
           _slug: string
         }
         Returns: undefined
+      }
+      admin_set_pricing: {
+        Args: {
+          _actor: string
+          _config: Json
+          _expected: number
+          _kind: string
+          _slug: string
+        }
+        Returns: number
       }
       admin_shop_orders_page: {
         Args: { _limit: number; _offset: number; _q: string; _status: string }
