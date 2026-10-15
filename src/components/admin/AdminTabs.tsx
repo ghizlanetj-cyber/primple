@@ -115,7 +115,7 @@ export function CatalogTab({ canManage }: { canManage: boolean }) {
                   );
                 })}
               </ul>
-            ) : <Empty text="Aucun produit" />}
+            ) : <Empty>Aucun produit</Empty>}
           </Card>
           <div className="space-y-5">
             <Card title={`Packs (${packList.length})`}>
@@ -130,7 +130,7 @@ export function CatalogTab({ canManage }: { canManage: boolean }) {
                     );
                   })}
                 </ul>
-              ) : <Empty text="Aucun pack" />}
+              ) : <Empty>Aucun pack</Empty>}
             </Card>
             <Card title={`Articles internes aux packs (${internalList.length})`}>
               {internalList.length ? (
@@ -141,7 +141,7 @@ export function CatalogTab({ canManage }: { canManage: boolean }) {
                       onEdit={() => setEdit({ kind: "internal", ref })} />
                   ))}
                 </ul>
-              ) : <Empty text="Aucun article" />}
+              ) : <Empty>Aucun article</Empty>}
             </Card>
           </div>
         </div>
