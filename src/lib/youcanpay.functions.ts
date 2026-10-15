@@ -159,6 +159,8 @@ async function recomputeOrderCents(order: {
 }): Promise<number> {
   const { orderTotals } = await import("@/data/pricing");
   const lines = Array.isArray(order.items) ? (order.items as StoredOrderLine[]) : [];
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { loadLiveCatalog, PRICE_CHANGED } = await import("./pricing.server");
 
   const totals = orderTotals(
     lines.map((line) => ({
@@ -166,10 +168,12 @@ async function recomputeOrderCents(order: {
       quantity: Number(line.quantity),
       selection: line.selection ?? {},
     })),
+    await loadLiveCatalog(supabaseAdmin),
   );
   if (!totals) throw new Error("This order can no longer be priced. Please contact Primple.");
+  // A changed price is never charged silently: the customer reviews and reorders.
+  if (Math.round(Number(order.total) * 100) !== totals.totalCents) throw new Error(PRICE_CHANGED);
   // Items the team switched off cannot be paid for, even on an existing order.
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const off = await supabaseAdmin.rpc("catalog_unavailable", { _items: lines as never });
   if (off.error) throw new Error("Availability check failed. Please try again.");
   if ((off.data ?? []).length) throw new Error("One of the items is temporarily unavailable. Please contact Primple.");
