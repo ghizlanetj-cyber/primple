@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { hostDecision } from "./lib/host-routing";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -47,9 +48,21 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const url = new URL(request.url);
+      const decision = hostDecision(request.headers.get("host") ?? url.host, url.pathname, url.search);
+      if (decision.type === "redirect") {
+        return new Response(null, { status: decision.status, headers: { location: decision.location } });
+      }
+      if (decision.type === "robots") {
+        return new Response(decision.body, { headers: { "content-type": "text/plain", "x-robots-tag": "noindex, nofollow" } });
+      }
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      const response = await normalizeCatastrophicSsrResponse(await handler.fetch(request, env, ctx));
+      if (!decision.noindex) return response;
+      // Internal dashboard host: never indexed.
+      const headers = new Headers(response.headers);
+      headers.set("x-robots-tag", "noindex, nofollow");
+      return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {
