@@ -250,10 +250,9 @@ export function packSlugFromCartSlug(slug: string) {
   return slug.slice(PACK_SLUG_PREFIX.length);
 }
 
-function clampQuantity(quantity: number) {
-  const n = Math.floor(Number(quantity));
-  if (!Number.isFinite(n) || n < 1) return 1;
-  return Math.min(99999, n);
+/** Safe whole positive quantity, or null. No arbitrary cap: larger runs go to a quote via the product range. */
+function safeQuantity(quantity: number) {
+  return Number.isSafeInteger(quantity) && quantity >= 1 ? quantity : null;
 }
 
 /**
@@ -273,14 +272,16 @@ export function packLineMinimum(packSlug: string, ref: string, c: CatalogLike = 
 
 /** Price of one pack line at the individual (undiscounted) catalog price. */
 export function packLineSubtotal(line: PackLine, c: CatalogLike = SOURCE): number {
-  const quantity = clampQuantity(line.quantity);
+  const quantity = safeQuantity(line.quantity);
+  if (quantity === null) return Number.NaN;
   if (line.kind === "internal") {
     const unit = c.internalUnitPrice(line.ref);
-    if (unit === undefined) return 0;
-    return fromCents(toCents(unit) * quantity);
+    if (unit === undefined) return Number.NaN;
+    const cents = toCents(unit) * quantity;
+    return Number.isSafeInteger(cents) ? fromCents(cents) : Number.NaN;
   }
   const catalogProduct = c.getProduct(line.ref);
-  if (!catalogProduct) return 0;
+  if (!catalogProduct) return Number.NaN;
   const selection = { ...defaultSelection(catalogProduct), ...(line.selection ?? {}) };
   return priceQuote(catalogProduct, quantity, selection).subtotal;
 }
@@ -312,9 +313,15 @@ export function packQuote(lines: PackLine[], c: CatalogLike = SOURCE, packSlug?:
 
 /** Product lines above the verified price table need a quote; internal items have a fixed unit price. */
 export function packLineNeedsQuote(line: PackLine, c: CatalogLike = SOURCE) {
-  if (line.kind !== "product") return false;
+  if (safeQuantity(line.quantity) === null) return true;
+  if (line.kind !== "product") return c.internalUnitPrice(line.ref) === undefined;
   const product = c.getProduct(line.ref);
-  return !product || isBulkQuoteQuantity(product, line.quantity);
+  return !product || Boolean(product.quoteOnly) || isBulkQuoteQuantity(product, line.quantity);
+}
+
+/** Every line (defaults and omitted lines included) at or above its live minimum and inside the priced range. */
+function packLinesPriceable(packSlug: string, lines: PackLine[], c: CatalogLike) {
+  return lines.every((l) => !packLineNeedsQuote(l, c) && l.quantity >= packLineMinimum(packSlug, l.ref, c));
 }
 
 /**
@@ -324,7 +331,7 @@ export function packLineNeedsQuote(line: PackLine, c: CatalogLike = SOURCE) {
 export function parsePackLines(packSlug: string, raw: string | undefined, c: CatalogLike = SOURCE): PackLine[] | null {
   const pack = c.getPack(packSlug);
   if (!pack) return null;
-  if (!raw) return pack.lines.some((l) => packLineNeedsQuote(l, c)) ? null : pack.lines;
+  if (!raw) return packLinesPriceable(packSlug, pack.lines, c) ? pack.lines : null;
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
@@ -344,7 +351,7 @@ export function parsePackLines(packSlug: string, raw: string | undefined, c: Cat
   // Only quantities are customer-editable; refs and prices stay server-defined.
   const lines = pack.lines.map((line) => ({ ...line, quantity: quantities.get(line.ref) ?? line.quantity }));
   // Beyond the verified price range: quote request, never an extrapolated price.
-  return lines.some((l) => packLineNeedsQuote(l, c)) ? null : lines;
+  return packLinesPriceable(packSlug, lines, c) ? lines : null;
 }
 
 export function serializePackLines(lines: PackLine[]) {

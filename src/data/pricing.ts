@@ -67,6 +67,7 @@ export function lineQuote(
     const lines = parsePackLines(packSlug, selection["lines"], catalog);
     if (!lines) return null;
     const quote = packQuote(lines, catalog, packSlug);
+    if (!Number.isFinite(quote.packPrice) || !Number.isSafeInteger(Math.round(quote.packPrice * 100))) return null;
     return {
       subtotal: quote.packPrice,
       unitPrice: quote.packPrice,
@@ -149,6 +150,7 @@ export function orderTotals(lines: OrderLineInput[], catalog: CatalogLike = SOUR
     deliveryMax = Math.max(deliveryMax, quote.deliveryMax);
   }
 
+  if (!Number.isSafeInteger(subtotalCents + deliveryCents)) return null;
   return {
     subtotalCents,
     deliveryCents,

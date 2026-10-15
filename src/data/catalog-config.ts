@@ -38,7 +38,14 @@ export type InternalPricing = { unitPriceCents: number };
 export type PricingKind = "product" | "pack" | "internal";
 export type PricingRow = { kind: string; slug: string; config: Json; version: number };
 
+/** A reset keeps a tombstone row whose config is {}: it means "source defaults". */
+export function isOverride(config: unknown): boolean {
+  return Boolean(config && typeof config === "object" && !Array.isArray(config) && Object.keys(config).length > 0);
+}
+
 export type Catalog = CatalogLike & {
+  /** Packs whose saved override no longer fits the product ranges: not sold until reviewed. */
+  packsNeedingReview: string[];
   products: Product[];
   packs: Pack[];
   versions: Record<string, number>;
@@ -189,6 +196,7 @@ export function buildCatalog(rows: PricingRow[] = []): Catalog {
   const internalRows = new Map<string, unknown>();
   for (const r of rows) {
     versions[`${r.kind}:${r.slug}`] = r.version;
+    if (!isOverride(r.config)) continue;
     if (r.kind === "product") productRows.set(r.slug, r.config);
     else if (r.kind === "pack") packRows.set(r.slug, r.config);
     else if (r.kind === "internal") internalRows.set(r.slug, r.config);
@@ -199,13 +207,21 @@ export function buildCatalog(rows: PricingRow[] = []): Catalog {
   const productMap = new Map(products.map((p) => [p.slug, p]));
   const getProduct = (slug: string) => productMap.get(slug);
   const discounts = new Map<string, number>();
+  const packsNeedingReview: string[] = [];
   const packs = sourcePacks.map((pack) => {
     if (!packRows.has(pack.slug)) return pack;
-    const cfg = validatePackPricing(packRows.get(pack.slug), pack, getProduct);
-    discounts.set(pack.slug, cfg.discountPercent / 100);
-    return { ...pack, lines: pack.lines.map((l) => ({ ...l, quantity: cfg.lines[l.ref] ?? l.quantity })) };
+    try {
+      const cfg = validatePackPricing(packRows.get(pack.slug), pack, getProduct);
+      discounts.set(pack.slug, cfg.discountPercent / 100);
+      return { ...pack, lines: pack.lines.map((l) => ({ ...l, quantity: cfg.lines[l.ref] ?? l.quantity })) };
+    } catch {
+      // One stale pack never makes the whole catalogue unreadable; that pack is just not priced.
+      packsNeedingReview.push(pack.slug);
+      return pack;
+    }
   });
-  const packMap = new Map(packs.map((p) => [p.slug, p]));
+  const reviewSet = new Set(packsNeedingReview);
+  const packMap = new Map(packs.filter((p) => !reviewSet.has(p.slug)).map((p) => [p.slug, p]));
   const internal = new Map<string, number>();
   for (const [ref, cfg] of internalRows) {
     if (!internalPackItems[ref]) continue;
@@ -215,6 +231,7 @@ export function buildCatalog(rows: PricingRow[] = []): Catalog {
   return {
     products,
     packs,
+    packsNeedingReview,
     versions,
     key: key || "source",
     getProduct,
