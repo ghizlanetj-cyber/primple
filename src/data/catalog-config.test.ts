@@ -5,6 +5,7 @@ import {
   buildCatalog,
   defaultPackPricing,
   defaultProductPricing,
+  validatePackPricing,
   validateProductPricing,
   type PricingRow,
 } from "@/data/catalog-config";
@@ -114,9 +115,11 @@ describe("pack overrides", () => {
   });
   it("rejects pack quantities outside the product's automatic range", () => {
     const d = defaultPackPricing(pack);
-    expect(() => buildCatalog([row("pack", "launch", { ...d, lines: { ...d.lines, flyers: 1 } })])).toThrow();
-    expect(() => buildCatalog([row("pack", "launch", { ...d, lines: { ...d.lines, flyers: 10_000_000 } })])).toThrow();
-    expect(() => buildCatalog([row("pack", "launch", { ...d, discountPercent: 95 })])).toThrow();
+    const getP = (slug: string) => getProduct(slug);
+    expect(() => validatePackPricing({ ...d, lines: { ...d.lines, flyers: 1 } }, pack, getP)).toThrow();
+    expect(() => validatePackPricing({ ...d, lines: { ...d.lines, flyers: 10_000_000 } }, pack, getP)).toThrow();
+    expect(() => validatePackPricing({ ...d, discountPercent: 95 }, pack, getP)).toThrow();
+    expect(buildCatalog([row("pack", "launch", { ...d, discountPercent: 95 })]).packsNeedingReview).toEqual(["launch"]);
   });
   it("customer pack quantities still respect the live product minimum", () => {
     const fb = defaultProductPricing(getProduct("flyers")!);
