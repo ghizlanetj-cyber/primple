@@ -344,6 +344,17 @@ function CheckoutPage() {
     );
   }
 
+  if (!pricingReady && step < 3 && !placedOrder) {
+    // No order is placed or priced before the live prices are loaded.
+    return (
+      <SiteShell>
+        <div className="section-shell py-32 text-center" role="status">
+          <p className="text-muted-foreground">{tr("Loading current prices…")}</p>
+        </div>
+      </SiteShell>
+    );
+  }
+
   return (
     <SiteShell>
       <section className="section-shell pb-14 pt-24 md:py-20">
