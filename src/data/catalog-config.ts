@@ -92,7 +92,7 @@ export function validateProductPricing(raw: unknown, p: Product): ProductPricing
   let breaks: QuantityBreak[] | null = null;
   if (o["breaks"] != null) {
     const b = o["breaks"];
-    if (!Array.isArray(b) || b.length < 2 || b.length > 20) bad("Remises : entre 2 et 20 paliers.");
+    if (!Array.isArray(b) || b.length < 1 || b.length > 20) bad("Remises : entre 1 et 20 paliers.");
     breaks = b.map((t) => {
       const tier = (t ?? {}) as Record<string, unknown>;
       if (!isInt(tier["quantity"], 1, MAX_QTY) || !isNum(tier["factor"], 0, 1.5)) bad("Palier de remise invalide.");
