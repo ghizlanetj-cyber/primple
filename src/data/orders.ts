@@ -4,7 +4,8 @@ export type OrderStage =
   | "In production"
   | "Quality check"
   | "Shipped"
-  | "Delivered";
+  | "Delivered"
+  | "Cancelled";
 
 export const orderStages: OrderStage[] = [
   "Order placed",

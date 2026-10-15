@@ -1,3 +1,4 @@
+import { ProductionPanel } from "./ProductionPanel";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -94,6 +95,7 @@ export function TeamTab() {
   });
   return (
     <div className="space-y-5">
+      <ProductionPanel />
       <Card title="Ajouter un membre">
         <form className="grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto]" onSubmit={(e) => { e.preventDefault(); g.mutate(); }}>
           <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="E-mail du compte (confirmé)" aria-label="E-mail" />

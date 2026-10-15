@@ -51,6 +51,8 @@ export const requestBankTransfer = createServerFn({ method: "POST" })
       throw new Error("This order is already paid.");
     }
 
+    const off = await supabaseAdmin.rpc("catalog_unavailable", { _items: order.items });
+    if (off.error || (off.data ?? []).length) throw new Error("One of the items is temporarily unavailable. Please contact Primple.");
     const totalCents = await verifiedTotalCents(order);
     if (!Number.isFinite(totalCents) || totalCents <= 0) throw new Error("The order total is invalid.");
     const advanceCents = onlineAmountCents(totalCents, order.payment_method);

@@ -17,4 +17,10 @@
 - /admin access (moderators only get /admin/payments) goes through my_staff_role() and the capability matrix in admin-metrics.ts before the service client; team members live in team_members (operational only), roles never come from user_metadata. Keeps least privilege in one checked place.
 - Admin mutations go through audited, versioned SQL functions (admin_update_order_ops, admin_update_message, admin_record_balance, etc.); never write sidecar tables directly from TypeScript. Prevents lost updates and unaudited changes.
 - Catalog availability overrides live in catalog_availability and are enforced by the orders insert trigger and payment start; prices stay in src/data. Prevents ordering switched-off items.
+
+- Catalogue availability public reads use only kind/slug/available; notes and updated_by are private. Packs inherit canonical product availability through catalog_pack_products; keep its migration seed in sync with src/data/packs.ts.
+- Customer identity joins use exact normalized email keys, never LIKE patterns. Shared uncapped aggregates supply list/detail totals; history is paginated independently.
+- Shop payments remain processor-owned in shop_orders, in cents and original currency. Edit only shop_order_ops through audited versioned RPCs, and expose no processor identifiers. Report MAD shop payments separately from print/courier cash.
+- Every new internal table explicitly revokes ALL client defaults (including TRUNCATE/TRIGGER/MAINTAIN), enables RLS, and grants only service_role. New internal RPCs revoke PUBLIC/anon/authenticated EXECUTE.
+- A refunded production label is a refund-pending workflow state, not a monetary refund. Preserve actual payment and cash-collection evidence.
 - Card payment success is shown only after the server order status reads "paid" (set by the signed webhook), via getPrintPaymentStatus polling; the widget result never confirms payment or clears the cart. Prevents false confirmations and double charges.

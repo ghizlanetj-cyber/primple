@@ -4,11 +4,13 @@ import { ArrowRight } from "lucide-react";
 import { fromPriceBasis, type Product } from "@/data/products";
 import { productImageAlt, productImages } from "@/data/productImages";
 import { mad } from "@/lib/format";
+import { useUnavailable } from "@/hooks/use-availability";
 import { useI18n } from "@/i18n";
 
 export function ProductCard({ product }: { product: Product }) {
   const { tr, number } = useI18n();
   const basis = fromPriceBasis(product);
+  const unavailable = useUnavailable("product", product.slug);
   return (
     <Link
       to="/products/$slug"
@@ -31,6 +33,11 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
       <div className="flex flex-1 flex-col p-6">
         <h3 className="text-xl">{tr(product.name)}</h3>
+        {unavailable && (
+          <p className="mt-2 text-sm font-medium text-muted-foreground">
+            {tr("This product is temporarily unavailable.")}
+          </p>
+        )}
         <p className="mt-1.5 text-sm text-muted-foreground">{tr(product.benefit)}</p>
         {!product.quoteOnly && (
           <p className="mt-3 text-xs text-muted-foreground">
@@ -41,19 +48,16 @@ export function ProductCard({ product }: { product: Product }) {
           {product.quoteOnly ? (
             <span className="text-sm font-semibold">{tr("Request a quote")}</span>
           ) : (
-          <span className="text-sm font-semibold">
-            {tr("From")} {mad(basis.amount)}
-            <span className="block text-xs font-normal text-muted-foreground">
-              {tr(
-                basis.quantity === 1
-                  ? "for 1 unit, delivery not included"
-                  : "for {quantity} units, delivery not included",
-              ).replace(
-                "{quantity}",
-                number(basis.quantity),
-              )}
+            <span className="text-sm font-semibold">
+              {tr("From")} {mad(basis.amount)}
+              <span className="block text-xs font-normal text-muted-foreground">
+                {tr(
+                  basis.quantity === 1
+                    ? "for 1 unit, delivery not included"
+                    : "for {quantity} units, delivery not included",
+                ).replace("{quantity}", number(basis.quantity))}
+              </span>
             </span>
-          </span>
           )}
           <span className="inline-flex items-center gap-1 text-sm font-semibold text-foreground/80 transition-colors group-hover:text-primary">
             {tr("Get a price")}

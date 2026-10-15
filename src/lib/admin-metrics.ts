@@ -82,8 +82,8 @@ export const OPS_TO_CUSTOMER: Record<string, string | null> = {
   ready: "Quality check",
   shipped: "Shipped",
   delivered: "Delivered",
-  cancelled: null,
-  refunded: null,
+  cancelled: "Cancelled",
+  refunded: "Cancelled",
 };
 export const OPS_STAGES = Object.keys(OPS_TO_CUSTOMER);
 export const OPS_LABELS: Record<string, string> = {
@@ -97,7 +97,7 @@ export const OPS_LABELS: Record<string, string> = {
   shipped: "Expédiée",
   delivered: "Livrée",
   cancelled: "Annulée",
-  refunded: "Remboursée",
+  refunded: "Remboursement à traiter",
 };
 export const QUOTE_STAGES = ["new", "qualified", "proposal", "negotiation", "won", "lost"] as const;
 export const QUOTE_LABELS: Record<string, string> = {

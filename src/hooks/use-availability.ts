@@ -1,17 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-
 import { supabase } from "@/integrations/supabase/client";
-
-/** Items the team switched off. Fails open in the UI; the server and database block orders regardless. */
-export function useUnavailable(kind: "product" | "pack", slug: string) {
+import { isUnavailable } from "@/lib/catalog-availability";
+export function useCatalogAvailability() {
   const { data } = useQuery({
     queryKey: ["catalog-availability"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("catalog_availability").select("kind, slug, available").eq("available", false);
-      if (error) return [];
+      const { data, error } = await supabase
+        .from("catalog_availability")
+        .select("kind, slug, available")
+        .eq("available", false);
+      if (error) return []; // Payment and the insert trigger enforce availability if the UI is offline.
       return data ?? [];
     },
     staleTime: 60_000,
   });
-  return (data ?? []).find((r) => r.kind === kind && r.slug === slug) ?? null;
+  return data ?? [];
+}
+export function useUnavailable(kind: "product" | "pack", slug: string) {
+  return isUnavailable(useCatalogAvailability(), kind, slug);
 }

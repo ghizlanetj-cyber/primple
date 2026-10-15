@@ -5,6 +5,8 @@ import { SiteShell } from "@/components/layout/SiteShell";
 import { Reveal } from "@/components/motion/Reveal";
 import { packQuote, packs } from "@/data/packs";
 import { mad } from "@/lib/format";
+import { useCatalogAvailability } from "@/hooks/use-availability";
+import { isUnavailable } from "@/lib/catalog-availability";
 import { useI18n } from "@/i18n";
 
 const title = "Packs d'impression pour votre activité | Primple";
@@ -29,11 +31,14 @@ export const Route = createFileRoute("/packs/")({
 
 function PacksPage() {
   const { tr } = useI18n();
+  const availability = useCatalogAvailability();
   return (
     <SiteShell>
       <section className="section-shell pb-10 pt-24 md:py-20">
         <p className="eyebrow text-primary">{tr("Packs")}</p>
-        <h1 className="mt-4 text-4xl md:text-5xl">{tr("Everything your business prints, in one pack.")}</h1>
+        <h1 className="mt-4 text-4xl md:text-5xl">
+          {tr("Everything your business prints, in one pack.")}
+        </h1>
         <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
           {tr(
             "Each pack bundles the pieces a business really needs and costs 20% less than ordering the same items one by one.",
@@ -64,13 +69,20 @@ function PacksPage() {
                   </div>
                   <div className="flex flex-1 flex-col p-6">
                     <h2 className="text-xl">{tr(pack.name)}</h2>
+                    {isUnavailable(availability, "pack", pack.slug) && (
+                      <p className="mt-2 text-sm font-medium text-muted-foreground">
+                        {tr("This pack is temporarily unavailable.")}
+                      </p>
+                    )}
                     <p className="mt-1.5 text-sm text-muted-foreground">{tr(pack.audience)}</p>
                     <div className="mt-5 flex items-end justify-between border-t border-border pt-4">
                       <div>
                         <p className="text-xs text-muted-foreground line-through">
                           {mad(quote.normalPrice)}
                         </p>
-                        <p className="font-display text-lg font-extrabold">{mad(quote.packPrice)}</p>
+                        <p className="font-display text-lg font-extrabold">
+                          {mad(quote.packPrice)}
+                        </p>
                       </div>
                       <span className="rounded-full bg-success/15 px-3 py-1 text-xs font-semibold text-success">
                         {tr("Save 20%")}

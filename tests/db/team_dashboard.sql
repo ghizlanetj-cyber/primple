@@ -85,16 +85,16 @@ BEGIN
   EXCEPTION WHEN raise_exception THEN IF SQLERRM LIKE 'TEAM_DASHBOARD_TEST%' THEN RAISE; END IF; ok := ok + 1; END;
 
   -- 8. Last admin preserved (checked before any delete); synthetic admin revocation works when another admin exists.
-  SELECT count(*) INTO n FROM public.user_roles WHERE role = 'admin';
-  IF n >= 2 THEN PERFORM public.admin_revoke_member(adm, adm, 'admin'); END IF;
+  -- Fixture-only revocations are inside the rollback transaction. Test the actual last remaining admin.
+  FOR real_admin IN SELECT user_id FROM public.user_roles WHERE role='admin' AND user_id<>adm LOOP
+    PERFORM public.admin_revoke_member(adm, real_admin, 'admin');
+  END LOOP;
   BEGIN
-    SELECT user_id INTO real_admin FROM public.user_roles WHERE role = 'admin' LIMIT 1;
-    IF real_admin IS NULL THEN real_admin := adm; END IF;
-    PERFORM public.admin_revoke_member(CASE WHEN real_admin = adm THEN adm ELSE real_admin END, real_admin, 'admin');
+    PERFORM public.admin_revoke_member(adm,adm,'admin');
     RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: last admin removed';
-  EXCEPTION WHEN raise_exception THEN IF SQLERRM LIKE 'TEAM_DASHBOARD_TEST%' THEN RAISE; END IF; IF SQLERRM <> 'last_admin' THEN RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: last admin code %', SQLERRM; END IF; ok := ok + 1; END;
-  -- restore synthetic admin for later cases
-  INSERT INTO public.user_roles (user_id, role) VALUES (adm, 'admin') ON CONFLICT DO NOTHING;
+  EXCEPTION WHEN raise_exception THEN
+    IF SQLERRM <> 'last_admin' THEN RAISE; END IF; ok:=ok+1;
+  END;
 
   -- 9. Customer (authenticated) cannot reach internal data or privileged functions.
   PERFORM set_config('request.jwt.claims', json_build_object('sub', cust, 'role', 'authenticated')::text, true);
@@ -130,7 +130,7 @@ BEGIN
   PERFORM set_config('role', 'anon', true);
   BEGIN PERFORM 1 FROM public.team_members; RAISE EXCEPTION 'TEAM_DASHBOARD_TEST FAIL: anon team';
   EXCEPTION WHEN insufficient_privilege THEN ok := ok + 1; END;
-  SELECT count(*) INTO n FROM public.catalog_availability; ok := ok + 1; -- public read allowed
+  SELECT count(slug) INTO n FROM public.catalog_availability; ok := ok + 1; -- public read allowed
 
   RAISE EXCEPTION 'TEAM_DASHBOARD_TEST PASS %', ok;
 END $$;

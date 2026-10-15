@@ -36,7 +36,8 @@ import { claimGuestOrder } from "@/lib/orders.functions";
 import { clearGuestClaim, readGuestClaim } from "@/lib/guest-claim";
 
 const title = "Votre espace d’impression | Primple";
-const description = "Suivez chaque impression, consultez vos commandes et téléchargez vos factures au même endroit.";
+const description =
+  "Suivez chaque impression, consultez vos commandes et téléchargez vos factures au même endroit.";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   validateSearch: (search: Record<string, unknown>): { order?: string; paid?: string } => ({
@@ -167,7 +168,9 @@ function DashboardPage() {
                 {t("dash.title")} <span className="display-accent">{t("dash.titleAccent")}</span>
               </h1>
               <p className="mt-4 text-base text-muted-foreground md:text-lg">
-                {displayName ? `${tr("Welcome back")}, ${displayName}.` : tr("Welcome back to Primple.")}
+                {displayName
+                  ? `${tr("Welcome back")}, ${displayName}.`
+                  : tr("Welcome back to Primple.")}
               </p>
               {user?.email && (
                 <p className="mt-1 break-all text-sm text-muted-foreground" dir="ltr">
@@ -271,7 +274,9 @@ function DashboardPage() {
 
         <div className="min-w-0">
           {isLoading && view !== "files" && (
-            <div className="surface-card p-10 text-center text-muted-foreground">{tr("Loading your orders…")}</div>
+            <div className="surface-card p-10 text-center text-muted-foreground">
+              {tr("Loading your orders…")}
+            </div>
           )}
 
           {!isLoading && orders.length === 0 && view !== "files" && (
@@ -307,12 +312,16 @@ function DashboardPage() {
                         <p className="mt-1 font-display font-bold">
                           {number(order.quantity)} × {tr(order.product)}
                         </p>
-                        <p className="mt-1 break-words text-sm text-muted-foreground">{tr(order.config)}</p>
+                        <p className="mt-1 break-words text-sm text-muted-foreground">
+                          {tr(order.config)}
+                        </p>
                       </div>
                       <span
                         className={cn(
                           "max-w-full justify-self-start whitespace-normal rounded-full px-3 py-1 text-start text-xs font-semibold leading-snug sm:justify-self-end",
-                          order.stage === "Delivered" ? "bg-success/15 text-success" : "bg-primary/20 text-foreground",
+                          order.stage === "Delivered"
+                            ? "bg-success/15 text-success"
+                            : "bg-primary/20 text-foreground",
                         )}
                       >
                         {tr(order.stage)}
@@ -334,44 +343,67 @@ function DashboardPage() {
                   <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">{active.id}</p>
                     <h2 className="mt-1 text-xl">{tr(active.product)}</h2>
-                    <p className="mt-1 break-words text-sm text-muted-foreground">{tr(active.config)}</p>
+                    <p className="mt-1 break-words text-sm text-muted-foreground">
+                      {tr(active.config)}
+                    </p>
                   </div>
-                  <p className="break-words font-display text-lg font-extrabold sm:text-end">{mad(active.total)}</p>
+                  <p className="break-words font-display text-lg font-extrabold sm:text-end">
+                    {mad(active.total)}
+                  </p>
                 </div>
 
-                <ol className="mt-7 space-y-4">
-                  {orderStages.map((stage, i) => {
-                    const done = i < activeStageIndex;
-                    const current = i === activeStageIndex;
-                    return (
-                      <li key={stage} className="flex items-start gap-3">
-                        <span
-                          className={cn(
-                            "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border text-xs",
-                            done && "border-success bg-success/15 text-success",
-                            current && "border-primary bg-primary text-primary-foreground",
-                            !done && !current && "border-border text-muted-foreground",
-                          )}
-                        >
-                          {done ? <CheckCircle2 className="size-3.5" /> : i + 1}
-                        </span>
-                        <p className={cn("text-sm font-semibold", !done && !current && "text-muted-foreground")}>
-                          {tr(stage)}
-                        </p>
-                      </li>
-                    );
-                  })}
-                </ol>
+                {active.stage === "Cancelled" ? (
+                  <p className="mt-7 rounded-lg border p-4 text-sm">{tr("Cancelled")}</p>
+                ) : (
+                  <ol className="mt-7 space-y-4">
+                    {orderStages.map((stage, i) => {
+                      const done = i < activeStageIndex;
+                      const current = i === activeStageIndex;
+                      return (
+                        <li key={stage} className="flex items-start gap-3">
+                          <span
+                            className={cn(
+                              "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border text-xs",
+                              done && "border-success bg-success/15 text-success",
+                              current && "border-primary bg-primary text-primary-foreground",
+                              !done && !current && "border-border text-muted-foreground",
+                            )}
+                          >
+                            {done ? <CheckCircle2 className="size-3.5" /> : i + 1}
+                          </span>
+                          <p
+                            className={cn(
+                              "text-sm font-semibold",
+                              !done && !current && "text-muted-foreground",
+                            )}
+                          >
+                            {tr(stage)}
+                          </p>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                )}
 
                 <dl className="mt-7 grid gap-3 border-t border-border pt-6 sm:grid-cols-2">
-                  <Detail icon={MapPin} label={t("dash.city")} value={active.city ?? tr("Not provided")} />
-                  <Detail icon={Truck} label={t("dash.expected")} value={active.expected ?? tr("Not provided")} />
+                  <Detail
+                    icon={MapPin}
+                    label={t("dash.city")}
+                    value={active.city ?? tr("Not provided")}
+                  />
+                  <Detail
+                    icon={Truck}
+                    label={t("dash.expected")}
+                    value={active.expected ?? tr("Not provided")}
+                  />
                 </dl>
 
                 {activeRecord && (
                   <ClientFiles
                     files={files.filter(
-                      (f) => f.orderId === activeRecord.id || f.orderReference === activeRecord.reference,
+                      (f) =>
+                        f.orderId === activeRecord.id ||
+                        f.orderReference === activeRecord.reference,
                     )}
                     isLoading={filesLoading}
                     isError={filesError}
@@ -428,7 +460,9 @@ function DashboardPage() {
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
                         <p className="truncate font-display font-bold">{invoiceNumber(record)}</p>
-                        <p className="mt-1 truncate text-xs text-muted-foreground">{record.reference}</p>
+                        <p className="mt-1 truncate text-xs text-muted-foreground">
+                          {record.reference}
+                        </p>
                       </div>
                       <span className="shrink-0 rounded-full bg-primary/20 px-2.5 py-1 text-xs font-semibold text-foreground">
                         {paymentSummary(record, lang).label}
@@ -537,7 +571,15 @@ function Kpi({
   );
 }
 
-function Detail({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+function Detail({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+}) {
   return (
     <div>
       <dt className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -556,11 +598,16 @@ const stageProgress: Record<string, number> = {
   "Quality check": 80,
   Shipped: 92,
   Delivered: 100,
+  Cancelled: 0,
 };
 
 function toViewOrder(record: OrderRecord): ViewOrder {
   const first = record.items[0];
-  const stage = (orderStages.includes(record.status) ? record.status : "Order placed") as OrderStage;
+  const stage = (
+    record.status === "Cancelled" || orderStages.includes(record.status)
+      ? record.status
+      : "Order placed"
+  ) as OrderStage;
   return {
     id: record.reference,
     product: first?.name ?? "Print job",

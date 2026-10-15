@@ -37,7 +37,7 @@ function validateGuestOrder(input: GuestOrderInput): GuestOrderInput {
   const lines = input.lines.map((line) => {
     const quantity = Number(line?.quantity);
     if (!line?.slug || typeof line.slug !== "string") throw new Error("Invalid cart item.");
-    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99999) {
+    if (!Number.isSafeInteger(quantity) || quantity < 1) {
       throw new Error("Invalid quantity.");
     }
     const selection: Record<string, string> = {};
