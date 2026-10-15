@@ -13,6 +13,7 @@ import {
   type Pack,
 } from "@/data/packs";
 import { fromCents, toCents } from "@/lib/format";
+import type { Json } from "@/integrations/supabase/types";
 
 /**
  * Admin pricing overrides. The source catalogue in src/data stays the default:
@@ -35,7 +36,7 @@ export type ProductPricing = {
 export type PackPricing = { discountPercent: number; lines: Record<string, number> };
 export type InternalPricing = { unitPriceCents: number };
 export type PricingKind = "product" | "pack" | "internal";
-export type PricingRow = { kind: string; slug: string; config: unknown; version: number };
+export type PricingRow = { kind: string; slug: string; config: Json; version: number };
 
 export type Catalog = CatalogLike & {
   products: Product[];
@@ -80,7 +81,7 @@ export function validateProductPricing(raw: unknown, p: Product): ProductPricing
   const q = o["quantities"];
   if (!Array.isArray(q) || q.length < 1 || q.length > 20 || !q.every((n) => isInt(n, 1, MAX_QTY)))
     bad("Préréglages de quantité invalides (nombres entiers, 20 au maximum).");
-  for (let i = 1; i < q.length; i += 1) if (q[i] <= q[i - 1]) bad("Les préréglages doivent être croissants et uniques.");
+  for (let i = 1; i < q.length; i += 1) if (q[i]! <= q[i - 1]!) bad("Les préréglages doivent être croissants et uniques.");
   const quantities = q as number[];
   const min = quantities[0]!;
   const max = quantities[quantities.length - 1]!;

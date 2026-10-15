@@ -850,7 +850,7 @@ export const adminCatalogPricing = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { db } = await requireStaff(context, "read_ops");
     const rows = must(await db.from("catalog_pricing").select("kind, slug, config, version, updated_at")) ?? [];
-    return rows.map((r) => ({ kind: r.kind, slug: r.slug, config: r.config as unknown, version: r.version, updated_at: r.updated_at }));
+    return rows.map((r) => ({ kind: r.kind, slug: r.slug, config: r.config, version: r.version, updated_at: r.updated_at }));
   });
 
 export const adminSetPricing = createServerFn({ method: "POST" })
