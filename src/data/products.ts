@@ -690,14 +690,15 @@ export function selectionArea(product: Product, selection: Selection) {
   return Math.round(width * height * 10000) / 10000;
 }
 
-const unitBaseCache = new Map<string, number>();
+// Keyed by product object: admin-priced copies get their own calibration.
+const unitBaseCache = new WeakMap<Product, number>();
 
 /**
  * Single calibration point: the unit price (per unit, or per m2 for area-priced
  * products) that makes the market anchor subtotal come out exact.
  */
 function unitBase(product: Product) {
-  const cached = unitBaseCache.get(product.slug);
+  const cached = unitBaseCache.get(product);
   if (cached !== undefined) return cached;
   const anchor = product.anchor;
   const selection: Selection = {
@@ -710,7 +711,7 @@ function unitBase(product: Product) {
     quantityFactor(product, anchor.quantity) *
     (selectionArea(product, selection) ?? 1);
   const value = anchor.subtotal / denominator;
-  unitBaseCache.set(product.slug, value);
+  unitBaseCache.set(product, value);
   return value;
 }
 

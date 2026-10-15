@@ -11,7 +11,9 @@ import {
   packSlugFromCartSlug,
   parsePackLines,
 } from "@/data/packs";
-import { bindingError, getProduct, priceQuote, type Selection } from "@/data/products";
+import { bindingError, priceQuote, type Selection } from "@/data/products";
+import { SOURCE_CATALOG } from "@/data/catalog-config";
+import type { CatalogLike } from "@/data/packs";
 import { isBulkQuoteQuantity } from "@/lib/quantity";
 
 export type LineQuote = {
@@ -42,6 +44,7 @@ export function lineQuote(
   slug: string,
   quantity: number,
   selection: Selection = {},
+  catalog: CatalogLike = SOURCE_CATALOG,
 ): LineQuote | null {
   if (slug === DESIGN_SERVICE_SLUG) {
     const hours = clampDesignHours(Number(selection["hours"] ?? quantity));
@@ -60,9 +63,10 @@ export function lineQuote(
   }
 
   if (isPackSlug(slug)) {
-    const lines = parsePackLines(packSlugFromCartSlug(slug), selection["lines"]);
+    const packSlug = packSlugFromCartSlug(slug);
+    const lines = parsePackLines(packSlug, selection["lines"], catalog);
     if (!lines) return null;
-    const quote = packQuote(lines);
+    const quote = packQuote(lines, catalog, packSlug);
     return {
       subtotal: quote.packPrice,
       unitPrice: quote.packPrice,
@@ -76,7 +80,7 @@ export function lineQuote(
     };
   }
 
-  const product = getProduct(slug);
+  const product = catalog.getProduct(slug);
   if (!product || product.quoteOnly) return null;
   // Below the minimum, or beyond the verified price range (quote request instead).
   if (quantity < Math.min(...product.quantities) || isBulkQuoteQuantity(product, quantity)) return null;
@@ -124,7 +128,7 @@ export type OrderTotals = {
  * recompute, so the browser total and the charged amount can never diverge.
  * Delivery is charged once per order: the highest fee among shipped lines.
  */
-export function orderTotals(lines: OrderLineInput[]): OrderTotals | null {
+export function orderTotals(lines: OrderLineInput[], catalog: CatalogLike = SOURCE_CATALOG): OrderTotals | null {
   let subtotalCents = 0;
   let deliveryCents = 0;
   let productionDays = 0;
@@ -136,7 +140,7 @@ export function orderTotals(lines: OrderLineInput[]): OrderTotals | null {
   for (const line of lines) {
     const quantity = Number(line.quantity);
     if (!line?.slug || !Number.isInteger(quantity) || quantity < 1) return null;
-    const quote = lineQuote(line.slug, quantity, line.selection ?? {});
+    const quote = lineQuote(line.slug, quantity, line.selection ?? {}, catalog);
     if (!quote) return null;
     quotes.push(quote);
     subtotalCents += Math.round(quote.subtotal * 100);
