@@ -1,5 +1,6 @@
 import { fromCents, toCents } from "@/lib/format";
-import { defaultSelection, getProduct, priceQuote, type Selection } from "@/data/products";
+import { defaultSelection, getProduct, priceQuote, type Product, type Selection } from "@/data/products";
+import { isBulkQuoteQuantity } from "@/lib/quantity";
 
 /** Every pack is sold at 20% off the sum of the individual items it contains. */
 export const PACK_DISCOUNT = 0.2;
@@ -39,6 +40,21 @@ export const internalPackItems: Record<string, { label: string; unitPrice: numbe
 export type PackLine =
   | { kind: "product"; ref: string; label: string; quantity: number; selection?: Selection }
   | { kind: "internal"; ref: string; label: string; quantity: number };
+
+/** Price source for pack maths: the source catalogue by default, live admin pricing when supplied. */
+export type CatalogLike = {
+  getProduct: (slug: string) => Product | undefined;
+  getPack: (slug: string) => Pack | undefined;
+  internalUnitPrice: (ref: string) => number | undefined;
+  packDiscount: (packSlug: string) => number;
+};
+
+const SOURCE: CatalogLike = {
+  getProduct: (slug) => getProduct(slug),
+  getPack: (slug) => getPack(slug),
+  internalUnitPrice: (ref) => internalPackItems[ref]?.unitPrice,
+  packDiscount: () => PACK_DISCOUNT,
+};
 
 export type Pack = {
   slug: string;
@@ -245,25 +261,25 @@ function clampQuantity(quantity: number) {
  * the pack's own quantity for items not sold separately. Prevents a single
  * unit from getting a bulk-production price.
  */
-export function packLineMinimum(packSlug: string, ref: string): number {
-  const base = getPack(packSlug)?.lines.find((l) => l.ref === ref);
+export function packLineMinimum(packSlug: string, ref: string, c: CatalogLike = SOURCE): number {
+  const base = c.getPack(packSlug)?.lines.find((l) => l.ref === ref);
   if (!base) return 1;
   if (base.kind === "product") {
-    const catalogProduct = getProduct(base.ref);
+    const catalogProduct = c.getProduct(base.ref);
     return catalogProduct ? Math.min(...catalogProduct.quantities) : base.quantity;
   }
   return base.quantity;
 }
 
 /** Price of one pack line at the individual (undiscounted) catalog price. */
-export function packLineSubtotal(line: PackLine): number {
+export function packLineSubtotal(line: PackLine, c: CatalogLike = SOURCE): number {
   const quantity = clampQuantity(line.quantity);
   if (line.kind === "internal") {
-    const item = internalPackItems[line.ref];
-    if (!item) return 0;
-    return fromCents(toCents(item.unitPrice) * quantity);
+    const unit = c.internalUnitPrice(line.ref);
+    if (unit === undefined) return 0;
+    return fromCents(toCents(unit) * quantity);
   }
-  const catalogProduct = getProduct(line.ref);
+  const catalogProduct = c.getProduct(line.ref);
   if (!catalogProduct) return 0;
   const selection = { ...defaultSelection(catalogProduct), ...(line.selection ?? {}) };
   return priceQuote(catalogProduct, quantity, selection).subtotal;
@@ -273,41 +289,42 @@ export type PackQuote = {
   lines: { line: PackLine; subtotal: number }[];
   /** Sum of the individual prices, before the pack discount. */
   normalPrice: number;
-  /** What the customer pays: 80% of the normal price. */
+  /** What the customer pays after the pack discount. */
   packPrice: number;
   savings: number;
   discountPercent: number;
 };
 
 /** The single pricing function every pack surface uses. */
-export function packQuote(lines: PackLine[]): PackQuote {
-  const priced = lines.map((line) => ({ line, subtotal: packLineSubtotal(line) }));
+export function packQuote(lines: PackLine[], c: CatalogLike = SOURCE, packSlug?: string): PackQuote {
+  const discount = packSlug ? c.packDiscount(packSlug) : PACK_DISCOUNT;
+  const priced = lines.map((line) => ({ line, subtotal: packLineSubtotal(line, c) }));
   const normalCents = priced.reduce((sum, l) => sum + toCents(l.subtotal), 0);
-  const packCents = Math.round(normalCents * (1 - PACK_DISCOUNT));
+  const packCents = Math.round(normalCents * (1 - discount));
   return {
     lines: priced,
     normalPrice: fromCents(normalCents),
     packPrice: fromCents(packCents),
     savings: fromCents(normalCents - packCents),
-    discountPercent: Math.round(PACK_DISCOUNT * 100),
+    discountPercent: Math.round(discount * 100),
   };
+}
+
+/** Product lines above the verified price table need a quote; internal items have a fixed unit price. */
+export function packLineNeedsQuote(line: PackLine, c: CatalogLike = SOURCE) {
+  if (line.kind !== "product") return false;
+  const product = c.getProduct(line.ref);
+  return !product || isBulkQuoteQuantity(product, line.quantity);
 }
 
 /**
  * Rebuilds pack lines from a cart/order selection so the server can re-price a
  * pack without trusting any amount sent by the browser.
  */
-/** Product lines above the verified price table need a quote; internal items have a fixed unit price. */
-export function packLineNeedsQuote(line: PackLine) {
-  if (line.kind !== "product") return false;
-  const product = getProduct(line.ref);
-  return !product || line.quantity > Math.max(...product.quantities);
-}
-
-export function parsePackLines(packSlug: string, raw: string | undefined): PackLine[] | null {
-  const pack = getPack(packSlug);
+export function parsePackLines(packSlug: string, raw: string | undefined, c: CatalogLike = SOURCE): PackLine[] | null {
+  const pack = c.getPack(packSlug);
   if (!pack) return null;
-  if (!raw) return pack.lines;
+  if (!raw) return pack.lines.some((l) => packLineNeedsQuote(l, c)) ? null : pack.lines;
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
@@ -321,13 +338,13 @@ export function parsePackLines(packSlug: string, raw: string | undefined): PackL
     const quantity = Number((entry as { quantity?: unknown })?.quantity);
     if (typeof ref !== "string" || !pack.lines.some((l) => l.ref === ref)) return null;
     // Invalid or below-minimum quantities are rejected, never clamped.
-    if (!Number.isInteger(quantity) || quantity < packLineMinimum(packSlug, ref) || !Number.isSafeInteger(quantity)) return null;
+    if (!Number.isSafeInteger(quantity) || quantity < packLineMinimum(packSlug, ref, c)) return null;
     quantities.set(ref, quantity);
   }
   // Only quantities are customer-editable; refs and prices stay server-defined.
   const lines = pack.lines.map((line) => ({ ...line, quantity: quantities.get(line.ref) ?? line.quantity }));
   // Beyond the verified price range: quote request, never an extrapolated price.
-  return lines.some(packLineNeedsQuote) ? null : lines;
+  return lines.some((l) => packLineNeedsQuote(l, c)) ? null : lines;
 }
 
 export function serializePackLines(lines: PackLine[]) {

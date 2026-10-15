@@ -6,10 +6,14 @@ import { productImageAlt, productImages } from "@/data/productImages";
 import { mad } from "@/lib/format";
 import { useUnavailable } from "@/hooks/use-availability";
 import { useI18n } from "@/i18n";
+import { useLivePricing } from "@/hooks/use-pricing";
 
 export function ProductCard({ product }: { product: Product }) {
   const { tr, number } = useI18n();
-  const basis = fromPriceBasis(product);
+  const live = useLivePricing();
+  const liveProduct = live.catalog?.getProduct(product.slug);
+  // No price until live pricing is loaded: never show an outdated default.
+  const basis = liveProduct ? fromPriceBasis(liveProduct) : null;
   const unavailable = useUnavailable("product", product.slug);
   return (
     <Link
@@ -47,6 +51,10 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
           {product.quoteOnly ? (
             <span className="text-sm font-semibold">{tr("Request a quote")}</span>
+          ) : !basis ? (
+            <span className="text-sm text-muted-foreground" aria-live="polite">
+              {live.status === "error" ? tr("Price shown on the product page") : "…"}
+            </span>
           ) : (
             <span className="text-sm font-semibold">
               {tr("From")} {mad(basis.amount)}

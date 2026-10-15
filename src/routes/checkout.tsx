@@ -45,7 +45,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { mad } from "@/lib/format";
-import { cartTotals, useCart } from "@/store/cart";
+import { cartTotals, getActiveCatalog, useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
@@ -100,9 +100,14 @@ function CheckoutPage() {
   const navigate = useNavigate();
   const { items, clear } = useCart();
   const removedNotice = useCart((s) => s.removedNotice);
+  const priceNotice = useCart((s) => s.priceNotice);
+  const pricingReady = useCart((s) => s.pricingReady);
+  const pricingKey = useCart((s) => s.pricingKey);
+  const returningFromPayment = Boolean(Route.useSearch().ref);
   useEffect(() => {
-    if (removedNotice) void navigate({ to: "/cart" });
-  }, [removedNotice, navigate]);
+    // Changed prices or removed items need a cart review first; a payment in progress is left alone.
+    if ((removedNotice || priceNotice) && !returningFromPayment) void navigate({ to: "/cart" });
+  }, [removedNotice, priceNotice, returningFromPayment, navigate]);
   const { user } = useAuth();
   const totals = cartTotals(items);
   const search = Route.useSearch();
@@ -114,7 +119,8 @@ function CheckoutPage() {
     const claim = readGuestClaim();
     setVerify({ reference: search.ref, claimToken: claim?.reference === search.ref ? claim.claimToken : "" });
   }, [search.ref]);
-  const cartSignature = JSON.stringify(items.map((i) => [i.slug, i.quantity, i.selection]));
+  // Includes the live price set: a price change never reuses an order placed at the old price.
+  const cartSignature = JSON.stringify([pricingKey, items.map((i) => [i.slug, i.quantity, i.selection])]);
 
   const startPayment = useServerFn(startPrintPayment);
   const requestTransfer = useServerFn(requestBankTransfer);
@@ -193,7 +199,9 @@ function CheckoutPage() {
         order = reuse.order;
         claimToken = reuse.claimToken;
       } else if (user) {
-        order = await createOrder({ userId: user.id, items, totals, details, paymentMethod: method });
+        const catalog = getActiveCatalog();
+        if (!catalog) throw new Error(tr("Prices are temporarily unavailable. Please try again in a moment."));
+        order = await createOrder({ userId: user.id, items, totals, details, paymentMethod: method, catalog });
       } else {
         // Guests order too: the server prices every line and hands back a
         // one-time token so the order can be attached to a new account later.
@@ -268,7 +276,7 @@ function CheckoutPage() {
       await element.mount();
       setCardReady(true);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : tr("The payment could not be started."));
+      setError(caught instanceof Error ? tr(caught.message) : tr("The payment could not be started."));
     } finally {
       inFlight.current = false;
       setPlacing(false);
@@ -331,6 +339,17 @@ function CheckoutPage() {
           <Button asChild size="lg" className="mt-8 rounded-full px-7">
             <Link to="/products">{tr("Start Printing")}</Link>
           </Button>
+        </div>
+      </SiteShell>
+    );
+  }
+
+  if (!pricingReady && step < 3 && !placedOrder) {
+    // No order is placed or priced before the live prices are loaded.
+    return (
+      <SiteShell>
+        <div className="section-shell py-32 text-center" role="status">
+          <p className="text-muted-foreground">{tr("Loading current prices…")}</p>
         </div>
       </SiteShell>
     );

@@ -89,7 +89,8 @@ export const createGuestOrder = createServerFn({ method: "POST" })
     const { onlineAmountCents } = await import("./deposit");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const totals = orderTotals(data.lines);
+    const { loadLiveCatalog } = await import("./pricing.server");
+    const totals = orderTotals(data.lines, await loadLiveCatalog(supabaseAdmin));
     if (!totals) throw new Error("One of the items is no longer available.");
     const { subtotalCents, deliveryCents, totalCents } = totals;
     const items = data.lines.map((line, index) => {

@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { packQuote, packs } from "@/data/packs";
 import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
+import { useLivePricing } from "@/hooks/use-pricing";
 
 export function PacksTeaser() {
   const { tr } = useI18n();
+  const live = useLivePricing();
   const featured = packs.slice(0, 4);
 
   return (
@@ -36,7 +38,8 @@ export function PacksTeaser() {
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {featured.map((pack, i) => {
-            const quote = packQuote(pack.lines);
+            const livePack = live.catalog?.getPack(pack.slug);
+            const quote = live.catalog && livePack ? packQuote(livePack.lines, live.catalog, pack.slug) : null;
             return (
               <Reveal key={pack.slug} delay={(i % 4) * 0.06}>
                 <Link
@@ -56,9 +59,9 @@ export function PacksTeaser() {
                     <h3 className="text-base font-semibold">{tr(pack.name)}</h3>
                     <p className="mt-1 text-xs text-muted-foreground">{tr(pack.audience)}</p>
                     <p className="mt-3 text-xs text-muted-foreground line-through">
-                      {mad(quote.normalPrice)}
+                      {quote ? mad(quote.normalPrice) : "\u00a0"}
                     </p>
-                    <p className="font-display text-lg font-extrabold">{mad(quote.packPrice)}</p>
+                    <p className="font-display text-lg font-extrabold">{quote ? mad(quote.packPrice) : "…"}</p>
                   </div>
                 </Link>
               </Reveal>

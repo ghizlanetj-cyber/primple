@@ -8,11 +8,16 @@ type StoredLine = { slug?: string; quantity?: number; selection?: Record<string,
 /** Server-verified total in centimes, re-priced from the catalog. */
 async function verifiedTotalCents(order: { items: unknown; total: unknown }): Promise<number> {
   const { orderTotals } = await import("@/data/pricing");
+  const { loadLiveCatalog, PRICE_CHANGED } = await import("./pricing.server");
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const lines = Array.isArray(order.items) ? (order.items as StoredLine[]) : [];
   const totals = orderTotals(
     lines.map((l) => ({ slug: String(l.slug), quantity: Number(l.quantity), selection: l.selection ?? {} })),
+    await loadLiveCatalog(supabaseAdmin),
   );
   if (!totals) throw new Error("This order can no longer be priced. Please contact Primple.");
+  // A changed price is never charged silently: the customer reviews and reorders.
+  if (Math.round(Number(order.total) * 100) !== totals.totalCents) throw new Error(PRICE_CHANGED);
   return totals.totalCents;
 }
 

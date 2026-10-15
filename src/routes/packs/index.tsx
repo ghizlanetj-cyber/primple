@@ -8,6 +8,7 @@ import { mad } from "@/lib/format";
 import { useCatalogAvailability } from "@/hooks/use-availability";
 import { isUnavailable } from "@/lib/catalog-availability";
 import { useI18n } from "@/i18n";
+import { useLivePricing } from "@/hooks/use-pricing";
 
 const title = "Packs d'impression pour votre activité | Primple";
 const description =
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/packs/")({
 
 function PacksPage() {
   const { tr } = useI18n();
+  const live = useLivePricing();
   const availability = useCatalogAvailability();
   return (
     <SiteShell>
@@ -49,7 +51,8 @@ function PacksPage() {
       <section className="section-shell pb-24">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {packs.map((pack, i) => {
-            const quote = packQuote(pack.lines);
+            const livePack = live.catalog?.getPack(pack.slug);
+            const quote = live.catalog && livePack ? packQuote(livePack.lines, live.catalog, pack.slug) : null;
             return (
               <Reveal key={pack.slug} delay={(i % 3) * 0.06}>
                 <Link
@@ -78,14 +81,14 @@ function PacksPage() {
                     <div className="mt-5 flex items-end justify-between border-t border-border pt-4">
                       <div>
                         <p className="text-xs text-muted-foreground line-through">
-                          {mad(quote.normalPrice)}
+                          {quote ? mad(quote.normalPrice) : "\u00a0"}
                         </p>
                         <p className="font-display text-lg font-extrabold">
-                          {mad(quote.packPrice)}
+                          {quote ? mad(quote.packPrice) : "…"}
                         </p>
                       </div>
                       <span className="rounded-full bg-success/15 px-3 py-1 text-xs font-semibold text-success">
-                        {tr("Save 20%")}
+                        {quote ? tr("Save {percent}%").replace("{percent}", String(quote.discountPercent)) : tr("Pack price")}
                       </span>
                     </div>
                     <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold group-hover:text-primary">

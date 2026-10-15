@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { I18nProvider, useI18n } from "@/i18n";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/sonner";
+import { PricingSync } from "@/hooks/use-pricing";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -131,6 +132,7 @@ function RootComponent() {
         <AuthProvider>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
+          <PricingSync />
           <Toaster position="top-center" />
         </AuthProvider>
       </I18nProvider>

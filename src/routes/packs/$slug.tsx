@@ -20,21 +20,35 @@ import { contact } from "@/config/contact";
 import { useCart } from "@/store/cart";
 import { useUnavailable } from "@/hooks/use-availability";
 import { useI18n } from "@/i18n";
+import { buildCatalog, type Catalog } from "@/data/catalog-config";
+import { useLivePricing } from "@/hooks/use-pricing";
+import { fetchPublicPricing } from "@/lib/pricing.functions";
+import type { Pack } from "@/data/packs";
 
 export const Route = createFileRoute("/packs/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const pack = getPack(params.slug);
     if (!pack) throw notFound();
-    return { pack };
+    // Live prices for page metadata only; omitted when pricing cannot be read.
+    let meta: { packPrice: number; normalPrice: number } | null = null;
+    try {
+      const catalog = buildCatalog(await fetchPublicPricing());
+      const live = catalog.getPack(params.slug);
+      if (live) meta = packQuote(live.lines, catalog, live.slug);
+    } catch {
+      meta = null;
+    }
+    return { pack, meta };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Pack introuvable — Primple" }, { name: "robots", content: "noindex" }] };
     }
-    const { pack } = loaderData;
-    const quote = packQuote(pack.lines);
-    const title = `${pack.name} — ${mad(quote.packPrice)} au lieu de ${mad(quote.normalPrice)} | Primple`;
-    const description = `${pack.description} Pack complet pour ${pack.audience.toLowerCase()}, 20 % moins cher que les articles commandés séparément.`;
+    const { pack, meta } = loaderData;
+    const title = meta
+      ? `${pack.name} — ${mad(meta.packPrice)} au lieu de ${mad(meta.normalPrice)} | Primple`
+      : `${pack.name} | Primple`;
+    const description = `${pack.description} Pack complet pour ${pack.audience.toLowerCase()}, moins cher que les articles commandés séparément.`;
     return {
       meta: [
         { title },
@@ -53,10 +67,31 @@ export const Route = createFileRoute("/packs/$slug")({
 });
 
 function PackPage() {
+  const { tr } = useI18n();
+  const { pack: sourcePack } = Route.useLoaderData();
+  const live = useLivePricing();
+  const pack = live.catalog?.getPack(sourcePack.slug);
+  if (!live.catalog || !pack) {
+    return (
+      <SiteShell>
+        <section className="section-shell py-24">
+          <h1 className="text-4xl md:text-5xl">{tr(sourcePack.name)}</h1>
+          <p role="status" className="mt-6 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
+            {live.status === "error"
+              ? tr("Prices are temporarily unavailable. Please try again in a moment.")
+              : tr("Loading current prices…")}
+          </p>
+        </section>
+      </SiteShell>
+    );
+  }
+  return <PackEditor key={live.catalog.key} pack={pack} catalog={live.catalog} />;
+}
+
+function PackEditor({ pack, catalog }: { pack: Pack; catalog: Catalog }) {
   const { tr, number } = useI18n();
   const navigate = useNavigate();
   const add = useCart((s) => s.add);
-  const { pack } = Route.useLoaderData();
 
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
     Object.fromEntries(pack.lines.map((l) => [l.ref, l.quantity])),
@@ -66,9 +101,9 @@ function PackPage() {
     () => pack.lines.map((line) => ({ ...line, quantity: quantities[line.ref] ?? line.quantity })),
     [pack, quantities],
   );
-  const quote = useMemo(() => packQuote(lines), [lines]);
-  const belowMinimum = lines.some((l) => l.quantity < packLineMinimum(pack.slug, l.ref));
-  const needsQuote = lines.some(packLineNeedsQuote);
+  const quote = useMemo(() => packQuote(lines, catalog, pack.slug), [lines, catalog, pack.slug]);
+  const belowMinimum = lines.some((l) => l.quantity < packLineMinimum(pack.slug, l.ref, catalog));
+  const needsQuote = lines.some((l) => packLineNeedsQuote(l, catalog));
   const unavailable = useUnavailable("pack", pack.slug);
   const quoteHref = `${contact.whatsapp}?text=${encodeURIComponent(
     `${tr("Request a quote")} — ${tr(pack.name)} · ${lines.map((l) => `${tr(l.label)} × ${l.quantity}`).join(" · ")}`,
@@ -157,14 +192,14 @@ function PackPage() {
                       setQuantities((q) => ({ ...q, [line.ref]: next }));
                     }}
                     onBlur={() => {
-                      const min = packLineMinimum(pack.slug, line.ref);
+                      const min = packLineMinimum(pack.slug, line.ref, catalog);
                       setQuantities((q) => ({ ...q, [line.ref]: Math.max(min, q[line.ref] ?? min) }));
                     }}
                     aria-describedby={`min-${line.ref}`}
                     className="h-9 w-24 rounded-full text-center"
                   />
                   <span id={`min-${line.ref}`} className="text-xs text-muted-foreground">
-                    {tr("Min.")} {number(packLineMinimum(pack.slug, line.ref))}
+                    {tr("Min.")} {number(packLineMinimum(pack.slug, line.ref, catalog))}
                   </span>
                 </label>
               </li>
@@ -177,7 +212,7 @@ function PackPage() {
           <p className="mt-2 text-sm text-muted-foreground line-through">{mad(quote.normalPrice)}</p>
           <p className="font-display text-4xl font-extrabold tracking-tight">{mad(quote.packPrice)}</p>
           <p className="mt-2 inline-flex rounded-full bg-success/15 px-3 py-1 text-sm font-semibold text-success">
-            {tr("Save 20%")} · {mad(quote.savings)}
+            {tr("Save {percent}%").replace("{percent}", number(quote.discountPercent))} · {mad(quote.savings)}
           </p>
           <p className="mt-4 text-sm text-muted-foreground">
             {tr("{count} items included, delivery charged once.").replace(
