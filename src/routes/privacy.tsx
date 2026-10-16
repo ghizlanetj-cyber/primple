@@ -56,7 +56,7 @@ function PrivacyPage() {
           },
           {
             title: "Cookies",
-            body: "Nous utilisons des cookies essentiels pour maintenir votre connexion et mémoriser votre panier et votre langue.",
+            body: "Nous utilisons des cookies essentiels pour maintenir votre connexion et mémoriser votre panier et votre langue. Avec votre accord, le Pixel Meta mesure les visites des pages publiques afin d’évaluer nos publicités sur Facebook et Instagram. Il peut transmettre à Meta l’adresse de la page visitée et des informations techniques sur votre navigateur et votre connexion. Ce suivi publicitaire est désactivé avant votre accord et exclut les espaces de compte, de paiement et d’administration. Vous pouvez accepter, refuser ou retirer votre accord à tout moment via « Choix des cookies ». Le refus ne bloque pas les fonctionnalités de Primple.",
           },
         ]}
       />
