@@ -16,7 +16,7 @@
 - Quantities have only a minimum; above a product's largest preset quantity (or bulkQuoteAt) lineQuote/parsePackLines return null and the UI offers a quote request — never extrapolate prices.
 - /admin access (moderators only get /admin/payments) goes through my_staff_role() and the capability matrix in admin-metrics.ts before the service client; team members live in team_members (operational only), roles never come from user_metadata. Keeps least privilege in one checked place.
 - Admin mutations go through audited, versioned SQL functions (admin_update_order_ops, admin_update_message, admin_record_balance, etc.); never write sidecar tables directly from TypeScript. Prevents lost updates and unaudited changes.
-- Catalog availability overrides live in catalog_availability and are enforced by the orders insert trigger and payment start; prices stay in src/data. Prevents ordering switched-off items.
+- Catalog availability overrides live in catalog_availability and are enforced by the orders insert trigger and payment start. Source price defaults stay in src/data; audited live overrides live in catalog_pricing. Prevents ordering switched-off items and keeps checkout on current prices.
 
 - Catalogue availability public reads use only kind/slug/available; notes and updated_by are private. Packs inherit canonical product availability through catalog_pack_products; keep its migration seed in sync with src/data/packs.ts.
 - Customer identity joins use exact normalized email keys, never LIKE patterns. Shared uncapped aggregates supply list/detail totals; history is paginated independently.
