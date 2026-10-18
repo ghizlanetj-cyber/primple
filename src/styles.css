@@ -125,6 +125,7 @@
   --sidebar-ring: oklch(0.74 0.13 288);
 
   --glass-background: rgba(80, 112, 122, 0.28);
+  --glass-light-background: color-mix(in srgb, var(--card) 78%, transparent);
   --glass-border: rgba(220, 240, 245, 0.16);
   --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 28px rgba(0, 0, 0, 0.12);
   --search-glass-background: rgba(43, 62, 69, 0.985);
@@ -145,6 +146,12 @@
   border-color: var(--search-glass-border);
   box-shadow: var(--search-glass-shadow);
   backdrop-filter: blur(12px) saturate(115%);
+}
+
+@utility primple-glass-light {
+  background-color: var(--glass-light-background);
+  backdrop-filter: blur(18px) saturate(125%);
+  text-shadow: none;
 }
 
 
