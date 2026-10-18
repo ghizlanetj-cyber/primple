@@ -5,6 +5,7 @@ import { LogOut, Menu, ShoppingBag } from "lucide-react";
 import { LanguageSelect } from "@/components/layout/LanguageSelect";
 import { HeaderSearch } from "@/components/layout/HeaderSearch";
 import originalLogo from "@/assets/primple-logo-12.png";
+import darkLogo from "@/assets/primple-logo-dark-purple.png.asset.json";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -37,28 +38,30 @@ export function Header() {
 
   return (
     <header className="fixed inset-x-0 top-2 z-50 lg:top-3">
-      <div dir="ltr" className="relative mx-auto flex w-[calc(100%-1.5rem)] max-w-[1390px] items-center gap-3 sm:w-[calc(100%-2.5rem)] lg:w-[calc(100%-4rem)]">
+      <div
+        dir="ltr"
+        className={cn("primple-glass-light relative mx-auto flex w-[calc(100%-1.5rem)] max-w-[1390px] items-center gap-2 rounded-full border border-border px-3 text-foreground transition-shadow sm:w-[calc(100%-2.5rem)] sm:px-5 lg:w-[calc(100%-4rem)]", scrolled && "shadow-lift")}
+      >
         <div className="flex h-14 shrink-0 items-center lg:h-[60px]">
           <Link to="/" className="inline-flex items-center" aria-label={tr("Primple home")}>
-            <img src={originalLogo} alt="Primple" className="h-5 w-auto lg:h-[25px]" />
+            <img src={darkLogo.url} alt="Primple" className="h-5 w-auto lg:h-[25px]" />
           </Link>
         </div>
-        <nav dir={lang === "ar" ? "rtl" : "ltr"} className="absolute left-1/2 z-10 hidden -translate-x-1/2 items-center gap-x-7 lg:gap-x-10 md:flex" aria-label={tr("Primary navigation")}>
+        <nav dir={lang === "ar" ? "rtl" : "ltr"} className="mx-auto hidden items-center gap-x-7 lg:flex xl:gap-x-10" aria-label={tr("Primary navigation")}>
           <NavLink to="/products">{t("nav.products")}</NavLink>
           <NavLink to="/packs">{t("nav.packs")}</NavLink>
           <NavLink to="/contact">{t("nav.contact")}</NavLink>
         </nav>
-      <div className="primple-glass ms-auto grid h-14 min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-full border px-3 transition-opacity duration-300 sm:px-4 lg:h-[60px] lg:px-5">
-        <div aria-hidden="true" />
+      <div className="ms-auto flex h-14 min-w-0 shrink-0 items-center lg:h-[60px]">
 
         <div dir={lang === "ar" ? "rtl" : "ltr"} className="flex shrink-0 items-center gap-0.5 sm:gap-1">
           <LanguageSelect variant="header" id="header-language" className="hidden lg:flex" />
-          <HeaderSearch />
+          <HeaderSearch tone="light" />
           <Button
             variant="ghost"
             size="icon"
             asChild
-            className="relative size-9 text-ink-foreground hover:text-ink-foreground"
+            className="relative size-9 text-foreground hover:text-foreground"
           >
             <Link to="/cart" aria-label={t("cta.cart")}>
               <ShoppingBag className="size-4" />
@@ -75,7 +78,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 asChild
-                className="hidden h-9 px-3 text-ink-foreground hover:text-ink-foreground md:inline-flex"
+                className="hidden h-9 px-3 text-foreground hover:text-foreground lg:inline-flex"
               >
                 <Link to="/dashboard">{t("nav.dashboard")}</Link>
               </Button>
@@ -84,7 +87,7 @@ export function Header() {
                 size="icon"
                 aria-label={tr("Log out")}
                 title={tr("Log out")}
-                className="hidden size-9 rounded-full text-ink-foreground md:inline-flex"
+                className="hidden size-9 rounded-full text-foreground lg:inline-flex"
                 onClick={async () => {
                   await signOut();
                   navigate({ to: "/" });
@@ -94,8 +97,8 @@ export function Header() {
               </Button>
             </>
           ) : !loading ? (
-            <div className="hidden items-center gap-1 md:flex">
-              <Button variant="ghost" asChild className="h-9 px-3 text-ink-foreground hover:text-ink-foreground">
+            <div className="hidden items-center gap-1 lg:flex">
+              <Button variant="ghost" asChild className="h-9 px-3 text-foreground hover:text-foreground">
                 <Link to="/login">{t("nav.login")}</Link>
               </Button>
             </div>
@@ -106,7 +109,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="min-h-11 min-w-11 text-ink-foreground md:hidden"
+                className="min-h-11 min-w-11 text-foreground lg:hidden"
                 aria-label={t("cta.menu")}
                 aria-expanded={mobileOpen}
               >
@@ -197,8 +200,8 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className="rounded-full py-1.5 text-[14px] font-medium text-white/85 transition-colors hover:text-white xl:text-[15px]"
-      activeProps={{ className: "text-white" }}
+      className="rounded-full px-2 py-2 text-[14px] font-medium text-foreground/80 transition-colors hover:text-primary xl:text-[15px]"
+      activeProps={{ className: "text-primary" }}
     >
       {children}
     </Link>

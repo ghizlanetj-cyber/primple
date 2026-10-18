@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/button";
 import { packQuote, packs } from "@/data/packs";
-import { mad } from "@/lib/format";
+import { madOffer } from "@/lib/format";
 import { useI18n } from "@/i18n";
 import { useLivePricing } from "@/hooks/use-pricing";
 
@@ -19,18 +19,18 @@ export function PacksTeaser() {
         <Reveal className="flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-2xl">
             <p className="eyebrow text-primary">{tr("New — Packs")}</p>
-            <h2 className="mt-3 text-3xl md:text-4xl">
-              {tr("Ready-made packs, 20% cheaper.")}
+            <h2 className="mt-3 text-3xl md:text-5xl">
+              {tr("Everything for your brand. One pack.")}
             </h2>
             <p className="mt-4 text-muted-foreground">
               {tr(
-                "Each pack bundles the pieces a business really needs and costs 20% less than ordering the same items one by one.",
+                "Cards, stickers, flyers… your business essentials, brought together. Fewer items to piece together, a consistent look and one simpler order.",
               )}
             </p>
           </div>
           <Button asChild variant="outline" className="rounded-full">
             <Link to="/packs">
-              {tr("See all packs")}
+              {tr("Find my pack")}
               <ArrowRight className="size-4 rtl:rotate-180" />
             </Link>
           </Button>
@@ -59,9 +59,9 @@ export function PacksTeaser() {
                     <h3 className="text-base font-semibold">{tr(pack.name)}</h3>
                     <p className="mt-1 text-xs text-muted-foreground">{tr(pack.audience)}</p>
                     <p className="mt-3 text-xs text-muted-foreground line-through">
-                      {quote ? mad(quote.normalPrice) : "\u00a0"}
+                      {quote ? madOffer(quote.normalPrice) : "\u00a0"}
                     </p>
-                    <p className="font-display text-lg font-extrabold">{quote ? mad(quote.packPrice) : "…"}</p>
+                    <p className="font-display text-lg font-extrabold">{quote ? madOffer(quote.packPrice) : "…"}</p>
                   </div>
                 </Link>
               </Reveal>

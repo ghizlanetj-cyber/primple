@@ -29,3 +29,7 @@
 - [x] Review fixes: ABA versioning, pricing error state, pack caps/min, unpriceable cart lines, pack dependency
 - [x] Delete 13 original artwork files after SHA256 check
 - [ ] primple.team connection (owner must connect domain + DNS)
+
+## Uploaded homepage patch (2026-10-18)
+- [ ] Apply the full uploaded patch with accurate current payment wording
+- [ ] Verify homepage, header/search, languages and product/pack price display without publishing

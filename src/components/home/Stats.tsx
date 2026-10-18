@@ -1,12 +1,12 @@
-import { CircleDollarSign, ListChecks, PackageCheck, SlidersHorizontal } from "lucide-react";
+import { Clock, PenTool, ListChecks, PackageCheck } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { useI18n } from "@/i18n";
 
 const benefits = [
-  { icon: CircleDollarSign, title: "Transparent prices", body: "See the product price and delivery fee before confirming." },
-  { icon: SlidersHorizontal, title: "Options explained", body: "Understand papers, formats and finishes while you choose." },
-  { icon: ListChecks, title: "Order tracking", body: "Follow artwork approval, production and delivery from your account." },
-  { icon: PackageCheck, title: "Delivery organized in Morocco", body: "A clear delivery window and one fixed 30 DH standard fee." },
+  { icon: Clock, title: "Online, whenever you want", body: "Place your order without waiting for a shop to open." },
+  { icon: PenTool, title: "Design help when you need it", body: "A file to adapt or an idea to develop? Our team can help." },
+  { icon: ListChecks, title: "Your order, easy to follow", body: "Find your order status in your account." },
+  { icon: PackageCheck, title: "Across Morocco", body: "Printed materials delivered to your home or your business." },
 ];
 
 export function Stats() {
@@ -16,8 +16,8 @@ export function Stats() {
       <div className="section-shell">
         <Reveal className="max-w-3xl">
           <p className="eyebrow text-primary">{tr("Why Primple")}</p>
-          <h2 className="mt-4 text-3xl md:text-5xl">{tr("Why brands choose Primple")}</h2>
-          <p className="mt-4 text-muted-foreground">{tr("Clear choices, visible costs and a process that stays easy to follow.")}</p>
+          <h2 className="mt-4 text-3xl md:text-5xl">{tr("Printing that fits your day")}</h2>
+          <p className="mt-4 text-muted-foreground">{tr("Your business has its own rhythm. Primple makes printing fit around it.")}</p>
         </Reveal>
         <div className="mt-10 grid border-y border-border sm:grid-cols-2 lg:grid-cols-4">
         {benefits.map(({ icon: Icon, title, body }, i) => (

@@ -1,20 +1,20 @@
 import { Link } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Gem, Leaf, Truck } from "lucide-react";
+import { ArrowRight, Clock, PenTool, Truck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 import heroStudioAsset from "@/assets/primple-studio-hero-wide.png.asset.json";
 
 const benefits = [
-  { icon: Gem, key: "hero.f1" as const },
+  { icon: Clock, key: "hero.f1" as const },
   { icon: Truck, key: "hero.f2" as const },
-  { icon: Leaf, key: "hero.f3" as const },
+  { icon: PenTool, key: "hero.f3" as const },
 ];
 
 export function Hero() {
   const reduce = useReducedMotion();
-  const { t } = useI18n();
+  const { t, tr } = useI18n();
 
   return (
     <section className="relative isolate flex min-h-[640px] flex-col overflow-hidden bg-ink text-ink-foreground lg:min-h-screen">
@@ -43,8 +43,7 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.05 }}
-            style={{ fontSize: "var(--hero-h1)" }}
-            className="mt-6 whitespace-pre-line [--hero-h1:clamp(2.625rem,11vw,3.5rem)] font-bold leading-[0.98] tracking-[-0.045em] text-ink-foreground drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)] lg:[--hero-h1:min(max(3.25rem,4.6vw),7.2vh,4.25rem)]"
+                        className="mt-6 whitespace-pre-line text-[2.625rem] sm:text-[3.5rem] font-bold leading-[0.98] tracking-normal text-ink-foreground  lg:text-[4.25rem]"
           >
             {t("hero.title")}
             {"\n"}
@@ -68,7 +67,7 @@ export function Hero() {
           >
             <Button asChild className="h-13 rounded-full px-8 text-base">
               <Link to="/products">
-                {t("cta.start")}
+                {tr("Explore products")}
                 <ArrowRight className="size-4 -rotate-45 rtl:rotate-180" />
               </Link>
             </Button>
@@ -77,7 +76,7 @@ export function Hero() {
               variant="outline"
               className="h-13 rounded-full border-white/35 bg-white/5 px-8 text-base text-ink-foreground hover:bg-white/12 hover:text-ink-foreground"
             >
-              <Link to="/contact">{t("cta.talk")}</Link>
+              <Link to="/packs">{tr("Find my pack")}</Link>
             </Button>
           </motion.div>
 
@@ -94,11 +93,11 @@ export function Hero() {
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-9 grid max-w-[520px] grid-cols-3 gap-x-7 text-[15px] leading-[1.35] text-ink-foreground/85 lg:gap-x-8"
+            className="mt-9 grid max-w-[520px] grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-x-7 text-[15px] leading-[1.35] text-ink-foreground/85 lg:gap-x-8"
           >
             {benefits.map(({ icon: Icon, key }) => (
-              <li key={key} className="flex flex-col items-start gap-3">
-                <Icon className="size-8 shrink-0 stroke-[1.25] text-ink-foreground" />
+              <li key={key} className="flex items-center gap-3 sm:flex-col sm:items-start">
+                <Icon className="size-6 shrink-0 stroke-[1.25] text-ink-foreground" />
                 {t(key)}
               </li>
             ))}

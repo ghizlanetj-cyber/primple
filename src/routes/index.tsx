@@ -11,14 +11,13 @@ import { PacksTeaser } from "@/components/home/PacksTeaser";
 import { DesignServiceCta } from "@/components/home/DesignServiceCta";
 
 import { PlatformBridge } from "@/components/home/PlatformBridge";
-import { Testimonials } from "@/components/home/Testimonials";
 import { FaqSection } from "@/components/shared/FaqSection";
 import { FinalCta } from "@/components/shared/FinalCta";
 import { useI18n } from "@/i18n";
 
-const title = "Impression professionnelle et personnalisée au Maroc | Primple";
+const title = "Imprime en ligne sans te déplacer | Primple Maroc";
 const description =
-  "Cartes de visite, flyers, brochures, étiquettes : configurez votre impression, voyez le prix et le délai avant de commander, et suivez la production jusqu'à la livraison.";
+  "Commande tes cartes de visite, menus, flyers et packs en ligne, quand tu veux. Aide au design et livraison partout au Maroc avec Primple.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -50,45 +49,36 @@ export const Route = createFileRoute("/")({
 
 const faqs = [
   {
-    q: "How do I order a print on Primple?",
-    a: "Choose your product, set the format, paper, finish and quantity, upload your file and confirm. The price, production time and delivery date are shown before payment.",
+    "q": "Can I order in the evening or at the weekend?",
+    "a": "Yes. Place your order online at any time. Production, delivery and our team's replies follow their working schedules."
   },
   {
-    q: "I don't know which paper or finish to choose. Can you help?",
-    a: "Each paper and finish is described where you select it, with its effect on price and production time. If you still hesitate, send us your project and we go through the options with you.",
+    "q": "Can you help if I don't have a design?",
+    "a": "Yes. Upload your print-ready file, or choose design help. The price is shown before you confirm. Logo creation and brand identity are not included."
   },
   {
-    q: "How do I know how much my print will cost?",
-    a: "The price updates as you configure your product, so you see the total for your exact options and quantity before ordering.",
+    "q": "Where do you deliver?",
+    "a": "We deliver across Morocco, to your home or your business. Delivery costs and the estimated timeframe are shown with your order."
   },
   {
-    q: "How do I prepare my file for printing?",
-    a: "Send a print-ready PDF with your artwork at final size. If your file needs adjusting, we tell you what to change before production starts.",
-  },
-  {
-    q: "Can I order a custom format or material?",
-    a: "Yes. Request a quote with your specifications and we come back with the options and the price for your project.",
-  },
-  {
-    q: "Can I follow my order?",
-    a: "Yes. From your account you follow artwork approval, production and delivery for each order.",
-  },
-  {
-    q: "Can I reorder the same print?",
-    a: "Yes. Reorder a previous job with the same configuration and file, and change the quantity if you need to.",
-  },
+    "q": "How can I pay?",
+    "a": "Pay in full by card, bank transfer or Cash Plus. For payment on delivery, pay a 50% advance by card, bank transfer or Cash Plus, then the remaining 50% in cash on delivery. Our team must confirm bank transfer and Cash Plus payments before production starts."
+  }
 ];
+
 
 function Home() {
   const { lang, tr } = useI18n();
 
   useEffect(() => {
     const localizedTitle =
-      lang === "en" ? "Professional and custom printing in Morocco | Primple" : title;
+      lang === "en" ? "Print online without the trips | Primple Morocco" : lang === "ar" ? "الطباعة أونلاين فالمغرب | Primple" : title;
     const localizedDescription =
       lang === "en"
-        ? "Business cards, flyers, brochures and labels: configure your print, see the price and lead time, and track production through delivery."
-        : description;
+        ? "Order business cards, menus, flyers and business packs online whenever you want. Design help and delivery across Morocco with Primple."
+        : lang === "ar"
+          ? "طلب كارت فيزيت، مينو، فلايرات وباكات أونلاين. مساعدة فالديزاين وتوصيل فالمغرب كامل مع Primple."
+          : description;
 
     document.title = localizedTitle;
     document
@@ -114,8 +104,7 @@ function Home() {
       <DesignServiceCta />
       <Stats />
       <PlatformBridge />
-      <Testimonials />
-      <FaqSection items={faqs.slice(0, 4)} title="Questions before printing" />
+      <FaqSection items={faqs} title="Questions before printing" />
       <FinalCta />
     </SiteShell>
   );

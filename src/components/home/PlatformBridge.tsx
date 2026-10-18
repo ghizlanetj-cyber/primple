@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Factory, LayoutDashboard, Plug, Store } from "lucide-react";
+import { ArrowRight, Clock, Focus, Truck, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 
 import { Reveal } from "@/components/motion/Reveal";
@@ -7,36 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
 const cards = [
-  {
-    icon: Store,
-    title: "A simpler process",
-    copy: "Configure, order and follow your print without chasing anyone by phone.",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Prices you can see",
-    copy: "The price, the production time and the delivery date appear before you order.",
-  },
-  {
-    icon: Plug,
-    title: "Guidance on your options",
-    copy: "Paper, finish, format: each option is explained where you choose it.",
-  },
-  {
-    icon: Factory,
-    title: "Printing that carries your brand",
-    copy: "Reorder the same setup so your materials stay consistent over time.",
-  },
-  {
-    icon: LayoutDashboard,
-    title: "Orders you can follow",
-    copy: "Artwork approval, production, delivery: every stage is visible from your account.",
-  },
-  {
-    icon: Store,
-    title: "Custom projects welcome",
-    copy: "Specific format or material? Send your project and we work out the options with you.",
-  },
+  { icon: Clock, title: "Order on your schedule.", copy: "Evenings, weekends or between appointments: place your order online whenever it suits you." },
+  { icon: Focus, title: "Stay focused on your business.", copy: "No more trips to place your print order. Spend that time on your customers and your ideas." },
+  { icon: Truck, title: "Your print, delivered to you.", copy: "We deliver your printed materials across Morocco, to your home or your business." },
+  { icon: ShieldCheck, title: "Quality that represents your brand.", copy: "Our team checks print quality and helps you when you need guidance." },
 ];
 
 export function PlatformBridge() {
@@ -51,16 +25,16 @@ export function PlatformBridge() {
         <Reveal className="max-w-3xl">
           <p className="eyebrow text-primary">{tr("Why Primple")}</p>
           <h2 className="mt-4 text-4xl md:text-5xl lg:text-6xl">
-            {tr("A print partner, not just a supplier.")}
+            {tr("Your business moves forward. Your printing does too.")}
           </h2>
           <p className="mt-6 text-lg text-ink-muted">
             {tr(
-              "Ideas, design, print, physical impact — the same workflow from first question to delivered box.",
+              "Less time managing your printing. More time bringing your ideas to life.",
             )}
           </p>
         </Reveal>
 
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-4 sm:grid-cols-2">
           {cards.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.08}>
               <motion.div
@@ -81,7 +55,7 @@ export function PlatformBridge() {
         <Reveal delay={0.2}>
           <Button asChild size="lg" className="mt-12 rounded-full px-7">
             <Link to="/products">
-              {tr("Get a price")}
+              {tr("Explore products")}
               <ArrowRight className="size-4 rtl:rotate-180" />
             </Link>
           </Button>

@@ -15,7 +15,7 @@ import {
   serializePackLines,
   type PackLine,
 } from "@/data/packs";
-import { mad } from "@/lib/format";
+import { madOffer } from "@/lib/format";
 import { contact } from "@/config/contact";
 import { useCart } from "@/store/cart";
 import { useUnavailable } from "@/hooks/use-availability";
@@ -46,7 +46,7 @@ export const Route = createFileRoute("/packs/$slug")({
     }
     const { pack, meta } = loaderData;
     const title = meta
-      ? `${pack.name} — ${mad(meta.packPrice)} au lieu de ${mad(meta.normalPrice)} | Primple`
+      ? `${pack.name} — ${madOffer(meta.packPrice)} au lieu de ${madOffer(meta.normalPrice)} | Primple`
       : `${pack.name} | Primple`;
     const description = `${pack.description} Pack complet pour ${pack.audience.toLowerCase()}, moins cher que les articles commandés séparément.`;
     return {
@@ -177,7 +177,7 @@ function PackEditor({ pack, catalog }: { pack: Pack; catalog: Catalog }) {
                 <div>
                   <p className="font-semibold">{tr(line.label)}</p>
                   <p className="text-xs text-muted-foreground">
-                    {tr("Sold separately")}: {mad(subtotal)}
+                    {tr("Sold separately")}: {madOffer(subtotal)}
                   </p>
                 </div>
                 <label className="flex items-center gap-2 text-sm" htmlFor={`qty-${line.ref}`}>
@@ -209,10 +209,10 @@ function PackEditor({ pack, catalog }: { pack: Pack; catalog: Catalog }) {
 
         <aside className="rounded-2xl border border-border bg-card p-6 shadow-lift lg:sticky lg:top-28">
           <p className="eyebrow text-muted-foreground">{tr("Pack price")}</p>
-          <p className="mt-2 text-sm text-muted-foreground line-through">{mad(quote.normalPrice)}</p>
-          <p className="font-display text-4xl font-extrabold tracking-tight">{mad(quote.packPrice)}</p>
+          <p className="mt-2 text-sm text-muted-foreground line-through">{madOffer(quote.normalPrice)}</p>
+          <p className="font-display text-4xl font-extrabold tracking-tight">{madOffer(quote.packPrice)}</p>
           <p className="mt-2 inline-flex rounded-full bg-success/15 px-3 py-1 text-sm font-semibold text-success">
-            {tr("Save {percent}%").replace("{percent}", number(quote.discountPercent))} · {mad(quote.savings)}
+            {tr("Save {percent}%").replace("{percent}", number(quote.discountPercent))} · {madOffer(quote.savings)}
           </p>
           <p className="mt-4 text-sm text-muted-foreground">
             {tr("{count} items included, delivery charged once.").replace(

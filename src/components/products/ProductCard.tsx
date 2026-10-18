@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 
 import { fromPriceBasis, type Product } from "@/data/products";
 import { productImageAlt, productImages } from "@/data/productImages";
-import { mad } from "@/lib/format";
+import { madOffer } from "@/lib/format";
 import { useUnavailable } from "@/hooks/use-availability";
 import { useI18n } from "@/i18n";
 import { useLivePricing } from "@/hooks/use-pricing";
@@ -57,7 +57,7 @@ export function ProductCard({ product }: { product: Product }) {
             </span>
           ) : (
             <span className="text-sm font-semibold">
-              {tr("From")} {mad(basis.amount)}
+              {tr("From")} {madOffer(basis.amount)}
               <span className="block text-xs font-normal text-muted-foreground">
                 {tr(
                   basis.quantity === 1
@@ -68,7 +68,7 @@ export function ProductCard({ product }: { product: Product }) {
             </span>
           )}
           <span className="inline-flex items-center gap-1 text-sm font-semibold text-foreground/80 transition-colors group-hover:text-primary">
-            {tr("Get a price")}
+            {tr("Explore products")}
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180" />
           </span>
         </div>

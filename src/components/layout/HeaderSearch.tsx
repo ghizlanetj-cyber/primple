@@ -66,7 +66,7 @@ function normalize(value: string) {
     .trim();
 }
 
-export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: boolean; onRequestClose?: () => void }) {
+export function HeaderSearch({ mobile = false, onRequestClose, tone = "dark" }: { mobile?: boolean; onRequestClose?: () => void; tone?: "dark" | "light" }) {
   const { tr } = useI18n();
   const prefersReducedMotion = useReducedMotion();
   const id = useId().replace(/:/g, "");
@@ -173,7 +173,8 @@ export function HeaderSearch({ mobile = false, onRequestClose }: { mobile?: bool
         variant="ghost"
         size="icon"
         className={cn(
-          "size-10 rounded-full text-ink-foreground hover:text-ink-foreground",
+          "size-10 rounded-full",
+          tone === "light" ? "text-foreground hover:text-primary" : "text-ink-foreground hover:text-ink-foreground",
           mobile && "me-9",
         )}
         aria-label={tr("Search Primple")}

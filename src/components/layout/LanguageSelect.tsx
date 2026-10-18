@@ -18,13 +18,12 @@ type Props = {
 export function LanguageSelect({ variant = "footer", id, className }: Props) {
   const { t, lang, setLang } = useI18n();
   const selectId = id ?? `language-select-${variant}`;
-  const dark = variant !== "mobile";
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <Languages
         aria-hidden
-        className={cn("size-4 shrink-0", dark ? "text-ink-muted" : "text-ink-muted")}
+        className={cn("size-4 shrink-0", variant === "header" ? "text-muted-foreground" : "text-ink-muted")}
       />
       <label
         htmlFor={selectId}
@@ -42,7 +41,7 @@ export function LanguageSelect({ variant = "footer", id, className }: Props) {
         onChange={(event) => setLang(event.target.value as Lang)}
         className={cn(
           "min-h-9 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-ink-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-          variant === "header" && "min-h-8 py-1",
+          variant === "header" && "min-h-8 border-border bg-card py-1 text-foreground",
         )}
       >
         {languages.map((l) => (
