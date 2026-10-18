@@ -5,23 +5,23 @@ import { useI18n } from "@/i18n";
 const steps = [
   {
     n: "01",
-    title: "Describe your project",
-    copy: "Tell us what you want to print. We show you the products that fit.",
+    title: "Choose your print",
+    copy: "Find the product or pack that fits your business.",
   },
   {
     n: "02",
-    title: "Choose your options",
-    copy: "Format, paper, finish, quantity — with the price updated as you go.",
+    title: "Make it yours",
+    copy: "Choose your format, finish and quantity. See your total before confirming.",
   },
   {
     n: "03",
-    title: "Validate your print",
-    copy: "Send your file and confirm. You know the price and the timeline before ordering.",
+    title: "Add your file or get design help",
+    copy: "Upload your artwork, or ask our team to help with the design.",
   },
   {
     n: "04",
-    title: "Receive your order",
-    copy: "Production starts, you follow each stage until delivery.",
+    title: "Receive your printed materials",
+    copy: "We handle printing and delivery. Follow your order from your account.",
   },
 ];
 
@@ -33,11 +33,11 @@ export function HowItWorks() {
         <Reveal className="max-w-2xl">
           <p className="eyebrow text-primary">{tr("Four steps to your print")}</p>
           <h2 className="display-xl mt-4 text-4xl md:text-6xl">
-            {tr("Printing shouldn't become a second project.")}
+            {tr("From your idea to your doorstep.")}
           </h2>
           <p className="mt-5 text-lg text-muted-foreground">
             {tr(
-              "Choosing the right material, understanding finishes, comparing options, preparing files, waiting for the result. Primple makes each step simple.",
+              "One online order. Your printing taken care of, without the trips.",
             )}
           </p>
         </Reveal>

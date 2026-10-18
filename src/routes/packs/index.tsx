@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Reveal } from "@/components/motion/Reveal";
 import { packQuote, packs } from "@/data/packs";
-import { mad } from "@/lib/format";
+import { madOffer } from "@/lib/format";
 import { useCatalogAvailability } from "@/hooks/use-availability";
 import { isUnavailable } from "@/lib/catalog-availability";
 import { useI18n } from "@/i18n";
@@ -12,7 +12,7 @@ import { useLivePricing } from "@/hooks/use-pricing";
 
 const title = "Packs d'impression pour votre activité | Primple";
 const description =
-  "Des packs prêts à commander pour les nouvelles entreprises, salons, restaurants, e-commerce et chantiers : 20 % moins cher que les articles achetés séparément.";
+  "Les essentiels de ton activité réunis dans un pack : cartes, flyers, stickers et plus, pour une image cohérente et une commande plus simple.";
 
 export const Route = createFileRoute("/packs/")({
   head: () => ({
@@ -43,7 +43,7 @@ function PacksPage() {
         </h1>
         <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
           {tr(
-            "Each pack bundles the pieces a business really needs and costs 20% less than ordering the same items one by one.",
+            "Cards, stickers, flyers… your business essentials, brought together. Fewer items to piece together, a consistent look and one simpler order.",
           )}
         </p>
       </section>
@@ -81,10 +81,10 @@ function PacksPage() {
                     <div className="mt-5 flex items-end justify-between border-t border-border pt-4">
                       <div>
                         <p className="text-xs text-muted-foreground line-through">
-                          {quote ? mad(quote.normalPrice) : "\u00a0"}
+                          {quote ? madOffer(quote.normalPrice) : "\u00a0"}
                         </p>
                         <p className="font-display text-lg font-extrabold">
-                          {quote ? mad(quote.packPrice) : "…"}
+                          {quote ? madOffer(quote.packPrice) : "…"}
                         </p>
                       </div>
                       <span className="rounded-full bg-success/15 px-3 py-1 text-xs font-semibold text-success">

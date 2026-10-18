@@ -41,3 +41,12 @@ export function shortDate(date: Date) {
 export function madUnit(value: number) {
   return `${amount(value)} MAD`;
 }
+
+/** Offer cards omit unnecessary decimals without changing the payable amount. */
+export function madOffer(value: number) {
+  const settled = roundMoney(value);
+  return `${settled.toLocaleString(moneyLocale, {
+    minimumFractionDigits: Number.isInteger(settled) ? 0 : 2,
+    maximumFractionDigits: 2,
+  })} MAD`;
+}

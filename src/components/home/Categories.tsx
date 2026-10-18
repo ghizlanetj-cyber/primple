@@ -15,11 +15,11 @@ export function Categories() {
         <div className="max-w-2xl">
           <p className="eyebrow text-primary">{tr("Products")}</p>
           <h2 className="display-xl mt-4 text-4xl md:text-6xl">
-            {tr("Know your price before you print.")}
+            {tr("Print that brings your ideas to life.")}
           </h2>
           <p className="mt-5 text-lg text-muted-foreground">
             {tr(
-              "Configure a product, see the price, the production time and the delivery date on the same screen.",
+              "Get your name out there, welcome your customers or prepare your orders. Find the print materials for your business.",
             )}
           </p>
         </div>

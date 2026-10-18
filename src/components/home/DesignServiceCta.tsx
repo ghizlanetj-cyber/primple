@@ -3,8 +3,6 @@ import { ArrowRight, PenTool } from "lucide-react";
 
 import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/button";
-import { DESIGN_HOURLY_RATE } from "@/data/design-service";
-import { mad } from "@/lib/format";
 import { useI18n } from "@/i18n";
 
 export function DesignServiceCta() {
@@ -17,18 +15,18 @@ export function DesignServiceCta() {
             <PenTool className="size-5 text-primary" />
           </span>
           <h2 className="mt-4 text-2xl md:text-3xl">
-            {tr("No print-ready file? Book a designer for")} {mad(DESIGN_HOURLY_RATE)}{" "}
-            {tr("an hour.")}
+            {tr("No design? Let’s give it shape.")}
           </h2>
           <p className="mt-3 text-muted-foreground">
             {tr(
-              "Layout, format adaptation and print file preparation. Logo creation and brand identity are not included.",
+              "Tell us your idea. We help create a visual that fits your print material and is ready to print.",
             )}
           </p>
+          <p className="mt-3 text-xs text-muted-foreground">{tr("Design is quoted before you confirm. Logos and brand identity are not included.")}</p>
         </div>
         <Button asChild size="lg" className="shrink-0 rounded-full">
           <Link to="/design-services">
-            {tr("Book design time")}
+            {tr("I need a design")}
             <ArrowRight className="size-4 rtl:rotate-180" />
           </Link>
         </Button>
