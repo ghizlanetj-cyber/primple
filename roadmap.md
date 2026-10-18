@@ -31,5 +31,5 @@
 - [ ] primple.team connection (owner must connect domain + DNS)
 
 ## Uploaded homepage patch (2026-10-18)
-- [ ] Apply the full uploaded patch with accurate current payment wording
-- [ ] Verify homepage, header/search, languages and product/pack price display without publishing
+- [x] Apply the full uploaded patch with accurate current payment wording
+- [x] Verify homepage, header/search, languages and product/pack price display without publishing
