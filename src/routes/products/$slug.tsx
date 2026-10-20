@@ -44,11 +44,11 @@ export const Route = createFileRoute("/products/$slug")({
     const { product, fromAmount } = loaderData;
     const name = productPhrases[product.name]?.fr ?? phrases[product.name]?.fr ?? product.name;
     const title = product.quoteOnly
-      ? `Impression ${name.toLowerCase()} sur mesure — sur devis | Primple`
+      ? `${name} Maroc : impression sur devis | Primple`
       : fromAmount === null
-        ? `Impression ${name.toLowerCase()} sur mesure | Primple`
-        : `Impression ${name.toLowerCase()} sur mesure — à partir de ${mad(fromAmount)} | Primple`;
-    const description = `${name} sur mesure : formats, papiers, finitions et quantités au choix. Prix et délai affichés avant la commande, production suivie jusqu'à la livraison.`;
+        ? `${name} Maroc : impression en ligne | Primple`
+        : `${name} Maroc : impression dès ${mad(fromAmount)} | Primple`;
+    const description = `Impression ${name.toLowerCase()} au Maroc : formats, papiers, finitions et quantités au choix. Prix affiché avant la commande, production à Casablanca et livraison partout au Maroc (Rabat, Marrakech, Tanger, Agadir).`;
     return {
       meta: [
         { title },
