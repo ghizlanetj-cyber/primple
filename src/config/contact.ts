@@ -1,8 +1,8 @@
 export const contact = {
-  email: "hello@primple.ma",
+  email: "contact@primple.com",
   phone: "+212 708 877 006",
   address: "Casablanca, Maroc",
-  mailto: "mailto:hello@primple.ma",
+  mailto: "mailto:contact@primple.com",
   tel: "tel:+212708877006",
   whatsapp: "https://wa.me/212708877006",
 } as const;
