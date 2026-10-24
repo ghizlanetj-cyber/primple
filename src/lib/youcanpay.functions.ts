@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
+import { paymentRoute, CARD_START_FAILED } from "./payment-initiation";
 
 export interface StartPaymentInput {
   lines: Array<{ variantId: string; quantity: number }>;
@@ -76,7 +77,8 @@ export const getYouCanPayConfig = createServerFn({ method: "GET" }).handler(asyn
 export const startShopPayment = createServerFn({ method: "POST" })
   .inputValidator(validateStartPayment)
   .handler(async ({ data }) => {
-    const { priceLines, shopReference, tokenizePayment, optionalUserId } = await import("./youcanpay.server");
+    const { priceLines, shopReference, tokenizePayment, optionalUserId, assertGatewayConfigured } = await import("./youcanpay.server");
+    assertGatewayConfigured();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const priced = await priceLines(data.lines);
@@ -188,7 +190,8 @@ export const startPrintPayment = createServerFn({ method: "POST" })
     return claimToken ? { orderId, claimToken } : { orderId };
   })
   .handler(async ({ data }) => {
-    const { tokenizePayment, optionalUserId } = await import("./youcanpay.server");
+    const { tokenizePayment, optionalUserId, assertGatewayConfigured, logPaymentEvent } = await import("./youcanpay.server");
+    assertGatewayConfigured();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const request = getRequest();
@@ -212,8 +215,7 @@ export const startPrintPayment = createServerFn({ method: "POST" })
     if (!allowed) throw new Error("Unknown order.");
     if (order.payment_status === "paid") throw new Error("This order is already paid.");
     // Bank-transfer orders are confirmed by staff, never charged by card.
-    const { isManualMethod } = await import("./deposit");
-    if (isManualMethod(order.payment_method)) throw new Error("This order is paid manually (transfer or Cash Plus).");
+    if (paymentRoute(order.payment_method) !== "card") throw new Error("This order is paid manually (transfer or Cash Plus).");
 
     // Never trust the stored total: re-price every line from the catalog.
     const totalCents = await recomputeOrderCents(order);
@@ -232,7 +234,7 @@ export const startPrintPayment = createServerFn({ method: "POST" })
       ...(order.email ? { customerEmail: order.email } : {}),
     });
 
-    await supabaseAdmin
+    const { data: updated, error: updateError } = await supabaseAdmin
       .from("orders")
       .update({
         youcanpay_token_id: tokenId,
@@ -241,7 +243,14 @@ export const startPrintPayment = createServerFn({ method: "POST" })
         deposit_amount: amountCents / 100,
         balance_amount: (totalCents - amountCents) / 100,
       })
-      .eq("id", order.id);
+      .eq("id", order.id)
+      .eq("payment_status", order.payment_status)
+      .select("id")
+      .maybeSingle();
+    if (updateError || !updated) {
+      await logPaymentEvent({ reference: order.reference, event: "token_attach", ok: false, detail: "order_update_failed" });
+      throw new Error(CARD_START_FAILED);
+    }
 
     return { reference: order.reference, token: tokenId, amountCents, currency: "MAD" };
   });
