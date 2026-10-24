@@ -33,3 +33,8 @@
 ## Uploaded homepage patch (2026-10-18)
 - [x] Apply the full uploaded patch with accurate current payment wording
 - [x] Verify homepage, header/search, languages and product/pack price display without publishing
+
+## Payment initiation audit (2026-10-24)
+- [ ] Trace read-only diagnostics and safe gateway configuration
+- [ ] Fix explicit dispatch, checked manual updates and safe initiation errors
+- [ ] Run focused regressions and inspect final diff without publishing or production writes
