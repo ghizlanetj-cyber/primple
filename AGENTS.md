@@ -28,3 +28,4 @@
 - Host routing lives in src/lib/host-routing.ts (applied in src/server.ts): primple.team serves only /admin, sign-in, API and assets with noindex; hostnames never grant access.
 - Meta Pixel 2086841301952485 is owned by MarketingConsent and meta-pixel.ts. Load it only after explicit advertising consent on allowlisted primple.ma public pages; never add an unconditional head script or noscript beacon. Keep admin, account, payment, team and preview hosts excluded. Only PageView is configured; no customer data or purchase events are sent by this integration.
 - Offer cards use madOffer for compact decimal display; checkout and invoice amounts retain mad so formatting never changes payable centimes.
+- Payment initiation uses payment-initiation.ts for explicit manual/card dispatch and safe errors; manual conditional updates must return a persisted row before success, so failed writes cannot clear the cart or claim confirmation.
