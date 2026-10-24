@@ -6,6 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
 import { pairEnvironment } from "./youcanpay-env";
+import { CARD_UNAVAILABLE, CARD_START_FAILED } from "./payment-initiation";
 
 const SHOPIFY_API_VERSION = "2025-07";
 const SHOPIFY_STORE_PERMANENT_DOMAIN = "primple-3rpv2-bk0jbkjy.myshopify.com";
@@ -60,6 +61,10 @@ export function isSandbox(): boolean {
 
 function tokenizeUrl(): string {
   return isSandbox() ? "https://youcanpay.com/sandbox/api/tokenize" : "https://youcanpay.com/api/tokenize";
+}
+
+export function assertGatewayConfigured(): void {
+  try { isSandbox(); } catch { throw new Error(CARD_UNAVAILABLE); }
 }
 
 /** Prices are always re-read from Shopify; the browser never decides the amount. */
@@ -139,8 +144,8 @@ export async function logPaymentEvent(entry: {
       http_status: entry.httpStatus ?? null,
       detail: entry.detail ? entry.detail.slice(0, 500) : null,
     });
-  } catch (error) {
-    console.error("[YouCanPay] diagnostics log failed", error);
+  } catch {
+    console.error("[YouCanPay] diagnostics log failed");
   }
 }
 
@@ -152,6 +157,7 @@ export async function tokenizePayment(input: {
   errorUrl: string;
   customerEmail?: string;
 }): Promise<{ tokenId: string; transactionId: string | null }> {
+  assertGatewayConfigured();
   const body = new FormData();
   body.append("pri_key", privateKey());
   body.append("order_id", input.reference);
@@ -163,35 +169,40 @@ export async function tokenizePayment(input: {
   body.append("metadata[reference]", input.reference);
   if (input.customerEmail) body.append("customer[email]", input.customerEmail);
 
-  const response = await fetch(tokenizeUrl(), { method: "POST", headers: { Accept: "application/json" }, body });
+  let response: Response;
+  try {
+    response = await fetch(tokenizeUrl(), { method: "POST", headers: { Accept: "application/json" }, body, signal: AbortSignal.timeout(15000) });
+  } catch {
+    console.error("[YouCanPay] token_create network_or_timeout");
+    await logPaymentEvent({ reference: input.reference, event: "token_create", ok: false, detail: "network_or_timeout" });
+    throw new Error(CARD_START_FAILED);
+  }
   const payload = (await response.json().catch(() => null)) as
     | { token?: string | { id?: string }; transaction_id?: string; message?: string }
     | null;
 
-  if (!response.ok || !payload?.token) {
-    console.error("[YouCanPay] tokenize failed", response.status, payload?.message ?? "");
+  const tokenId = typeof payload?.token === "string" ? payload.token : payload?.token?.id;
+  if (!response.ok || typeof tokenId !== "string" || !tokenId.trim()) {
+    console.error("[YouCanPay] token_create failed", response.status);
     await logPaymentEvent({
       reference: input.reference,
       event: "token_create",
       ok: false,
       httpStatus: response.status,
-      detail: payload?.message ?? "No token in response",
+      detail: response.ok ? "invalid_token_response" : "gateway_http_error",
     });
-    throw new Error("The payment could not be started. Please try again.");
+    throw new Error(CARD_START_FAILED);
   }
-
-  const tokenId = typeof payload.token === "string" ? payload.token : (payload.token.id ?? "");
-  if (!tokenId) throw new Error("The payment could not be started. Please try again.");
 
   await logPaymentEvent({
     reference: input.reference,
     event: "token_create",
     ok: true,
     tokenId,
-    transactionId: payload.transaction_id ?? null,
+    transactionId: payload?.transaction_id ?? null,
     httpStatus: response.status,
   });
-  return { tokenId, transactionId: payload.transaction_id ?? null };
+  return { tokenId, transactionId: payload?.transaction_id ?? null };
 }
 
 /** HMAC-SHA256 of the raw body keyed with the private key, constant-time compared. */

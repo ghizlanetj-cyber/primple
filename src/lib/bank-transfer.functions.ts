@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { persistManualRequest } from "./payment-initiation";
 
 type StoredLine = { slug?: string; quantity?: number; selection?: Record<string, string> };
 
@@ -43,12 +44,12 @@ export const requestBankTransfer = createServerFn({ method: "POST" })
     const { isManualMethod, AWAITING_TRANSFER, onlineAmountCents } = await import("./deposit");
     const userId = await optionalUserId(getRequest()?.headers.get("authorization") ?? null);
 
-    const { data: order } = await supabaseAdmin
+    const { data: order, error: readError } = await supabaseAdmin
       .from("orders")
       .select("id, user_id, claim_token, reference, items, total, payment_method, payment_status")
       .eq("id", data.orderId)
       .maybeSingle();
-    if (!order || !canPayOrder(order, { userId, claimToken: data.claimToken || null })) {
+    if (readError || !order || !canPayOrder(order, { userId, claimToken: data.claimToken || null })) {
       throw new Error("Unknown order.");
     }
     if (!isManualMethod(order.payment_method)) throw new Error("Unknown order.");
@@ -62,7 +63,7 @@ export const requestBankTransfer = createServerFn({ method: "POST" })
     if (!Number.isFinite(totalCents) || totalCents <= 0) throw new Error("The order total is invalid.");
     const advanceCents = onlineAmountCents(totalCents, order.payment_method);
 
-    await supabaseAdmin
+    const result = await persistManualRequest(() => supabaseAdmin
       .from("orders")
       .update({
         total: totalCents / 100,
@@ -71,10 +72,12 @@ export const requestBankTransfer = createServerFn({ method: "POST" })
         payment_status: AWAITING_TRANSFER,
       })
       .eq("id", order.id)
-      .in("payment_status", ["unpaid", AWAITING_TRANSFER]);
+      .in("payment_status", ["unpaid", AWAITING_TRANSFER])
+      .select("id")
+      .maybeSingle(), (entry) => logPaymentEvent({ reference: order.reference, ...entry }));
 
-    await logPaymentEvent({ reference: order.reference, event: "bank_transfer_requested", ok: true });
-    return { reference: order.reference, total: totalCents / 100, advance: advanceCents / 100, balance: (totalCents - advanceCents) / 100 };
+    if (!result.ok) return result;
+    return { ok: true as const, reference: order.reference, total: totalCents / 100, advance: advanceCents / 100, balance: (totalCents - advanceCents) / 100 };
   });
 
 /** Staff-only list of bank-transfer orders waiting for verification. */

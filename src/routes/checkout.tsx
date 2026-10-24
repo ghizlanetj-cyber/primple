@@ -16,27 +16,12 @@ import { invoiceLabels } from "@/lib/invoice";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
 import { loadYouCanPay, type YouCanPayElement, type YouCanPayLocale } from "@/lib/youcanpay";
 import {
-  BANK_ADVANCE_METHOD,
-  BANK_FULL_METHOD,
-  CARD_METHOD,
-  CASHPLUS_ADVANCE_METHOD,
-  CASHPLUS_FULL_METHOD,
-  DEPOSIT_METHOD,
   isCashPlusMethod,
   isHalfMethod,
   isManualMethod,
   splitAmounts,
-  type PrintPaymentMethod,
 } from "@/lib/deposit";
-
-type PayChoice = "card" | "bank" | "cashplus" | "cod";
-type AdvanceChoice = "card" | "bank" | "cashplus";
-function resolveMethod(choice: PayChoice, advance: AdvanceChoice): PrintPaymentMethod {
-  if (choice === "card") return CARD_METHOD;
-  if (choice === "bank") return BANK_FULL_METHOD;
-  if (choice === "cashplus") return CASHPLUS_FULL_METHOD;
-  return advance === "card" ? DEPOSIT_METHOD : advance === "bank" ? BANK_ADVANCE_METHOD : CASHPLUS_ADVANCE_METHOD;
-}
+import { preparePayment, resolveMethod, initiationError, CARD_START_FAILED, MANUAL_START_FAILED, ORDER_START_FAILED, type PayChoice, type AdvanceChoice } from "@/lib/payment-initiation";
 import { requestBankTransfer } from "@/lib/bank-transfer.functions";
 import { contact } from "@/config/contact";
 
@@ -185,9 +170,9 @@ function CheckoutPage() {
     setPlacing(true);
     setError(null);
     const snapshotItems = items;
+    let failureMessage = ORDER_START_FAILED;
     try {
-      const config = isBank ? null : await loadConfig({});
-      if (config && !config.configured) throw new Error(tr("Card payment is not available right now."));
+      const dispatch = await preparePayment(method, () => loadConfig({}));
 
       let order: OrderRecord;
       let claimToken: string | undefined;
@@ -248,11 +233,13 @@ function CheckoutPage() {
         }
       }
 
-      if (isBank || !config) {
+      if (dispatch.route === "manual") {
+        failureMessage = MANUAL_START_FAILED;
         // No automatic payment: the order waits until staff verify the transfer.
         const transfer = await requestTransfer({
           data: claimToken ? { orderId: order.id, claimToken } : { orderId: order.id },
         });
+        if (!transfer.ok) throw new Error(transfer.error);
         setDueNow(transfer.advance);
         setPlacedOrder({ ...order, total: transfer.total });
         clear();
@@ -261,12 +248,15 @@ function CheckoutPage() {
         return;
       }
 
+      failureMessage = CARD_START_FAILED;
+      // Load the SDK before creating a gateway token. SDK errors stay customer-safe.
+      const yp = await loadYouCanPay();
       const payment = await startPayment({
         data: claimToken ? { orderId: order.id, claimToken } : { orderId: order.id },
       });
       setDueNow(payment.amountCents / 100);
 
-      const yp = await loadYouCanPay();
+      const config = dispatch.config;
       const locale: YouCanPayLocale = lang === "ar" ? "ar" : lang === "en" ? "en" : "fr";
       const element = yp(config.publicKey, { locale, sandbox: config.sandbox }).elements({
         token: payment.token,
@@ -276,7 +266,7 @@ function CheckoutPage() {
       await element.mount();
       setCardReady(true);
     } catch (caught) {
-      setError(caught instanceof Error ? tr(caught.message) : tr("The payment could not be started."));
+      setError(tr(initiationError(caught, failureMessage)));
     } finally {
       inFlight.current = false;
       setPlacing(false);

@@ -1,6 +1,18 @@
 export type TranslationPair = { fr: string; ar: string };
 
 export const phrases: Record<string, TranslationPair> = {
+  "Card payment could not be opened. Please try again or contact Primple.": {
+    fr: "Le paiement par carte n'a pas pu s'ouvrir. Réessayez ou contactez Primple.",
+    ar: "تعذر فتح الدفع بالبطاقة. حاول مرة أخرى أو تواصل مع Primple.",
+  },
+  "We could not register your payment instructions. Your order remains unpaid. Please try again or contact Primple.": {
+    fr: "Nous n'avons pas pu enregistrer votre demande de paiement. Votre commande reste impayée. Réessayez ou contactez Primple.",
+    ar: "تعذر تسجيل طلب الدفع. يبقى طلبك غير مدفوع. حاول مرة أخرى أو تواصل مع Primple.",
+  },
+  "Your order could not be prepared. Please review your cart or contact Primple.": {
+    fr: "Votre commande n'a pas pu être préparée. Vérifiez votre panier ou contactez Primple.",
+    ar: "تعذر تجهيز طلبك. راجع سلتك أو تواصل مع Primple.",
+  },
   "Quote required: request a quote or change this item": {
     fr: "Devis requis : demandez un devis ou modifiez cet article",
     ar: "يتطلب عرض سعر: اطلب عرض سعر أو عدّل هذا المنتج",
