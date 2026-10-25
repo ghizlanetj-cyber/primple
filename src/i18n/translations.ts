@@ -13,6 +13,10 @@ export const phrases: Record<string, TranslationPair> = {
     fr: "Votre commande n'a pas pu être préparée. Vérifiez votre panier ou contactez Primple.",
     ar: "تعذر تجهيز طلبك. راجع سلتك أو تواصل مع Primple.",
   },
+  "Your session has expired. Please sign in again to place your order.": {
+    fr: "Votre session a expiré. Reconnectez-vous pour passer votre commande.",
+    ar: "انتهت جلستك. سجّل الدخول مجددًا لإتمام طلبك.",
+  },
   "Quote required: request a quote or change this item": {
     fr: "Devis requis : demandez un devis ou modifiez cet article",
     ar: "يتطلب عرض سعر: اطلب عرض سعر أو عدّل هذا المنتج",

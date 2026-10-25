@@ -50,3 +50,19 @@ describe("manual persistence", () => {
     expect(log).toHaveBeenCalledWith({ event: "bank_transfer_requested", ok: true });
   });
 });
+import { classifyOrderInsertError, orderInsertMessage, ORDER_SIGNED_OUT as SIGNED_OUT, ITEM_UNAVAILABLE as UNAVAILABLE, ORDER_START_FAILED as START_FAILED } from "./payment-initiation";
+describe("order insert failures", () => {
+  it("retries only duplicate references", () => {
+    expect(classifyOrderInsertError({ code: "23505", message: 'duplicate key value violates unique constraint "orders_reference_key"' })).toBe("duplicate_reference");
+  });
+  it("maps unavailable catalogue items", () => {
+    expect(orderInsertMessage(classifyOrderInsertError({ code: "P0001", message: "catalog_unavailable" }))).toBe(UNAVAILABLE);
+  });
+  it("maps expired sessions", () => {
+    expect(orderInsertMessage(classifyOrderInsertError({ code: "PGRST301", message: "JWT expired" }))).toBe(SIGNED_OUT);
+  });
+  it("keeps permission and unknown errors generic", () => {
+    expect(orderInsertMessage(classifyOrderInsertError({ code: "42501", message: "permission denied for function catalog_unavailable" }))).toBe(START_FAILED);
+    expect(orderInsertMessage(classifyOrderInsertError(null))).toBe(START_FAILED);
+  });
+});
