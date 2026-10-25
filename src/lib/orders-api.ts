@@ -165,7 +165,16 @@ export async function createOrder(input: {
     expected_at: estimatedArrival(new Date(), priced.productionDays, priced.deliveryMax),
   };
 
-  const { data, error } = await supabase.from("orders").insert(payload).select("*").single();
-  if (error) throw error;
-  return toRecord(data as Record<string, unknown>);
+  // A clashing random reference is retried with a fresh one; other failures map to safe messages.
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const ref = attempt === 0 ? reference : `PRM-${Math.floor(10000 + Math.random() * 89999)}`;
+    const { data, error } = await supabase.from("orders").insert({ ...payload, reference: ref }).select("*").single();
+    if (!error && data) return toRecord(data as Record<string, unknown>);
+    const kind = classifyOrderInsertError(error);
+    if (kind === "duplicate_reference") continue;
+    console.warn("order_insert_failed", { kind, code: (error as { code?: string } | null)?.code ?? null });
+    throw new Error(orderInsertMessage(kind));
+  }
+  console.warn("order_insert_failed", { kind: "duplicate_reference" });
+  throw new Error(orderInsertMessage("unknown"));
 }

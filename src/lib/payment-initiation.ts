@@ -37,7 +37,7 @@ export async function preparePayment(method: string, loadConfig: () => Promise<G
 export function initiationError(caught: unknown, fallback: string): string {
   const message = caught instanceof Error ? caught.message
     : caught && typeof caught === "object" && "message" in caught && typeof caught.message === "string" ? caught.message : "";
-  const safe = [CARD_UNAVAILABLE, CARD_START_FAILED, MANUAL_START_FAILED,
+  const safe = [CARD_UNAVAILABLE, CARD_START_FAILED, MANUAL_START_FAILED, ORDER_SIGNED_OUT,
     "Unknown order.", "This order is already paid.",
     "This order can no longer be priced. Please contact Primple.",
     "One of the items is temporarily unavailable. Please contact Primple.",
@@ -62,4 +62,24 @@ export async function persistManualRequest(
   }
   await log({ event: "bank_transfer_requested", ok: true });
   return { ok: true as const };
+}
+export type OrderInsertFailure = "duplicate_reference" | "catalog_unavailable" | "not_signed_in" | "permission" | "unknown";
+export const ORDER_SIGNED_OUT = "Your session has expired. Please sign in again to place your order.";
+export const ITEM_UNAVAILABLE = "One of the items is temporarily unavailable. Please contact Primple.";
+
+/** Classifies a database insert error by code/category only; messages never reach logs or customers. */
+export function classifyOrderInsertError(error: unknown): OrderInsertFailure {
+  const e = (error ?? {}) as { code?: string; message?: string };
+  const msg = typeof e.message === "string" ? e.message : "";
+  if (e.code === "23505" && msg.includes("reference")) return "duplicate_reference";
+  if (msg.includes("catalog_unavailable")) return "catalog_unavailable";
+  if (e.code === "PGRST301" || msg.includes("JWT")) return "not_signed_in";
+  if (e.code === "42501") return "permission";
+  return "unknown";
+}
+
+export function orderInsertMessage(kind: OrderInsertFailure): string {
+  if (kind === "catalog_unavailable") return ITEM_UNAVAILABLE;
+  if (kind === "not_signed_in") return ORDER_SIGNED_OUT;
+  return ORDER_START_FAILED;
 }
