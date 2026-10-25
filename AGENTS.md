@@ -29,3 +29,4 @@
 - Meta Pixel 2086841301952485 is owned by MarketingConsent and meta-pixel.ts. Load it only after explicit advertising consent on allowlisted primple.ma public pages; never add an unconditional head script or noscript beacon. Keep admin, account, payment, team and preview hosts excluded. Only PageView is configured; no customer data or purchase events are sent by this integration.
 - Offer cards use madOffer for compact decimal display; checkout and invoice amounts retain mad so formatting never changes payable centimes.
 - Payment initiation uses payment-initiation.ts for explicit manual/card dispatch and safe errors; manual conditional updates must return a persisted row before success, so failed writes cannot clear the cart or claim confirmation.
+- Trigger functions that call internal (execute-revoked) RPCs must be SECURITY DEFINER with fixed search_path; otherwise customer inserts fail with permission denied.
