@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { CartItem } from "@/store/cart";
 import type { OrderStage } from "@/data/orders";
 import { CARD_METHOD, splitAmounts, type PrintPaymentMethod } from "@/lib/deposit";
+import { classifyOrderInsertError, orderInsertMessage } from "@/lib/payment-initiation";
 
 
 export type OrderItemRecord = {
