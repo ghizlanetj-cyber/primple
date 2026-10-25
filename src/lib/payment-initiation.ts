@@ -72,7 +72,7 @@ export function classifyOrderInsertError(error: unknown): OrderInsertFailure {
   const e = (error ?? {}) as { code?: string; message?: string };
   const msg = typeof e.message === "string" ? e.message : "";
   if (e.code === "23505" && msg.includes("reference")) return "duplicate_reference";
-  if (msg.includes("catalog_unavailable")) return "catalog_unavailable";
+  if (e.code === "P0001" && msg === "catalog_unavailable") return "catalog_unavailable";
   if (e.code === "PGRST301" || msg.includes("JWT")) return "not_signed_in";
   if (e.code === "42501") return "permission";
   return "unknown";
