@@ -232,6 +232,13 @@
       "when": 1792937121433,
       "tag": "0032_fix_order_availability_guard_privilege",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1793134058378,
+      "tag": "0033_artwork_contact_and_attach",
+      "breakpoints": true
     }
   ]
 }

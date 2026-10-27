@@ -488,6 +488,7 @@ export type Database = {
       order_files: {
         Row: {
           bucket: string
+          contact_source: string | null
           created_at: string
           file_name: string
           guest_token: string | null
@@ -498,10 +499,14 @@ export type Database = {
           path: string
           size_bytes: number
           status: string
+          uploader_email: string | null
+          uploader_name: string | null
+          uploader_phone: string | null
           user_id: string | null
         }
         Insert: {
           bucket?: string
+          contact_source?: string | null
           created_at?: string
           file_name: string
           guest_token?: string | null
@@ -512,10 +517,14 @@ export type Database = {
           path: string
           size_bytes?: number
           status?: string
+          uploader_email?: string | null
+          uploader_name?: string | null
+          uploader_phone?: string | null
           user_id?: string | null
         }
         Update: {
           bucket?: string
+          contact_source?: string | null
           created_at?: string
           file_name?: string
           guest_token?: string | null
@@ -526,6 +535,9 @@ export type Database = {
           path?: string
           size_bytes?: number
           status?: string
+          uploader_email?: string | null
+          uploader_name?: string | null
+          uploader_phone?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -1109,6 +1121,23 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_unlinked_uploads: {
+        Args: { _limit: number; _offset: number }
+        Returns: {
+          account_email: string
+          account_name: string
+          contact_source: string
+          created_at: string
+          file_name: string
+          id: string
+          mime_type: string
+          size_bytes: number
+          total_count: number
+          uploader_email: string
+          uploader_name: string
+          uploader_phone: string
+        }[]
+      }
       admin_update_message: {
         Args: { _actor: string; _expected: number; _f: Json; _msg: string }
         Returns: number
@@ -1119,6 +1148,10 @@ export type Database = {
       }
       admin_update_shop_ops: {
         Args: { _actor: string; _expected: number; _f: Json; _order: string }
+        Returns: number
+      }
+      attach_order_files: {
+        Args: { _claim: string; _files: Json; _order: string; _user: string }
         Returns: number
       }
       catalog_unavailable: { Args: { _items: Json }; Returns: string[] }
