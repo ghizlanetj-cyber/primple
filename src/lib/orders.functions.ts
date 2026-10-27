@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { validateArtworkRefs } from "./artwork-attach";
 import { isPrintMethod, type PrintPaymentMethod } from "./deposit";
 
 export type GuestOrderLineInput = {
@@ -222,4 +223,34 @@ export const claimGuestOrder = createServerFn({ method: "POST" })
       .is("user_id", null);
 
     return { claimed: true };
+  });
+
+/** Links the signed-in customer's artwork (own or proven guest uploads) to their order, all or nothing. */
+export const attachMyOrderArtwork = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { orderId: string; files: unknown }) => {
+    if (!/^[0-9a-f-]{36}$/i.test(String(input?.orderId))) throw new Error("Unknown order.");
+    return { orderId: String(input.orderId), files: validateArtworkRefs(input.files) };
+  })
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { attachArtwork } = await import("./artwork-attach");
+    return attachArtwork((fn, args) => supabaseAdmin.rpc(fn, args as never), {
+      orderId: data.orderId, userId: context.userId, claimToken: null, files: data.files,
+    });
+  });
+
+/** Guest variant: the order's claim token proves the order, each guest token proves its file. */
+export const attachGuestOrderArtwork = createServerFn({ method: "POST" })
+  .inputValidator((input: { orderId: string; claimToken: string; files: unknown }) => {
+    if (!/^[0-9a-f-]{36}$/i.test(String(input?.orderId))) throw new Error("Unknown order.");
+    if (!/^[0-9a-f-]{36}$/i.test(String(input?.claimToken))) throw new Error("Unknown order.");
+    return { orderId: String(input.orderId), claimToken: String(input.claimToken), files: validateArtworkRefs(input.files) };
+  })
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { attachArtwork } = await import("./artwork-attach");
+    return attachArtwork((fn, args) => supabaseAdmin.rpc(fn, args as never), {
+      orderId: data.orderId, userId: null, claimToken: data.claimToken, files: data.files,
+    });
   });
