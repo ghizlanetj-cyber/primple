@@ -13,7 +13,8 @@ import { readUploadContact } from "@/lib/guest-upload-contact";
 import type { UploaderContact } from "@/lib/uploader-contact";
 import { readGuestClaim, saveGuestClaim } from "@/lib/guest-claim";
 import { PaymentVerification } from "@/components/payment/PaymentVerification";
-import { dashboardOrderPath, PRINT_REFERENCE } from "@/lib/payment-status";
+import { OrderAccountGuide } from "@/components/payment/OrderAccountGuide";
+import { PRINT_REFERENCE } from "@/lib/payment-status";
 import { useQueryClient } from "@tanstack/react-query";
 import { invoiceLabels } from "@/lib/invoice";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
@@ -305,14 +306,13 @@ function CheckoutPage() {
               reference={verify.reference}
               claimToken={verify.claimToken}
               signedIn={Boolean(user)}
-              onConfirmed={(order) => {
+              onConfirmed={() => {
                 // Only now is the purchase final: clear the cart and the pending order.
                 clear();
                 writePending(null);
                 placedRef.current = null;
                 if (user) {
                   void queryClient.invalidateQueries({ queryKey: ["orders", user.id] });
-                  setTimeout(() => void navigate({ href: dashboardOrderPath(order.reference), replace: true }), 1200);
                 }
               }}
             />
@@ -351,7 +351,7 @@ function CheckoutPage() {
     <SiteShell>
       <section className="section-shell pb-14 pt-24 md:py-20">
         <h1 className="text-4xl md:text-5xl">
-          {tr(step === 3 ? "Your order is confirmed." : "Review and pay for your order")}
+          {tr(step === 3 ? "Your order is saved." : "Review and pay for your order")}
         </h1>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -594,6 +594,7 @@ function CheckoutPage() {
                     {" · "}
                     <a href={contact.mailto} className="underline">{contact.email}</a>
                   </p>
+                  <OrderAccountGuide reference={orderId} signedIn={Boolean(user)} />
                   {showWhatsAppCta && (
                     <Button asChild size="lg" className="mt-6 rounded-full">
                       <a href={waHref} target="_blank" rel="noopener noreferrer">
@@ -813,4 +814,3 @@ function RadioCard({
     </label>
   );
 }
-

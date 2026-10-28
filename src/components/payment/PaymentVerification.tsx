@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { AlertTriangle, CheckCircle2, Clock, Loader2 } from "lucide-react";
+import { AlertTriangle, Clock, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { contact } from "@/config/contact";
 import { useI18n, type Lang } from "@/i18n";
-import { mad } from "@/lib/format";
+import { OrderConfirmation } from "./OrderConfirmation";
 import { dashboardOrderPath, pollDelay, verifyView, type VerifyView } from "@/lib/payment-status";
 import { getPrintPaymentStatus } from "@/lib/youcanpay.functions";
 
@@ -91,12 +91,15 @@ export function PaymentVerification({
   claimToken,
   signedIn,
   onConfirmed,
+  onFailed,
   onDelayed,
 }: {
   reference: string;
   claimToken: string;
   signedIn: boolean;
   onConfirmed: (order: VerifiedOrder) => void;
+  /** Called only after the server reports a failed payment. */
+  onFailed?: () => void;
   /** Called once if the status is still pending after the timeout. */
   onDelayed?: () => void;
 }) {
@@ -154,6 +157,11 @@ export function PaymentVerification({
   useEffect(() => {
     if (view === "confirmed" && order) onConfirmedRef.current(order);
   }, [view, order]);
+  const onFailedRef = useRef(onFailed);
+  onFailedRef.current = onFailed;
+  useEffect(() => {
+    if (view === "failed") onFailedRef.current?.();
+  }, [view]);
   const onDelayedRef = useRef(onDelayed);
   onDelayedRef.current = onDelayed;
   const delayedFired = useRef(false);
@@ -179,53 +187,7 @@ export function PaymentVerification({
   }
 
   if (view === "confirmed" && order) {
-    const dest = dashboardOrderPath(order.reference);
-    return (
-      <div role="status">
-        <span className="flex size-12 items-center justify-center rounded-full bg-primary/15">
-          <CheckCircle2 className="size-6 text-primary" />
-        </span>
-        <h2 className="mt-5 text-2xl font-bold">{c.confirmed}</h2>
-        <dl className="mt-5 space-y-2 rounded-xl bg-secondary/50 p-4 text-sm">
-          <div className="flex justify-between gap-4">
-            <dt className="text-muted-foreground">{c.reference}</dt>
-            <dd className="font-semibold" dir="ltr">{order.reference}</dd>
-          </div>
-          <div className="flex justify-between gap-4 font-semibold">
-            <dt>{c.paid}</dt>
-            <dd>{mad(order.amountPaid)}</dd>
-          </div>
-          {order.balance > 0 && (
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted-foreground">{c.balance}</dt>
-              <dd>{mad(order.balance)}</dd>
-            </div>
-          )}
-        </dl>
-        {signedIn ? (
-          <div className="mt-6 flex items-center gap-3">
-            <Button asChild size="lg" className="rounded-full">
-              <a href={dest}>{c.track}</a>
-            </Button>
-            <span className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin" /> {c.redirecting}
-            </span>
-          </div>
-        ) : (
-          <div className="mt-6">
-            <p className="text-sm text-muted-foreground">{c.guestNote}</p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-full">
-                <Link to="/login" search={{ redirect: dest }}>{c.track}</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="rounded-full">
-                <Link to="/signup" search={{ redirect: dest }}>{c.signup}</Link>
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
+    return <OrderConfirmation order={order} signedIn={signedIn} />;
   }
 
   if (view === "failed") {

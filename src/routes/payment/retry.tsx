@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { AlertTriangle, CheckCircle2, Loader2, Lock } from "lucide-react";
+import { AlertTriangle, Loader2, Lock } from "lucide-react";
 
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,6 @@ import { loadYouCanPay, type YouCanPayElement, type YouCanPayLocale } from "@/li
 import { useCart } from "@/store/cart";
 import { PaymentVerification } from "@/components/payment/PaymentVerification";
 import { useAuth } from "@/hooks/useAuth";
-import { dashboardOrderPath } from "@/lib/payment-status";
-import { useNavigate } from "@tanstack/react-router";
 
 const title = "Reprendre votre paiement | Primple";
 const description = "Votre commande Primple est conservée : réessayez le paiement par carte en toute sécurité.";
@@ -51,15 +49,13 @@ function RetryPage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [cardReady, setCardReady] = useState(false);
-  const [paid, setPaid] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const elementRef = useRef<YouCanPayElement | null>(null);
   const claimToken = useRef<string>("");
   const { user } = useAuth();
-  const navigate = useNavigate();
-  // "pending" orders are verified first; retry is offered only once the server says failed,
-  // or the status stays unknown after the timeout following the provider's error redirect.
+  // Pending orders keep being verified, even after a delay.
+  // A retry is offered only when the server says the payment failed.
   const [verifying, setVerifying] = useState(false);
 
   useEffect(() => {
@@ -68,8 +64,7 @@ function RetryPage() {
     loadOrder({ data: { reference: ref, claimToken: claimToken.current } })
       .then((result) => {
         setOrder(result);
-        if (result?.paymentStatus === "paid") setPaid(true);
-        else if (result && result.paymentStatus !== "failed") setVerifying(true);
+        if (result && result.paymentStatus !== "failed") setVerifying(true);
       })
       .catch(() => setOrder(null))
       .finally(() => setLoading(false));
@@ -121,7 +116,7 @@ function RetryPage() {
 
   return (
     <SiteShell>
-      <div className="section-shell max-w-2xl space-y-6 py-16">
+      <div className="section-shell max-w-2xl space-y-6 pb-14 pt-28 md:pb-20 md:pt-36">
         {loading ? (
           <Loader2 className="mx-auto size-6 animate-spin" />
         ) : !order ? (
@@ -140,20 +135,11 @@ function RetryPage() {
               reference={order.reference}
               claimToken={claimToken.current}
               signedIn={Boolean(user)}
-              onConfirmed={(confirmed) => {
+              onConfirmed={() => {
                 clear();
-                if (user) setTimeout(() => void navigate({ href: dashboardOrderPath(confirmed.reference), replace: true }), 1200);
               }}
-              onDelayed={() => {
-                if (!elementRef.current) setVerifying(false);
-              }}
+              onFailed={() => setVerifying(false)}
             />
-          </div>
-        ) : paid ? (
-          <div className="text-center">
-            <CheckCircle2 className="mx-auto size-10 text-primary" />
-            <h1 className="mt-3 text-2xl font-bold">{tr("Payment received. Your order is confirmed.")}</h1>
-            <p className="mt-2 text-muted-foreground">{order.reference}</p>
           </div>
         ) : (
           <>

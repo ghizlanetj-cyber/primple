@@ -105,12 +105,12 @@ function DashboardPage() {
     let cancelled = false;
     void claimOrder({ data: { reference: claim.reference, claimToken: claim.claimToken } })
       .then((result) => {
-        clearGuestClaim();
         if (!cancelled && result.claimed) {
+          clearGuestClaim();
           void queryClient.invalidateQueries({ queryKey: ["orders", user.id] });
         }
       })
-      .catch(() => clearGuestClaim());
+      .catch(() => { /* Keep the claim so the customer can retry after signing in. */ });
     return () => {
       cancelled = true;
     };
@@ -178,7 +178,7 @@ function DashboardPage() {
                 </p>
               )}
               <p className="mt-4 text-sm font-medium text-primary">{tr("We will contact you soon.")}</p>
-              {justPaid && (
+              {justPaid && records.some(record => record.reference === justPaid && record.paymentStatus === "paid") && (
                 <p
                   role="status"
                   className="mt-4 flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 text-sm font-medium"

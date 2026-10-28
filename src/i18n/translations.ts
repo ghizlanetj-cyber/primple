@@ -1,6 +1,7 @@
 export type TranslationPair = { fr: string; ar: string };
 
 export const phrases: Record<string, TranslationPair> = {
+  "Your order is saved.": { fr: "Votre commande est enregistrée.", ar: "تم حفظ طلبك." },
   "Your contact details": { fr: "Vos coordonnées", ar: "معلومات الاتصال" },
   "Leave your name, email and phone so Primple can follow up on your artwork, even if you finish your order later.":
     {
@@ -540,4 +541,3 @@ export const authPhrases: Record<string, TranslationPair> = {
   },
   FAQ: { fr: "FAQ", ar: "الأسئلة الشائعة" },
 };
-
