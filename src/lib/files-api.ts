@@ -1,3 +1,4 @@
+import { parseUploaderContact, type UploaderContact } from "./uploader-contact";
 import { supabase } from "@/integrations/supabase/client";
 import {
   deleteGuestArtwork,
@@ -47,9 +48,10 @@ function toFile(row: Record<string, unknown>): ClientFile {
   };
 }
 
-export async function uploadGuestFile(file: File): Promise<ClientFile> {
+export async function uploadGuestFile(file: File, input: UploaderContact): Promise<ClientFile> {
+  const contact = parseUploaderContact(input);
   const prepared = await prepareGuestArtworkUpload({
-    data: { name: file.name, mimeType: file.type, sizeBytes: file.size },
+    data: { name: file.name, mimeType: file.type, sizeBytes: file.size, contact },
   });
   const { error: uploadError } = await supabase.storage
     .from(ARTWORK_BUCKET)
@@ -65,6 +67,7 @@ export async function uploadGuestFile(file: File): Promise<ClientFile> {
       name: file.name,
       mimeType: file.type,
       sizeBytes: file.size,
+      contact,
     },
   });
   return toFile(row as Record<string, unknown>);
@@ -137,16 +140,6 @@ export async function listMyFiles(): Promise<ClientFile[]> {
   return (data ?? []).map((row) => toFile(row as Record<string, unknown>));
 }
 
-/** Links draft uploads to the order they were placed with. */
-export async function attachFilesToOrder(paths: string[], orderId: string, reference: string) {
-  if (paths.length === 0) return;
-  const { error } = await supabase
-    .from("order_files")
-    .update({ order_id: orderId, order_reference: reference, status: "attached" })
-    .in("path", paths);
-  if (error) throw error;
-}
-
 export async function signedFileUrl(path: string, download = false) {
   const { data, error } = await supabase.storage
     .from(ARTWORK_BUCKET)
@@ -168,3 +161,4 @@ export async function deleteClientFile(file: ClientFile) {
   const { error } = await supabase.from("order_files").delete().eq("id", file.id);
   if (error) throw error;
 }
+

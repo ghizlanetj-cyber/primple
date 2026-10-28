@@ -1,10 +1,18 @@
-import { useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { CheckCircle2, FileText, Trash2, UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  parseUploaderContact,
+  uploaderContactSchema,
+  type UploaderContact,
+} from "@/lib/uploader-contact";
+import { readUploadContact, saveUploadContact } from "@/lib/guest-upload-contact";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
@@ -37,8 +45,16 @@ export function ArtworkUpload({
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
+  const contactId = useId();
+  const [contact, setContact] = useState<UploaderContact>({ name: "", email: "", phone: "" });
+  useEffect(() => {
+    const saved = readUploadContact();
+    if (saved) setContact(saved);
+  }, []);
+  const contactReady = Boolean(user) || uploaderContactSchema.safeParse(contact).success;
 
   const handleFile = async (file: File) => {
+    if (uploading) return;
     if (!isAcceptedArtwork(file)) {
       toast.error(tr("Accepted formats: PDF, PNG, JPG or SVG."));
       return;
@@ -49,9 +65,15 @@ export function ArtworkUpload({
     }
     setUploading(true);
     try {
-      const uploaded = user ? await uploadClientFile(user.id, file) : await uploadGuestFile(file);
+      const guestContact = user ? null : parseUploaderContact(contact);
+      const uploaded = user
+        ? await uploadClientFile(user.id, file)
+        : await uploadGuestFile(file, guestContact!);
+      if (guestContact) saveUploadContact(guestContact);
       onChange(uploaded);
-      toast.success(tr(user ? "File uploaded to your account." : "File ready for your guest order."));
+      toast.success(
+        tr(user ? "File uploaded to your account." : "File ready for your guest order."),
+      );
     } catch {
       toast.error(tr("We couldn't upload your file. Please try again."));
     } finally {
@@ -74,6 +96,45 @@ export function ArtworkUpload({
 
   return (
     <div>
+      {!user && !artwork && (
+        <fieldset
+          className="mb-4 space-y-3 rounded-2xl border border-border bg-card p-4"
+          disabled={uploading}
+        >
+          <legend className="px-1 text-sm font-semibold">{tr("Your contact details")}</legend>
+          <p className="text-sm text-muted-foreground">
+            {tr(
+              "Leave your name, email and phone so Primple can follow up on your artwork, even if you finish your order later.",
+            )}
+          </p>
+          {(
+            [
+              ["name", "Full name", "text", "name"],
+              ["email", "Email", "email", "email"],
+              ["phone", "Phone", "tel", "tel"],
+            ] as const
+          ).map(([key, label, type, autoComplete]) => (
+            <div key={key}>
+              <Label htmlFor={contactId + key}>{tr(label)}</Label>
+              <Input
+                id={contactId + key}
+                type={type}
+                autoComplete={autoComplete}
+                required
+                maxLength={key === "name" ? 120 : key === "email" ? 160 : 40}
+                value={contact[key]}
+                onChange={(e) => setContact({ ...contact, [key]: e.target.value })}
+                className="mt-1"
+              />
+            </div>
+          ))}
+          {!contactReady && (
+            <p className="text-xs text-muted-foreground">
+              {tr("Complete your contact details to upload your file.")}
+            </p>
+          )}
+        </fieldset>
+      )}
       <input
         ref={inputRef}
         type="file"
@@ -84,6 +145,7 @@ export function ArtworkUpload({
           e.target.value = "";
           if (file) void handleFile(file);
         }}
+        disabled={uploading || !contactReady}
       />
 
       <AnimatePresence mode="wait">
@@ -96,7 +158,7 @@ export function ArtworkUpload({
           >
             <button
               type="button"
-              disabled={uploading}
+              disabled={uploading || !contactReady}
               onClick={() => inputRef.current?.click()}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -106,6 +168,7 @@ export function ArtworkUpload({
               onDrop={(e) => {
                 e.preventDefault();
                 setDragging(false);
+                if (!contactReady || uploading) return;
                 const file = e.dataTransfer.files?.[0];
                 if (file) void handleFile(file);
               }}
@@ -171,3 +234,4 @@ export function ArtworkUpload({
     </div>
   );
 }
+

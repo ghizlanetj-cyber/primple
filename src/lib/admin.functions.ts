@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 import { can, type Capability, type StaffRole } from "./admin-metrics";
+import { resolveContact } from "./uploader-contact";
 
 /**
  * Internal team API. Every handler is authenticated, then freshly checks the
@@ -345,7 +346,9 @@ export const adminOrderDetail = createServerFn({ method: "GET" })
       db.from("order_ops").select("*").eq("order_id", data.id).maybeSingle(),
       db
         .from("order_files")
-        .select("id, file_name, mime_type, size_bytes, status, created_at")
+        .select(
+          "id, file_name, mime_type, size_bytes, status, created_at, uploader_name, uploader_email, uploader_phone, contact_source",
+        )
         .eq("order_id", data.id)
         .order("created_at"),
       db
@@ -375,10 +378,38 @@ export const adminOrderDetail = createServerFn({ method: "GET" })
     const { stripSensitive } = await import("./crm-core");
     const { moneyOf } = await import("./admin-metrics");
     const b = must(balance);
+    const fileRows = must(files) ?? [];
+    const account = order.user_id
+      ? must(
+          await db
+            .from("profiles")
+            .select("full_name, email")
+            .eq("id", order.user_id)
+            .maybeSingle(),
+        )
+      : null;
+    const upload = fileRows.find((f) => f.uploader_email || f.uploader_phone);
+    const customerContact = resolveContact({
+      order: {
+        name: order.contact_name,
+        email: order.email?.trim() || order.guest_email,
+        phone: order.phone,
+      },
+      upload: upload
+        ? {
+            name: upload.uploader_name,
+            email: upload.uploader_email,
+            phone: upload.uploader_phone,
+            source: upload.contact_source,
+          }
+        : null,
+      account: account ? { name: account.full_name, email: account.email } : null,
+    });
     return {
       order: stripSensitive(order),
+      contact: customerContact,
       ops: must(ops),
-      files: must(files) ?? [],
+      files: fileRows,
       balance: b,
       money: moneyOf(order, b),
       notes: must(notes) ?? [],
@@ -493,25 +524,59 @@ export const adminRecordBalance = createServerFn({ method: "POST" })
     return { ok: true, amount: Number(r.data) };
   });
 
-/** 5-minute signed URL for an order's artwork; ownership is the order association. */
+/** Staff-only 5-minute URL for linked or unfinished artwork uploads. */
 export const adminFileUrl = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: unknown) => ({ fileId: uuid(obj(i)["fileId"]) }))
+  .inputValidator((i: unknown) => ({
+    fileId: uuid(obj(i)["fileId"]),
+    download: obj(i)["download"] === true,
+  }))
   .handler(async ({ data, context }) => {
     const { db } = await requireStaff(context, "read_ops");
     const f = must(
       await db
         .from("order_files")
-        .select("bucket, path, order_id")
+        .select("bucket, path, file_name")
         .eq("id", data.fileId)
         .maybeSingle(),
     );
-    if (!f || f.bucket !== "client-artwork" || !f.order_id) throw new Error("Fichier introuvable");
+    if (!f || f.bucket !== "client-artwork") throw new Error("Fichier introuvable");
     const { data: signed, error } = await db.storage
       .from("client-artwork")
-      .createSignedUrl(f.path, 300);
+      .createSignedUrl(f.path, 300, data.download ? { download: f.file_name } : {});
     if (error || !signed) throw new Error("Lien de téléchargement indisponible");
     return { url: signed.signedUrl as string };
+  });
+
+/** Discover unfinished uploads without exposing storage paths or access tokens. */
+export const adminUnlinkedUploads = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => ({ page: pageOf(obj(i)["page"]) }))
+  .handler(async ({ data, context }) => {
+    const { db } = await requireStaff(context, "read_ops");
+    const rows =
+      must(await db.rpc("admin_unlinked_uploads", { _limit: PAGE, _offset: data.page * PAGE })) ??
+      [];
+    return {
+      uploads: rows.map((row) => ({
+        id: row.id,
+        file_name: row.file_name,
+        mime_type: row.mime_type,
+        size_bytes: row.size_bytes,
+        created_at: row.created_at,
+        contact: resolveContact({
+          upload: {
+            name: row.uploader_name,
+            email: row.uploader_email,
+            phone: row.uploader_phone,
+            source: row.contact_source,
+          },
+          account: { name: row.account_name, email: row.account_email },
+        }),
+      })),
+      total: Number(rows[0]?.total_count ?? 0),
+      pageSize: PAGE,
+    };
   });
 
 /* ---------- customers ---------- */
@@ -1112,3 +1177,4 @@ export const adminProductionConfig = createServerFn({ method: "GET" })
       checkedAt: new Date().toISOString(),
     };
   });
+

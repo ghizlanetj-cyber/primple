@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  adminFileUrl,
   adminOrderDetail,
   adminOrders,
   adminRecordBalance,
@@ -35,6 +34,7 @@ import {
 } from "./shared";
 
 import { ShopOrdersTab } from "./ShopOrdersTab";
+import { ArtworkFile, CustomerContact, UnlinkedUploads } from "./ArtworkFiles";
 
 type Filters = { q: string; status: string; payment: string; stage: string; assignee: string };
 const EMPTY: Filters = { q: "", status: "", payment: "", stage: "", assignee: "" };
@@ -176,7 +176,9 @@ function PrintOrdersTab({
                         </button>
                         <div className="text-xs text-muted-foreground">
                           {fmtDate(o.created_at)}
-                          {o.files === 0 ? " · sans fichier" : ""}
+                          {o.files === 0
+                            ? " · sans fichier"
+                            : " · " + o.files + (o.files > 1 ? " fichiers" : " fichier")}
                         </div>
                       </td>
                       <td className="pr-3">
@@ -217,6 +219,7 @@ function PrintOrdersTab({
           </>
         )}
       </Card>
+      <UnlinkedUploads />
       <Sheet open={Boolean(focusId)} onOpenChange={(o) => !o && onFocus(null)}>
         <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
           {focusId ? <OrderDetail id={focusId} canWrite={canWrite} canMoney={canMoney} /> : null}
@@ -241,7 +244,6 @@ function OrderDetail({
   const fetchDetail = useServerFn(adminOrderDetail);
   const update = useServerFn(adminUpdateOrder);
   const record = useServerFn(adminRecordBalance);
-  const fileUrl = useServerFn(adminFileUrl);
   const key = ["admin", "order", id];
   const d = useQuery({ queryKey: key, queryFn: () => fetchDetail({ data: { id } }) });
   const [form, setForm] = useState({
@@ -288,7 +290,7 @@ function OrderDetail({
   });
   if (d.error) return <ErrorBox error={d.error} />;
   if (!d.data) return <Loading />;
-  const { order: o, ops, files, balance, money, notes, history, crm } = d.data;
+  const { order: o, contact, ops, files, balance, money, notes, history, crm } = d.data;
   const items = Array.isArray(o.items) ? (o.items as Item[]) : [];
   const busy = save.isPending || !canWrite;
   return (
@@ -302,19 +304,34 @@ function OrderDetail({
       <section className="grid gap-2 text-sm sm:grid-cols-2">
         <div>
           <p className="text-xs text-muted-foreground">Client</p>
-          <p>{o.contact_name ?? "—"}</p>
+          <p>{contact.name ?? o.contact_name ?? "—"}</p>
           <p className="text-muted-foreground">{o.company}</p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Contact</p>
-          <p>{o.email ?? o.guest_email ?? "—"}</p>
-          <p>{o.phone ?? ""}</p>
+          <CustomerContact contact={contact} />
         </div>
         <div className="sm:col-span-2">
           <p className="text-xs text-muted-foreground">Livraison</p>
           <p>{[o.address, o.postcode, o.city].filter(Boolean).join(", ") || "—"}</p>
           <p className="text-muted-foreground">Prévue le {fmtDate(o.expected_at)}</p>
         </div>
+      </section>
+      <section>
+        <h3 className="text-sm font-semibold">Fichiers de la commande ({files.length})</h3>
+        {files.length === 0 ? (
+          <p className="mt-1 text-sm text-muted-foreground">
+            Aucun fichier joint à cette commande.
+          </p>
+        ) : (
+          <ul className="mt-2 space-y-2">
+            {files.map((file) => (
+              <li key={file.id}>
+                <ArtworkFile file={file} />
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
       <section>
         <h3 className="text-sm font-semibold">Articles</h3>
@@ -466,39 +483,6 @@ function OrderDetail({
           L'étape met à jour le suivi client. Elle ne confirme jamais un paiement.
         </p>
       </section>
-      <section>
-        <h3 className="text-sm font-semibold">Fichiers</h3>
-        {files.length === 0 ? (
-          <p className="mt-1 text-sm text-muted-foreground">Aucun fichier.</p>
-        ) : (
-          <ul className="mt-2 space-y-1 text-sm">
-            {files.map((file) => (
-              <li key={file.id} className="flex items-center justify-between gap-2">
-                <span className="truncate">
-                  {file.file_name}{" "}
-                  <span className="text-xs text-muted-foreground">
-                    {Math.round(Number(file.size_bytes) / 1024)} Ko
-                  </span>
-                </span>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={async () => {
-                    try {
-                      const r = await fileUrl({ data: { fileId: file.id } });
-                      window.open(r.url, "_blank", "noopener");
-                    } catch (e) {
-                      toast.error(errText(e));
-                    }
-                  }}
-                >
-                  Ouvrir
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
       <NotesPanel type="order" entityKey={id} notes={notes} canWrite={canWrite} invalidate={key} />
       <HistoryList items={history} />
       {crm.length ? (
@@ -546,3 +530,4 @@ export function OrdersTab(props: {
     </div>
   );
 }
+

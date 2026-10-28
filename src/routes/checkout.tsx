@@ -6,12 +6,15 @@ import { ArrowRight, CheckCircle2, Clock, CreditCard, Loader2, Lock, ShieldCheck
 import { toast } from "sonner";
 
 import { createOrder, type DeliveryDetails, type OrderRecord } from "@/lib/orders-api";
-import { createGuestOrder } from "@/lib/orders.functions";
+import { createGuestOrder, attachMyOrderArtwork, attachGuestOrderArtwork } from "@/lib/orders.functions";
+import { artworkRefs, ATTACH_FAILED } from "@/lib/artwork-attach";
+import { checkoutIdentity } from "@/lib/checkout-artwork";
+import { readUploadContact } from "@/lib/guest-upload-contact";
+import type { UploaderContact } from "@/lib/uploader-contact";
 import { readGuestClaim, saveGuestClaim } from "@/lib/guest-claim";
 import { PaymentVerification } from "@/components/payment/PaymentVerification";
 import { dashboardOrderPath, PRINT_REFERENCE } from "@/lib/payment-status";
 import { useQueryClient } from "@tanstack/react-query";
-import { attachFilesToOrder } from "@/lib/files-api";
 import { invoiceLabels } from "@/lib/invoice";
 import { getYouCanPayConfig, startPrintPayment } from "@/lib/youcanpay.functions";
 import { loadYouCanPay, type YouCanPayElement, type YouCanPayLocale } from "@/lib/youcanpay";
@@ -105,12 +108,16 @@ function CheckoutPage() {
     setVerify({ reference: search.ref, claimToken: claim?.reference === search.ref ? claim.claimToken : "" });
   }, [search.ref]);
   // Includes the live price set: a price change never reuses an order placed at the old price.
-  const cartSignature = JSON.stringify([pricingKey, items.map((i) => [i.slug, i.quantity, i.selection])]);
+  const cartSignature = checkoutIdentity(pricingKey, user?.id ?? null, items);
 
   const startPayment = useServerFn(startPrintPayment);
   const requestTransfer = useServerFn(requestBankTransfer);
   const loadConfig = useServerFn(getYouCanPayConfig);
   const placeGuestOrder = useServerFn(createGuestOrder);
+  const attachMine = useServerFn(attachMyOrderArtwork);
+  const attachGuest = useServerFn(attachGuestOrderArtwork);
+  const [uploadContact, setUploadContact] = useState<UploaderContact | null>(null);
+  useEffect(() => { setUploadContact(readUploadContact()); }, []);
 
   const [step, setStep] = useState(0);
   const [details, setDetails] = useState<DeliveryDetails | null>(null);
@@ -154,7 +161,7 @@ function CheckoutPage() {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inFlight = useRef(false);
-  const placedRef = useRef<{ order: OrderRecord; claimToken: string | undefined; method: string } | null>(null);
+  const placedRef = useRef<{ order: OrderRecord; claimToken: string | undefined; method: string; cart: string } | null>(null);
   const elementRef = useRef<YouCanPayElement | null>(null);
 
   const handleStartPayment = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -178,8 +185,8 @@ function CheckoutPage() {
       let claimToken: string | undefined;
       const stored = placedRef.current ? null : readPending();
       const reuse =
-        placedRef.current ?? (stored && stored.cart === cartSignature ? { order: stored.order, claimToken: stored.claimToken, method: stored.method } : null);
-      if (reuse && reuse.method === method) {
+        placedRef.current ?? (stored && stored.cart === cartSignature ? { order: stored.order, claimToken: stored.claimToken, method: stored.method, cart: stored.cart } : null);
+      if (reuse && reuse.method === method && reuse.cart === cartSignature) {
         // Retry after a failed payment step: reuse the unpaid order, never duplicate it.
         order = reuse.order;
         claimToken = reuse.claimToken;
@@ -196,8 +203,6 @@ function CheckoutPage() {
               slug: i.slug,
               quantity: i.quantity,
               selection: i.selection,
-              ...(i.artworkPath ? { artworkPath: i.artworkPath } : {}),
-              ...(i.artworkGuestToken ? { artworkGuestToken: i.artworkGuestToken } : {}),
             })),
             details,
             paymentMethod: method,
@@ -216,21 +221,18 @@ function CheckoutPage() {
           email: details.email,
         });
       }
-      const isNewOrder = placedRef.current?.order.id !== order.id;
-      placedRef.current = { order, claimToken, method };
+      placedRef.current = { order, claimToken, method, cart: cartSignature };
       // Survives a refresh so the same unpaid order is reused, never duplicated.
       writePending({ order, claimToken, method, cart: cartSignature });
       setPlacedOrder(order);
 
-      const artworkPaths = snapshotItems
-        .map((i) => i.artworkPath)
-        .filter((p): p is string => Boolean(p));
-      if (user && isNewOrder) {
-        try {
-          await attachFilesToOrder(artworkPaths, order.id, order.reference);
-        } catch {
-          // The order is placed; file linking is retried by staff if it fails.
-        }
+      const files = artworkRefs(snapshotItems);
+      failureMessage = ATTACH_FAILED;
+      // Retry the all-or-nothing link on every payment attempt, including after refresh.
+      // The saved pending order survives failure; neither cart nor claim is cleared.
+      if (files.length) {
+        if (claimToken) await attachGuest({ data: { orderId: order.id, claimToken, files } });
+        else await attachMine({ data: { orderId: order.id, files } });
       }
 
       if (dispatch.route === "manual") {
@@ -429,10 +431,10 @@ function CheckoutPage() {
                 >
                   <h2 className="text-xl">{tr("Where should we deliver?")}</h2>
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                    <Field label="Full name" name="name" />
+                    <Field label="Full name" name="name" defaultValue={details?.name ?? uploadContact?.name ?? ""} />
                     <Field label="Company" name="company" required={false} />
-                    <Field label="Email" name="email" type="email" />
-                    <Field label="Phone" name="phone" type="tel" />
+                    <Field label="Email" name="email" type="email" defaultValue={details?.email ?? user?.email ?? uploadContact?.email ?? ""} />
+                    <Field label="Phone" name="phone" type="tel" defaultValue={details?.phone ?? uploadContact?.phone ?? ""} />
                     <div className="sm:col-span-2">
                       <Field label="Delivery address" name="address" />
                     </div>
@@ -739,12 +741,14 @@ function Field({
   name,
   type = "text",
   placeholder,
+  defaultValue,
   required = true,
 }: {
   label: string;
   name: string;
   type?: string;
   placeholder?: string;
+  defaultValue?: string;
   required?: boolean;
 }) {
   const { tr } = useI18n();
@@ -759,6 +763,7 @@ function Field({
         type={type}
         required={required}
         placeholder={placeholder}
+        defaultValue={defaultValue}
         className="mt-1.5"
       />
     </div>
@@ -808,3 +813,4 @@ function RadioCard({
     </label>
   );
 }
+

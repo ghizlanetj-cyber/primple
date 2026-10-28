@@ -239,6 +239,14 @@
       "when": 1793134058378,
       "tag": "0033_artwork_contact_and_attach",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1793135112155,
+      "tag": "0034_prevent_artwork_reassignment",
+      "breakpoints": true
     }
   ]
 }
+

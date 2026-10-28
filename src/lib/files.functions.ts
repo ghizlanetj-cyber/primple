@@ -2,11 +2,17 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { guestArtworkFolder } from "@/lib/file-access";
+import { uploaderContactSchema } from "./uploader-contact";
 
 const fileInput = z.object({
   name: z.string().trim().min(1).max(255),
   mimeType: z.string().trim().max(120),
-  sizeBytes: z.number().int().positive().max(50 * 1024 * 1024),
+  sizeBytes: z
+    .number()
+    .int()
+    .positive()
+    .max(50 * 1024 * 1024),
+  contact: uploaderContactSchema,
 });
 
 const guestFileInput = z.object({
@@ -14,7 +20,12 @@ const guestFileInput = z.object({
   guestToken: z.string().uuid(),
   name: z.string().trim().min(1).max(255),
   mimeType: z.string().trim().max(120),
-  sizeBytes: z.number().int().positive().max(50 * 1024 * 1024),
+  sizeBytes: z
+    .number()
+    .int()
+    .positive()
+    .max(50 * 1024 * 1024),
+  contact: uploaderContactSchema,
 });
 
 function safeName(name: string) {
@@ -66,15 +77,23 @@ export const registerGuestArtwork = createServerFn({ method: "POST" })
         mime_type: data.mimeType || null,
         size_bytes: data.sizeBytes,
         status: "uploaded",
+        uploader_name: data.contact.name,
+        uploader_email: data.contact.email,
+        uploader_phone: data.contact.phone,
+        contact_source: "guest_form",
       })
-      .select("*")
+      .select(
+        "id, order_id, order_reference, bucket, path, file_name, mime_type, size_bytes, status, created_at, guest_token",
+      )
       .single();
     if (error || !row) throw new Error("The uploaded file could not be saved.");
     return row;
   });
 
 export const deleteGuestArtwork = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ path: z.string(), guestToken: z.string().uuid() }).parse(input))
+  .inputValidator((input: unknown) =>
+    z.object({ path: z.string(), guestToken: z.string().uuid() }).parse(input),
+  )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!data.path.startsWith(`${guestArtworkFolder(data.guestToken)}/`)) return { deleted: false };
@@ -89,3 +108,4 @@ export const deleteGuestArtwork = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin.from("order_files").delete().eq("id", file.id);
     return { deleted: !error };
   });
+

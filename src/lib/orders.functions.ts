@@ -28,11 +28,14 @@ export type GuestOrderInput = {
 };
 
 function text(value: unknown, max: number) {
-  return String(value ?? "").trim().slice(0, max);
+  return String(value ?? "")
+    .trim()
+    .slice(0, max);
 }
 
 function validateGuestOrder(input: GuestOrderInput): GuestOrderInput {
-  if (!Array.isArray(input?.lines) || input.lines.length === 0) throw new Error("Your cart is empty.");
+  if (!Array.isArray(input?.lines) || input.lines.length === 0)
+    throw new Error("Your cart is empty.");
   if (input.lines.length > 30) throw new Error("Too many items in the cart.");
 
   const lines = input.lines.map((line) => {
@@ -47,7 +50,10 @@ function validateGuestOrder(input: GuestOrderInput): GuestOrderInput {
     }
     const artworkPath = text(line.artworkPath, 500);
     const artworkGuestToken = text(line.artworkGuestToken, 60);
-    if ((artworkPath || artworkGuestToken) && !artworkPath.startsWith(`guests/${artworkGuestToken}/`)) {
+    if (
+      (artworkPath || artworkGuestToken) &&
+      !artworkPath.startsWith(`guests/${artworkGuestToken}/`)
+    ) {
       throw new Error("Invalid artwork upload.");
     }
     return {
@@ -63,8 +69,9 @@ function validateGuestOrder(input: GuestOrderInput): GuestOrderInput {
 
   return {
     lines,
-    paymentMethod:
-      isPrintMethod(input.paymentMethod) ? input.paymentMethod : ("card_youcanpay" as PrintPaymentMethod),
+    paymentMethod: isPrintMethod(input.paymentMethod)
+      ? input.paymentMethod
+      : ("card_youcanpay" as PrintPaymentMethod),
     details: {
       name: text(input.details?.name, 120),
       company: text(input.details?.company, 120),
@@ -150,18 +157,6 @@ export const createGuestOrder = createServerFn({ method: "POST" })
       throw new Error("The order could not be saved. Please try again.");
     }
 
-    for (const line of data.lines) {
-      if (!line.artworkPath || !line.artworkGuestToken) continue;
-      const { error: fileError } = await supabaseAdmin
-        .from("order_files")
-        .update({ order_id: order.id, order_reference: order.reference, status: "attached" })
-        .eq("path", line.artworkPath)
-        .eq("guest_token", line.artworkGuestToken)
-        .is("user_id", null)
-        .is("order_id", null);
-      if (fileError) throw new Error("The artwork could not be attached to the order.");
-    }
-
     return {
       id: order.id,
       reference: order.reference,
@@ -236,7 +231,10 @@ export const attachMyOrderArtwork = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { attachArtwork } = await import("./artwork-attach");
     return attachArtwork((fn, args) => supabaseAdmin.rpc(fn, args as never), {
-      orderId: data.orderId, userId: context.userId, claimToken: null, files: data.files,
+      orderId: data.orderId,
+      userId: context.userId,
+      claimToken: null,
+      files: data.files,
     });
   });
 
@@ -245,12 +243,20 @@ export const attachGuestOrderArtwork = createServerFn({ method: "POST" })
   .inputValidator((input: { orderId: string; claimToken: string; files: unknown }) => {
     if (!/^[0-9a-f-]{36}$/i.test(String(input?.orderId))) throw new Error("Unknown order.");
     if (!/^[0-9a-f-]{36}$/i.test(String(input?.claimToken))) throw new Error("Unknown order.");
-    return { orderId: String(input.orderId), claimToken: String(input.claimToken), files: validateArtworkRefs(input.files) };
+    return {
+      orderId: String(input.orderId),
+      claimToken: String(input.claimToken),
+      files: validateArtworkRefs(input.files),
+    };
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { attachArtwork } = await import("./artwork-attach");
     return attachArtwork((fn, args) => supabaseAdmin.rpc(fn, args as never), {
-      orderId: data.orderId, userId: null, claimToken: data.claimToken, files: data.files,
+      orderId: data.orderId,
+      userId: null,
+      claimToken: data.claimToken,
+      files: data.files,
     });
   });
+

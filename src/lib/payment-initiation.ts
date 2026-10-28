@@ -1,3 +1,4 @@
+import { ARTWORK_SAFE_ERRORS } from "./artwork-attach";
 import {
   BANK_ADVANCE_METHOD, BANK_FULL_METHOD, CARD_METHOD, CASHPLUS_ADVANCE_METHOD,
   CASHPLUS_FULL_METHOD, DEPOSIT_METHOD, isManualMethod, isPrintMethod,
@@ -37,7 +38,7 @@ export async function preparePayment(method: string, loadConfig: () => Promise<G
 export function initiationError(caught: unknown, fallback: string): string {
   const message = caught instanceof Error ? caught.message
     : caught && typeof caught === "object" && "message" in caught && typeof caught.message === "string" ? caught.message : "";
-  const safe = [CARD_UNAVAILABLE, CARD_START_FAILED, MANUAL_START_FAILED, ORDER_SIGNED_OUT,
+  const safe = [...ARTWORK_SAFE_ERRORS, CARD_UNAVAILABLE, CARD_START_FAILED, MANUAL_START_FAILED, ORDER_SIGNED_OUT,
     "Unknown order.", "This order is already paid.",
     "This order can no longer be priced. Please contact Primple.",
     "One of the items is temporarily unavailable. Please contact Primple.",
@@ -83,3 +84,4 @@ export function orderInsertMessage(kind: OrderInsertFailure): string {
   if (kind === "not_signed_in") return ORDER_SIGNED_OUT;
   return ORDER_START_FAILED;
 }
+

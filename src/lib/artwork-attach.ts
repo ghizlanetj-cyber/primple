@@ -12,7 +12,10 @@ export function artworkRefs(
   for (const item of items) {
     const path = item.artworkPath?.trim();
     if (!path || seen.has(path)) continue;
-    seen.set(path, item.artworkGuestToken ? { path, guestToken: item.artworkGuestToken } : { path });
+    seen.set(
+      path,
+      item.artworkGuestToken ? { path, guestToken: item.artworkGuestToken } : { path },
+    );
   }
   return [...seen.values()];
 }
@@ -26,9 +29,12 @@ export function validateArtworkRefs(input: unknown): ArtworkRef[] {
       const r = (raw ?? {}) as Record<string, unknown>;
       const path = String(r["path"] ?? "").trim();
       const guestToken = r["guestToken"] == null ? "" : String(r["guestToken"]).trim();
-      if (!path || path.length > 500 || path.includes("..")) throw new Error("Invalid artwork upload.");
+      if (!path || path.length > 500 || path.includes(".."))
+        throw new Error("Invalid artwork upload.");
       if (guestToken && !UUID.test(guestToken)) throw new Error("Invalid artwork upload.");
-      return guestToken ? { artworkPath: path, artworkGuestToken: guestToken } : { artworkPath: path };
+      return guestToken
+        ? { artworkPath: path, artworkGuestToken: guestToken }
+        : { artworkPath: path };
     }),
   );
   return refs;
@@ -38,10 +44,14 @@ export const ATTACH_FAILED =
   "Your order is saved, but your artwork could not be linked to it. Please try again.";
 
 const ATTACH_ERRORS: Record<string, string> = {
-  file_missing: "One of your files could not be found. Remove it from the cart and upload it again.",
+  file_missing:
+    "One of your files could not be found. Remove it from the cart and upload it again.",
   file_forbidden: "One of your files belongs to another session. Upload it again to continue.",
-  file_already_attached: "One of your files is already linked to another order. Upload it again to continue.",
+  file_already_attached:
+    "One of your files is already linked to another order. Upload it again to continue.",
 };
+
+export const ARTWORK_SAFE_ERRORS = [ATTACH_FAILED, ...Object.values(ATTACH_ERRORS)];
 
 /** Maps a database error to a customer-safe message; never leaks internals. */
 export function attachErrorMessage(error: { message?: string } | null | undefined): string {
@@ -72,9 +82,10 @@ export async function attachArtwork(
     _files: args.files,
   });
   if (error) {
-    console.error("[artwork] attach failed", error.message?.slice(0, 60));
+    console.error("[artwork] attach failed");
     throw new Error(attachErrorMessage(error));
   }
   assertAllAttached(args.files.length, data);
   return { attached: data as number };
 }
+

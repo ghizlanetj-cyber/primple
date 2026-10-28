@@ -1,6 +1,33 @@
 export type TranslationPair = { fr: string; ar: string };
 
 export const phrases: Record<string, TranslationPair> = {
+  "Your contact details": { fr: "Vos coordonnées", ar: "معلومات الاتصال" },
+  "Leave your name, email and phone so Primple can follow up on your artwork, even if you finish your order later.":
+    {
+      fr: "Indiquez votre nom, e-mail et téléphone pour que Primple puisse vous contacter au sujet de votre fichier, même si vous terminez votre commande plus tard.",
+      ar: "أدخل اسمك وبريدك الإلكتروني ورقم هاتفك لتتمكن Primple من التواصل معك بشأن ملفك، حتى لو أكملت الطلب لاحقًا.",
+    },
+  "Complete your contact details to upload your file.": {
+    fr: "Complétez vos coordonnées pour envoyer votre fichier.",
+    ar: "أكمل معلومات الاتصال لرفع ملفك.",
+  },
+  "Your order is saved, but your artwork could not be linked to it. Please try again.": {
+    fr: "Votre commande est enregistrée, mais votre fichier n'a pas pu y être joint. Réessayez.",
+    ar: "تم حفظ طلبك، لكن تعذر إرفاق ملفك به. حاول مرة أخرى.",
+  },
+  "One of your files could not be found. Remove it from the cart and upload it again.": {
+    fr: "Un de vos fichiers est introuvable. Retirez-le du panier et envoyez-le à nouveau.",
+    ar: "تعذر العثور على أحد ملفاتك. أزله من السلة وارفعه مجددًا.",
+  },
+  "One of your files belongs to another session. Upload it again to continue.": {
+    fr: "Un de vos fichiers appartient à une autre session. Envoyez-le à nouveau pour continuer.",
+    ar: "أحد ملفاتك تابع لجلسة أخرى. ارفعه مجددًا للمتابعة.",
+  },
+  "One of your files is already linked to another order. Upload it again to continue.": {
+    fr: "Un de vos fichiers est déjà joint à une autre commande. Envoyez-le à nouveau pour continuer.",
+    ar: "أحد ملفاتك مرفق بطلب آخر. ارفعه مجددًا للمتابعة.",
+  },
+
   "Card payment could not be opened. Please try again or contact Primple.": {
     fr: "Le paiement par carte n'a pas pu s'ouvrir. Réessayez ou contactez Primple.",
     ar: "تعذر فتح الدفع بالبطاقة. حاول مرة أخرى أو تواصل مع Primple.",
@@ -513,3 +540,4 @@ export const authPhrases: Record<string, TranslationPair> = {
   },
   FAQ: { fr: "FAQ", ar: "الأسئلة الشائعة" },
 };
+
