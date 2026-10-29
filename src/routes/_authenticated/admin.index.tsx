@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { AdminShell, NAV, type AdminTab } from "@/components/admin/AdminShell";
 import { CatalogTab, CrmTab, TeamTab } from "@/components/admin/AdminTabs";
 import { CustomersTab } from "@/components/admin/CustomersTab";
+import { AnalyticsTab } from "@/components/admin/AnalyticsTab";
 import { InboxTab } from "@/components/admin/InboxTab";
 import { OrdersTab } from "@/components/admin/OrdersTab";
 import { OverviewTab, ReportsTab } from "@/components/admin/OverviewTab";
@@ -84,6 +85,7 @@ function AdminPage() {
       ) : null}
       {tab === "catalog" ? <CatalogTab canManage={can(role, "manage_catalog")} /> : null}
       {tab === "reports" ? <ReportsTab /> : null}
+      {tab === "analytics" ? <AnalyticsTab /> : null}
       {tab === "team" ? <TeamTab /> : null}
       {tab === "crm" ? <CrmTab /> : null}
     </AdminShell>
