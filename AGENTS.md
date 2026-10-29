@@ -30,3 +30,4 @@
 - Offer cards use madOffer for compact decimal display; checkout and invoice amounts retain mad so formatting never changes payable centimes.
 - Payment initiation uses payment-initiation.ts for explicit manual/card dispatch and safe errors; manual conditional updates must return a persisted row before success, so failed writes cannot clear the cart or claim confirmation.
 - Trigger functions that call internal (execute-revoked) RPCs must be SECURITY DEFINER with fixed search_path; otherwise customer inserts fail with permission denied.
+- Dashboard traffic snapshots remain server-only behind read_ops; label capture time and unavailable integrations, and never treat snapshots as live or visits as unique people. Native analytics currently has no supported app runtime API.

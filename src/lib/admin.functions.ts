@@ -38,6 +38,14 @@ const ERRORS: Record<string, string> = {
   last_admin: "Impossible de retirer le dernier administrateur",
   invalid_pricing: "Configuration de prix invalide",
 };
+
+export const adminTraffic = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireStaff(context, "read_ops");
+    const { trafficSnapshot } = await import("./traffic-snapshot.server");
+    return trafficSnapshot;
+  });
 function fail(error: { message?: string } | null, fallback = "Erreur de base de données"): never {
   const key = Object.keys(ERRORS).find((k) => error?.message?.includes(k));
   throw new Error(key ? ERRORS[key] : fallback);

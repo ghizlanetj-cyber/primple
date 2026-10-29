@@ -38,3 +38,8 @@
 - [ ] Trace read-only diagnostics and safe gateway configuration
 - [ ] Fix explicit dispatch, checked manual updates and safe initiation errors
 - [ ] Run focused regressions and inspect final diff without publishing or production writes
+
+## Dashboard analytics (2026-10-29)
+- [ ] Add private measured traffic report with visits, search, ads, sources, pages and devices
+- [ ] Verify report aggregation, access protection and dashboard rendering
+- [ ] Live updates, keyword rankings and ad spend (blocked on reporting connections and supported runtime source)

@@ -25,7 +25,7 @@ import { can, type Capability } from "@/lib/admin-metrics";
 import { cn } from "@/lib/utils";
 import { ROLE_LABELS } from "./shared";
 
-export type AdminTab = "overview" | "orders" | "customers" | "inbox" | "quotes" | "catalog" | "reports" | "team" | "crm";
+export type AdminTab = "overview" | "orders" | "customers" | "inbox" | "quotes" | "catalog" | "reports" | "analytics" | "team" | "crm";
 export const NAV: { id: AdminTab; label: string; icon: typeof Inbox; cap: Capability }[] = [
   { id: "overview", label: "Vue d'ensemble", icon: LayoutDashboard, cap: "read_ops" },
   { id: "orders", label: "Commandes", icon: Package, cap: "read_ops" },
@@ -34,6 +34,7 @@ export const NAV: { id: AdminTab; label: string; icon: typeof Inbox; cap: Capabi
   { id: "quotes", label: "Devis", icon: FileText, cap: "read_ops" },
   { id: "catalog", label: "Catalogue", icon: Boxes, cap: "read_ops" },
   { id: "reports", label: "Rapports", icon: BarChart3, cap: "read_ops" },
+  { id: "analytics", label: "Audience & acquisition", icon: BarChart3, cap: "read_ops" },
   { id: "team", label: "Équipe", icon: ShieldCheck, cap: "manage_team" },
   { id: "crm", label: "CRM Zoho", icon: RefreshCw, cap: "crm_actions" },
 ];
