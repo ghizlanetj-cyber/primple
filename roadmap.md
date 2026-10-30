@@ -40,6 +40,6 @@
 - [ ] Run focused regressions and inspect final diff without publishing or production writes
 
 ## Dashboard analytics (2026-10-29)
-- [ ] Add private measured traffic report with visits, search, ads, sources, pages and devices
-- [ ] Verify report aggregation, access protection and dashboard rendering
-- [ ] Live updates, keyword rankings and ad spend (blocked on reporting connections and supported runtime source)
+- [x] Add private measured traffic report with visits, search, ads, sources, pages and devices
+- [x] Verify aggregation and access rules (20 focused tests); isolated UI fixture checked, authenticated end-to-end remains unverified
+- [ ] Live updates, keyword rankings and ad spend (Google Analytics connection is tracking-only, no report access; Search Console and ad reporting connections still needed)
