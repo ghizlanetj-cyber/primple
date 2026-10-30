@@ -279,6 +279,7 @@ export const adminOrders = createServerFn({ method: "GET" })
       assignee: optUuid(o["assignee"]),
       from: isoDay(o["from"]),
       to: isoDay(o["to"]),
+      archived: o["archived"] === true,
     };
   })
   .handler(async ({ data, context }) => {
@@ -300,6 +301,7 @@ export const adminOrders = createServerFn({ method: "GET" })
             : (null as unknown as string),
           _limit: PAGE,
           _offset: data.page * PAGE,
+          _archived: data.archived,
         }),
         "commandes",
       ) ?? [];
@@ -313,7 +315,7 @@ export const adminOrders = createServerFn({ method: "GET" })
           "id, reference, status, total, deposit_amount, balance_amount, deposit_paid, payment_method, payment_status, contact_name, company, email, guest_email, expected_at, created_at",
         )
         .in("id", list),
-      db.from("order_ops").select("order_id, ops_stage, assigned_to, version").in("order_id", list),
+      db.from("order_ops").select("order_id, ops_stage, assigned_to, version, archived_at").in("order_id", list),
       db.from("balance_collections").select("order_id, amount, remitted").in("order_id", list),
       db.from("order_files").select("order_id").in("order_id", list),
     ]);
@@ -474,6 +476,29 @@ export const adminUpdateOrder = createServerFn({ method: "POST" })
       _f: data.fields as never,
     });
     if (r.error) fail(r.error, "Enregistrement impossible");
+    return { ok: true, version: r.data };
+  });
+
+export const adminArchiveOrder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => {
+    const i = obj(input);
+    const version = i["version"] == null ? null : Math.floor(Number(i["version"]));
+    return {
+      orderId: uuid(i["orderId"]),
+      version: Number.isFinite(version) ? version : null,
+      archived: i["archived"] === true,
+    };
+  })
+  .handler(async ({ data, context }) => {
+    const { db } = await requireStaff(context, "write_ops");
+    const r = await db.rpc("admin_set_order_archived", {
+      _actor: context.userId,
+      _order: data.orderId,
+      _expected: data.version as number,
+      _archived: data.archived,
+    });
+    if (r.error) fail(r.error, "Archivage impossible");
     return { ok: true, version: r.data };
   });
 
