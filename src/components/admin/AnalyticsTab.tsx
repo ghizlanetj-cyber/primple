@@ -75,9 +75,9 @@ export function AnalyticsReport({ report }: { report: TrafficReport }) {
       <div className="grid gap-6 border-t pt-5 lg:grid-cols-2"><Ranking title="Pages les plus visitées" rows={report.pages} hint="Sessions ayant visité chaque page. Une session peut visiter plusieurs pages." /><Ranking title="Référents" rows={report.sources} hint="Principaux référents enregistrés, liste partielle." /></div>
       <div className="grid gap-6 border-t pt-5 sm:grid-cols-2"><Ranking title="Appareils" rows={report.devices} hint="Les catégories manquantes restent inconnues." /><Ranking title="Pays" rows={report.countries} hint="Pays renseignés par la mesure d'audience." /></div>
       <div className="grid gap-5 border-t pt-5 lg:grid-cols-3">
-        <Coverage icon={Search} title="SEO" text={`${number(report.channels.search?.visits ?? 0)} visites classées Recherche sur cette période. Mots-clés, impressions Google et positions : indisponibles sans Search Console.`} />
-        <Coverage icon={Megaphone} title="Publicités" text={`${number(report.channels.ads?.visits ?? 0)} visites classées Publicités. Dépenses, campagnes et retour publicitaire : indisponibles sans comptes publicitaires connectés.`} />
-        <Coverage icon={Globe} title="Actualisation" text="Google Analytics n'est pas connecté. Cet instantané n'ajoute aucun suivi publicitaire et ne mesure pas les conversions de commande." />
+        <Coverage icon={Search} title="SEO" text={`${report.channels.search ? number(report.channels.search.visits) + " visites classées Recherche sur cette période." : "Trafic Recherche indisponible."} Mots-clés, impressions Google et positions : indisponibles sans Search Console.`} />
+        <Coverage icon={Megaphone} title="Publicités" text={`${report.channels.ads ? number(report.channels.ads.visits) + " visites classées Publicités." : "Trafic Publicités indisponible."} Dépenses, campagnes et retour publicitaire : indisponibles sans comptes publicitaires connectés.`} />
+        <Coverage icon={Globe} title="Actualisation" text="Les rapports Google Analytics ne sont pas connectés. Cet instantané n'ajoute aucun suivi publicitaire et ne mesure pas les conversions de commande." />
       </div>
     </div>
   );
