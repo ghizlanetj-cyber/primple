@@ -552,6 +552,8 @@ export type Database = {
       }
       order_ops: {
         Row: {
+          archived_at: string | null
+          archived_by: string | null
           assigned_to: string | null
           cost_mad: number | null
           delivery_notes: string | null
@@ -565,6 +567,8 @@ export type Database = {
           version: number
         }
         Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
           assigned_to?: string | null
           cost_mad?: number | null
           delivery_notes?: string | null
@@ -578,6 +582,8 @@ export type Database = {
           version?: number
         }
         Update: {
+          archived_at?: string | null
+          archived_by?: string | null
           assigned_to?: string | null
           cost_mad?: number | null
           delivery_notes?: string | null
@@ -1050,23 +1056,42 @@ export type Database = {
           outstanding: number
         }[]
       }
-      admin_orders_page: {
-        Args: {
-          _assignee: string
-          _from: string
-          _limit: number
-          _offset: number
-          _payment: string
-          _q: string
-          _stage: string
-          _status: string
-          _to: string
-        }
-        Returns: {
-          order_id: string
-          total_count: number
-        }[]
-      }
+      admin_orders_page:
+        | {
+            Args: {
+              _assignee: string
+              _from: string
+              _limit: number
+              _offset: number
+              _payment: string
+              _q: string
+              _stage: string
+              _status: string
+              _to: string
+            }
+            Returns: {
+              order_id: string
+              total_count: number
+            }[]
+          }
+        | {
+            Args: {
+              _archived: boolean
+              _assignee: string
+              _from: string
+              _limit: number
+              _offset: number
+              _payment: string
+              _q: string
+              _stage: string
+              _status: string
+              _to: string
+            }
+            Returns: {
+              order_id: string
+              total_count: number
+            }[]
+          }
       admin_quote_stage_counts: { Args: never; Returns: Json }
       admin_record_balance: {
         Args: {
@@ -1091,6 +1116,15 @@ export type Database = {
           _slug: string
         }
         Returns: undefined
+      }
+      admin_set_order_archived: {
+        Args: {
+          _actor: string
+          _archived: boolean
+          _expected: number
+          _order: string
+        }
+        Returns: number
       }
       admin_set_pricing: {
         Args: {
