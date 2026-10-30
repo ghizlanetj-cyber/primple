@@ -12,6 +12,7 @@ import {
   adminOrders,
   adminRecordBalance,
   adminUpdateOrder,
+  adminArchiveOrder,
 } from "@/lib/admin.functions";
 import { OPS_LABELS, OPS_STAGES } from "@/lib/admin-metrics";
 import {
@@ -36,8 +37,15 @@ import {
 import { ShopOrdersTab } from "./ShopOrdersTab";
 import { ArtworkFile, CustomerContact, UnlinkedUploads } from "./ArtworkFiles";
 
-type Filters = { q: string; status: string; payment: string; stage: string; assignee: string };
-const EMPTY: Filters = { q: "", status: "", payment: "", stage: "", assignee: "" };
+type Filters = {
+  q: string;
+  status: string;
+  payment: string;
+  stage: string;
+  assignee: string;
+  archived: boolean;
+};
+const EMPTY: Filters = { q: "", status: "", payment: "", stage: "", assignee: "", archived: false };
 
 function PrintOrdersTab({
   focusId,
@@ -73,11 +81,12 @@ function PrintOrdersTab({
           payment: f.payment || null,
           stage: f.stage || null,
           assignee: f.assignee || null,
+          archived: f.archived,
         },
       }),
     placeholderData: keepPreviousData,
   });
-  const set = (k: keyof Filters, v: string) => {
+  const set = (k: keyof Filters, v: string | boolean) => {
     setF((x) => ({ ...x, [k]: v }));
     setPage(0);
   };
@@ -134,6 +143,15 @@ function PrintOrdersTab({
         <div className="w-44">
           <AssigneeSelect value={f.assignee || null} onChange={(v) => set("assignee", v ?? "")} />
         </div>
+        <select
+          className={sel}
+          value={f.archived ? "archived" : "active"}
+          onChange={(e) => set("archived", e.target.value === "archived")}
+          aria-label="Archives"
+        >
+          <option value="active">Commandes actives</option>
+          <option value="archived">Commandes archivées</option>
+        </select>
       </div>
       <Card>
         {list.error ? (
@@ -243,6 +261,7 @@ function OrderDetail({
   const qc = useQueryClient();
   const fetchDetail = useServerFn(adminOrderDetail);
   const update = useServerFn(adminUpdateOrder);
+  const archiveFn = useServerFn(adminArchiveOrder);
   const record = useServerFn(adminRecordBalance);
   const key = ["admin", "order", id];
   const d = useQuery({ queryKey: key, queryFn: () => fetchDetail({ data: { id } }) });
@@ -280,6 +299,18 @@ function OrderDetail({
       refresh();
     },
   });
+  const archive = useMutation({
+    mutationFn: (archived: boolean) =>
+      archiveFn({ data: { orderId: id, version: d.data?.ops?.version ?? null, archived } }),
+    onSuccess: (_r, archived) => {
+      toast.success(archived ? "Commande archivée" : "Commande restaurée");
+      refresh();
+    },
+    onError: (e) => {
+      toast.error(errText(e));
+      refresh();
+    },
+  });
   const bal = useMutation({
     mutationFn: (remitted: boolean) => record({ data: { orderId: id, remitted } }),
     onSuccess: () => {
@@ -299,7 +330,20 @@ function OrderDetail({
         <SheetTitle>{o.reference}</SheetTitle>
         <p className="text-sm text-muted-foreground">
           {fmtDate(o.created_at, true)} · {STATUS_LABELS[o.status] ?? o.status}
+          {ops?.archived_at ? ` · Archivée le ${fmtDate(ops.archived_at, true)}` : ""}
         </p>
+        {canWrite ? (
+          <div>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={archive.isPending}
+              onClick={() => archive.mutate(!ops?.archived_at)}
+            >
+              {ops?.archived_at ? "Restaurer la commande" : "Archiver la commande"}
+            </Button>
+          </div>
+        ) : null}
       </SheetHeader>
       <section className="grid gap-2 text-sm sm:grid-cols-2">
         <div>
